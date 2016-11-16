@@ -1,5 +1,5 @@
 
-#include <DxLib.h>
+#include "DxLib.h"
 #include "Main.h"
 #include "MainLoop.h"
 
@@ -12,6 +12,7 @@ Main::~Main()
 {
 }
 
+//ÉãÅ[ÉvÇÃëÂñ{
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	ChangeWindowMode(TRUE);
