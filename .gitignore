@@ -7,9 +7,12 @@
 *.userosscache
 *.sln.docstates
 
+<<<<<<< HEAD
 *.lib
 *.sln
 
+=======
+>>>>>>> origin/master
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -246,7 +249,10 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+<<<<<<< HEAD
 
 #include
 *.vcxproj.filters
 DXLib/
+=======
+>>>>>>> origin/master
