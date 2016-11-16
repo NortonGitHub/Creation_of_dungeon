@@ -1,0 +1,4 @@
+#x,#y,#width,#height,#ui_type_name
+300,100,100,80,message
+300,200,100,80,select
+300,300,100,80,select
