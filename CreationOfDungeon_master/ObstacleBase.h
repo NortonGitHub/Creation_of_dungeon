@@ -1,15 +1,15 @@
 #pragma once
 #include "CharaBase.h"
 class ObstacleBase :
-	public CharaBase
+    public CharaBase
 {
 public:
-	ObstacleBase();
-	~ObstacleBase();
+    ObstacleBase();
+    ~ObstacleBase();
 
-	//CharaManagerBase* GetManagerInstance();
+    //CharaManagerBase* GetManagerInstance();
 
 private:
-	//CharaManagerBase* manager;
+    //CharaManagerBase* manager;
 };
 

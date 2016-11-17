@@ -13,5 +13,5 @@ MiniSelectUIFactory::~MiniSelectUIFactory()
 
 UIProduct * MiniSelectUIFactory::CreateInstance()
 {
-	return new MiniSelectUIProduct();
+    return new MiniSelectUIProduct();
 }

@@ -5,16 +5,16 @@
 
 class TrapManager : public TrapBase{
 public:
-	TrapManager();
-	TrapManager(std::string stage_num);
-	~TrapManager();
+    TrapManager();
+    TrapManager(std::string stage_num);
+    ~TrapManager();
 
-	void Update();
-	void Draw();
+    void Update();
+    void Draw();
 
-	std::string GetManagerName() const { return _name; }
+    std::string GetManagerName() const { return _name; }
 
 private:
-	std::vector<TrapBase*> traps;
-	std::string _name;
+    std::vector<TrapBase*> traps;
+    std::string _name;
 };

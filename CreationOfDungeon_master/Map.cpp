@@ -13,7 +13,7 @@ Map::~Map()
 
 SceneBase * Map::Update()
 {
-	return nullptr;
+    return nullptr;
 }
 
 void Map::Draw()

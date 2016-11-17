@@ -4,7 +4,7 @@
 
 Title::Title()
 {
-	class_name = "Title";
+    class_name = "Title";
 }
 
 
@@ -15,11 +15,11 @@ Title::~Title()
 SceneBase * Title::Update()
 {
 
-	//nowUI->Update();
+    //nowUI->Update();
 
-	
+    
 
-	return this;
+    return this;
 }
 
 void Title::Draw()

@@ -1,10 +1,10 @@
 #pragma once
 #include "HeroBase.h"
 class ThiefHero :
-	public HeroBase
+    public HeroBase
 {
 public:
-	ThiefHero();
-	~ThiefHero();
+    ThiefHero();
+    ~ThiefHero();
 };
 

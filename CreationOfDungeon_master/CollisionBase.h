@@ -2,7 +2,7 @@
 class CollisionBase
 {
 public:
-	CollisionBase();
-	~CollisionBase();
+    CollisionBase();
+    ~CollisionBase();
 };
 

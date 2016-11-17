@@ -5,28 +5,28 @@
 class SceneBase
 {
 public:
-	SceneBase();
-	~SceneBase();
+    SceneBase();
+    ~SceneBase();
 
-	SceneBase* MainUpdate();
-	
-	std::string GetClassName() const {
-		return class_name;
-	}
+    SceneBase* MainUpdate();
+    
+    std::string GetClassName() const {
+        return class_name;
+    }
 
-	virtual SceneBase* Update() = 0;
-	virtual void Draw() = 0;
+    virtual SceneBase* Update() = 0;
+    virtual void Draw() = 0;
 
 private:
-	SceneBase* now_scene;
+    SceneBase* now_scene;
 
 protected:
 
-	UIManager ui_manager;
+    UIManager ui_manager;
 
-	std::string class_name;
+    std::string class_name;
 
-	Vector2D _before_pos;
+    Vector2D _before_pos;
 
 };
 

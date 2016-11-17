@@ -2,7 +2,7 @@
 class AIBase
 {
 public:
-	AIBase();
-	~AIBase();
+    AIBase();
+    ~AIBase();
 };
 

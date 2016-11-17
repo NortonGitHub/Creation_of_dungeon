@@ -12,8 +12,8 @@ MainLoop::~MainLoop()
 
 void MainLoop::GameLoop()
 {
-	SceneManager scene_manager;
-	while (1) {
-		scene_manager.SceneManagement();
-	}
+    SceneManager scene_manager;
+    while (1) {
+        scene_manager.SceneManagement();
+    }
 }

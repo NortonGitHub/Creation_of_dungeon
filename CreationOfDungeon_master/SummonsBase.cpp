@@ -4,7 +4,7 @@
 
 SummonsBase::SummonsBase()
 {
-//	manager = new SummonsManager();
+//  manager = new SummonsManager();
 }
 
 
@@ -15,6 +15,6 @@ SummonsBase::~SummonsBase()
 /*
 CharaManagerBase * SummonsBase::GetManagerInstance()
 {
-	return nullptr;// manager;
+    return nullptr;// manager;
 }
 */

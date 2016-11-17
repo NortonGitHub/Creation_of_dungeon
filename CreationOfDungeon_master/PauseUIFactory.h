@@ -1,13 +1,13 @@
 #pragma once
 #include "UIFactory.h"
 class PauseUIFactory :
-	public UIFactory
+    public UIFactory
 {
 public:
-	UIProduct* CreateInstance();
+    UIProduct* CreateInstance();
 
-	PauseUIFactory();
-	~PauseUIFactory();
+    PauseUIFactory();
+    ~PauseUIFactory();
 
 };
 

@@ -3,7 +3,7 @@
 
 MonsterBase::MonsterBase()
 {
-//	manager = new MonsterManager();
+//  manager = new MonsterManager();
 }
 
 
@@ -14,6 +14,6 @@ MonsterBase::~MonsterBase()
 /*
 CharaManagerBase * MonsterBase::GetManagerInstance()
 {
-	return nullptr;// manager;
+    return nullptr;// manager;
 }
 */

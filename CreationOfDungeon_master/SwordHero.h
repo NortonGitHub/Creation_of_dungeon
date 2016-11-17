@@ -4,18 +4,18 @@
 #include "Graph.h"
 
 class SwordHero :
-	public HeroBase
+    public HeroBase
 {
 public:
-	SwordHero();
-	~SwordHero();
+    SwordHero();
+    ~SwordHero();
 
-	void Update();
-	void Draw();
+    void Update();
+    void Draw();
 
 
 private:
-	Vector2D body;
-	std::vector<Graph> graph;
+    Vector2D body;
+    std::vector<Graph> graph;
 };
 

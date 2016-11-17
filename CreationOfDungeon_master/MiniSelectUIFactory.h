@@ -1,13 +1,13 @@
 #pragma once
 #include "UIFactory.h"
 class MiniSelectUIFactory :
-	public UIFactory
+    public UIFactory
 {
 public:
-	UIProduct* CreateInstance();
+    UIProduct* CreateInstance();
 
-	MiniSelectUIFactory();
-	~MiniSelectUIFactory();
+    MiniSelectUIFactory();
+    ~MiniSelectUIFactory();
 
 };
 

@@ -1,14 +1,14 @@
 #pragma once
 #include "UIProduct.h"
 class MiniSelectUIProduct :
-	public UIProduct
+    public UIProduct
 {
 public:
-	MiniSelectUIProduct();
-	~MiniSelectUIProduct();
+    MiniSelectUIProduct();
+    ~MiniSelectUIProduct();
 
 
-	void Update(UIContent ui);
-	void Draw(UIContent ui);
+    void Update(UIContent ui);
+    void Draw(UIContent ui);
 };
 

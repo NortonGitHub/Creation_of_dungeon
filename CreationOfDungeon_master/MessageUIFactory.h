@@ -1,13 +1,13 @@
 #pragma once
 #include "UIFactory.h"
 class MessageUIFactory :
-	public UIFactory
+    public UIFactory
 {
 public:
-	UIProduct* CreateInstance();
+    UIProduct* CreateInstance();
 
-	MessageUIFactory();
-	~MessageUIFactory();
+    MessageUIFactory();
+    ~MessageUIFactory();
 
 };
 

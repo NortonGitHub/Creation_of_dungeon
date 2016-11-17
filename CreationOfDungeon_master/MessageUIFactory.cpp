@@ -12,5 +12,5 @@ MessageUIFactory::~MessageUIFactory()
 
 UIProduct * MessageUIFactory::CreateInstance()
 {
-	return new MessageUIProduct();
+    return new MessageUIProduct();
 }

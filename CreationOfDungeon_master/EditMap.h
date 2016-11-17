@@ -1,13 +1,13 @@
 #pragma once
 #include "SceneBase.h"
 class EditMap :
-	public SceneBase
+    public SceneBase
 {
 public:
-	EditMap();
-	~EditMap();
+    EditMap();
+    ~EditMap();
 
-	SceneBase* Update();
-	void Draw();
+    SceneBase* Update();
+    void Draw();
 };
 

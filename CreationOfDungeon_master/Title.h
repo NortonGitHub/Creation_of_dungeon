@@ -1,14 +1,14 @@
 #pragma once
 #include "SceneBase.h"
 class Title :
-	public SceneBase
+    public SceneBase
 {
 public:
-	Title();
-	~Title();
+    Title();
+    ~Title();
 
-	SceneBase* Update();
-	void Draw();
+    SceneBase* Update();
+    void Draw();
 
 };
 

@@ -1,14 +1,14 @@
 #pragma once
 #include "UIProduct.h"
 class PauseUIProduct :
-	public UIProduct
+    public UIProduct
 {
 public:
-	PauseUIProduct();
-	~PauseUIProduct();
+    PauseUIProduct();
+    ~PauseUIProduct();
 
 
-	void Update(UIContent ui);
-	void Draw(UIContent ui);
+    void Update(UIContent ui);
+    void Draw(UIContent ui);
 };
 

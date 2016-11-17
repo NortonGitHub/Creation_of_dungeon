@@ -4,15 +4,15 @@
 class UIFactory
 {
 public:
-	UIFactory();
-	~UIFactory();
+    UIFactory();
+    ~UIFactory();
 
-	UIProduct* GetInstance();
+    UIProduct* GetInstance();
 
 private:
-	virtual UIProduct* CreateInstance() = 0;
+    virtual UIProduct* CreateInstance() = 0;
 
 protected:
-	UIFactory(std::string file_name);
+    UIFactory(std::string file_name);
 };
 

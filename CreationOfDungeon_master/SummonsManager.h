@@ -3,20 +3,20 @@
 #include "SummonsBase.h"
 
 class SummonsManager :
-	public CharaManagerBase
+    public CharaManagerBase
 {
 public:
-	SummonsManager();
-	SummonsManager(std::string stage_num);
-	~SummonsManager();
+    SummonsManager();
+    SummonsManager(std::string stage_num);
+    ~SummonsManager();
 
-	void Update();
-	void Draw();
+    void Update();
+    void Draw();
 
-	std::string GetManagerName() const { return _name; }
+    std::string GetManagerName() const { return _name; }
 
 private:
-	std::vector<SummonsBase*> summons;
-	std::string _name;
+    std::vector<SummonsBase*> summons;
+    std::string _name;
 };
 

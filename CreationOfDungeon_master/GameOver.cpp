@@ -13,7 +13,7 @@ GameOver::~GameOver()
 
 SceneBase * GameOver::Update()
 {
-	return nullptr;
+    return nullptr;
 }
 
 void GameOver::Draw()

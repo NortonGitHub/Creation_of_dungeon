@@ -5,10 +5,10 @@ class ControllerBase
 private:
 
 public:
-	ControllerBase();
-	~ControllerBase();
+    ControllerBase();
+    ~ControllerBase();
 
-	int GetPushKey();
-	int GetPressKey();
+    int GetPushKey();
+    int GetPressKey();
 };
 

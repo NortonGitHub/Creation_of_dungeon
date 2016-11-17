@@ -4,24 +4,24 @@
 #include "CharaManager.h"
 
 class Game :
-	public SceneBase
+    public SceneBase
 {
 public:
-	Game();
-	~Game();
+    Game();
+    ~Game();
 
-	SceneBase* Update();
-	void Draw();
+    SceneBase* Update();
+    void Draw();
 
 private:
 
-	std::string stage_num;
+    std::string stage_num;
 
-	CharaManager chara_manager;
+    CharaManager chara_manager;
 
-	MapProcessManager map_process_manager;
+    MapProcessManager map_process_manager;
 
-	MouseContent mouse_status;
+    MouseContent mouse_status;
 
 };
 

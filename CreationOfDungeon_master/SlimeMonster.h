@@ -1,10 +1,10 @@
 #pragma once
 #include "MonsterBase.h"
 class SlimeMonster :
-	public MonsterBase
+    public MonsterBase
 {
 public:
-	SlimeMonster();
-	~SlimeMonster();
+    SlimeMonster();
+    ~SlimeMonster();
 };
 

@@ -2,7 +2,7 @@
 class SubWindowManager
 {
 public:
-	SubWindowManager();
-	~SubWindowManager();
+    SubWindowManager();
+    ~SubWindowManager();
 };
 

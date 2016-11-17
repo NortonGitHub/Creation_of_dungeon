@@ -5,8 +5,8 @@
 class Colider
 {
 public:
-	Colider();
-	~Colider();
+    Colider();
+    ~Colider();
 
 
 };

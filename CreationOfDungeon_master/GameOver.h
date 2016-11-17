@@ -1,13 +1,13 @@
 #pragma once
 #include "SceneBase.h"
 class GameOver :
-	public SceneBase
+    public SceneBase
 {
 public:
-	GameOver();
-	~GameOver();
+    GameOver();
+    ~GameOver();
 
-	SceneBase* Update();
-	void Draw();
+    SceneBase* Update();
+    void Draw();
 };
 

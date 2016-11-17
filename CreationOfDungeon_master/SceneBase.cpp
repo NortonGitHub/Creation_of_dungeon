@@ -2,9 +2,9 @@
 
 
 SceneBase::SceneBase()
-	: _before_pos(0, 0)
+    : _before_pos(0, 0)
 {
-	ui_manager = UIManager(GetClassName());
+    ui_manager = UIManager(GetClassName());
 }
 
 
@@ -15,12 +15,12 @@ SceneBase::~SceneBase()
 SceneBase * SceneBase::MainUpdate()
 {    //some  process
 
-	//SetUIInstance(ui);
+    //SetUIInstance(ui);
 
-	ui_manager.Update();
+    ui_manager.Update();
 
-	SceneBase* next_scene = Update();
+    SceneBase* next_scene = Update();
 
-	return next_scene;
+    return next_scene;
 }
 

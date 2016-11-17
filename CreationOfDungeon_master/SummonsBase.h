@@ -1,15 +1,15 @@
 #pragma once
 #include "CharaBase.h"
 class SummonsBase :
-	public CharaBase
+    public CharaBase
 {
 public:
-	SummonsBase();
-	~SummonsBase();
+    SummonsBase();
+    ~SummonsBase();
 
-	//CharaManagerBase* GetManagerInstance();
+    //CharaManagerBase* GetManagerInstance();
 
 private:
-	//CharaManagerBase* manager;
+    //CharaManagerBase* manager;
 };
 

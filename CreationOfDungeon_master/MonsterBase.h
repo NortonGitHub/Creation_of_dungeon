@@ -1,14 +1,14 @@
 #pragma once
 #include "CharaBase.h"
 class MonsterBase :
-	public CharaBase
+    public CharaBase
 {
 public:
-	MonsterBase();
-	~MonsterBase();
+    MonsterBase();
+    ~MonsterBase();
 
-	//CharaManagerBase* GetManagerInstance();
+    //CharaManagerBase* GetManagerInstance();
 private:
-	//CharaManagerBase* manager;
+    //CharaManagerBase* manager;
 };
 

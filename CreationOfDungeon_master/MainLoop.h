@@ -2,9 +2,9 @@
 class MainLoop
 {
 public:
-	MainLoop();
-	~MainLoop();
+    MainLoop();
+    ~MainLoop();
 
-	void GameLoop();
+    void GameLoop();
 };
 

@@ -13,7 +13,7 @@ Result::~Result()
 
 SceneBase * Result::Update()
 {
-	return nullptr;
+    return nullptr;
 }
 
 void Result::Draw()

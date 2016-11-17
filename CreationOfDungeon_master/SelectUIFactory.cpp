@@ -13,5 +13,5 @@ SelectUIFactory::~SelectUIFactory()
 
 UIProduct * SelectUIFactory::CreateInstance()
 {
-	return new SelectUIProduct();
+    return new SelectUIProduct();
 }

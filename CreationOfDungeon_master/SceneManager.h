@@ -3,15 +3,15 @@
 class SceneManager 
 {
 private:
-	SceneBase* now_scene;
+    SceneBase* now_scene;
 
-	//UIBase* ui;
+    //UIBase* ui;
 
 public:
-	SceneManager();
-	~SceneManager();
+    SceneManager();
+    ~SceneManager();
 
-	void SceneManagement();
+    void SceneManagement();
 
 
 };

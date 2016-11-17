@@ -4,12 +4,12 @@
 class CharaManagerBase
 {
 public:
-	CharaManagerBase();
-	~CharaManagerBase();
+    CharaManagerBase();
+    ~CharaManagerBase();
 
-	virtual void Update() = 0;
-	virtual void Draw();
+    virtual void Update() = 0;
+    virtual void Draw();
 
-	virtual std::string GetManagerName() const = 0;
+    virtual std::string GetManagerName() const = 0;
 };
 

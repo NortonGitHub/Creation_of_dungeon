@@ -3,7 +3,7 @@
 
 ObstacleBase::ObstacleBase()
 {
-//	manager = new ObstacleManager();
+//  manager = new ObstacleManager();
 }
 
 
@@ -14,6 +14,6 @@ ObstacleBase::~ObstacleBase()
 /*
 CharaManagerBase * ObstacleBase::GetManagerInstance()
 {
-	return nullptr;// manager;
+    return nullptr;// manager;
 }
 */

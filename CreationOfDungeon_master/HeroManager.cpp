@@ -4,37 +4,37 @@
 
 HeroManager::HeroManager()
 {
-//	heroes = new HeroBase();
-	heroes.reserve(10);
+//  heroes = new HeroBase();
+    heroes.reserve(10);
 }
 
 HeroManager::HeroManager(std::string stage_num)
-	: _name("hero")
+    : _name("hero")
 {
 
-	std::vector<CharaBase*> temp;
-	temp.reserve(10);
-	
-	CSVDataLoader::LoadCharaCSV(heroes, stage_num);
-	
+    std::vector<CharaBase*> temp;
+    temp.reserve(10);
+    
+    CSVDataLoader::LoadCharaCSV(heroes, stage_num);
+    
 }
 
 
 HeroManager::~HeroManager()
 {
-	std::vector<CharaBase*>().swap(heroes);
+    std::vector<CharaBase*>().swap(heroes);
 }
 
 void HeroManager::Update()
 {
-	for (auto hero : heroes) {
-		hero->Update();
-	}
+    for (auto hero : heroes) {
+        hero->Update();
+    }
 }
 
 void HeroManager::Draw()
 {
-	for (auto hero : heroes) {
-		hero->Draw();
-	}
+    for (auto hero : heroes) {
+        hero->Draw();
+    }
 }

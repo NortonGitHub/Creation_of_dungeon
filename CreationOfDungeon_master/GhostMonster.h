@@ -1,10 +1,10 @@
 #pragma once
 #include "MonsterBase.h"
 class GhostMonster :
-	public MonsterBase
+    public MonsterBase
 {
 public:
-	GhostMonster();
-	~GhostMonster();
+    GhostMonster();
+    ~GhostMonster();
 };
 

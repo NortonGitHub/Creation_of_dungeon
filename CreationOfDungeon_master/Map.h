@@ -1,13 +1,13 @@
 #pragma once
 #include "SceneBase.h"
 class Map :
-	public SceneBase
+    public SceneBase
 {
 public:
-	Map();
-	~Map();
+    Map();
+    ~Map();
 
-	SceneBase* Update();
-	void Draw();
+    SceneBase* Update();
+    void Draw();
 };
 

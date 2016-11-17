@@ -1,10 +1,10 @@
 #pragma once
 #include "CollisionBase.h"
 class CollisionManager :
-	public CollisionBase
+    public CollisionBase
 {
 public:
-	CollisionManager();
-	~CollisionManager();
+    CollisionManager();
+    ~CollisionManager();
 };
 

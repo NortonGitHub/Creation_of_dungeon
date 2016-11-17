@@ -5,8 +5,8 @@
 
 int KeyManager::GetMousePush()
 {
-	GetMouseInput();
-	return 0;
+    GetMouseInput();
+    return 0;
 }
 
 

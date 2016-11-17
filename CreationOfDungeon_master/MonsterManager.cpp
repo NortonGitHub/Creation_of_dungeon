@@ -4,18 +4,18 @@
 
 MonsterManager::MonsterManager()
 {
-	monsters.reserve(10);
+    monsters.reserve(10);
 }
 
 MonsterManager::MonsterManager(std::string stage_num)
-	: _name("monster")
+    : _name("monster")
 {
 }
 
 
 MonsterManager::~MonsterManager()
 {
-	std::vector<MonsterBase*>().swap(monsters);
+    std::vector<MonsterBase*>().swap(monsters);
 }
 
 void MonsterManager::Update()

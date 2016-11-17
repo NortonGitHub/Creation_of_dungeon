@@ -3,7 +3,7 @@
 class Main
 {
 public:
-	Main();
-	~Main();
+    Main();
+    ~Main();
 };
 

@@ -5,21 +5,21 @@
 class Graph
 {
 public:
-	Graph();
-	Graph(int _graph);
-	Graph(int _graph,int _width,int _height);
-	~Graph();
+    Graph();
+    Graph(int _graph);
+    Graph(int _graph,int _width,int _height);
+    ~Graph();
 
-	Vector2D GetSize()const { return size; }
+    Vector2D GetSize()const { return size; }
 
-	int GetGraph() const { return graph; }
+    int GetGraph() const { return graph; }
 
 private:
 
-	Vector2D size;
+    Vector2D size;
 
-	Vector2D pos;
+    Vector2D pos;
 
-	int graph;
+    int graph;
 };
 

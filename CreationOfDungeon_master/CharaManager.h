@@ -7,16 +7,16 @@
 class CharaManager
 {
 public:
-	CharaManager();
-	CharaManager(std::string stage_num);
-	~CharaManager();
+    CharaManager();
+    CharaManager(std::string stage_num);
+    ~CharaManager();
 
-	void Update(MouseContent mc);
-	void Draw();
+    void Update(MouseContent mc);
+    void Draw();
 
 private:
-	//std::vector<CharaBase*> character;
-	
-	std::vector<CharaManagerBase*> chara;
+    //std::vector<CharaBase*> character;
+    
+    std::vector<CharaManagerBase*> chara;
 };
 

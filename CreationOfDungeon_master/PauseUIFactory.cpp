@@ -13,5 +13,5 @@ PauseUIFactory::~PauseUIFactory()
 
 UIProduct * PauseUIFactory::CreateInstance()
 {
-	return new PauseUIProduct();
+    return new PauseUIProduct();
 }

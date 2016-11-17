@@ -13,7 +13,7 @@ GameClear::~GameClear()
 
 SceneBase * GameClear::Update()
 {
-	return nullptr;
+    return nullptr;
 }
 
 void GameClear::Draw()

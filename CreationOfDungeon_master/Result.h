@@ -1,13 +1,13 @@
 #pragma once
 #include "SceneBase.h"
 class Result :
-	public SceneBase
+    public SceneBase
 {
 public:
-	Result();
-	~Result();
+    Result();
+    ~Result();
 
-	SceneBase* Update();
-	void Draw();
+    SceneBase* Update();
+    void Draw();
 };
 

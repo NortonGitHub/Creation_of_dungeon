@@ -13,7 +13,7 @@ EditMap::~EditMap()
 
 SceneBase * EditMap::Update()
 {
-	return nullptr;
+    return nullptr;
 }
 
 void EditMap::Draw()

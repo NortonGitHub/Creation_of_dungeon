@@ -13,9 +13,9 @@ UIFactory::~UIFactory()
 
 UIProduct * UIFactory::GetInstance()
 {
-	UIProduct* uip = CreateInstance();
+    UIProduct* uip = CreateInstance();
 
-	return uip;
+    return uip;
 }
 
 UIFactory::UIFactory(std::string file_name)

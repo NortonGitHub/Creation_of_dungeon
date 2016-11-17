@@ -1,13 +1,13 @@
 #pragma once
 #include "UIProduct.h"
 class MessageUIProduct :
-	public UIProduct
+    public UIProduct
 {
 public:
-	MessageUIProduct();
-	~MessageUIProduct();
+    MessageUIProduct();
+    ~MessageUIProduct();
 
-	void Update(UIContent ui);
-	void Draw(UIContent ui);
+    void Update(UIContent ui);
+    void Draw(UIContent ui);
 };
 
