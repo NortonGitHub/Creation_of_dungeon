@@ -55,8 +55,7 @@ str,temp_s  : UI_type_name
 */
 void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene_name)
 {
-    std::string filename = "csv\\UI\\";
-    filename += scene_name + ".csv";
+    std::string filename = "csv\\UI\\" + scene_name + ".csv";
 
     std::ifstream ifs(filename);
     if (!ifs) {
@@ -65,21 +64,22 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
 
     //csvファイルを1行ずつ読み込む
     std::string str;
-    while (!ifs.eof()) {
+    while (getline(ifs, str)) {
         std::string token;
         std::istringstream stream(str);
 
         int i = 0;
-        int temp_i[4];
-        std::string temp_s;
-        std::string temp_data;
+        int temp_i[4] = {-1,-1,-1,-1};
+        std::string temp_s = "";
+        std::string temp_data = "";
 
         while (getline(stream, token, ',')) {
-            if (token.find("#") != std::string::npos) {
+            auto n = token.find("#");
+            if (n == std::string::npos) {
                 if (i < 4) {
                     temp_i[i] = stoi(token);
                 }
-                else if(i == 5){
+                else if(i == 4){
                     temp_s = token;
                 }
                 else {
@@ -89,7 +89,8 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
             i++;
         }
 
-        ui_data.push_back(UIContent(temp_i[0], temp_i[1], temp_i[2], temp_i[3], temp_s,temp_data));
+        if(temp_s != "" && temp_data != "")
+            ui_data.push_back(UIContent(temp_i[0], temp_i[1], temp_i[2], temp_i[3], temp_s,temp_data));
     }
 }
 
