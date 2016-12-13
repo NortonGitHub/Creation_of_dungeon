@@ -21,7 +21,7 @@ public:
         _height = height;
         _type_name = type_name;
         _graph_name = graph_name;
-    }
+    };
 
     UIContent(int x, int y, int width, int height, std::string scene_name,std::string str) {
         _x = x;
@@ -37,7 +37,8 @@ public:
             _string_data = str;
         }
 
-    }
+    };
+
     ~UIContent() {
         std::vector<Graph*>().swap(_graph_array);
     };

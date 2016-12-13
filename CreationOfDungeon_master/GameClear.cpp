@@ -4,6 +4,7 @@
 
 GameClear::GameClear()
 {
+    class_name = "clear";
 }
 
 

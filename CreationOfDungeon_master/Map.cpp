@@ -4,6 +4,7 @@
 
 Map::Map()
 {
+    class_name = "map";
 }
 
 

@@ -2,7 +2,7 @@
 #include "SceneManager.h"
 #include "DxLib.h"
 
-MainLoop::MainLoop()
+MainLoop::MainLoop() : scene_manager(SceneManager())
 {
 }
 
@@ -16,11 +16,11 @@ void MainLoop::GameLoop()
 
     SetDrawScreen(DX_SCREEN_BACK);
 
-    SceneManager scene_manager;
     while (ProcessMessage() == 0) {
-        scene_manager.SceneManagement();
 
         ClearDrawScreen();
+
+        scene_manager.SceneManagement();
 
         ScreenFlip();
     }

@@ -5,7 +5,7 @@ Game::Game()
     :stage_num("1-1"),
     mouse_status(MouseContent())
 {
-
+    class_name = "game";
 
     chara_manager = CharaManager(stage_num);
 }

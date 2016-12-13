@@ -4,6 +4,7 @@
 
 GameOver::GameOver()
 {
+    class_name = "over";
 }
 
 

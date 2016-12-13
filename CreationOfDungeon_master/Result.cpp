@@ -4,6 +4,7 @@
 
 Result::Result()
 {
+    class_name = "result";
 }
 
 

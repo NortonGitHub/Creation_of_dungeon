@@ -1,4 +1,5 @@
 #pragma once
+#include "SceneManager.h"
 class MainLoop
 {
 public:
@@ -6,5 +7,8 @@ public:
     ~MainLoop();
 
     void GameLoop();
+
+private:
+    SceneManager scene_manager;
 };
 

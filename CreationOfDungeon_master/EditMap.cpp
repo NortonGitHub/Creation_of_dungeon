@@ -4,6 +4,7 @@
 
 EditMap::EditMap()
 {
+    class_name = "edit";
 }
 
 

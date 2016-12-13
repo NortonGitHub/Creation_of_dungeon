@@ -75,7 +75,9 @@ void UIManager::Update() {
             pro->Update(ui);
         }
     }
-    using_UI = ui;
+
+    //using_UI = ui;
+    std::copy(ui.begin(),ui.end(),std::back_inserter(using_UI));
 
 #if 0
     for (auto ui : using_UI) {

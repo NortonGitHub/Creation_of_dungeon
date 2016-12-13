@@ -4,12 +4,17 @@
 SceneBase::SceneBase()
     : _before_pos(0, 0)
 {
-    ui_manager = UIManager(GetClassName());
 }
 
 
 SceneBase::~SceneBase()
 {
+
+}
+
+void SceneBase::Init(std::string _class_name)
+{
+    ui_manager = UIManager(_class_name);
 }
 
 SceneBase * SceneBase::MainUpdate()
