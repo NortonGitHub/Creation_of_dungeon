@@ -19,8 +19,11 @@ void MessageUIProduct::Update(UIContent ui)
 
 void MessageUIProduct::Draw(UIContent ui)
 {
+    ui.Draw();
 
-    DrawGraph(ui.GetPosX(), ui.GetPosY(), ui.GetGraph().GetGraph(), TRUE);
-    DrawString(ui.GetPosX(), ui.GetPosY(), ui.GetStr().c_str(), GetColor(255, 255, 255));
-
+    auto uiPosition = ui.GetPosition();
+    DrawString(static_cast<int>(uiPosition._x),
+        static_cast<int>(uiPosition._y),
+        ui.GetStr().c_str(),
+        GetColor(255, 255, 255));
 }
