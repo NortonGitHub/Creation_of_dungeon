@@ -9,6 +9,6 @@ public:
     void GameLoop();
 
 private:
-    SceneManager scene_manager;
+    //SceneManager scene_manager;
 };
 
