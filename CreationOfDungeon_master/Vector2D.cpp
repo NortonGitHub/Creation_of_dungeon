@@ -66,13 +66,6 @@ Vector2D Vector2D::GetScaled(double scale)
     return std::move(temp);
 }
 
-const Vector2D Vector2D::operator=(const Vector2D & vec)
-{
-    Vector2D temp = *this;
-    temp._x = vec._x;
-    temp._y = vec._y;
-    return std::move(temp);
-}
 
 const Vector2D Vector2D::operator+(const Vector2D &vec)
 {
