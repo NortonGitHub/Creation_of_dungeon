@@ -11,6 +11,7 @@ public:
     void Init(std::string _class_name);
 
     SceneBase* MainUpdate();
+    void MainDraw();
     
     virtual std::string GetClassName() const = 0;
 

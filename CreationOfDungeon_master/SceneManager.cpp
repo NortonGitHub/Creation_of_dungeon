@@ -22,7 +22,7 @@ void SceneManager::SceneManagement()
         now_scene = next_scene;
     }
 
-    now_scene->Draw();
+    now_scene->MainDraw();
 
 
 }

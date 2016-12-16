@@ -85,3 +85,13 @@ void UIManager::Update() {
     }
 #endif
 }
+
+void UIManager::Draw()
+{
+    auto ui = using_UI;
+    for (auto pro : ui_products) {
+        if (pro != nullptr) {
+            pro->Draw(ui);
+        }
+    }
+}

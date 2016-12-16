@@ -13,6 +13,7 @@ public:
     ~UIManager();
 
     void Update();
+    void Draw();
 
     void Init(std::string scene_name);
 

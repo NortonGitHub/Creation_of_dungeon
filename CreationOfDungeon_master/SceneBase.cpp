@@ -29,3 +29,11 @@ SceneBase * SceneBase::MainUpdate()
     return next_scene;
 }
 
+void SceneBase::MainDraw()
+{
+    ui_manager.Draw();
+
+    Draw();
+
+}
+
