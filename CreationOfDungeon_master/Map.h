@@ -18,7 +18,7 @@ private:
     int nowMyStageNum;    //現在いるステージ　中継地点の場合は-1、移動中は-2
     int nowMyPointNum;    //現在いるポイント　ステージとは違う番号
     bool isMyMove;    //移動しているかどうか、移動中はtrue、移動していなければfalse
-
+    
     
     std::vector<RoadTurnPoint> targetTurnPointList;   //移動する場合に移動先までの道のうち、曲がる座標を順番に指定し、ここにプッシュする
     int finishPointNum; //移動した場合の最終目標ポイントの番号 移動していなければ-1
@@ -50,9 +50,14 @@ public:
     void Init();    //初期化
     void Moving();  //動いているときの処理
     void KeyJudge();//キー判定
+    void setNowMapPointList();
+    void setNowMapRoadList();
     bool myPointSet(int PointNum);  //自分のポイントを設定する　マップ移動はしない　失敗（移動するポイントが別のマップ等）したらfalse、成功でtrueを返す
     int PointSearch(int pointNum);  //ポイント番号からそのポイント番号の一致するポイント情報のnowMapPointListの配列番号を返す　違うマップのポイントの場合失敗する
     int RoadSearch(int startPointNum,int endPointNum);   //二つのポイント番号からそのポイント番号を結ぶ道の情報のnowMapRoadListの配列番号を返す　違うマップの道の場合失敗する
+    
+    
+    int MoveDirection(int startPointNum, int endPointNum); //二つのポイント番号からそのポイント番号のうち、nowMapRoadListのstartからendへの方向を返す　関数の引数であるstartPointNum→endPointNumの方向に移動する際、nowMapRoadListでstartPoint→endPointなら1、endPoint→startPointなら2を返す　違うマップの道の場合失敗する
 };
 
 
@@ -68,6 +73,7 @@ struct Point    //ポイントの情報を表す　ポイントは移動し、止まることが出来る場所
     
     int mapMove_mapNum;    //マップを移動するポイントの場合、移動先のマップ番号を入れる。マップを移動しない場合-1
     int mapMove_pointNum;    //マップを移動するポイントの場合、移動先のポイント番号を入れる。マップを移動しない場合-1
+    int mapMove_movePointNum;   //マップを移動するポイントの場合、マップ移動後、すぐに移動するポイント番号を入れる。マップを移動しない場合-1
 
     double x;   //ポイントのX位置
     double y;   //ポイントのY位置
