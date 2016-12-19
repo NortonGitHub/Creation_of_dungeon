@@ -52,6 +52,9 @@ int,temp_i[]
          [2]: width
          [3]: height
 str,temp_s  : UI_type_name
+data_name : UIの名称, 画像ファイルもこれで決定
+div_num_x : 画像データのX軸の分割数
+div_num_y : 画像データのY軸の分割数(一枚絵の場合は両者とも1)
 */
 void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene_name)
 {
@@ -69,9 +72,10 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
         std::istringstream stream(str);
 
         int i = 0;
-        int temp_i[4] = {-1,-1,-1,-1};
+        int temp_i[4] = { -1,-1,-1,-1 };
+        int temp_div[2] = { 1,1 };
         std::string temp_s = "";
-        std::string temp_data = "";
+        std::string temp_data_name = "";
 
         while (getline(stream, token, ',')) {
             auto n = token.find("#");
@@ -79,18 +83,21 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
                 if (i < 4) {
                     temp_i[i] = stoi(token);
                 }
-                else if(i == 4){
+                else if (i == 4) {
                     temp_s = token;
                 }
+                else if (i == 5) {
+                    temp_data_name = token;
+                }
                 else {
-                    temp_data = token;
+                    temp_div[i - 6] = stoi(token);
                 }
             }
             i++;
         }
 
-        if(temp_s != "" && temp_data != "")
-            ui_data.push_back(UIContent(temp_i[0], temp_i[1], temp_i[2], temp_i[3], temp_s,temp_data));
+        if (temp_s != "" && temp_data_name != "")
+            ui_data.push_back(UIContent(temp_i[0], temp_i[1], temp_i[2], temp_i[3], temp_s, temp_data_name, temp_div[0], temp_div[1]));
     }
 }
 
