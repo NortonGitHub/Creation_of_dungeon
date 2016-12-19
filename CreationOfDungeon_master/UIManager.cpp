@@ -3,9 +3,8 @@
 #include "CSVDataLoader.h"
 
 #include "MessageUIFactory.h"
-#include "MiniSelectUIFactory.h"
-#include "PauseUIFactory.h"
-#include "SelectUIfactory.h"
+#include "ButtonUIFactory.h"
+#include "GraphUIFactory.h"
 
 #include <string>
 
@@ -28,9 +27,8 @@ UIManager::UIManager(std::string scene_name)
     factory.reserve(4);
 
     factory["message"] = new MessageUIFactory();
-    factory["mini_select"] = new MiniSelectUIFactory();
-    factory["pause"] = new PauseUIFactory();
-    factory["select"] = new SelectUIFactory();
+    factory["select"] = new ButtonUIFactory();
+    factory["graph"] = new GraphUIFactory();
 
 
     Init(scene_name);
