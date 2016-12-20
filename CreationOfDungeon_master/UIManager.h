@@ -22,5 +22,6 @@ private:
     std::vector<UIProduct*> ui_products;
     std::unordered_map<std::string, UIFactory*> factory;
 
+    std::function<void()> SetUIFunction(std::string func_name);
 };
 

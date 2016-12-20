@@ -2,9 +2,9 @@
 #include "DxLib.h"
 
 
-MessageUIProduct::MessageUIProduct()
+MessageUIProduct::MessageUIProduct(UIContent ui_contents)
 {
-
+    ui = ui_contents;
 }
 
 
@@ -12,12 +12,12 @@ MessageUIProduct::~MessageUIProduct()
 {
 }
 
-void MessageUIProduct::Update(UIContent ui)
+void MessageUIProduct::Update()
 {
 
 }
 
-void MessageUIProduct::Draw(UIContent ui)
+void MessageUIProduct::Draw()
 {
 
     DrawGraph(ui.GetPosX(), ui.GetPosY(), ui.GetGraph().GetGraph(), TRUE);

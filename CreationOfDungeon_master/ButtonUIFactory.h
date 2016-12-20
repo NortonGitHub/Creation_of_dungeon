@@ -4,7 +4,7 @@ class ButtonUIFactory :
     public UIFactory
 {
 public:
-    UIProduct* CreateInstance();
+    UIProduct* CreateInstance(UIContent ui_contents);
     
     ButtonUIFactory();
     ~ButtonUIFactory();

@@ -11,7 +11,7 @@ ButtonUIFactory::~ButtonUIFactory()
 {
 }
 
-UIProduct * ButtonUIFactory::CreateInstance()
+UIProduct * ButtonUIFactory::CreateInstance(UIContent ui_contents)
 {
-    return new ButtonUIProduct();
+    return new ButtonUIProduct(ui_contents);
 }

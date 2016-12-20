@@ -4,10 +4,15 @@ class GraphUIProduct :
     public UIProduct
 {
 public:
-    GraphUIProduct();
+    GraphUIProduct(UIContent ui_contents);
     ~GraphUIProduct();
 
-    void Update(UIContent ui);
-    void Draw(UIContent ui);
+    void Update();
+    void Draw();
+
+private:
+    bool is_click;
+
+    UIContent ui;
 };
 

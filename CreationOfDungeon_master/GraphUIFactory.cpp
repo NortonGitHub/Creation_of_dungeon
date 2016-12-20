@@ -11,8 +11,8 @@ GraphUIFactory::~GraphUIFactory()
 {
 }
 
-UIProduct * GraphUIFactory::CreateInstance()
+UIProduct * GraphUIFactory::CreateInstance(UIContent ui_contents)
 {
-    return new GraphUIProduct();
+    return new GraphUIProduct(ui_contents);
 }
 

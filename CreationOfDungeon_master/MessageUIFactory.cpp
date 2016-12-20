@@ -10,7 +10,7 @@ MessageUIFactory::~MessageUIFactory()
 {
 }
 
-UIProduct * MessageUIFactory::CreateInstance()
+UIProduct * MessageUIFactory::CreateInstance(UIContent ui_contents)
 {
-    return new MessageUIProduct();
+    return new MessageUIProduct(ui_contents);
 }

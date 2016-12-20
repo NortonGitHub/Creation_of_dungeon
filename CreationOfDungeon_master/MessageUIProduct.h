@@ -4,10 +4,15 @@ class MessageUIProduct :
     public UIProduct
 {
 public:
-    MessageUIProduct();
+    MessageUIProduct(UIContent ui_contents);
     ~MessageUIProduct();
 
-    void Update(UIContent ui);
-    void Draw(UIContent ui);
+    void Update();
+    void Draw();
+
+private:
+    bool is_click;
+
+    UIContent ui;
 };
 

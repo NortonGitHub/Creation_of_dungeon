@@ -4,11 +4,18 @@ class ButtonUIProduct :
     public UIProduct
 {
 public:
-    ButtonUIProduct();
+    ButtonUIProduct(UIContent ui_contents);
     ~ButtonUIProduct();
 
 
-    void Update(UIContent ui);
-    void Draw(UIContent ui);
+    void Update();
+    void Draw();
+
+    void A() {};
+
+private:
+    bool is_click;
+
+    UIContent ui;
 };
 

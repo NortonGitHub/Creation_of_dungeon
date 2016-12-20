@@ -7,10 +7,10 @@ public:
     UIFactory();
     ~UIFactory();
 
-    UIProduct* GetInstance();
+    UIProduct* GetInstance(UIContent ui_contents);
 
 private:
-    virtual UIProduct* CreateInstance() = 0;
+    virtual UIProduct* CreateInstance(UIContent ui_contents) = 0;
 
 protected:
     UIFactory(std::string file_name);

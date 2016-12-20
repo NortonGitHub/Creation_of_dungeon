@@ -27,7 +27,7 @@ UIManager::UIManager(std::string scene_name)
     factory.reserve(4);
 
     factory["message"] = new MessageUIFactory();
-    factory["select"] = new ButtonUIFactory();
+    factory["button"] = new ButtonUIFactory();
     factory["graph"] = new GraphUIFactory();
 
 
@@ -36,20 +36,25 @@ UIManager::UIManager(std::string scene_name)
 
 UIManager::~UIManager()
 {
+    using_UI.shrink_to_fit();
+    ui_products.shrink_to_fit();
+    factory.clear();
 }
 
 void UIManager::Init(std::string scene_name) {
 
     CSVDataLoader::LoadUICSV(using_UI, scene_name);
 
-    for (auto ui : using_UI) {
-        std::string data_name = ui.GetDataName();
-        
+    for (std::vector<UIContent>::iterator ui = using_UI.begin(); ui != using_UI.end();) {
+
+        //ui->SetFunction(SetUIFunction(ui->GetDataName()));
+
+        std::string type_name = ui->GetTypeName();
 
         //もしfactory配列のキーにdata_nameと同名のそれがあればui_productsにインスタンスを追加する
-        if (factory.find(data_name) != factory.end()) {
+        if (factory.find(type_name) != factory.end()) {
 
-            auto temp = factory[data_name]->GetInstance();
+            auto temp = factory[type_name]->GetInstance(*ui);
             ui_products.push_back(temp);
 
 #if 0
@@ -59,6 +64,7 @@ void UIManager::Init(std::string scene_name) {
                 ui_products.push_back(temp);
             }
 #endif
+
         }
         else {
             ui_products.push_back(nullptr);
@@ -66,16 +72,20 @@ void UIManager::Init(std::string scene_name) {
     }
 }
 
+std::function<void()> UIManager::SetUIFunction(std::string func_name)
+{
+    
+
+    return std::function<void()>();
+}
+
 void UIManager::Update() {
-    auto ui = using_UI;
     for (auto pro : ui_products) {
         if (pro != nullptr) {
-            pro->Update(ui);
+            pro->Update();
         }
     }
 
-    //using_UI = ui;
-    std::copy(ui.begin(),ui.end(),std::back_inserter(using_UI));
 
 #if 0
     for (auto ui : using_UI) {
@@ -86,10 +96,9 @@ void UIManager::Update() {
 
 void UIManager::Draw()
 {
-    auto ui = using_UI;
     for (auto pro : ui_products) {
         if (pro != nullptr) {
-            pro->Draw(ui);
+            pro->Draw();
         }
     }
 }

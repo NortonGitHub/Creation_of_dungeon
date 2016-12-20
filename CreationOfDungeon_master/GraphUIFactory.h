@@ -7,6 +7,6 @@ public:
     GraphUIFactory();
     ~GraphUIFactory();
 
-    UIProduct* CreateInstance();
+    UIProduct* CreateInstance(UIContent ui_contents);
 };
 

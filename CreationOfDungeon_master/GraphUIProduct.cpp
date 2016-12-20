@@ -2,8 +2,9 @@
 
 
 
-GraphUIProduct::GraphUIProduct()
+GraphUIProduct::GraphUIProduct(UIContent ui_contents)
 {
+    ui = ui_contents;
 }
 
 
@@ -11,10 +12,10 @@ GraphUIProduct::~GraphUIProduct()
 {
 }
 
-void GraphUIProduct::Update(UIContent ui)
+void GraphUIProduct::Update()
 {
 }
 
-void GraphUIProduct::Draw(UIContent ui)
+void GraphUIProduct::Draw()
 {
 }
