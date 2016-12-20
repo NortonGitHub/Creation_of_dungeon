@@ -77,9 +77,12 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
         std::string temp_s = "";
         std::string temp_data_name = "";
 
+        std::string temp[9];
+
         while (getline(stream, token, ',')) {
             auto n = token.find("#");
             if (n == std::string::npos) {
+                /*
                 if (i < 4) {
                     temp_i[i] = stoi(token);
                 }
@@ -92,12 +95,17 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
                 else {
                     temp_div[i - 6] = stoi(token);
                 }
+                */
+
+                temp[i] = token;
             }
             i++;
         }
 
-        if (temp_s != "" && temp_data_name != "")
-            ui_data.push_back(UIContent(temp_i[0], temp_i[1], temp_i[2], temp_i[3], temp_s, temp_data_name, temp_div[0], temp_div[1]));
+        if (temp[4] != "" && temp[5] != ""/*temp_s != "" && temp_data_name != ""*/) {
+            //          ui_data.push_back(UIContent(temp_i[0], temp_i[1], temp_i[2], temp_i[3], temp_s, temp_data_name, temp_div[0], temp_div[1]));
+            ui_data.push_back(UIContent(stoi(temp[0]), stoi(temp[1]), stoi(temp[2]), stoi(temp[3]), temp[4], temp[5], stoi(temp[6]), stoi(temp[7])));
+        }
     }
 }
 
