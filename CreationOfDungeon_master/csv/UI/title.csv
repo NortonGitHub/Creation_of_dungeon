@@ -1,4 +1,4 @@
-#x,#y,#width,#height,#ui_type_name,
-300,100,100,80,message,hello
-300,200,100,80,select,start
-300,300,100,80,select,quit
+#x,#y,#width,#height,#ui_type_name,#div_num_x,#div_num_y
+300,100,100,80,message,hello,1,1
+300,200,100,80,button,start,1,1
+300,300,100,80,button,quit,1,1
