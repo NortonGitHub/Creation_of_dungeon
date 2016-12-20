@@ -2,6 +2,7 @@
 #include <string>
 #include<vector>
 #include<stdexcept>
+#include<functional>
 #include "Graph.h"
 class UIContent
 {
@@ -29,11 +30,11 @@ public:
     width : 横幅
     height : 縦幅
     type_name : UIのタイプ(message,button,graph,or nothing)
-    data_name : UIの名称, 画像ファイルもこれで決定
+    data_name : UIの名称, 画像ファイル,functionもこれで決定
     div_num_x : 画像データのX軸の分割数
     div_num_y : 画像データのY軸の分割数(一枚絵の場合は両者とも1)
     */
-    UIContent(int x, int y, int width, int height, std::string type_name, std::string data_name,unsigned int div_num_x , unsigned int div_num_y ) {
+    UIContent(int x, int y, int width, int height, std::string type_name, std::string data_name, unsigned int div_num_x, unsigned int div_num_y) {
 
         const std::vector<std::string> TYPE_DATA = { "nothing" ,"message","button","graph" };
 
@@ -50,12 +51,7 @@ public:
 
         _data_name = data_name;
 
-        if (it != TYPE_DATA.end()) {
-            _type_name = type_name;
-        }
-        else {
-            _type_name = TYPE_DATA[0];
-        }
+        _type_name = (it != TYPE_DATA.end()) ? type_name : TYPE_DATA[0];
 
         Graph orig_graph = Graph(data_name);
 
@@ -65,13 +61,9 @@ public:
             _graph_array[i] = graph_div[i];
         }
 
-        if (type_name == "button") {
-            is_UI_button = true;
-        }
-        else {
-            is_UI_button = false;
-        }
+        is_UI_button = (type_name == "button") ? true : false;
 
+        particular_function_name = data_name;
     };
 
     ~UIContent() {
@@ -84,11 +76,11 @@ public:
     int GetHeight() const { return _height; }
     std::string GetStr() const {
         return _string_data;
-    }
+    };
 
     int GetInt() const {
         return _int_data;
-    }
+    };
 
     Graph GetGraph() const { return _graph_data; }
     Graph GetGraphArray(int _element) const { return _graph_array[_element]; }
@@ -96,11 +88,16 @@ public:
         for (size_t i = 0; i < _graph_array.size(); i++) {
             graph_array[i] = _graph_array[i];
         }
-    }
+    };
 
     std::string GetDataName() const { return _data_name; }
     std::string GetTypeName() const { return _type_name; }
     std::string GetGraphName() const { return _graph_name; }
+
+    void SetFunction(std::function<void()> func){
+        particular_function = func;
+    };
+    std::function<void()> GetFunction() const { return particular_function; }
 
 #if 0
     /*String型やint型などのデータ型を格納できる*/
@@ -132,6 +129,9 @@ private:
     int _int_data;
 
     bool is_UI_button;
+
+    std::string particular_function_name;
+    std::function<void()> particular_function;
 
 };
 
