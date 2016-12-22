@@ -8,11 +8,16 @@
 
 #include <string>
 
+#include "DxLib.h"
+
+#include<iostream>
+#include<fstream>
+
 UIManager::UIManager() {
 }
 
 
-UIManager::UIManager(std::string scene_name)
+UIManager::UIManager(std::string scene_name) : test("resourse/test_666/omote")
 {
     /***Sample Code***
     UIFactory* a = new MessageUIFactory();
@@ -29,7 +34,9 @@ UIManager::UIManager(std::string scene_name)
     factory["message"] = new MessageUIFactory();
     factory["button"] = new ButtonUIFactory();
     factory["graph"] = new GraphUIFactory();
+    test.SetPosition(Vector2D(128, 0));
 
+    test2 = LoadGraph("resourse/test_666/omote.png");
 
     Init(scene_name);
 }
@@ -45,7 +52,9 @@ void UIManager::Init(std::string scene_name) {
 
     CSVDataLoader::LoadUICSV(using_UI, scene_name);
 
-    for (std::vector<UIContent>::iterator ui = using_UI.begin(); ui != using_UI.end();) {
+    auto a = using_UI.begin();
+
+    for (std::vector<UIContent>::iterator ui = using_UI.begin(); ui != using_UI.end(); ui++) {
 
         //ui->SetFunction(SetUIFunction(ui->GetDataName()));
 
@@ -74,8 +83,6 @@ void UIManager::Init(std::string scene_name) {
 
 std::function<void()> UIManager::SetUIFunction(std::string func_name)
 {
-    
-
     return std::function<void()>();
 }
 
@@ -89,7 +96,7 @@ void UIManager::Update() {
 
 #if 0
     for (auto ui : using_UI) {
-        
+
     }
 #endif
 }
@@ -101,4 +108,7 @@ void UIManager::Draw()
             pro->Draw();
         }
     }
+
+    //•\Ž¦‰Â”\
+    DrawGraph(300, 100, test2, FALSE);
 }

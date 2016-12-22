@@ -1,5 +1,6 @@
 #pragma once
 #include "UIContent.h"
+
 class UIProduct
 {
 public:

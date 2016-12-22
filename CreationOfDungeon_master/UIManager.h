@@ -17,11 +17,16 @@ public:
 
     void Init(std::string scene_name);
 
+
+
 private:
     std::vector<UIContent> using_UI;
     std::vector<UIProduct*> ui_products;
     std::unordered_map<std::string, UIFactory*> factory;
 
     std::function<void()> SetUIFunction(std::string func_name);
+
+    Graph test;
+    int test2;
 };
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "UIProduct.h"
+#include "SceneBase.h"
 class ButtonUIProduct :
     public UIProduct
 {
@@ -11,11 +12,16 @@ public:
     void Update();
     void Draw();
 
-    void A() {};
+    SceneBase* MoveSceneFunction();
+    void QuitFunction();
 
 private:
     bool is_click;
 
     UIContent ui;
+
+    int test_handle;
+
+
 };
 
