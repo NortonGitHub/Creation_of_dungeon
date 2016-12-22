@@ -7,7 +7,6 @@ public:
     Vector2D(double ax, double ay, double bx, double by);
     ~Vector2D();
 
-    const Vector2D operator=(const Vector2D &vec);
     const Vector2D operator+(const Vector2D &vec);
     const Vector2D operator+=(const Vector2D &vec);
     const Vector2D operator-(const Vector2D &vec);
@@ -40,4 +39,3 @@ public:
     /*éŒ¾‚µ‚½Vector2DŒ^•Ï”‚²‚Æ‚É—p“r‚ğ•ÏX‚·‚é‚±‚Æ*/
     double _x, _y;
 };
-

@@ -20,7 +20,4 @@ void MessageUIProduct::Update()
 void MessageUIProduct::Draw()
 {
 
-    DrawGraph(ui.GetPosX(), ui.GetPosY(), ui.GetGraph().GetGraph(), TRUE);
-    DrawString(ui.GetPosX(), ui.GetPosY(), ui.GetStr().c_str(), GetColor(255, 255, 255));
-
 }

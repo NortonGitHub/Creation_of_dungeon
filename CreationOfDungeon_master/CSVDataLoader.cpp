@@ -3,7 +3,6 @@
 #include <sstream>
 #include "CharaBase.h"
 
-
 CSVDataLoader::CSVDataLoader()
 {
 }
@@ -77,11 +76,13 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
         std::string temp_s = "";
         std::string temp_data_name = "";
 
-        std::string temp[9];
+        std::vector<std::string> temp;
+        temp.reserve(9);
 
         while (getline(stream, token, ',')) {
             auto n = token.find("#");
-            if (n == std::string::npos) {
+            auto m = token.find("\n");
+            if (n == std::string::npos && m == std::string::npos) {
                 /*
                 if (i < 4) {
                     temp_i[i] = stoi(token);
@@ -97,16 +98,28 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
                 }
                 */
 
-                temp[i] = token;
+                temp.push_back(token);
+                i++;
             }
-            i++;
+        }
+
+        if(temp.size() <= 0){
+            continue;
+        }
+
+        for (int i = 0; i < temp.size();i++) {
+            auto b = temp[i];
         }
 
         if (temp[4] != "" && temp[5] != ""/*temp_s != "" && temp_data_name != ""*/) {
             //          ui_data.push_back(UIContent(temp_i[0], temp_i[1], temp_i[2], temp_i[3], temp_s, temp_data_name, temp_div[0], temp_div[1]));
-            ui_data.push_back(UIContent(stoi(temp[0]), stoi(temp[1]), stoi(temp[2]), stoi(temp[3]), temp[4], temp[5], stoi(temp[6]), stoi(temp[7])));
+            ui_data.push_back(UIContent(stoi(temp[0]), stoi(temp[1]), temp[2], temp[3], stoi(temp[4]), stoi(temp[5])));
         }
+
+        temp.clear();
+        temp.resize(0);
     }
+
 }
 
 void CSVDataLoader::LoadCharaCSV(std::vector<CharaBase*>& chara_data, std::string stage_name)
