@@ -2,10 +2,12 @@
 #include "Title.h"
 
 
-SceneManager::SceneManager() : now_scene(new Title())
+SceneManager::SceneManager() : now_scene(new Title()), test(Graph("resourse/test_666/omote"))
 {
-    auto class_name = now_scene->GetClassName();
+    auto class_name = now_scene->GetClassNameData();
     now_scene->Init(class_name);
+
+    test.SetPosition(Vector2D(0, 64));
 }
 
 
@@ -22,6 +24,8 @@ void SceneManager::SceneManagement()
         now_scene = next_scene;
     }
 
+
+    //test.Draw();
     now_scene->MainDraw();
 
 

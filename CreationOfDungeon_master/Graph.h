@@ -58,6 +58,10 @@ public:
     int GetAlpha() const { return _alpha; }
     double GetAngle() const { return _angle; }
 
+    //【注意！！】以下の関数は暫定的なものです！
+    Vector2D GetP() const { return _anchor; }   //使用禁止
+    int GetH() const { return _handle; }        //使用禁止
+    // 暫定関数
 private:
 
     //画像の基本サイズ

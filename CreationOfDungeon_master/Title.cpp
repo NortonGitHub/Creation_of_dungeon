@@ -2,8 +2,9 @@
 
 
 
-Title::Title() : class_name("title")
+Title::Title() : class_name("title"), test("resourse/test_666/omote")
 {
+    test.SetPosition(Vector2D(0, 128));
 }
 
 
@@ -21,6 +22,16 @@ SceneBase * Title::Update()
     return this;
 }
 
+SceneBase * Title::Update(UIManager _ui)
+{
+    mouse_status = MouseManager::GetMouseStatus(mouse_status);
+
+    _ui.Update();
+
+    return this;
+}
+
 void Title::Draw()
 {
+//    test.Draw();
 }

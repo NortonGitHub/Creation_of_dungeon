@@ -13,13 +13,15 @@ public:
     SceneBase* MainUpdate();
     void MainDraw();
     
-    virtual std::string GetClassName() const = 0;
+    virtual std::string GetClassNameData() const = 0;
 
-    virtual SceneBase* Update() = 0;
+    virtual SceneBase* Update(UIManager _ui) = 0;
     virtual void Draw() = 0;
 
 private:
     SceneBase* now_scene;
+
+    Graph test;
 
 protected:
 

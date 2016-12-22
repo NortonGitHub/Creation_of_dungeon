@@ -17,6 +17,12 @@ SceneBase * Result::Update()
     return nullptr;
 }
 
+SceneBase * Result::Update(UIManager _ui)
+{
+    _ui.Update();
+    return this;
+}
+
 void Result::Draw()
 {
 }

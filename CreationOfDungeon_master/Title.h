@@ -10,9 +10,10 @@ public:
     ~Title();
 
     SceneBase* Update();
+    SceneBase* Update(UIManager _ui);
     void Draw();
 
-    std::string GetClassName() const {
+    std::string GetClassNameData() const {
         return class_name;
     }
 
@@ -22,5 +23,7 @@ private:
     MouseContent mouse_status;
 
     std::string class_name;
+
+    Graph test;
 };
 

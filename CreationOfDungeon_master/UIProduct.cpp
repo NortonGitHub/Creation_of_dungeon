@@ -13,15 +13,20 @@ UIProduct::~UIProduct()
 
 std::function<void()> UIProduct::GetUI(std::string data_name)
 {
-
+#if 0
     if (data_name == "hello") {
-        return std::bind(&ButtonUIProduct::A);
+        //–â‘è”­¶
     }
     else if (data_name == "start") {
-
+        return std::bind(&ButtonUIProduct::MoveSceneFunction,this);
+    }
+    else if (data_name == "quit") {
+        return std::bind(&ButtonUIProduct::QuitFunction,this);
     }
     /*ˆÈŒãAŠi”[‚µ‚½‚¢ŠÖ”‚ğ‚±‚±‚É—ñ‹“‚·‚é*/
     return std::function<void()>();
+#endif
+    return nullptr;
 }
 
 #if 0

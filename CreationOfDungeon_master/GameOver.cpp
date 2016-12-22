@@ -17,6 +17,12 @@ SceneBase * GameOver::Update()
     return nullptr;
 }
 
+SceneBase * GameOver::Update(UIManager _ui)
+{
+    _ui.Update();
+    return nullptr;
+}
+
 void GameOver::Draw()
 {
 }

@@ -15,15 +15,15 @@ Game::~Game()
 {
 }
 
-SceneBase * Game::Update()
+SceneBase * Game::Update(UIManager ui)
 {
 
     mouse_status = MouseManager::GetMouseStatus(mouse_status);
-    
+
     chara_manager.Update(mouse_status);
 
     map_process_manager.Update(mouse_status);
-    
+
     return this;
 }
 

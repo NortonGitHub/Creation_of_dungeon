@@ -7,6 +7,8 @@ private:
 
     //UIBase* ui;
 
+    Graph test;
+
 public:
     SceneManager();
     ~SceneManager();
