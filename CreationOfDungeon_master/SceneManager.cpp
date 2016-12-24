@@ -15,11 +15,14 @@ SceneManager::~SceneManager()
 {
 }
 
-void SceneManager::SceneManagement()
+bool SceneManager::SceneManagement()
 {
     SceneBase* next_scene = now_scene->MainUpdate();
     
-    if (next_scene != now_scene) {
+    if(next_scene == nullptr){
+        return false;
+    }
+    else if (next_scene != now_scene) {
         delete(now_scene);
         now_scene = next_scene;
     }
@@ -28,5 +31,5 @@ void SceneManager::SceneManagement()
     //test.Draw();
     now_scene->MainDraw();
 
-
+    return true;
 }

@@ -27,7 +27,9 @@ void MainLoop::GameLoop()
 
         //graph1.Draw();
 
-        scene_manager.SceneManagement();
+        if(!scene_manager.SceneManagement()){
+            break;
+        }
 
         //graph2.Draw();
 

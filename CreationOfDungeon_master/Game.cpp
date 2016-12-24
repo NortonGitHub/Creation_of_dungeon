@@ -3,7 +3,7 @@
 
 Game::Game()
     :stage_num("1-1"),
-    mouse_status(MouseContent())
+    mouse_status(MouseContent()), test("resourse/test_666/scene_g")
 {
     class_name = "game";
 
@@ -29,7 +29,11 @@ SceneBase * Game::Update(UIManager ui)
 
 void Game::Draw()
 {
+
+
     chara_manager.Draw();
 
     map_process_manager.Draw();
+
+    test.Draw();
 }

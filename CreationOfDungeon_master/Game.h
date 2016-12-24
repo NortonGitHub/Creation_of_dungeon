@@ -28,5 +28,6 @@ private:
 
     MouseContent mouse_status;
 
+    Graph test;
 };
 

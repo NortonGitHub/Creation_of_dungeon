@@ -26,7 +26,7 @@ SceneBase * SceneBase::MainUpdate()
     //ui_manager.Update();
 
     SceneBase* next_scene = Update(ui_manager);
-
+    
     return next_scene;
 }
 
