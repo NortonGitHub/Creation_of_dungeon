@@ -18,9 +18,14 @@ public:
     }
 
 private:
+
+    SceneBase* UpdateFunctions();
+
     std::string stage_num;
 
     MouseContent mouse_status;
+
+    std::vector<std::string> _functions;
 
     std::string class_name;
 

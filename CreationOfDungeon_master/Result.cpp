@@ -19,7 +19,7 @@ SceneBase * Result::Update()
 
 SceneBase * Result::Update(UIManager _ui)
 {
-    _ui.Update();
+//    _ui.Update();
     return this;
 }
 

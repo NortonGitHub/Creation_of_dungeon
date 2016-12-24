@@ -19,8 +19,8 @@ SceneBase * GameClear::Update()
 
 SceneBase * GameClear::Update(UIManager _ui)
 {
-    _ui.Update();
-    return nullptr;
+    //_ui.Update();
+    return this;
 }
 
 void GameClear::Draw()

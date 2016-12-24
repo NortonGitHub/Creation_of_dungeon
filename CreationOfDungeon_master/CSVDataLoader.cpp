@@ -103,17 +103,17 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
             }
         }
 
-        if(temp.size() <= 0){
+        if (temp.size() <= 0) {
             continue;
         }
 
-        for (int i = 0; i < temp.size();i++) {
+        for (int i = 0; i < temp.size(); i++) {
             auto b = temp[i];
         }
 
         if (temp[4] != "" && temp[5] != ""/*temp_s != "" && temp_data_name != ""*/) {
             //          ui_data.push_back(UIContent(temp_i[0], temp_i[1], temp_i[2], temp_i[3], temp_s, temp_data_name, temp_div[0], temp_div[1]));
-            ui_data.push_back(UIContent(stoi(temp[0]), stoi(temp[1]), temp[2], temp[3], stoi(temp[4]), stoi(temp[5])));
+            ui_data.push_back(UIContent(stoi(temp[0]), stoi(temp[1]), temp[2], temp[3], temp[4], stoi(temp[5]), stoi(temp[6])));
         }
 
         temp.clear();

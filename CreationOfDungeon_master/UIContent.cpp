@@ -34,7 +34,7 @@ UIContent::UIContent(int x, int y, int width, int height, std::string scene_name
     }
 }
 
-UIContent::UIContent(int x, int y, std::string type_name, std::string data_name, unsigned int div_num_x, unsigned int div_num_y) {
+UIContent::UIContent(int x, int y, std::string type_name, std::string data_name, std::string func_type, unsigned int div_num_x, unsigned int div_num_y) {
 
     const std::vector<std::string> TYPE_DATA = { "nothing" ,"message","button","graph" };
 
@@ -50,15 +50,20 @@ UIContent::UIContent(int x, int y, std::string type_name, std::string data_name,
 
     _type_name = (it != TYPE_DATA.end()) ? type_name : TYPE_DATA[0];
 
-//    _graph_data = Graph(data_name);
-//    _graph_data.Load(data_name);
+    //    _graph_data = Graph(data_name);
+    //    _graph_data.Load(data_name);
 
     is_UI_button = (type_name == "button") ? true : false;
 
     particular_function_name = data_name;
 
+    _func_type = func_type;
+
     //Žb’è
     _test_handle = ResourceLoader::Load(data_name.c_str());
+    int _sizeX, _sizeY;
+    GetGraphSize(_test_handle, &_sizeX, &_sizeY);
+    _size.Set(_sizeX, _sizeY);
 }
 
 void UIContent::Draw()
