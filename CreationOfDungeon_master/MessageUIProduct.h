@@ -7,7 +7,7 @@ public:
     MessageUIProduct(UIContent ui_contents);
     ~MessageUIProduct();
 
-    void Update();
+    std::string Update();
     void Draw();
 
 private:

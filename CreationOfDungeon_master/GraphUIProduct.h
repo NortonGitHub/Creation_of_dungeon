@@ -7,7 +7,7 @@ public:
     GraphUIProduct(UIContent ui_contents);
     ~GraphUIProduct();
 
-    void Update();
+    std::string Update();
     void Draw();
 
 private:

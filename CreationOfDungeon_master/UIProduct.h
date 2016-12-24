@@ -8,10 +8,10 @@ public:
     ~UIProduct();
 
 //    void Update(std::vector<UIContent>& using_UI);
-    virtual void Update() = 0;
+    virtual std::string Update() = 0;
 //    void Draw(std::vector<UIContent>& using_UI);
     virtual void Draw() = 0;
-
+    
 protected:
     std::function<void()> GetUI(std::string data_name);
 };

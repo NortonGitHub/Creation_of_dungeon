@@ -1,6 +1,6 @@
 #pragma once
 #include "UIProduct.h"
-#include "SceneBase.h"
+
 class ButtonUIProduct :
     public UIProduct
 {
@@ -9,10 +9,10 @@ public:
     ~ButtonUIProduct();
 
 
-    void Update();
+    std::string Update();
     void Draw();
 
-    SceneBase* MoveSceneFunction();
+    void MoveSceneFunction(std::string button_name);
     void QuitFunction();
 
 private:
@@ -21,7 +21,4 @@ private:
     UIContent ui;
 
     int test_handle;
-
-
 };
-

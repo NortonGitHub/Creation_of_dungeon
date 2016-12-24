@@ -1,6 +1,5 @@
 #include "UIProduct.h"
 
-#include "ButtonUIProduct.h"
 
 UIProduct::UIProduct()
 {

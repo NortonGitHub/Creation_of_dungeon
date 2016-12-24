@@ -12,12 +12,13 @@ MessageUIProduct::~MessageUIProduct()
 {
 }
 
-void MessageUIProduct::Update()
+std::string MessageUIProduct::Update()
 {
-
+    return "";
 }
 
 void MessageUIProduct::Draw()
 {
+    ui.Draw();
 
 }

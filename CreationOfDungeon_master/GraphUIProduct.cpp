@@ -12,10 +12,12 @@ GraphUIProduct::~GraphUIProduct()
 {
 }
 
-void GraphUIProduct::Update()
+std::string GraphUIProduct::Update()
 {
+    return "";
 }
 
 void GraphUIProduct::Draw()
 {
+    ui.Draw();
 }
