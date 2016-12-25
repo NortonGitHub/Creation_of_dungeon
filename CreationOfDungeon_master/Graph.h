@@ -53,7 +53,6 @@ public:
         return Vector2D(_size._x * _scale._x, _size._y * _scale._y);
     }
 
-
     //【注意！！】以下の関数は暫定的なものです！
     Vector2D GetP() const { return _anchor; }   //使用禁止
     int GetH() const { return _handle; }        //使用禁止

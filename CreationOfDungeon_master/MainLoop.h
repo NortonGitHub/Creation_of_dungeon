@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneManager.h"
+
 class MainLoop
 {
 public:
@@ -9,6 +10,10 @@ public:
     void GameLoop();
 
 private:
-    //SceneManager scene_manager;
+
+    SceneManager scene_manager;
+
+    void Init();
+    void Terminate();
 };
 

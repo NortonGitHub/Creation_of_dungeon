@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 #include "MapProcessManager.h"
 #include "CharaManager.h"
+#include "cd_666s/TilebaseAI/Dungeon.h"
 
 class Game :
     public SceneBase
@@ -31,5 +32,14 @@ private:
     std::vector<std::string> _functions;
 
     Graph test;
+
+
+
+    void Init();
+    void Clear();
+
+    //Ç†Ç∆Ç≈pointerÇ…ÇπÇ∏Ç∆Ç‡çœÇﬁÇÊÇ§Ç…Ç∑ÇÈ
+    Dungeon* _dungeon;
+    int _stageNumber;
 };
 
