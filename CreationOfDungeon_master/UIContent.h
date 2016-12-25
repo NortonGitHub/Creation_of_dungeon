@@ -26,7 +26,7 @@ public:
         unsigned int div_num_x, 
         unsigned int div_num_y);
     
-    ~UIContent() {};
+    ~UIContent();
 
     void Draw();
 

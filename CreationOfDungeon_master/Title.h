@@ -29,6 +29,6 @@ private:
 
     std::string class_name;
 
-    Graph test;
+    Graph title;
 };
 

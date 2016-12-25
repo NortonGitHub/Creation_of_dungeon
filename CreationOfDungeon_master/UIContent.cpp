@@ -1,6 +1,7 @@
 #include "UIContent.h"
 #include"DxLib.h"
 #include "ResourceLoader.h"
+#include <assert.h>
 
 UIContent::UIContent()
 {
@@ -60,10 +61,17 @@ UIContent::UIContent(int x, int y, std::string type_name, std::string data_name,
     _func_type = func_type;
 
     //ébíË
-    _test_handle = ResourceLoader::Load(data_name.c_str());
+    std::string load_name = "resourse/" + data_name;
+    _test_handle = std::move(ResourceLoader::Load(load_name.c_str()));
+    //assert((_test_handle != -1) && "âÊëúì«Ç›çûÇ›é∏îs");
     int _sizeX, _sizeY;
     GetGraphSize(_test_handle, &_sizeX, &_sizeY);
     _size.Set(_sizeX, _sizeY);
+}
+
+UIContent::~UIContent()
+{
+//    DeleteGraph(_test_handle);
 }
 
 void UIContent::Draw()

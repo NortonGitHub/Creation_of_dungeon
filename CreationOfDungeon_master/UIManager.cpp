@@ -143,5 +143,5 @@ void UIManager::Draw()
     }
     int a = ui_products.size();
     //•\Ž¦‰Â”\
-    DrawGraph(300, 100, test2, FALSE);
+    //DrawGraph(300, 100, test2, FALSE);
 }

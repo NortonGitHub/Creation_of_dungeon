@@ -28,6 +28,8 @@ private:
 
     MouseContent mouse_status;
 
+    std::vector<std::string> _functions;
+
     Graph test;
 };
 

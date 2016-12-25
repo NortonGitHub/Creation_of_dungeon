@@ -25,6 +25,7 @@ bool SceneManager::SceneManagement()
     else if (next_scene != now_scene) {
         delete(now_scene);
         now_scene = next_scene;
+        now_scene->Init(now_scene->GetClassNameData());
     }
 
 

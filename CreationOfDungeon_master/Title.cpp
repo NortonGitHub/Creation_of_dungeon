@@ -2,10 +2,10 @@
 
 #include "FunctionTransScene.h"
 
-Title::Title() : class_name("title"), test("resourse/test_666/omote")
+Title::Title() : class_name("title"), title("resourse/title")
 {
     _functions.reserve(20);
-    test.SetPosition(Vector2D(0, 128));
+    title.SetPosition(Vector2D(0, 0));
 }
 
 
@@ -46,7 +46,7 @@ SceneBase * Title::Update(UIManager _ui)
 
 void Title::Draw()
 {
-    //    test.Draw();
+        title.Draw();
 }
 
 SceneBase * Title::UpdateFunctions()

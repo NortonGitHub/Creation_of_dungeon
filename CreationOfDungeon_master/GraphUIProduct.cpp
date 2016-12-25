@@ -2,9 +2,9 @@
 
 
 
-GraphUIProduct::GraphUIProduct(UIContent ui_contents)
+GraphUIProduct::GraphUIProduct(UIContent ui_contents) : ui(ui_contents)
 {
-    ui = ui_contents;
+    is_click = false;
 }
 
 
@@ -14,7 +14,7 @@ GraphUIProduct::~GraphUIProduct()
 
 std::string GraphUIProduct::Update()
 {
-    return "";
+    return "NONE";
 }
 
 void GraphUIProduct::Draw()

@@ -41,11 +41,15 @@ std::string ButtonUIProduct::Update()
             auto n = 0;
         }
         */
+        /*
         if (ui.GetFunctionType().find("MOVE") != std::string::npos){
             func_data = "MOVE";
         }else if(ui.GetFunctionType().find("QUIT")  != std::string::npos){
             func_data = "QUIT";
         }
+        */
+        
+        func_data = ui.GetFunctionType();
     }
     
     return func_data;
