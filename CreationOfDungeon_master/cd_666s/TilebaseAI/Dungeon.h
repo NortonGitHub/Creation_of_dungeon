@@ -7,6 +7,7 @@
 #include "ColleagueNotifyer.h"
 #include "ObjectInformationDrawer.h"
 #include "../../Vector2D.h"
+#include "../Render/Sprite.h"
 
 class GraphicalObject;
 class TiledObject;
@@ -51,6 +52,9 @@ private:
     MonsterController _controller;
     Goal* _goal;
     StartPoint* _start;
+
+    // MEMO : debug—p
+    Sprite _face;
 };
 
 #endif /* Dungeon_h */

@@ -21,20 +21,22 @@
 
 
 Dungeon::Dungeon(std::string stageName)
-: _count(0)
-, _currentWaveInterval(120)
-, _permitivePassedNum(2)
-, _stageName(stageName)
-, _goal(nullptr)
-, _start(nullptr)
+    : _count(0)
+    , _currentWaveInterval(120)
+    , _permitivePassedNum(2)
+    , _stageName(stageName)
+    , _goal(nullptr)
+    , _start(nullptr)
+    , _face(RESOURCE_TABLE->GetFolderPath() + "graph/face.png")
 {
+    _face.SetScale(Vector2D(2, 2));
 }
 
 
 Dungeon::~Dungeon()
 {
-    Clear();
-    OBJECT_MGR->Refresh();
+//    Clear();
+//    OBJECT_MGR->Refresh();
 }
 
 
@@ -151,6 +153,7 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 
 void Dungeon::Clear()
 {
+    FIELD->Clear();
     OBJECT_MGR->_objects.Clear();
     
     _start = nullptr;
@@ -209,13 +212,15 @@ void Dungeon::Update()
         if (obj != nullptr)
             obj->Update();
     }
-    
-    Draw();
 }
 
 
 void Dungeon::Draw()
 {
+    //時間になったら初期化
+    if (_currentWaveInterval < _count)
+        return;
+
     FIELD->Draw();
     for (auto obj : OBJECT_MGR->_objects._objects)
     {
@@ -245,4 +250,22 @@ void Dungeon::Draw()
     passed += " / ";
     passed += std::to_string(_permitivePassedNum);
     Debug::DrawString(Vector2D(625, 64), passed);
+
+    //メッセージウィンドウ仮表示
+    Debug::DrawRectWithSize(Vector2D(20, 520), Vector2D(880, 20), Color4(0.5, 0.65, 0.85, 1.0), true);
+    Debug::DrawRectWithSize(Vector2D(20, 520), Vector2D(20, 160), Color4(0.5, 0.65, 0.85, 1.0), true);
+    Debug::DrawRectWithSize(Vector2D(20, 668), Vector2D(880, 32), Color4(0.5, 0.65, 0.85, 1.0), true);
+    Debug::DrawRectWithSize(Vector2D(168, 520), Vector2D(732, 160), Color4(0.5, 0.65, 0.85, 1.0), true);
+    _face.SetPosition(Vector2D(40, 540));
+    Debug::DrawString(Vector2D(200, 580), "奴は勇者の中でも最弱...!");
+
+    //ステージ名表示
+    Debug::DrawRectWithSize(Vector2D(970, 10), Vector2D(250, 30), Color4(0.5, 0.65, 0.85, 1.0), true);
+    Debug::DrawRectWithSize(Vector2D(970, 10), Vector2D(250, 30), ColorPalette::WHITE4, false);
+    Debug::DrawString(Vector2D(980, 20), "洞窟ダンジョン その" + _stageName);
+
+    //ステージ名表示
+    Debug::DrawRectWithSize(Vector2D(920, 60), Vector2D(340, 60), Color4(0.5, 0.65, 0.85, 1.0), true);
+    Debug::DrawRectWithSize(Vector2D(920, 60), Vector2D(340, 60), ColorPalette::WHITE4, false);
+    Debug::DrawString(Vector2D(950, 80), "所持金 : $100,000,000");
 }

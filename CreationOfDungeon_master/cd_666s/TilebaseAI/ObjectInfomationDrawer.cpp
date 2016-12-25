@@ -142,30 +142,43 @@ void ObjectInformationDrawer::DrawCharactersInformation(Character* chara, Vector
 //    Character::BattleParameter param = chara->GetBattleParameter();
     const Character::BattleParameter& param = chara->_battleParameter;
 
+    auto color = chara->GetType() == (TiledObject::Type::ENEMY) ? Color4(1.0, 0.5, 0.75, 1.0) : Color4(0.5, 0.75, 1.0, 1.0);
+
     //塗りつぶし
-    Debug::DrawRectWithSize(pos, Vector2D(340, 270), ColorPalette::WHITE4, true);
+    Debug::DrawRectWithSize(pos, Vector2D(340, 270), color, true);
     
     //枠線
-    Debug::DrawRectWithSize(pos, Vector2D(340, 270), ColorPalette::BLACK4, false);
+    Debug::DrawRectWithSize(pos, Vector2D(340, 270), ColorPalette::WHITE4, false);
     
     //グラフィック表示
+    Debug::DrawRectWithSize(pos + Vector2D(120, 20), Vector2D(100, 100), ColorPalette::BLACK4, true);
+    Debug::DrawRectWithSize(pos + Vector2D(120, 20), Vector2D(100, 100), ColorPalette::WHITE4, false);
     
     //各種パラメータ描画
     std::string paramStr = "HP : ";
     paramStr += std::to_string(param._hp);
     paramStr += " / ";
     paramStr += std::to_string(chara->_maxHP);
-    Debug::DrawString(pos + Vector2D(30, 30), paramStr);
+    Debug::DrawString(pos + Vector2D(110, 130), paramStr);
     
     paramStr = "ATK : ";
     paramStr += std::to_string(param._attack);
-    Debug::DrawString(pos + Vector2D(30, 60), paramStr);
+    Debug::DrawString(pos + Vector2D(90, 170), paramStr);
     
     paramStr = "DEF : ";
     paramStr += std::to_string(param._defence);
-    Debug::DrawString(pos + Vector2D(120, 60), paramStr);
- 
+    Debug::DrawString(pos + Vector2D(190, 170), paramStr);
+
+    paramStr = "MATK : ";
+    paramStr += std::to_string(param._attack);
+    Debug::DrawString(pos + Vector2D(90, 200), paramStr);
+
+    paramStr = "MDEF : ";
+    paramStr += std::to_string(param._defence);
+    Debug::DrawString(pos + Vector2D(180, 200), paramStr);
+
+
     paramStr = "SPD : ";
     paramStr += std::to_string(param._speed);
-    Debug::DrawString(pos  + Vector2D(60, 120), paramStr);
+    Debug::DrawString(pos  + Vector2D(130, 230), paramStr);
 }

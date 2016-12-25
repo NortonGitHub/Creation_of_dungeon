@@ -13,6 +13,20 @@ TileField::~TileField()
 }
 
 
+void TileField::Clear()
+{
+    for (size_t i = 0; i < _fieldSize._y; i++)
+    {
+        for (size_t j = 0; j < _fieldSize._x; j++)
+        {
+            delete _field[i][j];
+        }
+    }
+
+    _gobjs.resize(0);
+}
+
+
 void TileField::Init(int width, int height)
 {
     _fieldSize.Set(width, height);

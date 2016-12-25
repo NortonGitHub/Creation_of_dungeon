@@ -5,16 +5,8 @@
 #include "cd_666s/InputManager/InputManager.h"
 
 Game::Game()
-    :stage_num("1-1"),
-    mouse_status(MouseContent()), test("resourse/test_666/scene_g"),
-    _stageNumber(1)
+    :_stageNumber(1)
 {
-    class_name = "game";
-
-    chara_manager = CharaManager(stage_num);
-
-    _functions.reserve(20);
-
     KEYBOARD->AddEvent(KeyInput::KeyType::KEY_LSHIHT
         , ButtonTypeInputEvent::State::Down
         , [&]()
@@ -41,23 +33,6 @@ Game::~Game()
 
 SceneBase * Game::Update(UIManager _ui)
 {
-
-    _ui.Update(_functions);
-
-
-    mouse_status = MouseManager::GetMouseStatus(mouse_status);
-
-    chara_manager.Update(mouse_status);
-
-    map_process_manager.Update(mouse_status);
-    
-    for(auto f : _functions){
-        if(f == "CHANGE"){
-            FunctionSyncParameter::SyncParamater();
-        }
-    }
-
-
     if (_dungeon->HasClear())
     {
         _stageNumber++;
@@ -80,11 +55,7 @@ SceneBase * Game::Update(UIManager _ui)
 
 void Game::Draw()
 {
-    chara_manager.Draw();
-
-    map_process_manager.Draw();
-
-//    test.Draw();
+    _dungeon->Draw();
 }
 
 

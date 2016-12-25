@@ -14,6 +14,7 @@ public:
     TileField();
     ~TileField();
     
+    void Clear();
     void Init(int width, int height);
     void Draw();
     
