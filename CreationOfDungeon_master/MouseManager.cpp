@@ -83,9 +83,16 @@ bool MouseManager::IsPressed(std::string button)
 
 bool MouseManager::OnMouseOver(MouseContent mc, Vector2D pos1, Vector2D pos2)
 {
-    if((mc._pos._x >= pos1._x) && (mc._pos._x <= pos2._x )
-        && (mc._pos._y >= pos1._y) && (mc._pos._y <= pos2._y)) {
-        return true;
-    }
-    return false;
+    return IsOnMouse(mc._pos, pos1, pos2);
+}
+
+bool MouseManager::OnMouseOver(Vector2D mc, Vector2D pos1, Vector2D pos2)
+{
+    return IsOnMouse(mc, pos1, pos2);
+}
+
+bool MouseManager::IsOnMouse(Vector2D mc, Vector2D pos1, Vector2D pos2)
+{
+    return (mc._x >= pos1._x) && (mc._x <= pos2._x)
+        && (mc._y >= pos1._y) && (mc._y <= pos2._y);
 }

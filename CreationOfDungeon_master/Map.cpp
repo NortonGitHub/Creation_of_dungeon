@@ -35,6 +35,12 @@ SceneBase * Map::Update()
     return this;
 }
 
+SceneBase * Map::Update(UIManager _ui)
+{
+    //_ui.Update();
+    return this;
+}
+
 void Map::Draw()
 {
     /*

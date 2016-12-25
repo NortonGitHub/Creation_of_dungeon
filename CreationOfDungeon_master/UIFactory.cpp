@@ -11,9 +11,9 @@ UIFactory::~UIFactory()
 {
 }
 
-UIProduct * UIFactory::GetInstance()
+UIProduct * UIFactory::GetInstance(UIContent ui_contents)
 {
-    UIProduct* uip = CreateInstance();
+    UIProduct* uip = CreateInstance(ui_contents);
 
     return uip;
 }

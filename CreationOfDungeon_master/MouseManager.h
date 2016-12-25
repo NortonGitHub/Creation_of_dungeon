@@ -22,10 +22,13 @@ public:
     static bool IsPressed(std::string button);
 
     static bool OnMouseOver(MouseContent mc,Vector2D pos1, Vector2D pos2);
+    static bool OnMouseOver(Vector2D mc, Vector2D pos1, Vector2D pos2);
 
 private:
     MouseManager() = default;
     ~MouseManager() = default;
+
+    static bool IsOnMouse(Vector2D mc, Vector2D pos1, Vector2D pos2);
 
 };
 

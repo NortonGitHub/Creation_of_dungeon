@@ -2,8 +2,9 @@
 
 
 SceneBase::SceneBase()
-    : _before_pos(0, 0)
+    : _before_pos(0, 0), test(Graph("resourse/test_666/omote"))
 {
+    test.SetPosition(Vector2D(64, 64));
 }
 
 
@@ -22,10 +23,21 @@ SceneBase * SceneBase::MainUpdate()
 
     //SetUIInstance(ui);
 
-    ui_manager.Update();
+    //ui_manager.Update();
 
-    SceneBase* next_scene = Update();
-
+    SceneBase* next_scene = Update(ui_manager);
+    
     return next_scene;
+}
+
+void SceneBase::MainDraw()
+{
+
+    Draw();
+    ui_manager.Draw();
+
+
+    //test.Draw();
+
 }
 

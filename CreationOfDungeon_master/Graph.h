@@ -1,6 +1,4 @@
 #pragma once
-#ifndef GRAPH_H
-#define GRAPH_H
 
 #include <memory>
 #include <utility>
@@ -55,9 +53,12 @@ public:
         return Vector2D(_size._x * _scale._x, _size._y * _scale._y);
     }
 
-    int GetAlpha() const { return _alpha; }
-    double GetAngle() const { return _angle; }
 
+    //【注意！！】以下の関数は暫定的なものです！
+    Vector2D GetP() const { return _anchor; }   //使用禁止
+    int GetH() const { return _handle; }        //使用禁止
+
+    // 暫定関数
 private:
 
     //画像の基本サイズ
@@ -79,6 +80,3 @@ private:
 
     double _angle;
 };
-
-#endif
-

@@ -7,10 +7,10 @@ public:
     EditMap();
     ~EditMap();
 
-    SceneBase* Update();
+    SceneBase* Update(UIManager _ui);
     void Draw();
 
-    std::string GetClassName() const {
+    std::string GetClassNameData() const {
         return class_name;
     }
 

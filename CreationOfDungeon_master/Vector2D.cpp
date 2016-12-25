@@ -136,4 +136,3 @@ const bool Vector2D::operator!=(const Vector2D & vec)
 {
     return (vec._x != _x) && (vec._y != _y);
 }
-

@@ -2,9 +2,9 @@
 #include "DxLib.h"
 
 
-MessageUIProduct::MessageUIProduct()
+MessageUIProduct::MessageUIProduct(UIContent ui_contents)
 {
-
+    ui = ui_contents;
 }
 
 
@@ -12,18 +12,12 @@ MessageUIProduct::~MessageUIProduct()
 {
 }
 
-void MessageUIProduct::Update(UIContent ui)
+std::string MessageUIProduct::Update()
 {
-
+    return "";
 }
 
-void MessageUIProduct::Draw(UIContent ui)
+void MessageUIProduct::Draw()
 {
     ui.Draw();
-
-    auto uiPosition = ui.GetPosition();
-    DrawString(static_cast<int>(uiPosition._x),
-        static_cast<int>(uiPosition._y),
-        ui.GetStr().c_str(),
-        GetColor(255, 255, 255));
 }

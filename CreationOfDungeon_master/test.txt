@@ -1,0 +1,4 @@
+title
+300   100   button   hello
+300   200   button   start
+300   300   button   quit

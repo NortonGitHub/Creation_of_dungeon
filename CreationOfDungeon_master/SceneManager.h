@@ -7,11 +7,13 @@ private:
 
     //UIBase* ui;
 
+    Graph test;
+
 public:
     SceneManager();
     ~SceneManager();
 
-    void SceneManagement();
+    bool SceneManagement();
 
 
 };

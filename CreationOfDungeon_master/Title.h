@@ -10,17 +10,25 @@ public:
     ~Title();
 
     SceneBase* Update();
+    SceneBase* Update(UIManager _ui);
     void Draw();
 
-    std::string GetClassName() const {
+    std::string GetClassNameData() const {
         return class_name;
     }
 
 private:
+
+    SceneBase* UpdateFunctions();
+
     std::string stage_num;
 
     MouseContent mouse_status;
 
+    std::vector<std::string> _functions;
+
     std::string class_name;
+
+    Graph title;
 };
 

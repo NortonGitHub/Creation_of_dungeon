@@ -2,18 +2,30 @@
 #include "UIFactory.h"
 #include "CSVDataLoader.h"
 
+/*
 #include "MessageUIFactory.h"
-#include "MiniSelectUIFactory.h"
-#include "PauseUIFactory.h"
-#include "SelectUIfactory.h"
+#include "ButtonUIFactory.h"
+#include "GraphUIFactory.h"
+*/
+
+#include "MessageUIProduct.h"
+#include "ButtonUIProduct.h"
+#include "GraphUIProduct.h"
+
+#include "MouseManager.h"
 
 #include <string>
+
+#include "DxLib.h"
+
+#include<iostream>
+#include<fstream>
 
 UIManager::UIManager() {
 }
 
 
-UIManager::UIManager(std::string scene_name)
+UIManager::UIManager(std::string scene_name) : test("resourse/test_666/omote")
 {
     /***Sample Code***
     UIFactory* a = new MessageUIFactory();
@@ -25,33 +37,53 @@ UIManager::UIManager(std::string scene_name)
 
     using_UI.reserve(5);
     ui_products.reserve(5);
-    factory.reserve(4);
+    //    factory.reserve(4);
 
-    factory["message"] = new MessageUIFactory();
-    factory["mini_select"] = new MiniSelectUIFactory();
-    factory["pause"] = new PauseUIFactory();
-    factory["select"] = new SelectUIFactory();
+    /*    factory["message"] = new MessageUIFactory();
+        factory["button"] = new ButtonUIFactory();
+        factory["graph"] = new GraphUIFactory();*/
 
+    test.SetPosition(Vector2D(128, 0));
+
+    test2 = LoadGraph("resourse/test_666/omote.png");
 
     Init(scene_name);
 }
 
 UIManager::~UIManager()
 {
+    using_UI.shrink_to_fit();
+    ui_products.shrink_to_fit();
+    //    factory.clear();
 }
 
 void UIManager::Init(std::string scene_name) {
 
     CSVDataLoader::LoadUICSV(using_UI, scene_name);
 
-    for (auto ui : using_UI) {
-        std::string data_name = ui.GetDataName();
-        
+    auto a = using_UI.begin();
 
+    for (std::vector<UIContent>::iterator ui = using_UI.begin(); ui != using_UI.end(); ui++) {
+
+        //ui->SetFunction(SetUIFunction(ui->GetDataName()));
+
+        std::string type_name = ui->GetTypeName();
+
+        if (type_name.find("message") != std::string::npos) {
+            ui_products.push_back(new MessageUIProduct(*ui));
+        }
+        else if (type_name.find("button") != std::string::npos) {
+            ui_products.push_back(new ButtonUIProduct(*ui));
+        }
+        else if (type_name.find("graph") != std::string::npos) {
+            ui_products.push_back(new GraphUIProduct(*ui));
+        }
+
+#if 0
         //もしfactory配列のキーにdata_nameと同名のそれがあればui_productsにインスタンスを追加する
-        if (factory.find(data_name) != factory.end()) {
+        if (factory.find(type_name) != factory.end()) {
 
-            auto temp = factory[data_name]->GetInstance();
+            auto temp = factory[type_name]->GetInstance(*ui);
             ui_products.push_back(temp);
 
 #if 0
@@ -61,27 +93,55 @@ void UIManager::Init(std::string scene_name) {
                 ui_products.push_back(temp);
             }
 #endif
+
         }
         else {
             ui_products.push_back(nullptr);
         }
+#endif
     }
 }
 
-void UIManager::Update() {
-    auto ui = using_UI;
+std::string UIManager::GetFunctionEffect()
+{
+
+
+
+    return "";
+}
+
+std::function<void()> UIManager::SetUIFunction(std::string func_name)
+{
+    return std::function<void()>();
+}
+
+void UIManager::Update(std::vector<std::string> &_functions) {
+
+    std::string func_name = "";
+
     for (auto pro : ui_products) {
         if (pro != nullptr) {
-            pro->Update(ui);
+            func_name = pro->Update();
+            if (func_name != "") {
+                _functions.push_back(func_name);
+            }
         }
     }
-
-    //using_UI = ui;
-    std::copy(ui.begin(),ui.end(),std::back_inserter(using_UI));
-
 #if 0
     for (auto ui : using_UI) {
-        
+
     }
 #endif
+}
+
+void UIManager::Draw()
+{
+    for (auto pro : ui_products) {
+        if (pro != nullptr) {
+            pro->Draw();
+        }
+    }
+    int a = ui_products.size();
+    //表示可能
+    //DrawGraph(300, 100, test2, FALSE);
 }

@@ -12,7 +12,7 @@ EditMap::~EditMap()
 {
 }
 
-SceneBase * EditMap::Update()
+SceneBase * EditMap::Update(UIManager _ui)
 {
     return nullptr;
 }

@@ -4,7 +4,7 @@ class MessageUIFactory :
     public UIFactory
 {
 public:
-    UIProduct* CreateInstance();
+    UIProduct* CreateInstance(UIContent ui_contents);
 
     MessageUIFactory();
     ~MessageUIFactory();
