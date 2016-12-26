@@ -24,6 +24,7 @@ public:
 private:
     
     std::vector<AppearData> _appearData;
+    std::vector<Enemy*> _restEnemyList;
     long _frameFromStart;
 };
 

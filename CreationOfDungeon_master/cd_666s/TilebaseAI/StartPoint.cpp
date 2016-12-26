@@ -63,6 +63,12 @@ void StartPoint::Update()
 
 void StartPoint::Draw()
 {
+    Vector2D windowPos(600, 200);
+    for (size_t i=0; i<_appearData.size(); ++i)
+    {
+        Debug::DrawString(windowPos + Vector2D(64, 32 + i * 64), "—EŽÒ Lv.5");
+        Debug::DrawString(windowPos + Vector2D(64, 64 + i * 64), "N“ü‚Ü‚Å‚ ‚Æ : " + std::to_string(_appearData[i].second));
+    }
 }
 
 
@@ -72,5 +78,8 @@ bool StartPoint::IsOverwritable(TiledObject* overwriter)
     if(overwriter->GetType() == Type::BLOCK)
         return false;
         
+    if (overwriter->GetType() == Type::MONSTER)
+        return false;
+
     return true;
 }

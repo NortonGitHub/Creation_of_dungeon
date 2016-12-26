@@ -72,6 +72,9 @@ bool Goal::IsOverwritable(TiledObject* overwriter)
     //MEMO : ロード時にブロックが上に被らないようにしている
     if(overwriter->GetType() == Type::BLOCK)
         return false;
-    
+
+    if (overwriter->GetType() == Type::MONSTER)
+        return false;
+
     return true;
 }
