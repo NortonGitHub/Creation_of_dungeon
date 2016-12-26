@@ -19,6 +19,11 @@ ObjectInformationDrawer::ObjectInformationDrawer()
     _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
     _allyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
     _allyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+
+    _enemyThumbnail1.GetTexturePtr()->SetPriority(100);
+    _enemyThumbnail2.GetTexturePtr()->SetPriority(100);
+    _allyThumbnail1.GetTexturePtr()->SetPriority(100);
+    _allyThumbnail2.GetTexturePtr()->SetPriority(100);
 }
 
 
@@ -144,9 +149,17 @@ void ObjectInformationDrawer::Draw()
 {
     if (_character1 != nullptr)
     {
-        (_character1->GetType() == TiledObject::Type::ENEMY) 
-            ? _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(true)
-            : _allyThumbnail1.GetTexturePtr()->SetDisplayMode(true);
+        if (_character1->GetType() == TiledObject::Type::ENEMY)
+        {
+            _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(true);
+            _allyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
+        }
+        else
+        {
+            _allyThumbnail1.GetTexturePtr()->SetDisplayMode(true);
+            _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
+        }
+
         DrawCharactersInformation(_character1, Vector2D(920, 140));
     }
     else
@@ -157,9 +170,17 @@ void ObjectInformationDrawer::Draw()
     
     if (_character2 != nullptr)
     {
-        (_character2->GetType() == TiledObject::Type::ENEMY)
-            ? _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(true)
-            : _allyThumbnail2.GetTexturePtr()->SetDisplayMode(true);
+        if (_character2->GetType() == TiledObject::Type::ENEMY)
+        {
+            _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(true);
+            _allyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+        }
+        else
+        {
+            _allyThumbnail2.GetTexturePtr()->SetDisplayMode(true);
+            _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+        }
+
         DrawCharactersInformation(_character2, Vector2D(920, 430));
     }
     else
@@ -175,26 +196,13 @@ void ObjectInformationDrawer::DrawCharactersInformation(Character* chara, Vector
 //    Character::BattleParameter param = chara->GetBattleParameter();
     const Character::BattleParameter& param = chara->_battleParameter;
 
-    auto color = chara->GetType() == (TiledObject::Type::ENEMY) ? Color4(1.0, 0.5, 0.75, 1.0) : Color4(0.5, 0.75, 1.0, 1.0);
-    /*
-    //塗りつぶし
-    Debug::DrawRectWithSize(pos, Vector2D(340, 270), color, true);
-    
-    //枠線
-    Debug::DrawRectWithSize(pos, Vector2D(340, 270), ColorPalette::WHITE4, false);
-    //グラフィック表示
-    Debug::DrawRectWithSize(pos + Vector2D(120, 20), Vector2D(100, 100), ColorPalette::BLACK4, true);
-    Debug::DrawRectWithSize(pos + Vector2D(120, 20), Vector2D(100, 100), ColorPalette::WHITE4, false);
-    */
+    auto color = (chara->GetType() == TiledObject::Type::ENEMY) ? ColorPalette::RED4 : ColorPalette::BLUE4;
+    Vector2D hpOffset(110, 130);
+    Debug::DrawString(pos + hpOffset, "HP");
+    Debug::DrawRectWithSize(pos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(chara->_maxHP) * 96, 12), color, true);
+    Debug::DrawRectWithSize(pos + hpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
 
-    //各種パラメータ描画
-    std::string paramStr = "HP : ";
-    paramStr += std::to_string(param._hp);
-    paramStr += " / ";
-    paramStr += std::to_string(chara->_maxHP);
-    Debug::DrawString(pos + Vector2D(110, 130), paramStr);
-    
-    paramStr = "ATK : ";
+    std::string paramStr = "ATK : ";
     paramStr += std::to_string(param._attack);
     Debug::DrawString(pos + Vector2D(90, 170), paramStr);
     
