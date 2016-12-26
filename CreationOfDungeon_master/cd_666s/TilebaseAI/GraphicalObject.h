@@ -13,7 +13,7 @@ public:
 
     Vector2D GetPosition() const { return _position; }
     bool Contain(Vector2D pos);
-    
+
 protected:
 
     Vector2D _position;

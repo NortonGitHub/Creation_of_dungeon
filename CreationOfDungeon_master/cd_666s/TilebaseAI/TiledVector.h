@@ -1,5 +1,5 @@
 #pragma once
-#define TILE_SIZE 32
+#define TILE_SIZE TiledVector::_tileSize
 #define FIELD_OFFSET_X 20
 #define FIELD_OFFSET_Y 20
 
@@ -77,5 +77,7 @@ public:
     static const TiledVector eightDirecton[8];
     
     int _x, _y;
+
+    static int _tileSize;
 };
 

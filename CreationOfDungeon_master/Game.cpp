@@ -35,7 +35,10 @@ SceneBase * Game::Update(UIManager _ui)
 {
     if (_dungeon->HasClear())
     {
-        _stageNumber++;
+        if (_stageNumber < 3)
+        {
+            _stageNumber++;
+        }
 
         Clear();
         Init();
@@ -61,6 +64,21 @@ void Game::Draw()
 
 void Game::Init()
 {
+    /*
+    switch (_stageNumber)
+    {
+    case 1:
+        TILE_SIZE = 64;
+        break;
+    case 2:
+        TILE_SIZE = 48;
+        break;
+    case 3:
+        TILE_SIZE = 32;
+        break;
+    };
+    */
+
     if (_dungeon != nullptr)
     {
         delete _dungeon;

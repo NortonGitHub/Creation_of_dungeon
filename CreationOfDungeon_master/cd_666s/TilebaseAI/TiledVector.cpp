@@ -14,6 +14,7 @@ const TiledVector TiledVector::eightDirecton[8] =
     TiledVector(-1, -1), TiledVector(1, -1), TiledVector(1, 1), TiledVector(-1, 1)
 };
 
+int TiledVector::_tileSize = 32;
 
 TiledVector::TiledVector(int elemX, int elemY)
     : _x(elemX), _y(elemY)

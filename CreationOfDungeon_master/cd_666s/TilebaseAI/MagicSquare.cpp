@@ -20,6 +20,8 @@ MagicSquare::MagicSquare(TiledVector tilePos, Monster& monster)
 
     _graph.GetTexturePtr()->SetPriority(-1);
     _graph_ready.GetTexturePtr()->SetPriority(-1);
+    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _graph_ready.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 }
 
 

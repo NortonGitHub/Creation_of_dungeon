@@ -38,6 +38,8 @@ void Goal::Init()
     _graph.Load(fileName + ".png");
     _graph.SetPosition(tilePos.GetWorldPos());
     _graph.GetTexturePtr()->SetPriority(-1);
+
+    TiledObject::Init();
 }
 
 

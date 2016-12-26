@@ -28,6 +28,7 @@ TiledVector TiledObject::GetTilePos() const
 
 void TiledObject::Init() 
 {
+    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 }
 
 

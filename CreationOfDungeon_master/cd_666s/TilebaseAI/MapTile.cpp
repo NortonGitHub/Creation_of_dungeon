@@ -11,6 +11,7 @@ MapTile::MapTile(int col, int row)
     _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/background/ground.png");
     _graph.SetPosition(_tilePos.GetWorldPos());
     _graph.GetTexturePtr()->SetPriority(-2);
+    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 }
 
 MapTile::MapTile(TiledVector pos)
