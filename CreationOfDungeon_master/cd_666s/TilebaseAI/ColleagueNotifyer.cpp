@@ -61,18 +61,3 @@ bool ColleagueNotifyer::IsChasable(TiledObject& target)
     
     return true;
 }
-
-
-bool ColleagueNotifyer::HasWipeouted() const
-{
-    //if (_colleagues.size() == 0)
-    //    return false;
-    
-    for (auto chara : _colleagues)
-    {
-        if (chara->IsAlive())
-            return false;
-    }
-    
-    return true;
-}

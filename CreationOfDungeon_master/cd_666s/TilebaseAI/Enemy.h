@@ -24,7 +24,15 @@ public:
     void Appear();
     
     static void LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Goal* goal, ColleagueNotifyer& notifyer, std::string fileName);
-    
+
+    static bool HasWipeOuted()
+    {
+        if (_defeatedNum == 0 || _enemysNum == 0)
+            return false;
+
+        return (_enemysNum <= _defeatedNum);
+    }
+
 private:
     Enemy(TiledVector, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer);
     
@@ -67,5 +75,8 @@ private:
     
     //Ž©•ª‚ª¢Š«Ï‚Ý‚©‚Ç‚¤‚©
     bool _hasAppeared;
+
+    static int _defeatedNum;
+    static int _enemysNum;
 };
 

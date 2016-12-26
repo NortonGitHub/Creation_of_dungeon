@@ -12,6 +12,8 @@
 #include <array>
 #include "../Utility/CSVReader.h"
 
+int Enemy::_defeatedNum = 0;
+int Enemy::_enemysNum = 0;
 
 Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer)
 : Character(startPos, params, notifyer)
@@ -37,11 +39,15 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
 
 Enemy::~Enemy()
 {
+    delete _astar;
 }
 
 
 void Enemy::LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Goal* goal, ColleagueNotifyer& notifyer, std::string fileName)
 {
+    _defeatedNum = 0;
+    _enemysNum = 0;
+
     std::vector<std::string> dataArray;
     CSVReader reader;
     reader.Read(fileName, dataArray, 1);
@@ -67,6 +73,8 @@ void Enemy::LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Go
             //ŽŸ‚ÌƒLƒƒƒ‰‚Ö
             count = 0;
             idx++;
+
+            _enemysNum++;
         }
     }
 }
@@ -307,11 +315,6 @@ void Enemy::Draw()
 {
     _graph.SetDisplayMode(IsEnable() && !_isBattling);
     
-    auto color = ColorPalette::RED4;
-//    Debug::DrawString(_position + Vector2D(32, 0), "HP");
-//    Debug::DrawRectWithSize(_position + Vector2D(64, 20), Vector2D(_battleParameter._hp / double(_maxHP) * 64, 12), color, true);
-//    Debug::DrawRectWithSize(_position + Vector2D(64, 20), Vector2D(64, 12), ColorPalette::BLACK4, false);
-    
     if (!_hasAppeared || _isBattling)
         return;
     
@@ -344,6 +347,7 @@ void Enemy::OnDie()
     ResetCounter();
     _target = nullptr;
     _hasAppeared = false;
+    _defeatedNum++;
 }
 
 

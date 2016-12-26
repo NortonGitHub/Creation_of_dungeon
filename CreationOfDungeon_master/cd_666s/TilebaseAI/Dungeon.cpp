@@ -178,7 +178,7 @@ bool Dungeon::HasClear()
         return true;
     
     //WAVE’†‚Ì“G‚ğ‘S–Å‚³‚¹‚½‚çƒNƒŠƒA
-    if (_enemys.HasWipeouted())
+    if (Enemy::HasWipeOuted())
         return true;
     
     return false;

@@ -21,9 +21,6 @@ public:
     //‚»‚Ì‘ÎÛ‚ğ’Ç‚¤•K—v‚ª‚ ‚é‚©‚Ç‚¤‚©
     bool IsChasable(TiledObject& target);
     
-    //‘S–Å‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
-    bool HasWipeouted() const;
-    
 private:
     
     std::vector<Character *> _colleagues;
