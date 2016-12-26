@@ -44,13 +44,13 @@ bool MouseManager::IsClicked(std::string button, bool before_flag)
         return false;
 
     if (button == "left") {
-        return ((mb & MOUSE_INPUT_LEFT) == 1);
+        return ((mb & MOUSE_INPUT_LEFT) != 0);
     }
     else if (button == "right") {
-        return ((mb & MOUSE_INPUT_RIGHT) == 1);
+        return ((mb & MOUSE_INPUT_RIGHT) != 0);
     }
     else if (button == "middle") {
-        return ((mb &  MOUSE_INPUT_MIDDLE) == 1);
+        return ((mb &  MOUSE_INPUT_MIDDLE) != 0);
     }
 
     return      false;
