@@ -21,7 +21,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 , _direction(TiledVector::Direction::FORWARD)
 {
     _target = target;
-    _wallTrace = new WallTracing(*this, _pathToTarget);
+    //_wallTrace = new WallTracing(*this, _pathToTarget);
     _astar = new AstarChaser(_target, *this, _pathToTarget, 100, true);
     _astar->SetAdditionalFunc(std::move([&](TiledObject* obj){ return (obj->GetType() == Type::ENEMY); }));
 
@@ -37,6 +37,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 
 Monster::~Monster()
 {
+    delete _astar;
 }
 
 
@@ -225,6 +226,7 @@ void Monster::DrawTargetMarker()
 
 void Monster::Draw()
 {
+    /*
     auto color = ColorPalette::BLUE4;
     if (!_hasAppeared)
         color._a = 0.25;
@@ -232,7 +234,8 @@ void Monster::Draw()
     Debug::DrawString(_position + Vector2D(32, 0), "HP");
     Debug::DrawRectWithSize(_position + Vector2D(64, 0), Vector2D(_battleParameter._hp / double(_maxHP) * 64, 12), color, true);
     Debug::DrawRectWithSize(_position + Vector2D(64, 0), Vector2D(64, 12), ColorPalette::BLACK4, false);
-    
+    */
+
     _graph.SetDisplayMode(_hasAppeared && !_isBattling);
     
     if (!_hasAppeared || _isBattling)
