@@ -3,13 +3,23 @@
 #include "BattlingTile.h"
 #include "TiledObjectMnager.h"
 #include "TileField.h"
+#include "../Resources/ResourceManager.h"
 #include "../InputManager/InputManager.h"
 #include "../DebugDraw.h"
 
 ObjectInformationDrawer::ObjectInformationDrawer()
 : _character1(nullptr)
 , _character2(nullptr)
-{}
+, _enemyThumbnail1(RESOURCE_TABLE->GetFolderPath() + "graph/enemy_thumbnail.png", Vector2D(920, 160))
+, _enemyThumbnail2(RESOURCE_TABLE->GetFolderPath() + "graph/enemy_thumbnail.png", Vector2D(920, 450))
+, _allyThumbnail1(RESOURCE_TABLE->GetFolderPath() + "graph/ally_thumbnail.png", Vector2D(920, 160))
+, _allyThumbnail2(RESOURCE_TABLE->GetFolderPath() + "graph/ally_thumbnail.png", Vector2D(920, 450))
+{
+    _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
+    _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+    _allyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
+    _allyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+}
 
 
 ObjectInformationDrawer::~ObjectInformationDrawer()
@@ -39,8 +49,8 @@ void ObjectInformationDrawer::SetCharacter(Character *chara)
         }
 
         //そうでないなら押し出し
-        _character1 = chara;
         _character2 = _character1;
+        _character1 = chara;
         return;
     }
     
@@ -83,6 +93,7 @@ void ObjectInformationDrawer::SelectObject()
             auto battle = dynamic_cast<BattlingTile*>(target);
             _character1 = &battle->_monster;
             _character2 = &battle->_enemy;
+            return;
         }
         
         //魔物をクリックしたら
@@ -92,6 +103,8 @@ void ObjectInformationDrawer::SelectObject()
             auto chara = dynamic_cast<Character*>(target);
             if (chara != nullptr)
                 SetCharacter(chara);
+
+            return;
         }
     }
 }
@@ -103,12 +116,12 @@ void ObjectInformationDrawer::Update()
     
     if (_character1 != nullptr)
     {
-        if (!_character1->IsEnable() || !_character1->IsAlive())
+        if (!_character1->IsAlive())
             _character1 = nullptr;
     }
     if (_character2 != nullptr)
     {
-        if (!_character2->IsEnable() || !_character2->IsAlive())
+        if (!_character2->IsAlive())
             _character2 = nullptr;
     }
     
@@ -130,10 +143,30 @@ void ObjectInformationDrawer::Update()
 void ObjectInformationDrawer::Draw()
 {
     if (_character1 != nullptr)
+    {
+        (_character1->GetType() == TiledObject::Type::ENEMY) 
+            ? _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(true)
+            : _allyThumbnail1.GetTexturePtr()->SetDisplayMode(true);
         DrawCharactersInformation(_character1, Vector2D(920, 140));
+    }
+    else
+    {
+        _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
+        _allyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
+    }
     
     if (_character2 != nullptr)
+    {
+        (_character2->GetType() == TiledObject::Type::ENEMY)
+            ? _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(true)
+            : _allyThumbnail2.GetTexturePtr()->SetDisplayMode(true);
         DrawCharactersInformation(_character2, Vector2D(920, 430));
+    }
+    else
+    {
+        _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+        _allyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+    }
 }
 
 
@@ -143,17 +176,17 @@ void ObjectInformationDrawer::DrawCharactersInformation(Character* chara, Vector
     const Character::BattleParameter& param = chara->_battleParameter;
 
     auto color = chara->GetType() == (TiledObject::Type::ENEMY) ? Color4(1.0, 0.5, 0.75, 1.0) : Color4(0.5, 0.75, 1.0, 1.0);
-
+    /*
     //塗りつぶし
     Debug::DrawRectWithSize(pos, Vector2D(340, 270), color, true);
     
     //枠線
     Debug::DrawRectWithSize(pos, Vector2D(340, 270), ColorPalette::WHITE4, false);
-    
     //グラフィック表示
     Debug::DrawRectWithSize(pos + Vector2D(120, 20), Vector2D(100, 100), ColorPalette::BLACK4, true);
     Debug::DrawRectWithSize(pos + Vector2D(120, 20), Vector2D(100, 100), ColorPalette::WHITE4, false);
-    
+    */
+
     //各種パラメータ描画
     std::string paramStr = "HP : ";
     paramStr += std::to_string(param._hp);

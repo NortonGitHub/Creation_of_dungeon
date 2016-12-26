@@ -28,8 +28,18 @@ Dungeon::Dungeon(std::string stageName)
     , _goal(nullptr)
     , _start(nullptr)
     , _face(RESOURCE_TABLE->GetFolderPath() + "graph/face.png")
+    , _messageUI(RESOURCE_TABLE->GetFolderPath() + "graph/ui/message_window.png")
+    , _mainsFrame(RESOURCE_TABLE->GetFolderPath() + "graph/ui/main_window.png")
+    , _background(RESOURCE_TABLE->GetFolderPath() + "graph/ui/brick01.png", Vector2D(0, 280))
 {
     _face.SetScale(Vector2D(2, 2));
+
+    _messageUI.GetTexturePtr()->SetPriority(100);
+    _mainsFrame.GetTexturePtr()->SetPriority(100);
+    _background.GetTexturePtr()->SetPriority(-100);
+
+    _mainsFrame.SetPosition(Vector2D(10, 220));
+    _messageUI.SetPosition(Vector2D(20, 860));
 }
 
 
@@ -237,25 +247,7 @@ void Dungeon::Draw()
     //ステージ名表示
     Debug::DrawString(Vector2D(625, 0), _stageName);
     
-    //残り時間デバッグ表示
-    std::string timerStr = "Timer:";
-    timerStr += std::to_string( (_currentWaveInterval - _count) / 60);
-    timerStr += " / ";
-    timerStr += std::to_string(_currentWaveInterval / 60);
-    Debug::DrawString(Vector2D(625, 32), timerStr);
-    
-    //ノルマ表示
-    std::string passed = "passed :";
-    passed += std::to_string(_goal->GetPassedNum());
-    passed += " / ";
-    passed += std::to_string(_permitivePassedNum);
-    Debug::DrawString(Vector2D(625, 64), passed);
-
     //メッセージウィンドウ仮表示
-    Debug::DrawRectWithSize(Vector2D(20, 520), Vector2D(880, 20), Color4(0.5, 0.65, 0.85, 1.0), true);
-    Debug::DrawRectWithSize(Vector2D(20, 520), Vector2D(20, 160), Color4(0.5, 0.65, 0.85, 1.0), true);
-    Debug::DrawRectWithSize(Vector2D(20, 668), Vector2D(880, 32), Color4(0.5, 0.65, 0.85, 1.0), true);
-    Debug::DrawRectWithSize(Vector2D(168, 520), Vector2D(732, 160), Color4(0.5, 0.65, 0.85, 1.0), true);
     _face.SetPosition(Vector2D(40, 540));
     Debug::DrawString(Vector2D(200, 580), "奴は勇者の中でも最弱...!");
 
@@ -264,8 +256,27 @@ void Dungeon::Draw()
     Debug::DrawRectWithSize(Vector2D(970, 10), Vector2D(250, 30), ColorPalette::WHITE4, false);
     Debug::DrawString(Vector2D(980, 20), "洞窟ダンジョン その" + _stageName);
 
-    //ステージ名表示
+    //所持金表示
     Debug::DrawRectWithSize(Vector2D(920, 60), Vector2D(340, 60), Color4(0.5, 0.65, 0.85, 1.0), true);
     Debug::DrawRectWithSize(Vector2D(920, 60), Vector2D(340, 60), ColorPalette::WHITE4, false);
     Debug::DrawString(Vector2D(950, 80), "所持金 : $100,000,000");
+
+    //その他情報表示
+    Vector2D subWindowPos = Vector2D(724, 248);
+    Debug::DrawRectWithSize(subWindowPos, Vector2D(150, 240), ColorPalette::WHITE4, true);
+    Debug::DrawRectWithSize(subWindowPos, Vector2D(150, 240), ColorPalette::BLACK4, false);
+
+    //残り時間デバッグ表示
+    std::string timerStr = "Timer:";
+    timerStr += std::to_string((_currentWaveInterval - _count) / 60);
+    timerStr += "/";
+    timerStr += std::to_string(_currentWaveInterval / 60);
+    Debug::DrawString(subWindowPos + Vector2D(20, 30), timerStr);
+
+    //ノルマ表示
+    std::string passed = "passed :";
+    passed += std::to_string(_goal->GetPassedNum());
+    passed += "/";
+    passed += std::to_string(_permitivePassedNum);
+    Debug::DrawString(subWindowPos + Vector2D(20, 50), passed);
 }

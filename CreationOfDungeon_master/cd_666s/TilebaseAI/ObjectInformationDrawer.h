@@ -2,6 +2,7 @@
 #define ObjectInformationDrawer_h
 
 #include "../../Vector2D.h"
+#include "../Render/Sprite.h"
 
 class Character;
 
@@ -24,6 +25,8 @@ private:
     void DrawCharactersInformation(Character* chara, Vector2D pos);
 
     Character* _character1, *_character2;
+
+    Sprite _enemyThumbnail1, _enemyThumbnail2, _allyThumbnail1, _allyThumbnail2;
 };
 
 #endif /* ObjectInformationDrawer_h */

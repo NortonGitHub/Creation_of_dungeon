@@ -213,6 +213,4 @@ void AstarPathFinder::Draw()
         Debug::DrawRectWithSize(_pathStack[i].GetWorldPos(), Vector2D(TILE_SIZE, TILE_SIZE),
                                 Color4(0.5, 1.0, 1.0, 0.1), true);
     }
-    
-    Debug::DrawString(Vector2D(0, 200), std::to_string(_pathStack.size()));
 }
