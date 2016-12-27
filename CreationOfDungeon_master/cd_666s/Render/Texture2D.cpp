@@ -70,45 +70,9 @@ void Texture2D::Render(const Camera& camera)
         static_cast<float>(_pos._x + _baseSize._x / 2 * _scale._x), 
         static_cast<float>(_pos._y + _baseSize._y / 2 * _scale._y),
         static_cast<float>(_baseSize._x / 2),
-        static_cast<float>(_baseSize._x / 2),
+        static_cast<float>(_baseSize._y / 2),
         _scale._x, 
         _scale._y, 
         _angle * DX_PI,
         _handle, true, false);
-
-    /*
-    glTranslatef(_pos._x, _pos._y, 0);
-    glRotatef(_angle, 0, 0, 1.0);
-
-    DrawGraphF(, , _handle, true);
-    DrawRect
-
-    if (_anchorType == AnchorType::CENTER)
-    {
-        glTexCoord2d(_usingUV_ul._x, _usingUV_lr._y);
-        glVertex3d(- _baseSize._x / 2, - _baseSize._y / 2, 0.0);
-        glTexCoord2d(_usingUV_lr._x, _usingUV_lr._y);
-        glVertex3d(  _baseSize._x / 2, - _baseSize._y / 2, 0.0);
-        glTexCoord2d(_usingUV_lr._x, _usingUV_ul._y);
-        glVertex3d(  _baseSize._x / 2,   _baseSize._y / 2, 0.0);
-        glTexCoord2d(_usingUV_ul._x, _usingUV_ul._y);
-        glVertex3d(- _baseSize._x / 2,   _baseSize._y / 2, 0.0);
-
-        D
-    }
-    else if (_anchorType == AnchorType::LOWER_LEFT)
-    {
-        glTexCoord2d(_usingUV_ul._x, _usingUV_lr._y);
-        glVertex3d(0.0, 0.0, 0.0);
-        glTexCoord2d(_usingUV_lr._x, _usingUV_lr._y);
-        glVertex3d(_baseSize._x, 0.0, 0.0);
-        glTexCoord2d(_usingUV_lr._x, _usingUV_ul._y);
-        glVertex3d(_baseSize._x, _baseSize._y, 0.0);
-        glTexCoord2d(_usingUV_ul._x, _usingUV_ul._y);
-        glVertex3d(0.0, _baseSize._y, 0.0);
-    }
-    
-    glRotatef(-_angle, 0, 0, 1.0);
-    glTranslatef(-_pos._x, -_pos._y, 0);
-    */
 }
