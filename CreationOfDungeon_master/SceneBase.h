@@ -6,7 +6,7 @@ class SceneBase
 {
 public:
     SceneBase();
-    ~SceneBase();
+    virtual ~SceneBase();
 
     void Init(std::string _class_name);
 
