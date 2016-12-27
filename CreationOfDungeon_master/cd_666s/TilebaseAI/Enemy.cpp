@@ -31,6 +31,8 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     _ai = _astar;
     
     _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver.png");
+
+    _graph.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
     _position = startPos.GetWorldPos();
     _beforeTilePos = GetTilePos();
     _type = TiledObject::Type::ENEMY;

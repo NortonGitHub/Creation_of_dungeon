@@ -48,7 +48,6 @@ void RenderManager::RenderImage()
     //glColor4f(0.0, 0.0, 1.0, 1.0);
 
     _defaultCamera.Render();
-    _uiCamera.Render();
 
     for (size_t i = 0; i < _debugDrawCalls.size(); ++i)
     {
@@ -58,6 +57,8 @@ void RenderManager::RenderImage()
 
     _debugDrawCalls.clear();
     _debugDrawCalls.resize(0);
+
+    _uiCamera.Render();
 }
 
 

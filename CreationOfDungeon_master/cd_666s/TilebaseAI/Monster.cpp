@@ -28,6 +28,8 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
     _ai = _astar;
     
     _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone.png");
+    _graph.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+
     _position = startPos.GetWorldPos();
     _beforeTilePos = GetTilePos();
     
