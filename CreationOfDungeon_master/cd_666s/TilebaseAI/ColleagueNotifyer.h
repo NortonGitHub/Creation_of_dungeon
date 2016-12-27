@@ -20,6 +20,8 @@ public:
     
     //‚»‚Ì‘ÎÛ‚ğ’Ç‚¤•K—v‚ª‚ ‚é‚©‚Ç‚¤‚©
     bool IsChasable(TiledObject& target);
+
+    int GetColleagues() const { return _colleagues.size(); }
     
 private:
     
