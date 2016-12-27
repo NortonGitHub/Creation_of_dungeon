@@ -15,6 +15,8 @@ const TiledVector TiledVector::eightDirecton[8] =
 };
 
 int TiledVector::_tileSize = 32;
+int TiledVector::_fieldOffsetX = 172;
+int TiledVector::_fieldOffsetY = 68;
 
 TiledVector::TiledVector(int elemX, int elemY)
     : _x(elemX), _y(elemY)

@@ -1,7 +1,7 @@
 #pragma once
 #define TILE_SIZE TiledVector::_tileSize
-#define FIELD_OFFSET_X 20
-#define FIELD_OFFSET_Y 20
+#define FIELD_OFFSET_X TiledVector::_fieldOffsetX
+#define FIELD_OFFSET_Y TiledVector::_fieldOffsetY
 
 #include "../../Vector2D.h"
 
@@ -79,5 +79,7 @@ public:
     int _x, _y;
 
     static int _tileSize;
+    static int _fieldOffsetX;
+    static int _fieldOffsetY;
 };
 
