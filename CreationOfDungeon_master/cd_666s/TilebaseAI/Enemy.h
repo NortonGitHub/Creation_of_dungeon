@@ -15,6 +15,7 @@ public:
     
     void SetTarget(Character *target) { _target = target; };
     
+    void Init() override;
     void Update() override;
     void Draw() override;
     
@@ -75,6 +76,9 @@ private:
     
     //©•ª‚ª¢Š«Ï‚İ‚©‚Ç‚¤‚©
     bool _hasAppeared;
+    
+    // TODO : •¡”–‡‚Ì‰æ‘œ‚ğ•Ê“r—pˆÓ‚¹‚¸‚ÉÏ‚Ş‚æ‚¤‚É‚·‚é
+    Sprite _left, _right, _back;
 
     static int _defeatedNum;
     static int _enemysNum;

@@ -30,9 +30,16 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     _astar->SetAdditionalFunc(std::move([&](TiledObject* obj){ return (obj->GetType() == _type); }));
     _ai = _astar;
     
-    _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver.png");
+    _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_front.png");
+    _left.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_left.png");
+    _right.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_right.png");
+    _back.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_back.png");
 
     _graph.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _left.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _right.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _back.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+
     _position = startPos.GetWorldPos();
     _beforeTilePos = GetTilePos();
     _type = TiledObject::Type::ENEMY;
@@ -79,6 +86,20 @@ void Enemy::LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Go
             _enemysNum++;
         }
     }
+}
+
+
+void Enemy::Init()
+{
+    _graph.SetDisplayMode(false);
+    _back.SetDisplayMode(false);
+    _left.SetDisplayMode(false);
+    _right.SetDisplayMode(false);
+
+    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _left.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _right.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _back.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 }
 
 
@@ -316,10 +337,44 @@ void Enemy::MoveToNext()
 void Enemy::Draw()
 {
     _graph.SetDisplayMode(IsEnable() && !_isBattling);
-    
+    _left.SetDisplayMode(IsEnable() && !_isBattling);
+    _right.SetDisplayMode(IsEnable() && !_isBattling);
+    _back.SetDisplayMode(IsEnable() && !_isBattling);
+
     if (!_hasAppeared || _isBattling)
         return;
     
+    switch (_direction)
+    {
+    case TiledVector::Direction::FORWARD:
+        _graph.SetDisplayMode(true);
+        _back.SetDisplayMode(false);
+        _left.SetDisplayMode(false);
+        _right.SetDisplayMode(false);
+        break;
+
+    case TiledVector::Direction::LEFT:
+        _graph.SetDisplayMode(false);
+        _back.SetDisplayMode(false);
+        _left.SetDisplayMode(true);
+        _right.SetDisplayMode(false);
+        break;
+
+    case TiledVector::Direction::RIGHT:
+        _graph.SetDisplayMode(false);
+        _back.SetDisplayMode(false);
+        _left.SetDisplayMode(false);
+        _right.SetDisplayMode(true);
+        break;
+
+    case TiledVector::Direction::BACK:
+        _graph.SetDisplayMode(false);
+        _back.SetDisplayMode(true);
+        _left.SetDisplayMode(false);
+        _right.SetDisplayMode(false);
+        break;
+    }
+
     for (size_t i=0; i<_sight.size(); ++i)
     {
         Debug::DrawRectWithSize(_sight[i].GetWorldPos(), Vector2D(TILE_SIZE, TILE_SIZE),
@@ -329,7 +384,11 @@ void Enemy::Draw()
     //AIのデバッグ情報
     _ai->Draw();
     
-    GraphicalObject::Draw();
+    _graph.SetPosition(_position);
+    _back.SetPosition(_position);
+    _left.SetPosition(_position);
+    _right.SetPosition(_position);
+
 }
 
 

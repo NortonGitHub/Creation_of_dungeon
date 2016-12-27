@@ -27,8 +27,15 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 
     _ai = _astar;
     
-    _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone.png");
+    _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone_front.png");
+    _left.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone_left.png");
+    _right.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone_right.png");
+    _back.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone_back.png");
+
     _graph.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _left.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _right.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _back.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
 
     _position = startPos.GetWorldPos();
     _beforeTilePos = GetTilePos();
@@ -75,6 +82,20 @@ void Monster::LoadMonsters(std::vector<TiledObject*>& objects, ColleagueNotifyer
             idx++;
         }
     }
+}
+
+
+void Monster::Init()
+{
+    _graph.SetDisplayMode(false);
+    _back.SetDisplayMode(false);
+    _left.SetDisplayMode(false);
+    _right.SetDisplayMode(false);
+
+    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _left.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _right.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _back.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 }
 
 
@@ -147,9 +168,18 @@ void Monster::Update()
 void Monster::Act()
 {
     TiledVector pos = GetTilePos();
-    
+
     //移動先との差分から向きを更新
     TiledVector dir;
+    if (_pathToTarget.size() == 0)
+    {
+        if ( _target != nullptr)
+            dir = _target->GetTilePos() - pos;
+    }
+    else 
+    {
+        dir = _pathToTarget[0] - pos;
+    }
     if (_target != nullptr)
         _target->GetTilePos() - pos;
     else if (0 < _pathToTarget.size())
@@ -228,26 +258,53 @@ void Monster::DrawTargetMarker()
 
 void Monster::Draw()
 {
-    /*
-    auto color = ColorPalette::BLUE4;
-    if (!_hasAppeared)
-        color._a = 0.25;
-
-    Debug::DrawString(_position + Vector2D(32, 0), "HP");
-    Debug::DrawRectWithSize(_position + Vector2D(64, 0), Vector2D(_battleParameter._hp / double(_maxHP) * 64, 12), color, true);
-    Debug::DrawRectWithSize(_position + Vector2D(64, 0), Vector2D(64, 12), ColorPalette::BLACK4, false);
-    */
-
     _graph.SetDisplayMode(_hasAppeared && !_isBattling);
-    
+    _left.SetDisplayMode(_hasAppeared && !_isBattling);
+    _right.SetDisplayMode(_hasAppeared && !_isBattling);
+    _back.SetDisplayMode(_hasAppeared && !_isBattling);
+
     if (!_hasAppeared || _isBattling)
         return;
     
+    switch (_direction)
+    {
+    case TiledVector::Direction::FORWARD:
+        _graph.SetDisplayMode(true);
+        _back.SetDisplayMode(false);
+        _left.SetDisplayMode(false);
+        _right.SetDisplayMode(false);
+        break;
+
+    case TiledVector::Direction::LEFT:
+        _graph.SetDisplayMode(false);
+        _back.SetDisplayMode(false);
+        _left.SetDisplayMode(true);
+        _right.SetDisplayMode(false);
+        break;
+
+    case TiledVector::Direction::RIGHT:
+        _graph.SetDisplayMode(false);
+        _back.SetDisplayMode(false);
+        _left.SetDisplayMode(false);
+        _right.SetDisplayMode(true);
+        break;
+
+    case TiledVector::Direction::BACK:
+        _graph.SetDisplayMode(false);
+        _back.SetDisplayMode(true);
+        _left.SetDisplayMode(false);
+        _right.SetDisplayMode(false);
+        break;
+    }
+
     //AIのデバッグ情報
     if (_ai != nullptr)
         _ai->Draw();
-    
-    GraphicalObject::Draw();
+
+    _graph.SetPosition(_position);
+    _back.SetPosition(_position);
+    _left.SetPosition(_position);
+    _right.SetPosition(_position);
 }
 
 

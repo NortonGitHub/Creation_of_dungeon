@@ -18,6 +18,7 @@ public:
     void Appear();
     void ResetTarget() override;
     
+    void Init();
     void Update() override;
     void Draw() override;
     
@@ -77,6 +78,9 @@ private:
     
     //©•ª‚ª¢Š«Ï‚İ‚©‚Ç‚¤‚©
     bool _hasAppeared;
+
+    // TODO : •¡”–‡‚Ì‰æ‘œ‚ğ•Ê“r—pˆÓ‚¹‚¸‚ÉÏ‚Ş‚æ‚¤‚É‚·‚é
+    Sprite _left, _right, _back;
 };
 
 #endif /* Monster_h */
