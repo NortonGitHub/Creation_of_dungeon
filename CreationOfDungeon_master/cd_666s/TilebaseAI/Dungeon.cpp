@@ -28,18 +28,19 @@ Dungeon::Dungeon(std::string stageName)
     , _goal(nullptr)
     , _start(nullptr)
     , _face(RESOURCE_TABLE->GetFolderPath() + "graph/face.png")
-    , _messageUI(RESOURCE_TABLE->GetFolderPath() + "graph/ui/message_window.png")
-    , _mainsFrame(RESOURCE_TABLE->GetFolderPath() + "graph/ui/main_window.png")
-    , _background(RESOURCE_TABLE->GetFolderPath() + "graph/ui/brick01.png", Vector2D(0, 280))
+    , _messageUI(RESOURCE_TABLE->GetFolderPath() + "graph/ui/message_window.png", Vector2D(20, 520))
+    , _mainsFrame(RESOURCE_TABLE->GetFolderPath() + "graph/ui/main_window.png", Vector2D(20, 20))
+    , _background(RESOURCE_TABLE->GetFolderPath() + "graph/ui/brick01.png", Vector2D(0, 0))
+    , _information(RESOURCE_TABLE->GetFolderPath() + "graph/ui/enemyinformation.png", Vector2D(754, 248))
+    , _braver(RESOURCE_TABLE->GetFolderPath() + "graph/TiledObject/blaver.png", Vector2D(754 + 30, 248 + 175))
 {
     _face.SetScale(Vector2D(2, 2));
 
     _messageUI.GetTexturePtr()->SetPriority(100);
     _mainsFrame.GetTexturePtr()->SetPriority(100);
     _background.GetTexturePtr()->SetPriority(-100);
-
-    _mainsFrame.SetPosition(Vector2D(10, 220));
-    _messageUI.SetPosition(Vector2D(20, 860));
+    _information.GetTexturePtr()->SetPriority(100);
+    _braver.GetTexturePtr()->SetPriority(101);
 }
 
 
@@ -252,31 +253,38 @@ void Dungeon::Draw()
     Debug::DrawString(Vector2D(200, 580), "奴は勇者の中でも最弱...!");
 
     //ステージ名表示
-    Debug::DrawRectWithSize(Vector2D(970, 10), Vector2D(250, 30), Color4(0.5, 0.65, 0.85, 1.0), true);
-    Debug::DrawRectWithSize(Vector2D(970, 10), Vector2D(250, 30), ColorPalette::WHITE4, false);
-    Debug::DrawString(Vector2D(980, 20), "洞窟ダンジョン その" + _stageName);
-
-    //所持金表示
-    Debug::DrawRectWithSize(Vector2D(920, 60), Vector2D(340, 60), Color4(0.5, 0.65, 0.85, 1.0), true);
-    Debug::DrawRectWithSize(Vector2D(920, 60), Vector2D(340, 60), ColorPalette::WHITE4, false);
-    Debug::DrawString(Vector2D(950, 80), "所持金 : $100,000,000");
+    Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), Color4(0.5, 0.65, 0.85, 1.0), true);
+    Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), ColorPalette::WHITE4, false);
+    Debug::DrawString(Vector2D(1010, 64), "洞窟ダンジョン その" + _stageName);
 
     //その他情報表示
-    Vector2D subWindowPos = Vector2D(724, 248);
-    Debug::DrawRectWithSize(subWindowPos, Vector2D(150, 240), ColorPalette::WHITE4, true);
-    Debug::DrawRectWithSize(subWindowPos, Vector2D(150, 240), ColorPalette::BLACK4, false);
-
+    Vector2D subWindowPos = _information.GetPosition();
     //残り時間デバッグ表示
-    std::string timerStr = "Timer:";
-    timerStr += std::to_string((_currentWaveInterval - _count) / 60);
+    std::string timerStr = "Time:";
+    Debug::DrawString(_information.GetPosition() + Vector2D(20, 20), timerStr);
+    timerStr = std::to_string((_currentWaveInterval - _count) / 60);
     timerStr += "/";
     timerStr += std::to_string(_currentWaveInterval / 60);
-    Debug::DrawString(subWindowPos + Vector2D(20, 30), timerStr);
+    Debug::DrawString(_information.GetPosition() + Vector2D(40, 40), timerStr);
 
     //ノルマ表示
-    std::string passed = "passed :";
-    passed += std::to_string(_goal->GetPassedNum());
+    std::string passed = "MISS:";
+    Debug::DrawString(_information.GetPosition() + Vector2D(20, 85), passed);
+    passed = std::to_string(_goal->GetPassedNum());
     passed += "/";
     passed += std::to_string(_permitivePassedNum);
-    Debug::DrawString(subWindowPos + Vector2D(20, 50), passed);
+    Debug::DrawString(_information.GetPosition() + Vector2D(50, 105), passed);
+
+    //残党数表示
+    Debug::DrawString(_information.GetPosition() + Vector2D(25, 155), "NEXT");
+    if (_start->GetTimeUnitlNext() != -1)
+    {
+        _braver.SetDisplayMode(true);
+        Debug::DrawString(_information.GetPosition() + Vector2D(65, 170), "あと");
+        Debug::DrawString(_information.GetPosition() + Vector2D(70, 190), std::to_string(_start->GetTimeUnitlNext() / 60));
+    }
+    else
+    {
+        _braver.SetDisplayMode(false);
+    }
 }

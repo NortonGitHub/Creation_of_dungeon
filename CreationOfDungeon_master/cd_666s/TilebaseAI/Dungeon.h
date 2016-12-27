@@ -54,7 +54,7 @@ private:
     StartPoint* _start;
 
     // MEMO : debug—p
-    Sprite _face, _messageUI, _mainsFrame, _background;
+    Sprite _face, _braver, _messageUI, _mainsFrame, _background, _information;
 };
 
 #endif /* Dungeon_h */

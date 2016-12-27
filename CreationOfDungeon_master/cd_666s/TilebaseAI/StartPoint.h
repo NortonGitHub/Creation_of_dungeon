@@ -21,11 +21,15 @@ public:
     
     void AddToAppearList(Enemy* enemy, long appearFrame);
     
+    //Ÿ‚Ì“G‚ªoŒ»‚·‚é‚Ü‚Å
+    int GetTimeUnitlNext() const;
+
 private:
     
     std::vector<AppearData> _appearData;
-    std::vector<Enemy*> _restEnemyList;
     long _frameFromStart;
+
+    size_t _currentIndex;
 };
 
 #endif /* StartPoint_h */

@@ -8,6 +8,7 @@
 StartPoint::StartPoint(TiledVector tilePos)
 : TiledObject(tilePos)
 , _frameFromStart(0)
+, _currentIndex(0)
 {
     _type = TiledObject::Type::START;
 }
@@ -54,6 +55,7 @@ void StartPoint::Update()
         if (_appearData[i].second == _frameFromStart)
         {
             _appearData[i].first->Appear();
+            _currentIndex++;
         }
     }
     
@@ -63,12 +65,6 @@ void StartPoint::Update()
 
 void StartPoint::Draw()
 {
-    Vector2D windowPos(600, 200);
-    for (size_t i=0; i<_appearData.size(); ++i)
-    {
-        Debug::DrawString(windowPos + Vector2D(64, 32 + i * 64), "—EŽÒ Lv.5");
-        Debug::DrawString(windowPos + Vector2D(64, 64 + i * 64), "N“ü‚Ü‚Å‚ ‚Æ : " + std::to_string(_appearData[i].second));
-    }
 }
 
 
@@ -82,4 +78,13 @@ bool StartPoint::IsOverwritable(TiledObject* overwriter)
         return false;
 
     return true;
+}
+
+//ŽŸ‚Ì“G‚ªoŒ»‚·‚é‚Ü‚Å
+int StartPoint::GetTimeUnitlNext() const
+{
+    if (_appearData.size() <= _currentIndex)
+        return -1;
+
+    return _appearData[_currentIndex].second - _frameFromStart;
 }
