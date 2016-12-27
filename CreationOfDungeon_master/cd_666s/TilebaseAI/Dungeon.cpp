@@ -3,6 +3,7 @@
 #include "../InputManager/InputManager.h"
 #include "../Action/ActionManager.h"
 #include "../Render/Sprite.h"
+#include "../Render/RenderManager.h"
 #include "../Resources/ResourceManager.h"
 #include "../DebugDraw.h"
 #include "../Utility/CSVReader.h"
@@ -27,7 +28,7 @@ Dungeon::Dungeon(std::string stageName)
     , _stageName(stageName)
     , _goal(nullptr)
     , _start(nullptr)
-    , _face(RESOURCE_TABLE->GetFolderPath() + "graph/face.png")
+    , _face(RESOURCE_TABLE->GetFolderPath() + "graph/face.png", Vector2D(40, 540))
     , _messageUI(RESOURCE_TABLE->GetFolderPath() + "graph/ui/message_window.png", Vector2D(20, 520))
     , _mainsFrame(RESOURCE_TABLE->GetFolderPath() + "graph/ui/main_window.png", Vector2D(20, 20))
     , _background(RESOURCE_TABLE->GetFolderPath() + "graph/ui/brick01.png", Vector2D(0, 0))
@@ -46,8 +47,8 @@ Dungeon::Dungeon(std::string stageName)
 
 Dungeon::~Dungeon()
 {
-//    Clear();
-//    OBJECT_MGR->Refresh();
+    Clear();
+    OBJECT_MGR->Refresh();
 }
 
 
@@ -249,7 +250,6 @@ void Dungeon::Draw()
     Debug::DrawString(Vector2D(625, 0), _stageName);
     
     //メッセージウィンドウ仮表示
-    _face.SetPosition(Vector2D(40, 540));
     Debug::DrawString(Vector2D(200, 580), "奴は勇者の中でも最弱...!");
 
     //ステージ名表示

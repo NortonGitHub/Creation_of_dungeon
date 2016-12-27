@@ -24,6 +24,7 @@ void TileField::Clear()
     }
 
     _gobjs.resize(0);
+    _fieldSize.Set(0, 0);
 }
 
 
