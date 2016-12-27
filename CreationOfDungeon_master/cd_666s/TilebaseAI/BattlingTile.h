@@ -37,6 +37,10 @@ private:
     
     //戦闘タイマー
     int _count;
+
+    bool _attackMonster;
+
+    Sprite _dust2;
 };
 
 #endif /* BattlingTile_h */

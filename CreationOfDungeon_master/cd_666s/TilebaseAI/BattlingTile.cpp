@@ -10,9 +10,15 @@ BattlingTile::BattlingTile(Enemy& enemy, Monster& monster, TiledVector tilePos)
 , _enemy(enemy)
 , _monster(monster)
 , _count(0)
+, _attackMonster(true)  //魔物から攻撃できる
 {
     _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/dust1.png");
     _graph.SetPosition(tilePos.GetWorldPos());
+    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+
+    _dust2.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/dust2.png");
+    _dust2.SetPosition(tilePos.GetWorldPos());
+    _dust2.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 
     //戦闘に介入したキャラは一時的にバトル状態に
     _enemy.OnOccuredBattle(this);
@@ -34,22 +40,33 @@ BattlingTile::~BattlingTile()
 void BattlingTile::Update()
 {
     _count++;
-    if (_count < 30)
+    if (_count < 15)
         return;
-    
-    _monster.Interact(_enemy);
-    _enemy.Interact(_monster);
+
+    if (_attackMonster)
+        _monster.Interact(_enemy);
+    else
+        _enemy.Interact(_monster);
+
     CheckAlive();
 
     _count = 0;
+    _attackMonster = !_attackMonster;
 }
 
 //戦闘中は砂埃を描画
 void BattlingTile::Draw()
 {
-    GraphicalObject::Draw();
-    
-    //
+    if (_attackMonster)
+    {
+        _graph.GetTexturePtr()->SetDisplayMode(false);
+        _dust2.GetTexturePtr()->SetDisplayMode(true);
+    }
+    else
+    {
+        _graph.GetTexturePtr()->SetDisplayMode(true);
+        _dust2.GetTexturePtr()->SetDisplayMode(false);
+    }
 }
 
 //勝利したキャラは戦闘マスに立つ
