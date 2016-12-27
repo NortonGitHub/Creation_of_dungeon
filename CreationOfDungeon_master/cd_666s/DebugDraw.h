@@ -29,8 +29,8 @@ namespace Debug
     void DrawRectWithSizeDirectly(Vector2D lowerLeft, Vector2D size, Color4 color, bool fill);
     void DrawRectWithSizeDirectly(float x, float y, float width, float height, Color4 color, bool fill);
 
-    void DrawString(Vector2D pos, std::string str);
-    void DrawStringDirectly(Vector2D pos, std::string str);
+    void DrawString(Vector2D pos, std::string str, Color4 color = ColorPalette::BLACK4);
+    void DrawStringDirectly(Vector2D pos, std::string str, Color4 color);
 
     class DebugDraw { public: virtual void Draw() = 0; };
 
@@ -89,12 +89,13 @@ namespace Debug
     class String : public DebugDraw
     {
     public:
-        String(Vector2D pos, std::string str);
+        String(Vector2D pos, std::string str, Color4 color);
         void Draw() override;
 
     private:
         Vector2D _pos;
         std::string _str;
+        Color4 _color;
     };
 };
 
