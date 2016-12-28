@@ -13,7 +13,7 @@
 #include <array>
 #include "../Utility/CSVReader.h"
 
-Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer)
+Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName)
 : Character(startPos, param, notifyer)
 , _hasChoosed(false)
 , _hasAppeared(false)
@@ -22,17 +22,26 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 , _defeatSE(RESOURCE_TABLE->GetFolderPath() + "sound/enemy_fall2.wav")
 , _appearSE(RESOURCE_TABLE->GetFolderPath() + "sound/flame.wav")
 {
+    _name = monsterName;
     _target = target;
     //_wallTrace = new WallTracing(*this, _pathToTarget);
     _astar = new AstarChaser(_target, *this, _pathToTarget, 100, true);
-    _astar->SetAdditionalFunc(std::move([&](TiledObject* obj){ return (obj->GetType() == Type::ENEMY); }));
+    _astar->SetAdditionalFunc(std::move([&](TiledObject* obj)
+    {
+        if (obj->GetType() != Type::ENEMY)
+            return false;
+
+        auto enemy = dynamic_cast<Enemy*>(obj);
+        return (!enemy->_isBattling); 
+    }));
 
     _ai = _astar;
-    
-    _currentGraphPtr = _front.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone_front.png", 32, 32, 2, 24);
-    _right.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone_right.png", 32, 32, 2, 24);
-    _left.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone_left.png", 32, 32, 2, 24);
-    _back.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/bone_back.png", 32, 32, 2, 24);
+    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/";
+    fileName += _name;
+    _currentGraphPtr = _front.SetWithCreate(fileName + "_front.png", 32, 32, 2, 24);
+    _right.SetWithCreate(fileName + "_right.png", 32, 32, 2, 24);
+    _left.SetWithCreate(fileName + "_left.png", 32, 32, 2, 24);
+    _back.SetWithCreate(fileName + "_back.png", 32, 32, 2, 24);
 
     _currentGraphPtr->GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
     _right.GetGraphPtr()->SetDisplayMode(false);
@@ -60,13 +69,16 @@ void Monster::LoadMonsters(std::vector<TiledObject*>& objects, ColleagueNotifyer
     CSVReader reader;
     reader.Read(fileName, dataArray, 1);
     
-    const int parameterNum = 6;
-    std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0 };
+    const int parameterNum = 7;
+    std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
     int idx = 0;
     int count = 0;
     for (auto data : dataArray)
     {
-        params[count] = std::stoi(data);
+        // MEMO : 最後だけはファイル名をそのまま使う
+        if (count < parameterNum - 1)
+            params[count] = std::stoi(data);
+
         count++;
         
         if (count == parameterNum)
@@ -74,7 +86,8 @@ void Monster::LoadMonsters(std::vector<TiledObject*>& objects, ColleagueNotifyer
             BattleParameter param = { params[0], params[1], params[2], params[3] };
             TiledVector startPos(params[4], params[5]);
             
-            Monster* monster = new Monster(startPos, param, nullptr, notifyer);
+            auto str = data.substr(1, data.size());
+            Monster* monster = new Monster(startPos, param, nullptr, notifyer, str);
             objects.push_back(monster);
             
             auto magicSquare = new MagicSquare(startPos, *monster);
@@ -457,7 +470,10 @@ bool Monster::IsOverwritable(TiledObject* overwriter)
 {
     if (overwriter == this)
         return true;
-        
+
+    if (overwriter->GetType() == Type::ENEMY)
+        return !_isBattling;
+
     if (overwriter->GetType() == Type::MONSTER)
         return false;
     

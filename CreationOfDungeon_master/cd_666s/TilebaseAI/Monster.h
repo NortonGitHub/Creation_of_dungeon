@@ -14,7 +14,7 @@ class MagicSquare;
 class Monster : public Character
 {
 public:
-    Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer);
+    Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName);
     ~Monster();
     
     void Appear();

@@ -37,7 +37,7 @@ public:
     }
 
 private:
-    Enemy(TiledVector, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer);
+    Enemy(TiledVector, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName);
     
     //ˆÓŽvŒˆ’è
     virtual void Think() override;

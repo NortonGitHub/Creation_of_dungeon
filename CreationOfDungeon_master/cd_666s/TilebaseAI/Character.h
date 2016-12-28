@@ -36,6 +36,8 @@ public:
     void OnFinishBattle(BattlingTile* battle);
 
     bool IsAlive();
+    std::string GetName() const { return _name; }
+
     
     //戦闘用パラメータ
     BattleParameter _battleParameter;
@@ -63,6 +65,8 @@ protected:
     BattlingTile* _battle;
     
     int _countAfetrBattle;
+
+    std::string _name;
 
     void Attack(Character &defender);
     

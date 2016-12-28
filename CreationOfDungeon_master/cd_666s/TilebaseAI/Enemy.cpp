@@ -15,7 +15,7 @@
 int Enemy::_defeatedNum = 0;
 int Enemy::_enemysNum = 0;
 
-Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer)
+Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName)
 : Character(startPos, params, notifyer)
 , _baseTarget(baseTarget)
 , _searchLength(4)
@@ -23,21 +23,27 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
 , _direction(TiledVector::Direction::FORWARD)
 , _enterSE(RESOURCE_TABLE->GetFolderPath() + "sound/blockSelect.wav")
 {
+    _name = enemyName;
     _target = &baseTarget;
     
     _astar = new AstarChaser(_target, *this, _pathToTarget, 20, true);
-
     //自分の味方が経路上にいたら回り込まず継続する
     _astar->SetAdditionalFunc(std::move([&](TiledObject* obj)
     {
-        return (obj->GetType() == _type);
+        if (obj->GetType() != _type)
+            return false;
+
+        auto enemy = dynamic_cast<Enemy*>(obj);
+        return !enemy->_isBattling;
     }));
     _ai = _astar;
 
-    _currentGraphPtr = _front.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_front.png", 32, 32, 2, 24);
-    _right.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_right.png", 32, 32, 2, 24);
-    _left.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_left.png", 32, 32, 2, 24);
-    _back.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_back.png", 32, 32, 2, 24);
+    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/";
+    fileName += _name;
+    _currentGraphPtr = _front.SetWithCreate(fileName + "_front.png", 32, 32, 2, 24);
+    _right.SetWithCreate(fileName + "_right.png", 32, 32, 2, 24);
+    _left.SetWithCreate(fileName + "_left.png", 32, 32, 2, 24);
+    _back.SetWithCreate(fileName + "_back.png", 32, 32, 2, 24);
 
     _currentGraphPtr->GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
     _right.GetGraphPtr()->SetDisplayMode(false);
@@ -66,20 +72,24 @@ void Enemy::LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Go
     CSVReader reader;
     reader.Read(fileName, dataArray, 1);
     
-    const int parameterNum = 5;
-    std::array<int, parameterNum> params = {0, 0, 0, 0, 0};
+    const int parameterNum = 6;
+    std::array<int, parameterNum> params = {0, 0, 0, 0, 0, 0};
     int idx = 0;
     int count = 0;
     for (auto data : dataArray)
     {
-        params[count] = std::stoi(data);
+        // MEMO : 最後だけはファイル名をそのまま使う
+        if (count < parameterNum - 1)
+            params[count] = std::stoi(data);
+
         count++;
         
         if (count == parameterNum)
         {
             //戦闘データ設定
-            BattleParameter param = {params[0], params[1], params[2], params[3]};
-            Enemy* enemy = new Enemy(point->GetTilePos(), param, *goal, notifyer);
+            BattleParameter param = { params[0], params[1], params[2], params[3] };
+            auto str = data.substr(1, data.size());
+            Enemy* enemy = new Enemy(point->GetTilePos(), param, *goal, notifyer, str);
             objects.push_back(enemy);
             //出現時間を秒単位に変換して入場者リストに追加
             point->AddToAppearList(enemy, params[4] * 60);
@@ -268,6 +278,14 @@ bool Enemy::SearchTarget()
             if (minOffset <= offset)
                 continue;
             
+            if (obj->GetType() == TiledObject::Type::MONSTER)
+            {
+                auto monster = dynamic_cast<Monster*>(obj);
+                if (monster->_isBattling)
+                    continue;
+            }
+
+
             minOffset = offset;
             _target = obj;
             hasFound = true;
@@ -417,7 +435,7 @@ bool Enemy::IsOverwritable(TiledObject* overwriter)
         return true;
     
     if (overwriter->GetType() == Type::ENEMY)
-        return !_hasAppeared;
+        return (!_hasAppeared) && (!_isBattling);
     
     return true;
 }
