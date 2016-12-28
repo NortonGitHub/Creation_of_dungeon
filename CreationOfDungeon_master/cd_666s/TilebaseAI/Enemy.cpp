@@ -33,25 +33,17 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
         return (obj->GetType() == _type);
     }));
     _ai = _astar;
-    
-    _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_front.png");
-    _left.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_left.png");
-    _right.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_right.png");
-    _back.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_back.png");
 
-    _graph.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
-    _left.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
-    _right.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
-    _back.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _currentGraphPtr = _front.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_front.png", 32, 32, 2, 24);
+    _right.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_right.png", 32, 32, 2, 24);
+    _left.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_left.png", 32, 32, 2, 24);
+    _back.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_back.png", 32, 32, 2, 24);
 
-    _animator.AddAnimation("jumpShot", std::make_shared<GraphArray>("heromove/hero(jump up attack).png"));
-    _animator.AddAnimation("punch", std::make_shared<GraphArray>("heromove/hero(punch).png"));
-    _animator.AddAnimation("kick", std::make_shared<GraphArray>("heromove/hero(kick).png"));
-    _animator.AddAnimation("win", std::make_shared<GraphArray>("heromove/hero_clear.png", 32, 32, 2, 20));
-
-    //開始のアニメーションを指定
-    _animator.Switch("normal");
-    _graph = *_animator.GetCurrentGraph();
+    _currentGraphPtr->GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _right.GetGraphPtr()->SetDisplayMode(false);
+    _left.GetGraphPtr()->SetDisplayMode(false);
+    _front.GetGraphPtr()->SetDisplayMode(false);
+    _back.GetGraphPtr()->SetDisplayMode(false);
 
     _position = startPos.GetWorldPos();
     _beforeTilePos = GetTilePos();
@@ -104,15 +96,6 @@ void Enemy::LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Go
 
 void Enemy::Init()
 {
-    _graph.SetDisplayMode(false);
-    _back.SetDisplayMode(false);
-    _left.SetDisplayMode(false);
-    _right.SetDisplayMode(false);
-
-    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
-    _left.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
-    _right.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
-    _back.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 }
 
 
@@ -349,10 +332,8 @@ void Enemy::MoveToNext()
 
 void Enemy::Draw()
 {
-    _graph.SetDisplayMode(IsEnable() && !_isBattling);
-    _left.SetDisplayMode(IsEnable() && !_isBattling);
-    _right.SetDisplayMode(IsEnable() && !_isBattling);
-    _back.SetDisplayMode(IsEnable() && !_isBattling);
+    _currentGraphPtr->SetDisplayMode(false);
+    GraphArray* currentAnimation = nullptr;
 
     if (!_hasAppeared || _isBattling)
         return;
@@ -360,50 +341,38 @@ void Enemy::Draw()
     switch (_direction)
     {
     case TiledVector::Direction::FORWARD:
-        _graph.SetDisplayMode(true);
-        _back.SetDisplayMode(false);
-        _left.SetDisplayMode(false);
-        _right.SetDisplayMode(false);
+//        _animator.SwitchWithReset("forward");
+        _currentGraphPtr = _front.GetGraphPtr();
+        currentAnimation = &_front;
         break;
 
     case TiledVector::Direction::LEFT:
-        _graph.SetDisplayMode(false);
-        _back.SetDisplayMode(false);
-        _left.SetDisplayMode(true);
-        _right.SetDisplayMode(false);
+//        _animator.SwitchWithReset("left");
+        _currentGraphPtr = _left.GetGraphPtr();
+        currentAnimation = &_left;
         break;
 
     case TiledVector::Direction::RIGHT:
-        _graph.SetDisplayMode(false);
-        _back.SetDisplayMode(false);
-        _left.SetDisplayMode(false);
-        _right.SetDisplayMode(true);
+//        _animator.SwitchWithReset("right");
+        _currentGraphPtr = _right.GetGraphPtr();
+        currentAnimation = &_right;
         break;
 
     case TiledVector::Direction::BACK:
-        _graph.SetDisplayMode(false);
-        _back.SetDisplayMode(true);
-        _left.SetDisplayMode(false);
-        _right.SetDisplayMode(false);
+//        _animator.SwitchWithReset("back");
+        _currentGraphPtr = _back.GetGraphPtr();
+        currentAnimation = &_back;
         break;
     }
 
-    /*
-    for (size_t i=0; i<_sight.size(); ++i)
-    {
-        Debug::DrawRectWithSize(_sight[i].GetWorldPos(), Vector2D(TILE_SIZE, TILE_SIZE),
-                                Color4(1.0, 0.5, 0.5, 0.25), true);
-    }
-    */
+    currentAnimation->Update();
+    _currentGraphPtr->SetDisplayMode(true);
 
     //AIのデバッグ情報
     _ai->Draw();
-    
-    _graph.SetPosition(_position);
-    _back.SetPosition(_position);
-    _left.SetPosition(_position);
-    _right.SetPosition(_position);
 
+    _currentGraphPtr->SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _currentGraphPtr->SetPosition(_position);
 }
 
 

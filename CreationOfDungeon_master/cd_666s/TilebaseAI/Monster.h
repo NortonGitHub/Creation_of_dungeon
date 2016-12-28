@@ -2,6 +2,7 @@
 #define Monster_h
 
 #include "Character.h"
+#include "../../mw_animation/Animator.h"
 #include "../Sound/Sound.h"
 
 class PathFindingAIBase;
@@ -81,7 +82,7 @@ private:
     bool _hasAppeared;
 
     // TODO : •¡”–‡‚Ì‰æ‘œ‚ğ•Ê“r—pˆÓ‚¹‚¸‚ÉÏ‚Ş‚æ‚¤‚É‚·‚é
-    Sprite _left, _right, _back;
+    GraphArray _front, _left, _right, _back;
     Sound _appearSE, _defeatSE;
 };
 

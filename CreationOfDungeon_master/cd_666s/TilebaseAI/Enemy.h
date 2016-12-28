@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "../Sound/Sound.h"
+#include "../../mw_animation/Animator.h"
 #include <string>
 
 class PathFindingAIBase;
@@ -79,7 +80,7 @@ private:
     bool _hasAppeared;
     
     // TODO : •¡”–‡‚Ì‰æ‘œ‚ğ•Ê“r—pˆÓ‚¹‚¸‚ÉÏ‚Ş‚æ‚¤‚É‚·‚é
-    Sprite _left, _right, _back;
+    GraphArray _front, _left, _right, _back;
 
     static int _defeatedNum;
     static int _enemysNum;

@@ -13,15 +13,12 @@ MagicSquare::MagicSquare(TiledVector tilePos, Monster& monster)
     _type = TiledObject::Type::MAGIC_SQUARE;
     _position = GetTilePos().GetWorldPos();
 
-    _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/magicSquare_none.png");
-    _graph_ready.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/magicSquare_ready.png");
-    _graph.SetPosition(_position);
-    _graph_ready.SetPosition(_position);
+    _currentGraph = _animation.SetWithCreate(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/magic_square.png", 32, 32, 5, 16);
+    _currentGraph->SetPosition(_position);
+    _currentGraph->GetTexturePtr()->SetPriority(-1);
+    _currentGraph->SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 
-    _graph.GetTexturePtr()->SetPriority(-1);
-    _graph_ready.GetTexturePtr()->SetPriority(-1);
-    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
-    _graph_ready.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _animation._isLoop = false;
 }
 
 
@@ -73,6 +70,8 @@ void MagicSquare::ProduceMonster()
     
     if (_monster.IsReadyToProduce())
         _monster.Appear();
+
+    _animation.Update();
 }
 
 
@@ -80,14 +79,15 @@ void MagicSquare::Draw()
 {
     if (_monster.IsReadyToProduce())
     {
-        _graph_ready.SetDisplayMode(true);
-        _graph.SetDisplayMode(false);
+        _animation.SetIndex(0);
     }
     else
     {
-        _graph_ready.SetDisplayMode(false);
-        _graph.SetDisplayMode(true);
+        if(!_animation.HasEndedUp())
+            _animation.Update();
     }
+
+    _currentGraph = _animation.GetGraphPtr();
 }
 
 

@@ -2,6 +2,7 @@
 #define MagicSquare_h
 
 #include "TiledObject.h"
+#include "../../mw_animation/Animator.h"
 
 class Monster;
 
@@ -32,7 +33,8 @@ private:
     Monster& _monster;
 
     //¢Š«‰Â”\‚É‚È‚Á‚½‚Æ‚«‚Ì‰æ‘œ
-    Sprite _graph_ready;
+    GraphArray _animation;
+    Sprite* _currentGraph;
 };
 
 

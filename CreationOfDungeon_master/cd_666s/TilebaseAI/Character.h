@@ -44,7 +44,10 @@ public:
     bool _isBattling;
     
 protected:
-    
+
+    // TODO : Animationに対応
+    Sprite* _currentGraphPtr;
+
     TiledVector _beforeTilePos;
     
     //同系列のキャラ間で情報共有するための通信機
