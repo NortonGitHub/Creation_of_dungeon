@@ -21,13 +21,17 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
 , _searchLength(4)
 , _hasAppeared(false)
 , _direction(TiledVector::Direction::FORWARD)
+, _enterSE(RESOURCE_TABLE->GetFolderPath() + "sound/blockSelect.wav")
 {
     _target = &baseTarget;
     
     _astar = new AstarChaser(_target, *this, _pathToTarget, 20, true);
 
     //自分の味方が経路上にいたら回り込まず継続する
-    _astar->SetAdditionalFunc(std::move([&](TiledObject* obj){ return (obj->GetType() == _type); }));
+    _astar->SetAdditionalFunc(std::move([&](TiledObject* obj)
+    {
+        return (obj->GetType() == _type);
+    }));
     _ai = _astar;
     
     _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/blaver_front.png");
@@ -39,6 +43,15 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     _left.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
     _right.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
     _back.GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+
+    _animator.AddAnimation("jumpShot", std::make_shared<GraphArray>("heromove/hero(jump up attack).png"));
+    _animator.AddAnimation("punch", std::make_shared<GraphArray>("heromove/hero(punch).png"));
+    _animator.AddAnimation("kick", std::make_shared<GraphArray>("heromove/hero(kick).png"));
+    _animator.AddAnimation("win", std::make_shared<GraphArray>("heromove/hero_clear.png", 32, 32, 2, 20));
+
+    //開始のアニメーションを指定
+    _animator.Switch("normal");
+    _graph = *_animator.GetCurrentGraph();
 
     _position = startPos.GetWorldPos();
     _beforeTilePos = GetTilePos();
@@ -375,12 +388,14 @@ void Enemy::Draw()
         break;
     }
 
+    /*
     for (size_t i=0; i<_sight.size(); ++i)
     {
         Debug::DrawRectWithSize(_sight[i].GetWorldPos(), Vector2D(TILE_SIZE, TILE_SIZE),
                                 Color4(1.0, 0.5, 0.5, 0.25), true);
     }
-    
+    */
+
     //AIのデバッグ情報
     _ai->Draw();
     
@@ -423,6 +438,7 @@ void Enemy::OnWin()
 void Enemy::Appear()
 {
     _hasAppeared = true;
+    _enterSE.Play();
 }
 
 

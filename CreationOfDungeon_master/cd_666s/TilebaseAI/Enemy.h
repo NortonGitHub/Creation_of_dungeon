@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "../Sound/Sound.h"
 #include <string>
 
 class PathFindingAIBase;
@@ -82,5 +83,7 @@ private:
 
     static int _defeatedNum;
     static int _enemysNum;
+
+    Sound _enterSE;
 };
 

@@ -1,5 +1,6 @@
 #include "MapTile.h"
 #include "TiledObject.h"
+#include "TileField.h"
 #include "AI/Breadcrumb.h"
 #include "../DebugDraw.h"
 #include "../Resources/ResourceManager.h"
@@ -8,10 +9,6 @@ MapTile::MapTile(int col, int row)
 : _tilePos(row, col)
 , _breadcrumb(nullptr)
 {
-    _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/background/ground.png");
-    _graph.SetPosition(_tilePos.GetWorldPos());
-    _graph.GetTexturePtr()->SetPriority(-2);
-    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 }
 
 MapTile::MapTile(TiledVector pos)
@@ -23,6 +20,38 @@ MapTile::MapTile(TiledVector pos)
 
 MapTile::~MapTile()
 {
+}
+
+
+void MapTile::Init()
+{
+    //¶‚Æ‰E‚ªì‚È‚ç
+    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "graph/background/";
+    if ((FIELD->GetRawNumber(_tilePos + TiledVector(-1, 0)) == 6)
+        && (FIELD->GetRawNumber(_tilePos + TiledVector(1, 0)) == 6)
+        && (FIELD->GetRawNumber(_tilePos + TiledVector(0, 1)) == 0)
+        && (FIELD->GetRawNumber(_tilePos + TiledVector(0, -1)) == 0))
+    {
+        fileName += "bridge_v";
+    }
+    else if ((FIELD->GetRawNumber(_tilePos + TiledVector(0, -1)) == 6)
+        && (FIELD->GetRawNumber(_tilePos + TiledVector(0, 1)) == 6)
+        && (FIELD->GetRawNumber(_tilePos + TiledVector(1, 0)) == 0)
+        && (FIELD->GetRawNumber(_tilePos + TiledVector(-1, 0)) == 0))
+    {
+        fileName += "bridge_h";
+    }
+    else
+    {
+        fileName += "ground";
+    }
+
+    fileName += ".png";
+
+    _graph.Load(fileName);
+    _graph.SetPosition(_tilePos.GetWorldPos());
+    _graph.GetTexturePtr()->SetPriority(-2);
+    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 }
 
 

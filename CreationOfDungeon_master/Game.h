@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 #include "MapProcessManager.h"
 #include "CharaManager.h"
+#include "cd_666s/Sound/Sound.h"
 #include "cd_666s/TilebaseAI/Dungeon.h"
 
 class Game :
@@ -27,11 +28,10 @@ private:
 
     MapProcessManager map_process_manager;
 
-    MouseContent mouse_status;
-
     std::vector<std::string> _functions;
 
     Graph test;
+    Sound _bgm;
 
     //negative==================================
     enum class GameState

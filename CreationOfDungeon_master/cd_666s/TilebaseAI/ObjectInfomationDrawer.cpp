@@ -14,6 +14,7 @@ ObjectInformationDrawer::ObjectInformationDrawer()
 , _enemyThumbnail2(RESOURCE_TABLE->GetFolderPath() + "graph/enemy_thumbnail.png", Vector2D(920, 420))
 , _allyThumbnail1(RESOURCE_TABLE->GetFolderPath() + "graph/ally_thumbnail.png", Vector2D(920, 130))
 , _allyThumbnail2(RESOURCE_TABLE->GetFolderPath() + "graph/ally_thumbnail.png", Vector2D(920, 420))
+, _selectSE(RESOURCE_TABLE->GetFolderPath() + "sound/decide.wav")
 {
     _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
     _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
@@ -43,6 +44,8 @@ void ObjectInformationDrawer::SetCharacter(Character *chara)
     if (chara == _character1 || chara == _character2)
         return;
         
+    _selectSE.Play();
+
     //1”Ô–Ú‚Éî•ñ‚ª‚ ‚Á‚½‚ç
     if (_character1 != nullptr)
     {

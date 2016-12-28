@@ -8,6 +8,7 @@
 #include "ObjectInformationDrawer.h"
 #include "../../Vector2D.h"
 #include "../Render/Sprite.h"
+#include "../Sound/Sound.h"
 
 class GraphicalObject;
 class TiledObject;
@@ -52,6 +53,8 @@ private:
     MonsterController _controller;
     Goal* _goal;
     StartPoint* _start;
+
+    Sound _halfSE, _littleSE, _endSE;
 
     // MEMO : debug—p
     Sprite _face, _braver, _messageUI, _mainsFrame, _background, _information;

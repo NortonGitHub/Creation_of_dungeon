@@ -3,6 +3,7 @@
 
 #include "../../Vector2D.h"
 #include "../Render/Sprite.h"
+#include "../Sound/Sound.h"
 
 class Character;
 
@@ -27,6 +28,7 @@ private:
     Character* _character1, *_character2;
 
     Sprite _enemyThumbnail1, _enemyThumbnail2, _allyThumbnail1, _allyThumbnail2;
+    Sound _selectSE;
 };
 
 #endif /* ObjectInformationDrawer_h */

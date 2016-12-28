@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #include "MouseManager.h"
+#include "cd_666s/Sound/Sound.h"
 
 class Title :
     public SceneBase
@@ -30,5 +31,7 @@ private:
     std::string class_name;
 
     Graph title;
+
+    Sound _bgm, _se;
 };
 

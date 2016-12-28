@@ -11,6 +11,7 @@ Game::Game()
     :_stageNumber(1)
     , _fadeoutCount(0)
     , _state(GameState::READY)
+    , _bgm(RESOURCE_TABLE->GetFolderPath() + "sound/Area1.ogg")
 {
     KEYBOARD->AddEvent(KeyInput::KeyType::KEY_LSHIHT
         , ButtonTypeInputEvent::State::Down
@@ -20,6 +21,7 @@ Game::Game()
         Init();
     });
 
+    _bgm.SetVolume(220);
     Init();
 }
 
@@ -119,6 +121,7 @@ void Game::Init()
 
     _state = GameState::READY;
     _fadeoutCount = 0;
+    _bgm.Stop();
 
 
     if (_dungeon != nullptr)
@@ -164,7 +167,7 @@ void Game::GameOverDraw()
     Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
 
     if (_fadeoutCount > 150) {
-        Debug::DrawString(Vector2D(200, 200), "ガメオベラ", ColorPalette::RED4);
+        Debug::DrawString(Vector2D(200, 200), "GAME OVER", ColorPalette::RED4);
     }
     if (_fadeoutCount > 200) {
         Debug::DrawString(Vector2D(200, 400), "左クリックで戻る", ColorPalette::WHITE4);
@@ -197,7 +200,7 @@ void Game::StageClearDraw() {
     Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
 
     if (_fadeoutCount > 150) {
-        Debug::DrawString(Vector2D(200, 200), "ステージクリア", ColorPalette::RED4);
+        Debug::DrawString(Vector2D(200, 200), "ステージクリア", ColorPalette::WHITE4);
     }
     if (_fadeoutCount > 200) {
         Debug::DrawString(Vector2D(200, 400), "左クリックで次へ進む", ColorPalette::WHITE4);
@@ -230,7 +233,7 @@ void Game::GameClearDraw() {
     Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
 
     if (_fadeoutCount > 150) {
-        Debug::DrawString(Vector2D(200, 200), "ゲームクリア", ColorPalette::RED4);
+        Debug::DrawString(Vector2D(200, 200), "ゲームクリア", ColorPalette::WHITE4);
     }
     if (_fadeoutCount > 200) {
         Debug::DrawString(Vector2D(200, 400), "左クリックで戻る", ColorPalette::WHITE4);
@@ -242,6 +245,7 @@ bool Game::GameReadyUpdate()
     if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L)) 
     {
         _state = GameState::GAMING;
+        _bgm.Play();
         return true;
     }
 
@@ -253,7 +257,7 @@ void Game::GameReadyDraw(){
 
     auto color = Color4(0, 0, 0, 0.7);
     Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
-    Debug::DrawString(Vector2D(200, 200), "左クリックで開始", ColorPalette::RED4);
+    Debug::DrawString(Vector2D(200, 200), "左クリックで開始", ColorPalette::WHITE4);
 }
 
 void Game::GamingUpdate()
@@ -269,15 +273,19 @@ void Game::GamingUpdate()
         else
         {
             _state = GameState::GAME_CLEAR;
+            _bgm.Stop();
             return;
         }
     }
 
+    if (!_bgm.IsPlaying())
+        _bgm.Play();
+
     if (_dungeon->HasGameOver())
     {
         _state = GameState::GAME_OVER;
+        _bgm.Stop();
     }
-
     _dungeon->Update();
 }
 

@@ -13,6 +13,7 @@
 #include "Enemy.h"
 #include "Monster.h"
 #include "Obstacle.h"
+#include "River.h"
 #include "EnemysItem.h"
 #include "Goal.h"
 #include "TiledObjectMnager.h"
@@ -33,7 +34,10 @@ Dungeon::Dungeon(std::string stageName)
     , _mainsFrame(RESOURCE_TABLE->GetFolderPath() + "graph/ui/main_window.png", Vector2D(20, 20))
     , _background(RESOURCE_TABLE->GetFolderPath() + "graph/ui/brick01.png", Vector2D(0, 0))
     , _information(RESOURCE_TABLE->GetFolderPath() + "graph/ui/enemyinformation.png", Vector2D(754, 248))
-    , _braver(RESOURCE_TABLE->GetFolderPath() + "graph/TiledObject/blaver.png", Vector2D(754 + 30, 248 + 175))
+    , _braver(RESOURCE_TABLE->GetFolderPath() + "graph/TiledObject/blaver_front.png", Vector2D(754 + 30, 248 + 175))
+    , _halfSE(RESOURCE_TABLE->GetFolderPath() + "sound/time_half1.wav")
+    , _littleSE(RESOURCE_TABLE->GetFolderPath() + "sound/time_little1.wav")
+    , _endSE(RESOURCE_TABLE->GetFolderPath() + "sound/game_end.wav")
 {
     _face.SetScale(Vector2D(2, 2));
 
@@ -42,6 +46,10 @@ Dungeon::Dungeon(std::string stageName)
     _background.GetTexturePtr()->SetPriority(-100);
     _information.GetTexturePtr()->SetPriority(100);
     _braver.GetTexturePtr()->SetPriority(101);
+
+    _halfSE.SetVolume(200);
+    _littleSE.SetVolume(200);
+    _endSE.SetVolume(200);
 }
 
 
@@ -116,6 +124,8 @@ void Dungeon::Init()
     fileName += (_stageName + ".csv");
     Monster::LoadMonsters(_objs, _monsters, fileName);
     
+    FIELD->Setup();
+
     _monsters.Update();
     _enemys.Update();
     OBJECT_MGR->Refresh();
@@ -130,6 +140,8 @@ void Dungeon::Init()
 
 void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 {
+    FIELD->SetRawNumver(TiledVector(countX, countY), stoi(typeName));
+
     std::vector<TiledObject*>& _objs = OBJECT_MGR->_objects._objects;
     switch(stoi(typeName))
     {
@@ -143,7 +155,11 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
         case 2:
             _objs.push_back(new EnemysItem(TiledVector(countX, countY)));
             return;
-            
+
+        case 6:
+            _objs.push_back(new River(TiledVector(countX, countY)));
+            return;
+
         case 100:
             if (_goal == nullptr)
             {
@@ -183,6 +199,11 @@ bool Dungeon::HasClear()
     if (Enemy::HasWipeOuted())
         return true;
     
+    //最後の敵を倒したらクリア
+    if (_start->GetTimeUnitlNext() == -1
+        && _enemys.GetColleagues() == 0)
+        return true;
+
     return false;
 }
 
@@ -203,8 +224,6 @@ void Dungeon::Update()
     //時間になったら初期化
     if (_currentWaveInterval < _count)
     {
-        Clear();
-        Init();
         return;
     }
     else
@@ -212,6 +231,18 @@ void Dungeon::Update()
         _count++;
     }
     
+    auto timeRatio = static_cast<double>(_count) / _currentWaveInterval;
+    if (timeRatio == 0.5)
+    {
+        if (!_halfSE.IsPlaying())
+            _halfSE.Play();
+    }
+    else if (timeRatio == 0.8)
+    {
+        if (!_littleSE.IsPlaying())
+            _littleSE.Play();
+    }
+
     //情報網更新
     _monsters.Update();
     _enemys.Update();
@@ -223,6 +254,13 @@ void Dungeon::Update()
     {
         if (obj != nullptr)
             obj->Update();
+    }
+
+    //時間になったら初期化
+    if (_currentWaveInterval == _count)
+    {
+        if (!_endSE.IsPlaying())
+            _endSE.Play();
     }
 }
 

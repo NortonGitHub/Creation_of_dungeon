@@ -15,6 +15,7 @@ public:
     MapTile(TiledVector pos);
     ~MapTile();
     
+    void Init();
     void Draw() override;
     
     void Regist(TiledObject* obj);

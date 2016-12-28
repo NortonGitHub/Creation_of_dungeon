@@ -19,6 +19,8 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 , _hasAppeared(false)
 , _searchLength(4)
 , _direction(TiledVector::Direction::FORWARD)
+, _defeatSE(RESOURCE_TABLE->GetFolderPath() + "sound/enemy_fall2.wav")
+, _appearSE(RESOURCE_TABLE->GetFolderPath() + "sound/flame.wav")
 {
     _target = target;
     //_wallTrace = new WallTracing(*this, _pathToTarget);
@@ -41,6 +43,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
     _beforeTilePos = GetTilePos();
     
     _type = TiledObject::Type::MONSTER;
+    _appearSE.SetVolume(200);
 }
 
 
@@ -311,6 +314,7 @@ void Monster::Draw()
 void Monster::Appear()
 {
     _hasAppeared = true;
+    _appearSE.Play();
 }
 
 
@@ -422,6 +426,8 @@ void Monster::OnWin()
 {
     Character::OnWin();
     ResetTarget();
+
+    _defeatSE.Play();
 }
 
 
