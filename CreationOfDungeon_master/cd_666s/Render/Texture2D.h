@@ -10,6 +10,7 @@ class Camera;
 
 class Texture2D
 {
+    friend class GraphArray;
 public:
     Texture2D(int handle);
     virtual ~Texture2D();
