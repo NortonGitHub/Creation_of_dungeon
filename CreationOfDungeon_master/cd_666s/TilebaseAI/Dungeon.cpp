@@ -203,7 +203,8 @@ bool Dungeon::HasClear()
     
     //ÅŒã‚Ì“G‚ð“|‚µ‚½‚çƒNƒŠƒA
     if (_start->GetTimeUnitlNext() == -1
-        && _enemys.GetColleagues() == 0)
+        && _enemys.GetColleagues() == 0
+        && !HasGameOver())
         return true;
 
     return false;
