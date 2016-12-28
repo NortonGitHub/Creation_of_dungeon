@@ -11,7 +11,7 @@ Game::Game()
     :_stageNumber(1)
     , _fadeoutCount(0)
     , _state(GameState::READY)
-    , _bgm(RESOURCE_TABLE->GetFolderPath() + "sound/Area1.ogg")
+    , _bgm(RESOURCE_TABLE->GetFolderPath() + "sound/Stage_N_Noon.ogg")
 {
     KEYBOARD->AddEvent(KeyInput::KeyType::KEY_LSHIHT
         , ButtonTypeInputEvent::State::Down

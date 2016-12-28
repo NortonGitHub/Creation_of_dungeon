@@ -5,7 +5,7 @@
 Title::Title() 
     : class_name("title")
     , title("resourse/title")
-    , _bgm("sound/Stage_N_Noon.ogg")
+    , _bgm("sound/Area1.ogg")
     , _se("sound/decide.wav")
 {
     _functions.reserve(20);
@@ -43,7 +43,7 @@ SceneBase * Title::Update(UIManager _ui)
         if (f.find("MOVE") != std::string::npos){
             _se.Play();
             return FunctionTransScene::GetSceneBase("game");
-        } else if(f.find("FUNC") != std::string::npos){
+        } else if(f.find("QUIT") != std::string::npos){
             _se.Play();
             return nullptr;
         }
@@ -58,7 +58,7 @@ SceneBase * Title::Update(UIManager _ui)
 
 void Title::Draw()
 {
-        title.Draw();
+    title.Draw();
 }
 
 SceneBase * Title::UpdateFunctions()
