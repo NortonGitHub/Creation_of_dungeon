@@ -16,6 +16,7 @@ public:
     
     void Clear();
     void Init(int width, int height);
+    void Setup();
     void Draw();
     
     //タイルにおけるオブジェクトを指定のタイルに登録
@@ -34,7 +35,10 @@ public:
     
     TiledObject* GetTiledObject(const TiledVector &pos);
     std::vector<TiledObject*> GetTiledObjects(const TiledVector &pos);
-    
+
+    int GetRawNumber(const TiledVector &pos) const;
+    void SetRawNumver(const TiledVector &pos, int number);
+
     const Field &GetFieldRef() const { return _field; }
     
     //フィールドの範囲内にあるかどうか
@@ -72,6 +76,9 @@ private:
     TiledVector _fieldSize;
     Field _field;
     std::vector<GraphicalObject *> _gobjs;
+
+    //マップチップ番号
+    std::vector<std::vector<int>> _rawData;
 };
 
 #define FIELD TileField::GetInstance()

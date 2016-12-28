@@ -24,6 +24,7 @@ void TileField::Clear()
     }
 
     _gobjs.resize(0);
+    _rawData.resize(0);
     _fieldSize.Set(0, 0);
 }
 
@@ -32,10 +33,12 @@ void TileField::Init(int width, int height)
 {
     _fieldSize.Set(width, height);
     _field.resize(height);
+    _rawData.resize(height);
     
     for (size_t i = 0; i < _field.size(); i++)
     {
         _field[i].resize(width);
+        _rawData[i].resize(width);
     }
     
     for (size_t i = 0; i < height; i++)
@@ -49,6 +52,17 @@ void TileField::Init(int width, int height)
     }
 }
 
+
+void TileField::Setup()
+{
+    for (size_t i = 0; i < _fieldSize._y; i++)
+    {
+        for (size_t j = 0; j < _fieldSize._x; j++)
+        {
+            _field[i][j]->Init();
+        }
+    }
+}
 
 void TileField::Draw()
 {
@@ -127,6 +141,25 @@ std::vector<TiledObject*> TileField::GetTiledObjects(const TiledVector &pos)
     return _field[pos._y][pos._x]->GetTiledObjects();
 }
 
+
+int TileField::GetRawNumber(const TiledVector &pos) const
+{
+    //範囲外を参照しようとしたら-1を返す
+    if (!IsInside(pos))
+        return -1;
+
+    return _rawData[pos._y][pos._x];
+}
+
+
+void TileField::SetRawNumver(const TiledVector &pos, int number)
+{
+    //範囲外を参照しようとしたら-1を返す
+    if (!IsInside(pos))
+        return;
+
+    _rawData[pos._y][pos._x] = number;
+}
 
 //タイルにおけるオブジェクトを指定のタイルに登録
 void TileField::RegistBreadcrumb(Breadcrumb *crumb, TiledVector pos)

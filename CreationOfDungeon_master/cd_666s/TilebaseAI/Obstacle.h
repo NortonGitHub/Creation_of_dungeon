@@ -5,12 +5,15 @@ class Obstacle : public TiledObject
 {
 public:
     Obstacle(TiledVector tilePos);
-    ~Obstacle();
+    virtual ~Obstacle();
 
     bool IsOverwritable(TiledObject* overwriter) override;
 
-    void Init() override;
+    virtual void Init() override;
     void Update() override;
     void Draw() override;
+
+private:
+    std::string GetNameFromAroundInfo(TiledVector tilePos);
 };
 
