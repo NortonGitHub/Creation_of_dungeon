@@ -234,7 +234,11 @@ void GraphArray::Update()
             _hasEnd = true;
         }
         else
+        {
+            _index = _handleArray.size() - 1;
+            _graphPtr->GetTexturePtr()->_handle = _handleArray[_index];
             return;
+        }
     }
 
     //今の時間からインデクスを算出し

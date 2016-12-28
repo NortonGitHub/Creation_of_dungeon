@@ -81,6 +81,8 @@ public:
 
     Vector2D GetSingleSize() const { return _singleSize; }
 
+    Sprite* GetGraphPtr() { return _graphPtr; }
+
     //ループを止め、指定されたインデクスの画像を表示する
     void DeterminHandle(int index);
 
