@@ -29,10 +29,11 @@ Dungeon::Dungeon(std::string stageName)
     , _stageName(stageName)
     , _goal(nullptr)
     , _start(nullptr)
-    , _face(RESOURCE_TABLE->GetFolderPath() + "graph/face.png", Vector2D(40, 540))
+    , _face(RESOURCE_TABLE->GetFolderPath() + "graph/face.png", Vector2D(40, 545))
     , _messageUI(RESOURCE_TABLE->GetFolderPath() + "graph/ui/message_window.png", Vector2D(20, 520))
     , _mainsFrame(RESOURCE_TABLE->GetFolderPath() + "graph/ui/main_window.png", Vector2D(20, 20))
-    , _background(RESOURCE_TABLE->GetFolderPath() + "graph/ui/brick01.png", Vector2D(0, 0))
+    , _background(RESOURCE_TABLE->GetFolderPath() + "graph/background/background.png", Vector2D(0, 0))
+    , _windowBackground(RESOURCE_TABLE->GetFolderPath() + "graph/ui/main_window_background1.png", Vector2D(25, 25))
     , _information(RESOURCE_TABLE->GetFolderPath() + "graph/ui/enemyinformation.png", Vector2D(754, 248))
     , _braver(RESOURCE_TABLE->GetFolderPath() + "graph/TiledObject/blaver.png", Vector2D(754 + 30, 248 + 175))
     , _halfSE(RESOURCE_TABLE->GetFolderPath() + "sound/time_half1.wav")
@@ -44,6 +45,7 @@ Dungeon::Dungeon(std::string stageName)
     _messageUI.GetTexturePtr()->SetPriority(100);
     _mainsFrame.GetTexturePtr()->SetPriority(100);
     _background.GetTexturePtr()->SetPriority(-100);
+    _windowBackground.GetTexturePtr()->SetPriority(-99);
     _information.GetTexturePtr()->SetPriority(100);
     _braver.GetTexturePtr()->SetPriority(101);
 

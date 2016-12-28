@@ -57,7 +57,7 @@ private:
     Sound _halfSE, _littleSE, _endSE;
 
     // MEMO : debug—p
-    Sprite _face, _braver, _messageUI, _mainsFrame, _background, _information;
+    Sprite _face, _braver, _messageUI, _mainsFrame, _background, _windowBackground, _information;
 };
 
 #endif /* Dungeon_h */
