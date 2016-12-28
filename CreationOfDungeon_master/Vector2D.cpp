@@ -94,3 +94,14 @@ const Vector2D Vector2D::operator*=(const double scale)
     _y *= scale;
     return *this;
 }
+
+
+const bool Vector2D::operator==(const Vector2D &vec) const
+{
+    return (_x == vec._x && _y == vec._y);
+}
+
+const bool Vector2D::operator!=(const Vector2D &vec) const
+{
+    return (_x != vec._x || _y != vec._y);
+}

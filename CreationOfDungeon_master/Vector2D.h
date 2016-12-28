@@ -22,7 +22,9 @@ public:
     const Vector2D operator*=(const Vector2D &vec);
     const Vector2D operator*(const double scale) const;
     const Vector2D operator*=(const double scale);
-    
+    const bool operator==(const Vector2D &vec) const;
+    const bool operator!=(const Vector2D &vec) const;
+
     //ベクトルの長さを返す
     inline double GetLength() const;
     //ベクトル長の2乗を返す
