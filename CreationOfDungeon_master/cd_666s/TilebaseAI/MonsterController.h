@@ -1,6 +1,8 @@
 #ifndef MonsterController_h
 #define MonsterController_h
 
+#include "../../Vector2D.h"
+
 class Monster;
 
 class MonsterController
@@ -16,10 +18,10 @@ public:
 private:
     
     //–‚•¨‚Ì‘I‘ğ
-    void SelectMonster();
+    void SelectMonster(const Vector2D cursorPos);
     
     //–‚•¨‚Ì‘€ì
-    void ControlMonster();
+    void ControlMonster(const Vector2D cursorPos);
     
     //–‚•¨‚ÌŒˆ’è
     void SetControlingMonster(Monster* monster);

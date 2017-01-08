@@ -29,14 +29,16 @@ void MonsterController::Update()
     if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
         return;
     
-    auto tiledCursorPos = TiledVector::ConvertToTiledPos(MOUSE->GetCursorPos());
+    //クリック位置がフィールド内かチェック
+    auto cursorPos = MOUSE->GetCursorPos();
+    auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
     if (!FIELD->IsInside(tiledCursorPos))
         return;
     
     if (_monster == nullptr)
-        SelectMonster();
+        SelectMonster(cursorPos);
     else
-        ControlMonster();
+        ControlMonster(cursorPos);
 }
 
 
@@ -71,9 +73,8 @@ void MonsterController::SetControlingMonster(Monster* monster)
 
 
 //魔物の選択
-void MonsterController::SelectMonster()
+void MonsterController::SelectMonster(const Vector2D cursorPos)
 {
-    auto cursorPos = MOUSE->GetCursorPos();
     auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
     
     //対象がクリックされているかチェック
@@ -93,16 +94,15 @@ void MonsterController::SelectMonster()
         if (target->GetType() == TiledObject::Type::MONSTER)
         {
             auto monster = dynamic_cast<Monster*>(target);
-            //if (monster->IsEnable())
-                SetControlingMonster(monster);
+            SetControlingMonster(monster);
+            return;
         }
     }
 }
 
 //魔物の操作
-void MonsterController::ControlMonster()
+void MonsterController::ControlMonster(const Vector2D cursorPos)
 {
-    auto cursorPos = MOUSE->GetCursorPos();
     auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
     
     //対象がクリックされているかチェック
@@ -156,7 +156,7 @@ void MonsterController::ControlMonster()
     }
     for (auto target : targets)
     {
-        //敵を選択した
+        //敵を選択したら
         if (target->GetType() == TiledObject::Type::ENEMY
             && target->IsEnable())
         {
@@ -166,6 +166,7 @@ void MonsterController::ControlMonster()
         }
     }
 
-    if (_monster != nullptr)
-        _monster->SetTarget(tiledCursorPos);
+    //ここまで抜けたらモンスターの操作に影響するものは無いことになる.
+    //モンスターをクリックした位置まで移動させる
+    _monster->SetTarget(tiledCursorPos);
 }
