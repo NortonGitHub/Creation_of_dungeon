@@ -19,16 +19,17 @@ public:
     Vector2D GetScale() const;
     void SetScale(Vector2D scale);
 
-    void SetBaseColor(Color4 color){ _tex->SetBaseColor(color); }
-    void SetDisplayMode(bool isDisplaying) { _tex->SetDisplayMode(isDisplaying); }
+    void SetBaseColor(Color4 color){ if(_tex != nullptr) _tex->SetBaseColor(color); }
+    void SetDisplayMode(bool isDisplaying) { if (_tex != nullptr) _tex->SetDisplayMode(isDisplaying); }
     
     Texture2D* GetTexturePtr() { return _tex; }
     
     void Load(std::string fileName);
     
-    void Rotate(double angle) { _tex->_angle = angle; }
+    void Rotate(double angle) { if (_tex != nullptr) _tex->_angle = angle; }
     void LookAt(Vector2D dir);
     
+
 protected:
     
     std::shared_ptr<ImageResource> _textureResource;
