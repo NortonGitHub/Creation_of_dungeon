@@ -9,7 +9,7 @@ EnemysItem::EnemysItem(TiledVector tilePos)
 , _isEnable(true)
 {
     _type = TiledObject::Type::ITEM;
-    _graph.Load(RESOURCE_TABLE->GetFolderPath() + "graph/background/treasure01.png");
+    _graph.Load("graph/background/treasure01.png");
 }
 
 

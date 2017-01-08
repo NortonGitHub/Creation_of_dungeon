@@ -19,8 +19,8 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 , _hasAppeared(false)
 , _searchLength(4)
 , _direction(TiledVector::Direction::FORWARD)
-, _defeatSE(RESOURCE_TABLE->GetFolderPath() + "sound/enemy_fall2.wav")
-, _appearSE(RESOURCE_TABLE->GetFolderPath() + "sound/flame.wav")
+, _defeatSE("sound/enemy_fall2.wav")
+, _appearSE("sound/flame.wav")
 {
     _name = monsterName;
     _target = target;
@@ -36,7 +36,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
     }));
 
     _ai = _astar;
-    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/";
+    std::string fileName = "graph/tiledObject/";
     fileName += _name;
     _currentGraphPtr = _front.SetWithCreate(fileName + "_front.png", 32, 32, 2, 24);
     _right.SetWithCreate(fileName + "_right.png", 32, 32, 2, 24);
@@ -67,7 +67,7 @@ void Monster::LoadMonsters(std::vector<TiledObject*>& objects, ColleagueNotifyer
 {
     std::vector<std::string> dataArray;
     CSVReader reader;
-    reader.Read(fileName, dataArray, 1);
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
     
     const int parameterNum = 7;
     std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };

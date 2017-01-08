@@ -21,6 +21,8 @@ public:
     
     void AddToAppearList(Enemy* enemy, long appearFrame);
     
+    Character* GetNextEnemy();
+
     //Ÿ‚Ì“G‚ªoŒ»‚·‚é‚Ü‚Å
     int GetTimeUnitlNext() const;
 

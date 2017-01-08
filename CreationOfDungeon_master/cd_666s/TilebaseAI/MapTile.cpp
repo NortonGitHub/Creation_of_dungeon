@@ -26,7 +26,7 @@ MapTile::~MapTile()
 void MapTile::Init()
 {
     //¶‚Æ‰E‚ªì‚È‚ç
-    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "graph/background/";
+    std::string fileName = "graph/background/";
     if ((FIELD->GetRawNumber(_tilePos + TiledVector(-1, 0)) == 6)
         && (FIELD->GetRawNumber(_tilePos + TiledVector(1, 0)) == 6)
         && (FIELD->GetRawNumber(_tilePos + TiledVector(0, 1)) == 0)

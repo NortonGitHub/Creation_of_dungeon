@@ -24,7 +24,7 @@ Goal::~Goal()
 void Goal::Init()
 {
     auto tilePos = GetTilePos();
-    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "graph/background/";
+    std::string fileName = "graph/background/";
 
     if (!FIELD->IsInside(tilePos + TiledVector(0, -1)))
     {

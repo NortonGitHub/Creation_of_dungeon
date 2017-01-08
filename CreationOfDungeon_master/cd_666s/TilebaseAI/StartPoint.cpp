@@ -23,7 +23,7 @@ StartPoint::~StartPoint()
 void StartPoint::Init()
 {
     auto tilePos = GetTilePos();
-    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "graph/background/";
+    std::string fileName = "graph/background/";
 
     if (!FIELD->IsInside(tilePos + TiledVector(0, -1)))
     {
@@ -87,4 +87,13 @@ int StartPoint::GetTimeUnitlNext() const
         return -1;
 
     return _appearData[_currentIndex].second - _frameFromStart;
+}
+
+
+Character* StartPoint::GetNextEnemy()
+{
+    if (_appearData.size() <= _currentIndex)
+        return nullptr;
+
+    return _appearData[_currentIndex].first;
 }

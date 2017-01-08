@@ -19,7 +19,7 @@ Obstacle::~Obstacle()
 void Obstacle::Init()
 {
     auto tilePos = GetTilePos();
-    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "graph/background/";
+    std::string fileName = "graph/background/";
 
     fileName += GetNameFromAroundInfo(tilePos);
 

@@ -29,16 +29,15 @@ Dungeon::Dungeon(std::string stageName)
     , _stageName(stageName)
     , _goal(nullptr)
     , _start(nullptr)
-    , _face(RESOURCE_TABLE->GetFolderPath() + "graph/face.png", Vector2D(40, 545))
-    , _messageUI(RESOURCE_TABLE->GetFolderPath() + "graph/ui/message_window.png", Vector2D(20, 520))
-    , _mainsFrame(RESOURCE_TABLE->GetFolderPath() + "graph/ui/main_window.png", Vector2D(20, 20))
-    , _background(RESOURCE_TABLE->GetFolderPath() + "graph/background/background.png", Vector2D(0, 0))
-    , _windowBackground(RESOURCE_TABLE->GetFolderPath() + "graph/ui/main_window_background1.png", Vector2D(25, 25))
-    , _information(RESOURCE_TABLE->GetFolderPath() + "graph/ui/enemyinformation.png", Vector2D(754, 248))
-    , _braver(RESOURCE_TABLE->GetFolderPath() + "graph/TiledObject/blaver.png", Vector2D(754 + 30, 248 + 175))
-    , _halfSE(RESOURCE_TABLE->GetFolderPath() + "sound/time_half1.wav")
-    , _littleSE(RESOURCE_TABLE->GetFolderPath() + "sound/time_little1.wav")
-    , _endSE(RESOURCE_TABLE->GetFolderPath() + "sound/game_end.wav")
+    , _face("graph/devilGirlUsual.png", Vector2D(40, 545))
+    , _messageUI("graph/ui/message_window.png", Vector2D(20, 520))
+    , _mainsFrame("graph/ui/main_window.png", Vector2D(20, 20))
+    , _background("graph/background/background.png", Vector2D(0, 0))
+    , _windowBackground("graph/ui/main_window_background1.png", Vector2D(28, 28))
+    , _information("graph/ui/enemyinformation.png", Vector2D(754, 248))
+    , _halfSE("sound/time_half1.wav")
+    , _littleSE("sound/time_little1.wav")
+    , _endSE("sound/game_end.wav")
 {
     _face.SetScale(Vector2D(2, 2));
 
@@ -47,7 +46,20 @@ Dungeon::Dungeon(std::string stageName)
     _background.GetTexturePtr()->SetPriority(-100);
     _windowBackground.GetTexturePtr()->SetPriority(-99);
     _information.GetTexturePtr()->SetPriority(100);
-    _braver.GetTexturePtr()->SetPriority(101);
+
+    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("blaver")));
+    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("magician")));
+    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("fighter")));
+    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("bone")));
+    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("ghost")));
+    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("minotaur")));
+
+    for (auto icon : _icons)
+    {
+        icon->GetTexturePtr()->SetPriority(101);
+        icon->SetDisplayMode(false);
+        icon->SetPosition(Vector2D(754 + 30, 248 + 175));
+    }
 
     _halfSE.SetVolume(200);
     _littleSE.SetVolume(200);
@@ -73,10 +85,10 @@ void Dungeon::Init()
     CSVReader reader;
     
     //ウェーブの情報を読み込む
-    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "data/wave";
+    std::string fileName = "data/wave";
     fileName += (_stageName + ".csv");
     std::vector<std::string> waveInfoArray;
-    reader.Read(fileName, waveInfoArray, 1);
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, waveInfoArray, 1);
     
     _currentWaveInterval = std::stoi(waveInfoArray[0]);
     _permitivePassedNum = std::stoi(waveInfoArray[1]);
@@ -85,13 +97,13 @@ void Dungeon::Init()
     _currentWaveInterval *= 60;
     
     //フィールドのサイズを読み込む
-    fileName = RESOURCE_TABLE->GetFolderPath() + "data/map";
+    fileName = "data/map";
     fileName += (_stageName + ".csv");
     auto fieldSizeH = reader.GetLineSize(fileName, 0);
     auto fieldSizeV = reader.GetLineNum(fileName);
     
     //フィールドのデータを読み込む
-    reader.Read(fileName, dataArray);
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray);
     int countX = 0;
     int countY = 0;
     FIELD->Init(fieldSizeH, fieldSizeV);
@@ -118,11 +130,11 @@ void Dungeon::Init()
     assert( (_goal != nullptr) && (_start != nullptr) && "Cannot Read Start and Goal");
     
     //キャラたちをロード
-    fileName = RESOURCE_TABLE->GetFolderPath() + "data/enemys";
+    fileName = "data/enemys";
     fileName += (_stageName + ".csv");
     Enemy::LoadEnemys(_objs, _start, _goal, _enemys, fileName);
 
-    fileName = RESOURCE_TABLE->GetFolderPath() + "data/monsters";
+    fileName = "data/monsters";
     fileName += (_stageName + ".csv");
     Monster::LoadMonsters(_objs, _monsters, fileName);
     
@@ -183,11 +195,23 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 
 void Dungeon::Clear()
 {
+    _infoDrawer.Clear();
+
+    for (auto icon : _icons)
+    {
+        delete icon;
+        icon = nullptr;
+    }
+    _icons.clear();
+    _icons.resize(0);
+
     FIELD->Clear();
     OBJECT_MGR->_objects.Clear();
     
     _start = nullptr;
     _goal = nullptr;
+
+    RESOURCE_TABLE->Refresh();
 }
 
 
@@ -291,7 +315,7 @@ void Dungeon::Draw()
     Debug::DrawString(Vector2D(625, 0), _stageName);
     
     //メッセージウィンドウ仮表示
-    Debug::DrawString(Vector2D(200, 580), "奴は勇者の中でも最弱...!");
+    Debug::DrawString(Vector2D(300, 600), "クリエイションオブダンジョン体験版にようこそ");
 
     //ステージ名表示
     Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), Color4(0.5, 0.65, 0.85, 1.0), true);
@@ -317,15 +341,20 @@ void Dungeon::Draw()
     Debug::DrawString(_information.GetPosition() + Vector2D(50, 105), passed);
 
     //残党数表示
+    for (auto icon : _icons)
+    {
+        icon->SetDisplayMode(false);
+    }
     Debug::DrawString(_information.GetPosition() + Vector2D(25, 155), "NEXT");
     if (_start->GetTimeUnitlNext() != -1)
     {
-        _braver.SetDisplayMode(true);
+        auto chara = _start->GetNextEnemy();
+        if (chara != nullptr)
+        {
+            std::string name = chara->GetName();
+            _icons[ObjectInformationDrawer::GetIndexFromName(name)]->SetDisplayMode(true);
+        }
         Debug::DrawString(_information.GetPosition() + Vector2D(65, 170), "あと");
         Debug::DrawString(_information.GetPosition() + Vector2D(70, 190), std::to_string(_start->GetTimeUnitlNext() / 60));
-    }
-    else
-    {
-        _braver.SetDisplayMode(false);
     }
 }

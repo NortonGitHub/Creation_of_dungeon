@@ -57,7 +57,8 @@ private:
     Sound _halfSE, _littleSE, _endSE;
 
     // MEMO : debug—p
-    Sprite _face, _braver, _messageUI, _mainsFrame, _background, _windowBackground, _information;
+    Sprite _face, _messageUI, _mainsFrame, _background, _windowBackground, _information;
+    std::vector<Sprite*> _icons;
 };
 
 #endif /* Dungeon_h */

@@ -1,4 +1,5 @@
 #include "ImageResource.h"
+#include "ResourceManager.h"
 #include <assert.h>
 
 ImageResource::ImageResource(std::string fileName)

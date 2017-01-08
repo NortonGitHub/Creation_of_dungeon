@@ -21,7 +21,7 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
 , _searchLength(4)
 , _hasAppeared(false)
 , _direction(TiledVector::Direction::FORWARD)
-, _enterSE(RESOURCE_TABLE->GetFolderPath() + "sound/blockSelect.wav")
+, _enterSE("sound/blockSelect.wav")
 {
     _name = enemyName;
     _target = &baseTarget;
@@ -38,7 +38,7 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     }));
     _ai = _astar;
 
-    std::string fileName = RESOURCE_TABLE->GetFolderPath() + "graph/tiledObject/";
+    std::string fileName = "graph/tiledObject/";
     fileName += _name;
     _currentGraphPtr = _front.SetWithCreate(fileName + "_front.png", 32, 32, 2, 24);
     _right.SetWithCreate(fileName + "_right.png", 32, 32, 2, 24);
@@ -70,7 +70,7 @@ void Enemy::LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Go
 
     std::vector<std::string> dataArray;
     CSVReader reader;
-    reader.Read(fileName, dataArray, 1);
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
     
     const int parameterNum = 6;
     std::array<int, parameterNum> params = {0, 0, 0, 0, 0, 0};

@@ -11,7 +11,7 @@ Sound::Sound(std::string fileName, bool isBGM)
 {
     //ファイルを読み込んで音声データ生成
     _soundResource = std::dynamic_pointer_cast<SoundResource>
-        (RESOURCE_TABLE->Create(std::make_shared<SoundResource>(fileName)));
+        (RESOURCE_TABLE->Create(std::make_shared<SoundResource>(RESOURCE_TABLE->GetFolderPath() + fileName)));
 }
 
 
