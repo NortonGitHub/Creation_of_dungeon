@@ -15,13 +15,13 @@ MagicSquare::MagicSquare(TiledVector tilePos, Monster& monster)
 
     _currentGraph = _animation.SetWithCreate("graph/tiledObject/magic_square.png", 32, 32, 5, 16);
     _currentGraph->SetPosition(_position);
-    _currentGraph->GetTexturePtr()->SetPriority(-1);
+    _currentGraph->SetPriority(-1);
     _currentGraph->SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
     _currentGraph->SetDisplayMode(false);
 
     _graph.Load("graph/tiledObject/magicSquare_Ready.png");
     _graph.SetPosition(_position);
-    _graph.GetTexturePtr()->SetPriority(-1);
+    _graph.SetPriority(-1);
     _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 
 

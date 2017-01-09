@@ -59,13 +59,13 @@ void BattlingTile::Draw()
 {
     if (_attackMonster)
     {
-        _graph.GetTexturePtr()->SetDisplayMode(false);
-        _dust2.GetTexturePtr()->SetDisplayMode(true);
+        _graph.SetDisplayMode(false);
+        _dust2.SetDisplayMode(true);
     }
     else
     {
-        _graph.GetTexturePtr()->SetDisplayMode(true);
-        _dust2.GetTexturePtr()->SetDisplayMode(false);
+        _graph.SetDisplayMode(true);
+        _dust2.SetDisplayMode(false);
     }
 }
 

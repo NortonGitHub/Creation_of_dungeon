@@ -14,14 +14,14 @@ public:
     ~Sprite();
 
     Vector2D GetPosition() const { return _position; }
-    void SetPosition(Vector2D pos);
-    
     Vector2D GetScale() const;
-    void SetScale(Vector2D scale);
 
+    void SetPosition(Vector2D pos);
+    void SetScale(Vector2D scale);
     void SetBaseColor(Color4 color){ if(_tex != nullptr) _tex->SetBaseColor(color); }
     void SetDisplayMode(bool isDisplaying) { if (_tex != nullptr) _tex->SetDisplayMode(isDisplaying); }
-    
+    void SetPriority(int priority) { if (_tex != nullptr) _tex->SetPriority(priority); }
+
     Texture2D* GetTexturePtr() { return _tex; }
     
     void Load(std::string fileName);

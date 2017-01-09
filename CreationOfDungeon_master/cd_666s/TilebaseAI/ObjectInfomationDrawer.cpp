@@ -16,15 +16,15 @@ ObjectInformationDrawer::ObjectInformationDrawer()
 , _allyThumbnail2("graph/ally_thumbnail.png", Vector2D(920, 420))
 , _selectSE("sound/decide.wav")
 {
-    _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
-    _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
-    _allyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
-    _allyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+    _enemyThumbnail1.SetDisplayMode(false);
+    _enemyThumbnail2.SetDisplayMode(false);
+    _allyThumbnail1.SetDisplayMode(false);
+    _allyThumbnail2.SetDisplayMode(false);
 
-    _enemyThumbnail1.GetTexturePtr()->SetPriority(100);
-    _enemyThumbnail2.GetTexturePtr()->SetPriority(100);
-    _allyThumbnail1.GetTexturePtr()->SetPriority(100);
-    _allyThumbnail2.GetTexturePtr()->SetPriority(100);
+    _enemyThumbnail1.SetPriority(100);
+    _enemyThumbnail2.SetPriority(100);
+    _allyThumbnail1.SetPriority(100);
+    _allyThumbnail2.SetPriority(100);
 
     _icon1.push_back(new Sprite(GetIconNameFromName("blaver")));
     _icon1.push_back(new Sprite(GetIconNameFromName("magician")));
@@ -79,12 +79,12 @@ void ObjectInformationDrawer::Init()
     for (auto icon : _icon1)
     {
         icon->SetDisplayMode(false);
-        icon->GetTexturePtr()->SetPriority(1090);
+        icon->SetPriority(1090);
     }
     for (auto icon : _icon2)
     {
         icon->SetDisplayMode(false);
-        icon->GetTexturePtr()->SetPriority(100);
+        icon->SetPriority(100);
     }
 }
 
@@ -256,25 +256,25 @@ void ObjectInformationDrawer::Draw()
     {
         if (_character1->GetType() == TiledObject::Type::ENEMY)
         {
-            _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(true);
-            _allyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
+            _enemyThumbnail1.SetDisplayMode(true);
+            _allyThumbnail1.SetDisplayMode(false);
         }
         else
         {
-            _allyThumbnail1.GetTexturePtr()->SetDisplayMode(true);
-            _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
+            _allyThumbnail1.SetDisplayMode(true);
+            _enemyThumbnail1.SetDisplayMode(false);
         }
 
         DrawCharactersInformation(_character1, Vector2D(920, 140));
     }
     else
     {
-        _enemyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
-        _allyThumbnail1.GetTexturePtr()->SetDisplayMode(false);
+        _enemyThumbnail1.SetDisplayMode(false);
+        _allyThumbnail1.SetDisplayMode(false);
         for (auto icon : _icon1)
         {
             icon->SetDisplayMode(false);
-            icon->GetTexturePtr()->SetPriority(100);
+            icon->SetPriority(100);
         }
     }
     
@@ -282,25 +282,25 @@ void ObjectInformationDrawer::Draw()
     {
         if (_character2->GetType() == TiledObject::Type::ENEMY)
         {
-            _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(true);
-            _allyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+            _enemyThumbnail2.SetDisplayMode(true);
+            _allyThumbnail2.SetDisplayMode(false);
         }
         else
         {
-            _allyThumbnail2.GetTexturePtr()->SetDisplayMode(true);
-            _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+            _allyThumbnail2.SetDisplayMode(true);
+            _enemyThumbnail2.SetDisplayMode(false);
         }
 
         DrawCharactersInformation(_character2, Vector2D(920, 430));
     }
     else
     {
-        _enemyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
-        _allyThumbnail2.GetTexturePtr()->SetDisplayMode(false);
+        _enemyThumbnail2.SetDisplayMode(false);
+        _allyThumbnail2.SetDisplayMode(false);
         for (auto icon : _icon2)
         {
             icon->SetDisplayMode(false);
-            icon->GetTexturePtr()->SetPriority(100);
+            icon->SetPriority(100);
         }
     }
 }
@@ -342,7 +342,7 @@ void ObjectInformationDrawer::DrawCharactersInformation(Character* chara, Vector
         for (auto icon : _icon1)
         {
             icon->SetDisplayMode(false);
-            icon->GetTexturePtr()->SetPriority(100);
+            icon->SetPriority(100);
         }
 
         Sprite* iconPtr = _icon1[GetIndexFromName(_character1->GetName())];
@@ -355,7 +355,7 @@ void ObjectInformationDrawer::DrawCharactersInformation(Character* chara, Vector
         for (auto icon : _icon2)
         {
             icon->SetDisplayMode(false);
-            icon->GetTexturePtr()->SetPriority(100);
+            icon->SetPriority(100);
         }
 
         Sprite* iconPtr = _icon2[GetIndexFromName(_character2->GetName())];
@@ -363,17 +363,4 @@ void ObjectInformationDrawer::DrawCharactersInformation(Character* chara, Vector
         iconPtr->SetDisplayMode(true);
         iconPtr->SetPosition(Vector2D(920, 430) + Vector2D(140, 32));
     }
-    /*
-    if (_character2 != nullptr)
-    {
-        if (_icon2 != nullptr)
-            _icon2->SetDisplayMode(false);
-
-        _icon2 = GetIconPtrFromName(_character2->GetName());
-        _icon2->SetScale(Vector2D(2, 2));
-        _icon2->SetDisplayMode(true);
-        _icon2->SetPosition(Vector2D(920, 430) + Vector2D(140, 32));
-        _icon2->GetTexturePtr()->SetPriority(100);
-    }
-    */
 }

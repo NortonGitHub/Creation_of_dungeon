@@ -1,6 +1,5 @@
 #include "TileField.h"
 #include "TiledObject.h"
-#include "GraphicalObject.h"
 
 
 TileField::TileField()
@@ -152,7 +151,7 @@ int TileField::GetRawNumber(const TiledVector &pos) const
 }
 
 
-void TileField::SetRawNumver(const TiledVector &pos, int number)
+void TileField::SetRawNumber(const TiledVector &pos, int number)
 {
     //”ÍˆÍŠO‚ğQÆ‚µ‚æ‚¤‚Æ‚µ‚½‚ç-1‚ğ•Ô‚·
     if (!IsInside(pos))

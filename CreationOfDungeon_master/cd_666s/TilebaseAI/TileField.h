@@ -37,7 +37,7 @@ public:
     std::vector<TiledObject*> GetTiledObjects(const TiledVector &pos);
 
     int GetRawNumber(const TiledVector &pos) const;
-    void SetRawNumver(const TiledVector &pos, int number);
+    void SetRawNumber(const TiledVector &pos, int number);
 
     const Field &GetFieldRef() const { return _field; }
     
