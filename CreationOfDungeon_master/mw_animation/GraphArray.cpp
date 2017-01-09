@@ -235,14 +235,15 @@ void GraphArray::Update()
         }
         else
         {
-            _index = _handleArray.size() - 1;
-            _graphPtr->GetTexturePtr()->_handle = _handleArray[_index];
             return;
         }
     }
 
     //今の時間からインデクスを算出し
     _index = _currentTime / (_endTime / static_cast<int>(_handleArray.size()));
+
+    //範囲外参照にならないようにして
+    _index = min(_handleArray.size() - 1, max(0, _index));
 
     //画像に設定
     _graphPtr->GetTexturePtr()->_handle = _handleArray[_index];

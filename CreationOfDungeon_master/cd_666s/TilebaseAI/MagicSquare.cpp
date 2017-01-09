@@ -92,9 +92,7 @@ void MagicSquare::Draw()
     {
         _currentGraph->SetDisplayMode(true);
         _graph.SetDisplayMode(false);
-
-        if(!_animation.HasEndedUp())
-            _animation.Update();
+        _animation.Update();
     }
 
     _currentGraph = _animation.GetGraphPtr();
