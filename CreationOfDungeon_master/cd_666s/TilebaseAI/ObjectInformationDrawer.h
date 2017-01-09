@@ -4,6 +4,7 @@
 #include "../../Vector2D.h"
 #include "../Render/Sprite.h"
 #include "../Sound/Sound.h"
+#include "TiledObjectInformation.h"
 
 class Character;
 
@@ -26,14 +27,10 @@ private:
 
     void SetCharacter(Character* chara);
     void SetCharacter(Character* chara, Character* chara2);
-
     void SelectObject();
-    void DrawCharactersInformation(Character* chara, Vector2D pos);
 
     Character* _character1, *_character2;
-
-    Sprite _enemyThumbnail1, _enemyThumbnail2, _allyThumbnail1, _allyThumbnail2;
-    std::vector<Sprite*> _icon1, _icon2;
+    TiledObjectInformation _thumbnail1, _thumbnail2;
     Sound _selectSE;
 };
 

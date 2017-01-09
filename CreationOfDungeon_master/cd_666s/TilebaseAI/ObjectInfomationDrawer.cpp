@@ -10,36 +10,10 @@
 ObjectInformationDrawer::ObjectInformationDrawer()
 : _character1(nullptr)
 , _character2(nullptr)
-, _enemyThumbnail1("graph/enemy_thumbnail.png", Vector2D(920, 130))
-, _enemyThumbnail2("graph/enemy_thumbnail.png", Vector2D(920, 420))
-, _allyThumbnail1("graph/ally_thumbnail.png", Vector2D(920, 130))
-, _allyThumbnail2("graph/ally_thumbnail.png", Vector2D(920, 420))
+, _thumbnail1({ 920, 140 })
+, _thumbnail2({ 920, 430 })
 , _selectSE("sound/decide.wav")
 {
-    _enemyThumbnail1.SetDisplayMode(false);
-    _enemyThumbnail2.SetDisplayMode(false);
-    _allyThumbnail1.SetDisplayMode(false);
-    _allyThumbnail2.SetDisplayMode(false);
-
-    _enemyThumbnail1.SetPriority(100);
-    _enemyThumbnail2.SetPriority(100);
-    _allyThumbnail1.SetPriority(100);
-    _allyThumbnail2.SetPriority(100);
-
-    _icon1.push_back(new Sprite(GetIconNameFromName("blaver")));
-    _icon1.push_back(new Sprite(GetIconNameFromName("magician")));
-    _icon1.push_back(new Sprite(GetIconNameFromName("fighter")));
-    _icon1.push_back(new Sprite(GetIconNameFromName("bone")));
-    _icon1.push_back(new Sprite(GetIconNameFromName("ghost")));
-    _icon1.push_back(new Sprite(GetIconNameFromName("minotaur")));
-
-    _icon2.push_back(new Sprite(GetIconNameFromName("blaver")));
-    _icon2.push_back(new Sprite(GetIconNameFromName("magician")));
-    _icon2.push_back(new Sprite(GetIconNameFromName("fighter")));
-    _icon2.push_back(new Sprite(GetIconNameFromName("bone")));
-    _icon2.push_back(new Sprite(GetIconNameFromName("ghost")));
-    _icon2.push_back(new Sprite(GetIconNameFromName("minotaur")));
-
     Init();
 }
 
@@ -54,20 +28,9 @@ void ObjectInformationDrawer::Clear()
 {
     _character1 = nullptr;
     _character2 = nullptr;
-    for (auto icon : _icon1)
-    {
-        delete icon;
-        icon = nullptr;
-    }
-    for (auto icon : _icon2)
-    {
-        delete icon;
-        icon = nullptr;
-    }
-    _icon1.clear();
-    _icon1.resize(0);
-    _icon2.clear();
-    _icon2.resize(0);
+
+    _thumbnail1.Clear();
+    _thumbnail2.Clear();
 }
 
 
@@ -76,16 +39,8 @@ void ObjectInformationDrawer::Init()
     _character1 = nullptr;
     _character2 = nullptr;
 
-    for (auto icon : _icon1)
-    {
-        icon->SetDisplayMode(false);
-        icon->SetPriority(1090);
-    }
-    for (auto icon : _icon2)
-    {
-        icon->SetDisplayMode(false);
-        icon->SetPriority(100);
-    }
+    _thumbnail1.Init();
+    _thumbnail2.Init();
 }
 
 
@@ -252,115 +207,9 @@ void ObjectInformationDrawer::Update()
 
 void ObjectInformationDrawer::Draw()
 {
-    if (_character1 != nullptr)
-    {
-        if (_character1->GetType() == TiledObject::Type::ENEMY)
-        {
-            _enemyThumbnail1.SetDisplayMode(true);
-            _allyThumbnail1.SetDisplayMode(false);
-        }
-        else
-        {
-            _allyThumbnail1.SetDisplayMode(true);
-            _enemyThumbnail1.SetDisplayMode(false);
-        }
+    _thumbnail1.SetCharacter(_character1);
+    _thumbnail2.SetCharacter(_character2);
 
-        DrawCharactersInformation(_character1, Vector2D(920, 140));
-    }
-    else
-    {
-        _enemyThumbnail1.SetDisplayMode(false);
-        _allyThumbnail1.SetDisplayMode(false);
-        for (auto icon : _icon1)
-        {
-            icon->SetDisplayMode(false);
-            icon->SetPriority(100);
-        }
-    }
-    
-    if (_character2 != nullptr)
-    {
-        if (_character2->GetType() == TiledObject::Type::ENEMY)
-        {
-            _enemyThumbnail2.SetDisplayMode(true);
-            _allyThumbnail2.SetDisplayMode(false);
-        }
-        else
-        {
-            _allyThumbnail2.SetDisplayMode(true);
-            _enemyThumbnail2.SetDisplayMode(false);
-        }
-
-        DrawCharactersInformation(_character2, Vector2D(920, 430));
-    }
-    else
-    {
-        _enemyThumbnail2.SetDisplayMode(false);
-        _allyThumbnail2.SetDisplayMode(false);
-        for (auto icon : _icon2)
-        {
-            icon->SetDisplayMode(false);
-            icon->SetPriority(100);
-        }
-    }
-}
-
-
-void ObjectInformationDrawer::DrawCharactersInformation(Character* chara, Vector2D pos)
-{
-//    Character::BattleParameter param = chara->GetBattleParameter();
-    const Character::BattleParameter& param = chara->_battleParameter;
-
-    auto color = (chara->GetType() == TiledObject::Type::ENEMY) ? ColorPalette::RED4 : ColorPalette::BLUE4;
-    Vector2D hpOffset(110, 130);
-    Debug::DrawString(pos + hpOffset, "HP");
-    Debug::DrawRectWithSize(pos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(chara->_maxHP) * 96, 12), color, true);
-    Debug::DrawRectWithSize(pos + hpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
-
-    std::string paramStr = "ATK : ";
-    paramStr += std::to_string(param._attack);
-    Debug::DrawString(pos + Vector2D(90, 170), paramStr);
-    
-    paramStr = "DEF : ";
-    paramStr += std::to_string(param._defence);
-    Debug::DrawString(pos + Vector2D(190, 170), paramStr);
-
-    paramStr = "MATK : ";
-    paramStr += std::to_string(param._attack);
-    Debug::DrawString(pos + Vector2D(90, 200), paramStr);
-
-    paramStr = "MDEF : ";
-    paramStr += std::to_string(param._defence);
-    Debug::DrawString(pos + Vector2D(180, 200), paramStr);
-
-    paramStr = "SPD : ";
-    paramStr += std::to_string(param._speed);
-    Debug::DrawString(pos  + Vector2D(130, 230), paramStr);
-
-    if (_character1 != nullptr)
-    {
-        for (auto icon : _icon1)
-        {
-            icon->SetDisplayMode(false);
-            icon->SetPriority(100);
-        }
-
-        Sprite* iconPtr = _icon1[GetIndexFromName(_character1->GetName())];
-        iconPtr->SetScale(Vector2D(2, 2));
-        iconPtr->SetDisplayMode(true);
-        iconPtr->SetPosition(Vector2D(920, 140) + Vector2D(140, 32));
-    }
-    if (_character2 != nullptr)
-    {
-        for (auto icon : _icon2)
-        {
-            icon->SetDisplayMode(false);
-            icon->SetPriority(100);
-        }
-
-        Sprite* iconPtr = _icon2[GetIndexFromName(_character2->GetName())];
-        iconPtr->SetScale(Vector2D(2, 2));
-        iconPtr->SetDisplayMode(true);
-        iconPtr->SetPosition(Vector2D(920, 430) + Vector2D(140, 32));
-    }
+    _thumbnail1.Draw();
+    _thumbnail2.Draw();
 }
