@@ -36,7 +36,7 @@ void StartPoint::Init()
 
     _graph.Load(fileName + ".png");
     _graph.SetPosition(tilePos.GetWorldPos());
-    _graph.SetPriority(-1);
+    _graph.SetPriority(Sprite::Priority::FIELD_OBJECT);
 
     TiledObject::Init();
 }
@@ -84,7 +84,7 @@ bool StartPoint::IsOverwritable(TiledObject* overwriter)
 int StartPoint::GetTimeUnitlNext() const
 {
     if (_appearData.size() <= _currentIndex)
-        return -1;
+        return NobodyIntruder();
 
     return _appearData[_currentIndex].second - _frameFromStart;
 }

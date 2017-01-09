@@ -35,11 +35,11 @@ Dungeon::Dungeon(std::string stageName)
 {
     _face.SetScale(Vector2D(2, 2));
 
-    _messageUI.SetPriority(100);
-    _mainsFrame.SetPriority(100);
-    _background.SetPriority(-100);
-    _windowBackground.SetPriority(-99);
-    _waveInfomartionBoard.SetPriority(100);
+    _messageUI.SetPriority(Sprite::Priority::UI);
+    _mainsFrame.SetPriority(Sprite::Priority::UI);
+    _background.SetPriority(Sprite::Priority::BACKGROUND);
+    _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
+    _waveInfomartionBoard.SetPriority(Sprite::Priority::UI);
 }
 
 
@@ -120,7 +120,7 @@ void Dungeon::Init()
     _enemys.Update();
     OBJECT_MGR->Refresh();
     
-    for (auto obj : OBJECT_MGR->_objects._objects)
+    for (auto obj : _objs)
     {
         if (obj != nullptr)
             obj->Init();
@@ -194,7 +194,7 @@ bool Dungeon::HasClear()
         return true;
     
     //ÅŒã‚Ì“G‚ð“|‚µ‚½‚çƒNƒŠƒA
-    if (_start->GetTimeUnitlNext() == -1
+    if (_start->GetTimeUnitlNext() == StartPoint::NobodyIntruder()
         && _enemys.GetColleagues() == 0
         && !HasGameOver())
         return true;

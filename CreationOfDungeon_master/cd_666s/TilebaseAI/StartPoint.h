@@ -26,6 +26,9 @@ public:
     //Ÿ‚Ì“G‚ªoŒ»‚·‚é‚Ü‚Å
     int GetTimeUnitlNext() const;
 
+    //“G‚ª‚à‚¤‚¢‚È‚¢‚±‚Æ‚ğ•\‚·”’l
+    static constexpr int NobodyIntruder() { return -1; }
+
 private:
     
     std::vector<AppearData> _appearData;

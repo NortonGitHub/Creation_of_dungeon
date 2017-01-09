@@ -20,8 +20,8 @@ TiledObjectInformation::TiledObjectInformation(Vector2D position)
     _enemyThumbnail.SetDisplayMode(false);
     _allyThumbnail.SetDisplayMode(false);
 
-    _enemyThumbnail.SetPriority(100);
-    _allyThumbnail.SetPriority(100);
+    _enemyThumbnail.SetPriority(Sprite::Priority::UI);
+    _allyThumbnail.SetPriority(Sprite::Priority::UI);
 
 }
 

@@ -37,7 +37,7 @@ void Goal::Init()
 
     _graph.Load(fileName + ".png");
     _graph.SetPosition(tilePos.GetWorldPos());
-    _graph.SetPriority(-1);
+    _graph.SetPriority(Sprite::Priority::FIELD_OBJECT);
 
     TiledObject::Init();
 }

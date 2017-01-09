@@ -21,7 +21,7 @@ MagicSquare::MagicSquare(TiledVector tilePos, Monster& monster)
 
     _graph.Load("graph/tiledObject/magicSquare_Ready.png");
     _graph.SetPosition(_position);
-    _graph.SetPriority(-1);
+    _graph.SetPriority(Sprite::Priority::FIELD_OBJECT);
     _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 
 

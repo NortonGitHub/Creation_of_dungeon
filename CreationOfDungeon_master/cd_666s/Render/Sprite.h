@@ -13,6 +13,14 @@ public:
     Sprite(std::string fileName, Vector2D pos = Vector2D::zero);
     ~Sprite();
 
+    enum class Priority
+    {
+        BACKGROUND = -100,  //背景画像
+        FIELD_BASE = -2,    //マップチップの地面など一番後ろに描かれるもの
+        FIELD_OBJECT = -1,  //地面よりは前に、キャラクター等よりは後ろに描かれるもの
+        UI = 100,
+    };
+
     Vector2D GetPosition() const { return _position; }
     Vector2D GetScale() const;
 
@@ -21,6 +29,7 @@ public:
     void SetBaseColor(Color4 color){ if(_tex != nullptr) _tex->SetBaseColor(color); }
     void SetDisplayMode(bool isDisplaying) { if (_tex != nullptr) _tex->SetDisplayMode(isDisplaying); }
     void SetPriority(int priority) { if (_tex != nullptr) _tex->SetPriority(priority); }
+    void SetPriority(Priority priority) { if (_tex != nullptr) _tex->SetPriority(static_cast<int>(priority)); }
 
     Texture2D* GetTexturePtr() { return _tex; }
     
