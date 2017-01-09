@@ -13,7 +13,8 @@ TiledObject::TiledObject(TiledVector pos)
 
 TiledObject::~TiledObject()
 {
-    FIELD->RemoveObject(*this);
+    if (_tile != nullptr)
+        FIELD->RemoveObject(*this);
 }
 
 
