@@ -1,0 +1,5 @@
+hp, attack, defence, speed, interval(sec), name
+10, 20, 20, 10, 5, blaver
+10, 20, 20, 10, 10, blaver
+10, 20, 20, 10, 15, blaver
+80, 20, 20, 10, 25, blaver
