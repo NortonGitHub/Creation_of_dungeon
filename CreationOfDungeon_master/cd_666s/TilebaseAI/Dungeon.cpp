@@ -1,15 +1,12 @@
 #include "Dungeon.h"
-#include "../InputManager/KeyInput.h"
 #include "../InputManager/InputManager.h"
 #include "../Action/ActionManager.h"
-#include "../Render/Sprite.h"
 #include "../Render/RenderManager.h"
 #include "../Resources/ResourceManager.h"
 #include "../DebugDraw.h"
 #include "../Utility/CSVReader.h"
 
 #include "TileField.h"
-#include "Player.h"
 #include "Enemy.h"
 #include "Monster.h"
 #include "Obstacle.h"
@@ -23,47 +20,26 @@
 
 
 Dungeon::Dungeon(std::string stageName)
-    : _count(0)
-    , _currentWaveInterval(120)
-    , _permitivePassedNum(2)
+    : _permitivePassedNum(2)
     , _stageName(stageName)
     , _goal(nullptr)
     , _start(nullptr)
+
     , _face("graph/devilGirlUsual.png", Vector2D(40, 545))
     , _messageUI("graph/ui/message_window.png", Vector2D(20, 520))
+
     , _mainsFrame("graph/ui/main_window.png", Vector2D(20, 20))
     , _background("graph/background/background.png", Vector2D(0, 0))
     , _windowBackground("graph/ui/main_window_background1.png", Vector2D(28, 28))
-    , _information("graph/ui/enemyinformation.png", Vector2D(754, 248))
-    , _halfSE("sound/time_half1.wav")
-    , _littleSE("sound/time_little1.wav")
-    , _endSE("sound/game_end.wav")
+    , _waveInfomartionBoard("graph/ui/enemyinformation.png", Vector2D(754, 248))
 {
     _face.SetScale(Vector2D(2, 2));
 
-    _messageUI.GetTexturePtr()->SetPriority(100);
-    _mainsFrame.GetTexturePtr()->SetPriority(100);
-    _background.GetTexturePtr()->SetPriority(-100);
-    _windowBackground.GetTexturePtr()->SetPriority(-99);
-    _information.GetTexturePtr()->SetPriority(100);
-
-    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("blaver")));
-    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("magician")));
-    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("fighter")));
-    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("bone")));
-    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("ghost")));
-    _icons.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("minotaur")));
-
-    for (auto icon : _icons)
-    {
-        icon->GetTexturePtr()->SetPriority(101);
-        icon->SetDisplayMode(false);
-        icon->SetPosition(Vector2D(754 + 30, 248 + 175));
-    }
-
-    _halfSE.SetVolume(200);
-    _littleSE.SetVolume(200);
-    _endSE.SetVolume(200);
+    _messageUI.SetPriority(100);
+    _mainsFrame.SetPriority(100);
+    _background.SetPriority(-100);
+    _windowBackground.SetPriority(-99);
+    _waveInfomartionBoard.SetPriority(100);
 }
 
 
@@ -76,7 +52,6 @@ Dungeon::~Dungeon()
 
 void Dungeon::Init()
 {
-    _count = 0;
     _controller.Init();
     _infoDrawer.Init();
     
@@ -89,12 +64,10 @@ void Dungeon::Init()
     fileName += (_stageName + ".csv");
     std::vector<std::string> waveInfoArray;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, waveInfoArray, 1);
-    
-    _currentWaveInterval = std::stoi(waveInfoArray[0]);
+
+    auto waveInterval = std::stoi(waveInfoArray[0]);
+    _timer.InitWithSetup(waveInterval);
     _permitivePassedNum = std::stoi(waveInfoArray[1]);
-    
-    //ゲーム時間換算で秒単位に変換
-    _currentWaveInterval *= 60;
     
     //フィールドのサイズを読み込む
     fileName = "data/map";
@@ -129,6 +102,9 @@ void Dungeon::Init()
     
     assert( (_goal != nullptr) && (_start != nullptr) && "Cannot Read Start and Goal");
     
+    //侵入位置を設定
+    _intruderInformation.InitWithSetup(_start);
+
     //キャラたちをロード
     fileName = "data/enemys";
     fileName += (_stageName + ".csv");
@@ -154,7 +130,7 @@ void Dungeon::Init()
 
 void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 {
-    FIELD->SetRawNumver(TiledVector(countX, countY), stoi(typeName));
+    FIELD->SetRawNumber(TiledVector(countX, countY), stoi(typeName));
 
     std::vector<TiledObject*>& _objs = OBJECT_MGR->_objects._objects;
     switch(stoi(typeName))
@@ -197,14 +173,6 @@ void Dungeon::Clear()
 {
     _infoDrawer.Clear();
 
-    for (auto icon : _icons)
-    {
-        delete icon;
-        icon = nullptr;
-    }
-    _icons.clear();
-    _icons.resize(0);
-
     FIELD->Clear();
     OBJECT_MGR->_objects.Clear();
     
@@ -218,7 +186,7 @@ void Dungeon::Clear()
 bool Dungeon::HasClear()
 {
     //WAVEを耐えきったらクリア
-    if (_currentWaveInterval < _count)
+    if (_timer.HasTimeUp())
         return true;
     
     //WAVE中の敵を全滅させたらクリア
@@ -238,7 +206,6 @@ bool Dungeon::HasClear()
 bool Dungeon::HasGameOver()
 {
     auto passedNum = _goal->GetPassedNum();
-    
     if (_permitivePassedNum < passedNum)
         return true;
         
@@ -248,27 +215,7 @@ bool Dungeon::HasGameOver()
 
 void Dungeon::Update()
 {
-    //時間になったら初期化
-    if (_currentWaveInterval < _count)
-    {
-        return;
-    }
-    else
-    {
-        _count++;
-    }
-    
-    auto timeRatio = static_cast<double>(_count) / _currentWaveInterval;
-    if (timeRatio == 0.5)
-    {
-        if (!_halfSE.IsPlaying())
-            _halfSE.Play();
-    }
-    else if (timeRatio == 0.8)
-    {
-        if (!_littleSE.IsPlaying())
-            _littleSE.Play();
-    }
+    _timer.Update();
 
     //情報網更新
     _monsters.Update();
@@ -282,20 +229,13 @@ void Dungeon::Update()
         if (obj != nullptr)
             obj->Update();
     }
-
-    //時間になったら初期化
-    if (_currentWaveInterval == _count)
-    {
-        if (!_endSE.IsPlaying())
-            _endSE.Play();
-    }
 }
 
 
 void Dungeon::Draw()
 {
     //時間になったら初期化
-    if (_currentWaveInterval < _count)
+    if (_timer.HasTimeUp())
         return;
 
     FIELD->Draw();
@@ -311,9 +251,6 @@ void Dungeon::Draw()
     
     OBJECT_MGR->Refresh();
 
-    //ステージ名表示
-    Debug::DrawString(Vector2D(625, 0), _stageName);
-    
     //メッセージウィンドウ仮表示
     Debug::DrawString(Vector2D(300, 600), "クリエイションオブダンジョン体験版にようこそ");
 
@@ -322,39 +259,17 @@ void Dungeon::Draw()
     Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), ColorPalette::WHITE4, false);
     Debug::DrawString(Vector2D(1010, 64), "洞窟ダンジョン その" + _stageName);
 
-    //その他情報表示
-    Vector2D subWindowPos = _information.GetPosition();
-    //残り時間デバッグ表示
-    std::string timerStr = "Time:";
-    Debug::DrawString(_information.GetPosition() + Vector2D(20, 20), timerStr);
-    timerStr = std::to_string((_currentWaveInterval - _count) / 60);
-    timerStr += "/";
-    timerStr += std::to_string(_currentWaveInterval / 60);
-    Debug::DrawString(_information.GetPosition() + Vector2D(40, 40), timerStr);
+    //残り時間表示
+    _timer.Draw();
 
     //ノルマ表示
     std::string passed = "MISS:";
-    Debug::DrawString(_information.GetPosition() + Vector2D(20, 85), passed);
+    Debug::DrawString(_waveInfomartionBoard.GetPosition() + Vector2D(20, 85), passed);
     passed = std::to_string(_goal->GetPassedNum());
     passed += "/";
     passed += std::to_string(_permitivePassedNum);
-    Debug::DrawString(_information.GetPosition() + Vector2D(50, 105), passed);
+    Debug::DrawString(_waveInfomartionBoard.GetPosition() + Vector2D(50, 105), passed);
 
-    //残党数表示
-    for (auto icon : _icons)
-    {
-        icon->SetDisplayMode(false);
-    }
-    Debug::DrawString(_information.GetPosition() + Vector2D(25, 155), "NEXT");
-    if (_start->GetTimeUnitlNext() != -1)
-    {
-        auto chara = _start->GetNextEnemy();
-        if (chara != nullptr)
-        {
-            std::string name = chara->GetName();
-            _icons[ObjectInformationDrawer::GetIndexFromName(name)]->SetDisplayMode(true);
-        }
-        Debug::DrawString(_information.GetPosition() + Vector2D(65, 170), "あと");
-        Debug::DrawString(_information.GetPosition() + Vector2D(70, 190), std::to_string(_start->GetTimeUnitlNext() / 60));
-    }
+    //侵入者情報表示
+    _intruderInformation.Draw();
 }

@@ -6,6 +6,8 @@
 #include "TiledVector.h"
 #include "ColleagueNotifyer.h"
 #include "ObjectInformationDrawer.h"
+#include "IntruderInfomation.h"
+#include "DungeonTimer.h"
 #include "../../Vector2D.h"
 #include "../Render/Sprite.h"
 #include "../Sound/Sound.h"
@@ -35,9 +37,8 @@ public:
     
 private:
     
-    //ゲーム時間
-    long _currentWaveInterval;
-    long _count;
+    //ゲーム時間と時間通知モジュール群
+    DungeonTimer _timer;
 
     //勇者を通してもいい数
     int _permitivePassedNum;
@@ -49,16 +50,22 @@ private:
     //同盟間の情報共有網
     ColleagueNotifyer _enemys, _monsters;
     
-    ObjectInformationDrawer _infoDrawer;
-    MonsterController _controller;
+    //開始点と終了地点はグローバルなレベルでインスタンス生成しておく
     Goal* _goal;
     StartPoint* _start;
 
-    Sound _halfSE, _littleSE, _endSE;
+    //モンスター操作モジュール
+    MonsterController _controller;
+
+    //選択したモンスターの情報
+    ObjectInformationDrawer _infoDrawer;
+
+    //次に侵入してくるモンスターの情報
+    IntruderInfomation _intruderInformation;
 
     // MEMO : debug用
-    Sprite _face, _messageUI, _mainsFrame, _background, _windowBackground, _information;
-    std::vector<Sprite*> _icons;
+    Sprite _face, _messageUI, _mainsFrame, _background, _windowBackground, _waveInfomartionBoard;
+    //std::vector<Sprite*> _icons;
 };
 
 #endif /* Dungeon_h */
