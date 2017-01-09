@@ -4,9 +4,9 @@
 DungeonTimer::DungeonTimer()
     : _count(0)
     , _waveInterval(0)
-    , _halfSE("sound/time_half1.wav")
-    , _littleSE("sound/time_little1.wav")
-    , _endSE("sound/game_end.wav")
+    , _halfSE("resourse/sound/time_half1.wav")
+    , _littleSE("resourse/sound/time_little1.wav")
+    , _endSE("resourse/sound/game_end.wav")
     , _position(754, 248)
 {
     _halfSE.SetVolume(200);

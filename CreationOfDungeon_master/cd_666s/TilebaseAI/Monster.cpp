@@ -19,8 +19,8 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 , _hasAppeared(false)
 , _searchLength(4)
 , _direction(TiledVector::Direction::FORWARD)
-, _defeatSE("sound/enemy_fall2.wav")
-, _appearSE("sound/flame.wav")
+, _defeatSE("resourse/sound/enemy_fall2.wav")
+, _appearSE("resourse/sound/flame.wav")
 {
     _name = monsterName;
     _target = target;
@@ -36,7 +36,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
     }));
 
     _ai = _astar;
-    std::string fileName = "graph/tiledObject/";
+    std::string fileName = "resourse/graph/tiledObject/";
     fileName += _name;
     _currentGraphPtr = _front.SetWithCreate(fileName + "_front.png", 32, 32, 2, 24);
     _right.SetWithCreate(fileName + "_right.png", 32, 32, 2, 24);

@@ -21,7 +21,7 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
 , _searchLength(4)
 , _hasAppeared(false)
 , _direction(TiledVector::Direction::FORWARD)
-, _enterSE("sound/blockSelect.wav")
+, _enterSE("resourse/sound/blockSelect.wav")
 {
     _name = enemyName;
     _target = &baseTarget;
@@ -38,7 +38,7 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     }));
     _ai = _astar;
 
-    std::string fileName = "graph/tiledObject/";
+    std::string fileName = "resourse/graph/tiledObject/";
     fileName += _name;
     _currentGraphPtr = _front.SetWithCreate(fileName + "_front.png", 32, 32, 2, 24);
     _right.SetWithCreate(fileName + "_right.png", 32, 32, 2, 24);

@@ -17,7 +17,7 @@ River::~River()
 void River::Init()
 {
     auto tilePos = GetTilePos();
-    std::string fileName = "graph/background/";
+    std::string fileName = "resourse/graph/background/";
 
     //¶‚ªì‚È‚ç
     if (FIELD->GetRawNumber(tilePos + TiledVector(-1, 0)) == 6)

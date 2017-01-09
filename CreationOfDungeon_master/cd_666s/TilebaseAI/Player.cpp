@@ -9,7 +9,7 @@ Player::Player(TiledVector pos, ColleagueNotifyer& notifyer)
     , _time(0)
     , _updateInterval(15)
 {
-    _graph.Load("graph/player.png");
+    _graph.Load("resourse/graph/player.png");
 
     _position = pos.GetWorldPos();
     _beforeTilePos = GetTilePos();

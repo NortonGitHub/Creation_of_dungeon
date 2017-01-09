@@ -7,8 +7,8 @@
 TiledObjectInformation::TiledObjectInformation(Vector2D position)
     : _position(position)
     , _character(nullptr)
-    , _enemyThumbnail("graph/enemy_thumbnail.png", position)
-    , _allyThumbnail("graph/ally_thumbnail.png", position)
+    , _enemyThumbnail("resourse/graph/enemy_thumbnail.png", position)
+    , _allyThumbnail("resourse/graph/ally_thumbnail.png", position)
 {
     _icon.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("blaver")));
     _icon.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("magician")));

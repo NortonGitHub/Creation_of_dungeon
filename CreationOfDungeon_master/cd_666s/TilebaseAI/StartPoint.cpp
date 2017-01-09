@@ -23,7 +23,7 @@ StartPoint::~StartPoint()
 void StartPoint::Init()
 {
     auto tilePos = GetTilePos();
-    std::string fileName = "graph/background/";
+    std::string fileName = "resourse/graph/background/";
 
     if (!FIELD->IsInside(tilePos + TiledVector(0, -1)))
     {

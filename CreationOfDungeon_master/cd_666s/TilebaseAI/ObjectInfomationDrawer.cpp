@@ -12,7 +12,7 @@ ObjectInformationDrawer::ObjectInformationDrawer()
 , _character2(nullptr)
 , _thumbnail1({ 920, 140 })
 , _thumbnail2({ 920, 430 })
-, _selectSE("sound/decide.wav")
+, _selectSE("resourse/sound/decide.wav")
 {
     Init();
 }
@@ -47,22 +47,22 @@ void ObjectInformationDrawer::Init()
 std::string ObjectInformationDrawer::GetIconNameFromName(std::string name)
 {
     if (name == "magician")
-        return "graph/tiledObject/magician.png";
+        return "resourse/graph/tiledObject/magician.png";
 
     if (name == "blaver")
-        return "graph/tiledObject/blaver.png";
+        return "resourse/graph/tiledObject/blaver.png";
 
     if (name == "fighter")
-        return "graph/tiledObject/fighter.png";
+        return "resourse/graph/tiledObject/fighter.png";
 
     if (name == "minotaur")
-        return "graph/tiledObject/minotaur.png";
+        return "resourse/graph/tiledObject/minotaur.png";
 
     if (name == "bone")
-        return "graph/tiledObject/bone.png";
+        return "resourse/graph/tiledObject/bone.png";
 
     if (name == "ghost")
-        return "graph/tiledObject/ghost.png";
+        return "resourse/graph/tiledObject/ghost.png";
 
     return "";
 }

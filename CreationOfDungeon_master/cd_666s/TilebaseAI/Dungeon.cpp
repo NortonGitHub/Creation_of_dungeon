@@ -24,14 +24,12 @@ Dungeon::Dungeon(std::string stageName)
     , _stageName(stageName)
     , _goal(nullptr)
     , _start(nullptr)
-
-    , _face("graph/devilGirlUsual.png", Vector2D(40, 545))
-    , _messageUI("graph/ui/message_window.png", Vector2D(20, 520))
-
-    , _mainsFrame("graph/ui/main_window.png", Vector2D(20, 20))
-    , _background("graph/background/background.png", Vector2D(0, 0))
-    , _windowBackground("graph/ui/main_window_background1.png", Vector2D(28, 28))
-    , _waveInfomartionBoard("graph/ui/enemyinformation.png", Vector2D(754, 248))
+    , _face("resourse/graph/devilGirlUsual.png", Vector2D(40, 545))
+    , _messageUI("resourse/graph/ui/message_window.png", Vector2D(20, 520))
+    , _mainsFrame("resourse/graph/ui/main_window.png", Vector2D(20, 20))
+    , _background("resourse/graph/background/background.png", Vector2D(0, 0))
+    , _windowBackground("resourse/graph/ui/main_window_background1.png", Vector2D(28, 28))
+    , _waveInfomartionBoard("resourse/graph/ui/enemyinformation.png", Vector2D(754, 248))
 {
     _face.SetScale(Vector2D(2, 2));
 
@@ -60,7 +58,7 @@ void Dungeon::Init()
     CSVReader reader;
     
     //ウェーブの情報を読み込む
-    std::string fileName = "data/wave";
+    std::string fileName = "csv/StageData/wave";
     fileName += (_stageName + ".csv");
     std::vector<std::string> waveInfoArray;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, waveInfoArray, 1);
@@ -70,7 +68,7 @@ void Dungeon::Init()
     _permitivePassedNum = std::stoi(waveInfoArray[1]);
     
     //フィールドのサイズを読み込む
-    fileName = "data/map";
+    fileName = "csv/StageData/map";
     fileName += (_stageName + ".csv");
     auto fieldSizeH = reader.GetLineSize(fileName, 0);
     auto fieldSizeV = reader.GetLineNum(fileName);
@@ -106,11 +104,11 @@ void Dungeon::Init()
     _intruderInformation.InitWithSetup(_start);
 
     //キャラたちをロード
-    fileName = "data/enemys";
+    fileName = "csv/StageData/enemys";
     fileName += (_stageName + ".csv");
     Enemy::LoadEnemys(_objs, _start, _goal, _enemys, fileName);
 
-    fileName = "data/monsters";
+    fileName = "csv/StageData/monsters";
     fileName += (_stageName + ".csv");
     Monster::LoadMonsters(_objs, _monsters, fileName);
     

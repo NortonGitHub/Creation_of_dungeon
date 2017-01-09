@@ -12,11 +12,11 @@ BattlingTile::BattlingTile(Enemy& enemy, Monster& monster, TiledVector tilePos)
 , _count(0)
 , _attackMonster(true)  //ñÇï®Ç©ÇÁçUåÇÇ≈Ç´ÇÈ
 {
-    _graph.Load("graph/tiledObject/dust1.png");
+    _graph.Load("resourse/graph/tiledObject/dust1.png");
     _graph.SetPosition(tilePos.GetWorldPos());
     _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 
-    _dust2.Load("graph/tiledObject/dust2.png");
+    _dust2.Load("resourse/graph/tiledObject/dust2.png");
     _dust2.SetPosition(tilePos.GetWorldPos());
     _dust2.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 
