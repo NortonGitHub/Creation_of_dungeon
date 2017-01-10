@@ -5,7 +5,6 @@
 #include "cd_666s/Resources/AllResourceManager.h"
 #include "cd_666s/InputManager/InputManager.h"
 #include "cd_666s/Render/RenderManager.h"
-#include "cd_666s/Action/ActionManager.h"
 #include "DxLib.h"
 #include <Windows.h>
 #include <direct.h>
