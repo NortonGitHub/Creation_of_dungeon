@@ -32,7 +32,12 @@ namespace Debug
     void DrawString(Vector2D pos, std::string str, Color4 color = ColorPalette::BLACK4);
     void DrawStringDirectly(Vector2D pos, std::string str, Color4 color);
 
-    class DebugDraw { public: virtual void Draw() = 0; };
+    class DebugDraw 
+    {
+    public: 
+        virtual ~DebugDraw() {};
+        virtual void Draw() = 0; 
+    };
 
     class Line : public DebugDraw
     {
