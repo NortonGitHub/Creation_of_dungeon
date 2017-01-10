@@ -19,7 +19,6 @@ RenderManager::~RenderManager()
 
 void RenderManager::ClearModel()
 {
-    //_poolingSystem.Clear();
     _defaultCamera.Clear();
     _uiCamera.Clear();
 }
@@ -71,7 +70,6 @@ void RenderManager::AddRenderModel(Texture2D *model)
             _defaultCamera.AddRenderModel(model);
             break;
     }
-    //_poolingSystem.Add(model);
 }
 
 
@@ -88,7 +86,6 @@ void RenderManager::RemoveRenderModel(Texture2D *model)
             _defaultCamera.RemoveRenderModel(model);
             break;
     }
-    //_poolingSystem.Remove(model);
 }
 
 
@@ -105,11 +102,9 @@ void RenderManager::ChangePriority(Texture2D* model, int oldPriority, int newPri
             _defaultCamera.ChangePriority(oldPriority, newPriority);
             break;
     }
-    //_poolingSystem.Remove(model);
 }
 
 
 void RenderManager::Update()
 {
-    //_poolingSystem.Update();
 }
