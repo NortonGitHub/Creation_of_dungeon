@@ -2,7 +2,7 @@
 #include "TileField.h"
 #include "AI/WallTracing.h"
 #include "AI/AstarChaser.h"
-#include "../Resources/ResourceManager.h"
+#include "../Resources/AllResourceManager.h"
 #include "../DebugDraw.h"
 #include "../InputManager/InputManager.h"
 #include "ColleagueNotifyer.h"
@@ -24,8 +24,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 {
     _name = monsterName;
     _target = target;
-    //_wallTrace = new WallTracing(*this, _pathToTarget);
-    _astar = new AstarChaser(_target, *this, _pathToTarget, 100, true);
+    _astar = std::make_unique<AstarChaser>(_target, *this, _pathToTarget, 100, true);
     _astar->SetAdditionalFunc(std::move([&](TiledObject* obj)
     {
         if (obj->GetType() != Type::ENEMY)
@@ -35,7 +34,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
         return (!enemy->_isBattling); 
     }));
 
-    _ai = _astar;
+    _ai = _astar.get();
     std::string fileName = "resourse/graph/tiledObject/";
     fileName += _name;
     _currentGraphPtr = _front.SetWithCreate(fileName + "_front.png", 32, 32, 2, 24);
@@ -59,7 +58,6 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 
 Monster::~Monster()
 {
-    delete _astar;
 }
 
 

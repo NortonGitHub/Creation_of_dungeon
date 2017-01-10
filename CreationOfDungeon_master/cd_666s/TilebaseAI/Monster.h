@@ -4,6 +4,7 @@
 #include "Character.h"
 #include "../../mw_animation/Animator.h"
 #include "../Sound/Sound.h"
+#include <memory>
 
 class PathFindingAIBase;
 class WallTracing;
@@ -72,8 +73,7 @@ private:
     TiledVector::Direction _direction;
     std::vector<TiledVector> _sight;
     
-    WallTracing* _wallTrace;
-    AstarChaser* _astar;
+    std::unique_ptr<AstarChaser> _astar;
     
     //©•ª‚ªƒNƒŠƒbƒNó‘Ô‚©‚Ç‚¤‚©
     bool _hasChoosed;

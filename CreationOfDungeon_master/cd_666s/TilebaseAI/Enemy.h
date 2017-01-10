@@ -2,6 +2,7 @@
 #include "Character.h"
 #include "../Sound/Sound.h"
 #include "../../mw_animation/Animator.h"
+#include <memory>
 #include <string>
 
 class PathFindingAIBase;
@@ -74,7 +75,7 @@ private:
     TiledVector::Direction _direction;
     std::vector<TiledVector> _sight;
     
-    AstarChaser* _astar;
+    std::unique_ptr<AstarChaser> _astar;
     
     //©•ª‚ª¢Š«Ï‚İ‚©‚Ç‚¤‚©
     bool _hasAppeared;

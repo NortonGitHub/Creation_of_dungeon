@@ -1,7 +1,7 @@
 #include "Enemy.h"
 #include "TileField.h"
 #include "AI/AstarChaser.h"
-#include "../Resources/ResourceManager.h"
+#include "../Resources/AllResourceManager.h"
 #include "../DebugDraw.h"
 #include "StartPoint.h"
 #include "Goal.h"
@@ -26,7 +26,7 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     _name = enemyName;
     _target = &baseTarget;
     
-    _astar = new AstarChaser(_target, *this, _pathToTarget, 20, true);
+    _astar = std::make_unique<AstarChaser>(_target, *this, _pathToTarget, 20, true);
     //Ž©•ª‚Ì–¡•û‚ªŒo˜Hã‚É‚¢‚½‚ç‰ñ‚èž‚Ü‚¸Œp‘±‚·‚é
     _astar->SetAdditionalFunc(std::move([&](TiledObject* obj)
     {
@@ -36,7 +36,7 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
         auto enemy = dynamic_cast<Enemy*>(obj);
         return !enemy->_isBattling;
     }));
-    _ai = _astar;
+    _ai = _astar.get();
 
     std::string fileName = "resourse/graph/tiledObject/";
     fileName += _name;
@@ -59,7 +59,6 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
 
 Enemy::~Enemy()
 {
-    delete _astar;
 }
 
 
