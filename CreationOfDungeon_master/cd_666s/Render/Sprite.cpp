@@ -37,9 +37,7 @@ Sprite::~Sprite()
 
 void Sprite::Load(std::string fileName)
 {
-    _textureResource = std::dynamic_pointer_cast<ImageResource>
-    (RESOURCE_TABLE->Create(std::make_shared<ImageResource>(fileName)));
-    
+    _textureResource = IMAGE_RESOURCE_TABLE->Create(IMAGE_RESOURCE_TABLE->GetFolderPath() + fileName);
     if (_textureResource == nullptr)
         return;
     

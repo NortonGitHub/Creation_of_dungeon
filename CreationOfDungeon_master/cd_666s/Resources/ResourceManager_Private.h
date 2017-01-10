@@ -1,15 +1,15 @@
 #include "ResourceManager.h"
-//#include "ImageResource.h"
-//#include "SoundResource.h"
 using namespace std;
 
-ResourceManager::ResourceManager()
+template <typename T>
+ResourceManager<T>::ResourceManager()
 : _filePath("resource/")    //リソースディレクトリの最上位パス
 , _empty(nullptr)
 {
 }
 
-std::weak_ptr<Resource> ResourceManager::GetResource(std::string name)
+template <typename T>
+std::weak_ptr<T> ResourceManager<T>::GetResource(std::string name)
 {
     auto it = _nameMap.find(name);
     bool hasLoaded = (it != _nameMap.end()
@@ -28,10 +28,11 @@ std::weak_ptr<Resource> ResourceManager::GetResource(std::string name)
 }
 
 
-shared_ptr<Resource> ResourceManager::Create(shared_ptr<Resource> resource)
+template <typename T>
+shared_ptr<T> ResourceManager<T>::Create(std::string fileName)
 {
     //ロード済みかチェック
-    auto it = _nameMap.find(resource->GetName());
+    auto it = _nameMap.find(fileName);
     bool hasLoaded = (it != _nameMap.end()
                       && _resourceTable[it->second] != nullptr);
     
@@ -45,21 +46,22 @@ shared_ptr<Resource> ResourceManager::Create(shared_ptr<Resource> resource)
         if (_resourceTable[i].get() == nullptr)
         {
             //そこに生成して終了
-            _resourceTable[i] = resource;
-            _nameMap.insert(make_pair(resource->GetName(), i));
-            return resource;
+            _resourceTable[i] = std::make_shared<T>(fileName);
+            _nameMap.insert(make_pair(fileName, i));
+            return _resourceTable[i];
         }
     }
     
     //nullが無ければ最後に生成して終了
-    _resourceTable.push_back(resource);
-    _nameMap.insert(make_pair(resource->GetName(), _resourceTable.size() - 1));
+    _resourceTable.push_back(std::make_shared<T>(fileName));
+    _nameMap.insert(make_pair(fileName, _resourceTable.size() - 1));
     
-    return resource;
+    return _resourceTable[_resourceTable.size() - 1];
 }
 
 
-void ResourceManager::Update()
+template <typename T>
+void ResourceManager<T>::Update()
 {
     for (size_t i = 0; i < _resourceTable.size(); ++i)
     {
@@ -67,36 +69,41 @@ void ResourceManager::Update()
         if (_resourceTable[i].get() == nullptr)
             continue;
         
+        size_t count = _resourceTable[i].use_count();
         
         //使用数が vectorに格納する参照 + 一時変数resource しかない
         // = 他から参照されなくなった　ら削除する
-        if (1 < _resourceTable[i].use_count())
+        if (1 < count)
             continue;
         
         Remove(_resourceTable[i].get()->GetName());
     }
 }
 
-void ResourceManager::Debug()
+
+template <typename T>
+void ResourceManager<T>::Debug()
 {
     /*
-    for (size_t i = 0; i < _resourceTable.size(); ++i)
-    {
-        std::weak_ptr<Resource> resource = _resourceTable[i];
-        
-        //空リソースなら無視
-        if (resource._Get() == nullptr)
-            continue;
-        
-        DrawFormatString(0,  0 + (i + 1) * 60, GetColor(0x00, 0x00, 0x00), (_resourceTable[i]->GetName()).c_str());
-        DrawFormatString(0, 30 + (i + 1) * 60, GetColor(0x00, 0x00, 0x00), "%d:", _resourceTable[i].use_count());
-    }
-    
-    DrawFormatString(0, 0, GetColor(0x00, 0x00, 0x00), "list size : %d", _resourceTable.size());
-    */
+     for (size_t i = 0; i < _resourceTable.size(); ++i)
+     {
+     std::weak_ptr<Resource> resource = _resourceTable[i];
+     
+     //空リソースなら無視
+     if (resource._Get() == nullptr)
+     continue;
+     
+     DrawFormatString(0,  0 + (i + 1) * 60, GetColor(0x00, 0x00, 0x00), (_resourceTable[i]->GetName()).c_str());
+     DrawFormatString(0, 30 + (i + 1) * 60, GetColor(0x00, 0x00, 0x00), "%d:", _resourceTable[i].use_count());
+     }
+     
+     DrawFormatString(0, 0, GetColor(0x00, 0x00, 0x00), "list size : %d", _resourceTable.size());
+     */
 }
 
-void ResourceManager::Remove(const string name)
+
+template <typename T>
+void ResourceManager<T>::Remove(const string name)
 {
     if (    _nameMap.size() == 0
         && _resourceTable.size() == 0)
@@ -105,16 +112,22 @@ void ResourceManager::Remove(const string name)
     //ロード済みマップから削除
     size_t index = _nameMap[name];
     _nameMap.erase(_nameMap.find(name));
+    _resourceTable[index].reset();
     _resourceTable[index] = _empty;
 }
 
-void ResourceManager::Refresh()
+
+template <typename T>
+void ResourceManager<T>::Refresh()
 {
-    vector<shared_ptr<Resource>> swaped;
+    //まずカラ要素を更新
+    Update();
+
+    vector<shared_ptr<T>> swaped;
     
     for (size_t i = 0; i < _resourceTable.size(); ++i)
     {
-        if (_resourceTable[i] == _empty)
+        if (_resourceTable[i].get() == nullptr)
             continue;
         
         //empty以外を追加する
@@ -129,7 +142,8 @@ void ResourceManager::Refresh()
 }
 
 
-void ResourceManager::Clear()
+template <typename T>
+void ResourceManager<T>::Clear()
 {
     for (size_t i = 0; i < _resourceTable.size(); ++i)
     {
@@ -139,10 +153,15 @@ void ResourceManager::Clear()
         
         Remove(_resourceTable[i].get()->GetName());
     }
+    
+    _resourceTable.clear();
+    _resourceTable.resize(0);
+    _nameMap.clear();
 }
 
 
-ResourceManager::~ResourceManager()
+template <typename T>
+ResourceManager<T>::~ResourceManager()
 {
     _resourceTable.clear();
     _nameMap.clear();

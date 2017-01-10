@@ -6,20 +6,23 @@
 #include <vector>
 #include "../Utility/Singleton.h"
 #include "Resource.h"
+#include "ImageResource.h"
+#include "SoundResource.h"
 
 /*
  生成されるリソースハンドルを
  一意なファイル名 と shared_ptrのインデクスのペア で管理するクラス
  */
 
-class ResourceManager : public Singleton<ResourceManager>
+template <typename T>
+class ResourceManager : public Singleton<ResourceManager<T>>
 {
     friend class Singleton<ResourceManager>;
     
 public:
     
     //リソースを作成・取得
-    std::shared_ptr<Resource> Create(std::shared_ptr<Resource> resource);
+    std::shared_ptr<T> Create(std::string fileName);
     
     //リソースの参照カウンタをチェックして不要なものを管理から外す
     void Update();
@@ -36,15 +39,13 @@ public:
     void SetFolderPath(std::string str){ _filePath = str; }
     
     //リソースのweak_ptrを取得
-    std::weak_ptr<Resource> GetResource(std::string name);
-    
+    std::weak_ptr<T> GetResource(std::string name);
     
 private:
     
     //リソースを管理から外して削除
     void Remove(const std::string name);
-    void Push(std::string name);
-    
+
     ResourceManager();
     ~ResourceManager();
     
@@ -52,15 +53,19 @@ private:
     std::string _filePath;
     
     //削除されたリソースの位置に代入しておくための空のリソース
-    const std::shared_ptr<Resource> _empty;
+    const std::shared_ptr<T> _empty;
     
     //リソースの配列
-    std::vector< std::shared_ptr<Resource> > _resourceTable;
+    std::vector<std::shared_ptr<T>> _resourceTable;
     
     //リソースの管理名の配列
     std::map<std::string, size_t> _nameMap;
+    
 };
 
-#define RESOURCE_TABLE ResourceManager::GetInstance()
+#include "ResourceManager_Private.h"
+
+#define IMAGE_RESOURCE_TABLE ResourceManager<ImageResource>::GetInstance()
+#define SOUND_RESOURCE_TABLE ResourceManager<SoundResource>::GetInstance()
 
 #endif

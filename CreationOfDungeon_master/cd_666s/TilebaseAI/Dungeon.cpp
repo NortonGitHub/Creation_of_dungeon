@@ -2,7 +2,7 @@
 #include "../InputManager/InputManager.h"
 #include "../Action/ActionManager.h"
 #include "../Render/RenderManager.h"
-#include "../Resources/ResourceManager.h"
+#include "../Resources/AllResourceManager.h"
 #include "../DebugDraw.h"
 #include "../Utility/CSVReader.h"
 

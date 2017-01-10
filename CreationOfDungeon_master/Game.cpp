@@ -3,7 +3,7 @@
 #include "FunctionSyncParameter.h"
 #include "cd_666s/InputManager/InputManager.h"
 #include "cd_666s/DebugDraw.h"
-#include "cd_666s/Resources/ResourceManager.h"
+#include "cd_666s/Resources/AllResourceManager.h"
 #include "Main.h"
 #include "Title.h"
 

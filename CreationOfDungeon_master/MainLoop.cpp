@@ -2,7 +2,7 @@
 #include "SceneManager.h"
 #include "cd_666s/FPSCounter/FPSCounter.h"
 #include "cd_666s/FPSCounter/FPSCountDraw.h"
-#include "cd_666s/Resources/ResourceManager.h"
+#include "cd_666s/Resources/AllResourceManager.h"
 #include "cd_666s/InputManager/InputManager.h"
 #include "cd_666s/Render/RenderManager.h"
 #include "cd_666s/Action/ActionManager.h"
@@ -21,7 +21,7 @@ void MainLoop::Init()
     auto it = temp.find('\0');
     temp.resize(it);
     temp.append("/");
-    RESOURCE_TABLE->SetFolderPath(temp);
+    RESOURCE_TABLE->SetAllTypesFolderPath(temp);
     RENDER_MGR->Init();
 }
 
