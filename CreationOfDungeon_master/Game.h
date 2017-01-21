@@ -1,12 +1,10 @@
 #pragma once
 #include "SceneBase.h"
 #include "MapProcessManager.h"
-#include "CharaManager.h"
 #include "cd_666s/Sound/Sound.h"
 #include "cd_666s/TilebaseAI/Dungeon.h"
 
-class Game :
-    public SceneBase
+class Game : public SceneBase
 {
 public:
     Game();
@@ -23,8 +21,6 @@ private:
     std::string class_name;
 
     std::string stage_num;
-
-    CharaManager chara_manager;
 
     MapProcessManager map_process_manager;
 

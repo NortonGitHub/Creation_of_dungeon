@@ -1,7 +1,6 @@
 #include "CSVDataLoader.h"
 #include <fstream>
 #include <sstream>
-#include "CharaBase.h"
 
 CSVDataLoader::CSVDataLoader()
 {
@@ -120,28 +119,4 @@ void CSVDataLoader::LoadUICSV(std::vector<UIContent> &ui_data, std::string scene
         temp.resize(0);
     }
 
-}
-
-void CSVDataLoader::LoadCharaCSV(std::vector<CharaBase*>& chara_data, std::string stage_name)
-{
-    std::string filename = stage_name + ".csv";
-    std::ifstream ifs(filename);
-    if (!ifs) {
-        return;
-    }
-
-    //csvファイルを1行ずつ読み込む
-    std::string str;
-    while (!ifs.eof()) {
-        std::string token;
-        std::istringstream stream(str);
-
-
-        while (getline(stream, token, ',')) {
-            //応急処置
-    //      chara_data.push_back(new CharaBase(token));
-        }
-
-
-    }
 }
