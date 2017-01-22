@@ -47,7 +47,7 @@ void RenderManager::RenderImage()
     for (size_t i = 0; i < _debugDrawCalls.size(); ++i)
     {
         _debugDrawCalls[i]->Draw();
-        delete _debugDrawCalls[i];
+//        delete _debugDrawCalls[i];
     }
 
     _debugDrawCalls.clear();

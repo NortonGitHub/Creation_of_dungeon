@@ -32,6 +32,7 @@ namespace Debug
     void DrawString(Vector2D pos, std::string str, Color4 color = ColorPalette::BLACK4);
     void DrawStringDirectly(Vector2D pos, std::string str, Color4 color);
 
+    //デバッグ描画を行う関数のオブジェクト
     class DebugDraw 
     {
     public: 
@@ -39,11 +40,13 @@ namespace Debug
         virtual void Draw() = 0; 
     };
 
+    //直線デバッグ描画
     class Line : public DebugDraw
     {
     public:
         Line(Vector2D start, Vector2D end, Color4 color);
         Line(double startX, double startY, double endX, double endY, Color4 color);
+        ~Line() {}
         void Draw() override;
 
     private:
@@ -51,6 +54,7 @@ namespace Debug
         Color4 _color;
     };
 
+    //円デバッグ描画
     class Circle : public DebugDraw
     {
     public:
@@ -65,6 +69,7 @@ namespace Debug
         bool _fill;
     };
 
+    //DxLib:左上(OpenGL:左下)座標 + サイズ指定の矩形デバッグ描画
     class RectWithSize : public DebugDraw
     {
     public:
@@ -78,6 +83,7 @@ namespace Debug
         bool _fill;
     };
 
+    //X, Y軸の最小値と最大値指定の矩形デバッグ描画
     class RectWithPoint : public DebugDraw
     {
     public:
@@ -91,6 +97,7 @@ namespace Debug
         bool _fill;
     };
 
+    //デバッグ文字列描画
     class String : public DebugDraw
     {
     public:

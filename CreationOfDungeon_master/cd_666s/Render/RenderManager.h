@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <functional>
+#include <memory>
 #include "../Utility/Singleton.h"
 #include "../Utility/PoolingSystem.h"
 #include "../Color.h"
@@ -20,7 +21,7 @@ public:
     RenderManager();
     ~RenderManager();
     
-    void AddDebugCall(Debug::DebugDraw* debugDrawCall) { _debugDrawCalls.push_back(debugDrawCall); }
+    void AddDebugCall(std::unique_ptr<Debug::DebugDraw> debugDrawCall) { _debugDrawCalls.push_back(std::move(debugDrawCall)); }
     void AddRenderModel(Texture2D *model);
     void RemoveRenderModel(Texture2D *model);
     void ClearModel();
@@ -40,7 +41,7 @@ private:
     Camera _defaultCamera, _uiCamera;
 
     //TODO : ちゃんとデバッグ描画用のものを作る
-    std::vector<Debug::DebugDraw*> _debugDrawCalls;
+    std::vector<std::unique_ptr<Debug::DebugDraw>> _debugDrawCalls;
 };
 
 

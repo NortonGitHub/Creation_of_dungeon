@@ -8,12 +8,12 @@ namespace Debug
 
     void DrawLine(Vector2D start, Vector2D end, Color4 color)
     {
-        RENDER_MGR->AddDebugCall(new Line(start, end, color));
+        RENDER_MGR->AddDebugCall(std::make_unique<Line>(start, end, color));
     }
 
     void DrawLine(float startX, float startY, float endX, float endY, Color4 color)
     {
-        RENDER_MGR->AddDebugCall(new Line(startX, startY, endX, endY, color));
+        RENDER_MGR->AddDebugCall(std::make_unique<Line>(startX, startY, endX, endY, color));
     }
 
     void DrawLineDirectly(Vector2D start, Vector2D end, Color4 color)
@@ -41,12 +41,12 @@ namespace Debug
 
     void DrawCircle(Vector2D center, float radius, Color4 color, bool fill)
     {
-        RENDER_MGR->AddDebugCall(new Circle(center, radius, color, fill));
+        RENDER_MGR->AddDebugCall(std::make_unique<Circle>(center, radius, color, fill));
     }
 
     void DrawCircle(float x, float y, float radius, Color4 color, bool fill)
     {
-        RENDER_MGR->AddDebugCall(new Circle(x, y, radius, color, fill));
+        RENDER_MGR->AddDebugCall(std::make_unique<Circle>(x, y, radius, color, fill));
     }
 
     void DrawCircleDirectly(Vector2D center, float radius, Color4 color, bool fill)
@@ -72,12 +72,12 @@ namespace Debug
 
     void DrawRectWithPoint(Vector2D lowerLeft, Vector2D upperRight, Color4 color, bool fill)
     {
-        RENDER_MGR->AddDebugCall(new RectWithPoint(lowerLeft, upperRight, color, fill));
+        RENDER_MGR->AddDebugCall(std::make_unique<RectWithPoint>(lowerLeft, upperRight, color, fill));
     }
 
     void DrawRectWithPoint(float minX, float minY, float maxX, float maxY, Color4 color, bool fill)
     {
-        RENDER_MGR->AddDebugCall(new RectWithPoint(minX, minY, maxX, maxY, color, fill));
+        RENDER_MGR->AddDebugCall(std::make_unique<RectWithPoint>(minX, minY, maxX, maxY, color, fill));
     }
 
     void DrawRectWithPointDirectly(Vector2D lowerLeft, Vector2D upperRight, Color4 color, bool fill)
@@ -107,12 +107,12 @@ namespace Debug
 
     void DrawRectWithSize(Vector2D lowerLeft, Vector2D size, Color4 color, bool fill)
     {
-        RENDER_MGR->AddDebugCall(new RectWithSize(lowerLeft, size, color, fill));
+        RENDER_MGR->AddDebugCall(std::make_unique<RectWithSize>(lowerLeft, size, color, fill));
     }
 
     void DrawRectWithSize(float x, float y, float width, float height, Color4 color, bool fill)
     {
-        RENDER_MGR->AddDebugCall(new RectWithSize(x, y, width, height, color, fill));
+        RENDER_MGR->AddDebugCall(std::make_unique<RectWithSize>(x, y, width, height, color, fill));
     }
 
     void DrawRectWithSizeDirectly(Vector2D lowerLeft, Vector2D size, Color4 color, bool fill)
@@ -144,7 +144,7 @@ namespace Debug
 
     void DrawString(Vector2D pos, std::string str, Color4 color)
     {
-        RENDER_MGR->AddDebugCall(new String(pos, str, color));
+        RENDER_MGR->AddDebugCall(std::make_unique<String>(pos, str, color));
     }
 
     void DrawStringDirectly(Vector2D pos, std::string str, Color4 color)
