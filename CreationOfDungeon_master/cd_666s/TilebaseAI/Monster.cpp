@@ -118,7 +118,8 @@ void Monster::SwitchAI(PathFindingAIBase* ai)
 
 void Monster::Think()
 {
-    _ai->Update();
+    if (_target != nullptr)
+        _ai->Update();
 }
 
 
@@ -361,6 +362,7 @@ void Monster::SetTarget(TiledVector pos)
     //そこへ移動
     _target = nullptr;
     _astar->SetTarget(pos);
+    _astar->FindPath();
     
     //バトル中ならバトル終了
     if (_isBattling)

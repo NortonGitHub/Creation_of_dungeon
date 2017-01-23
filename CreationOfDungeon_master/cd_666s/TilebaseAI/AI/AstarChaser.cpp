@@ -33,16 +33,20 @@ void AstarChaser::Update()
 {
     if (_target != nullptr)
         _targetPos = _target->GetTilePos();
-    
-    _pathRef = _aster.GetPathToTarget(_owner.GetTilePos(), _targetPos, _searchRange);
-    
-    //ターゲットが上書き不可なオブジェクトなら
-    if (_target == nullptr)
+    else
         return;
-    
+
+    FindPath();
+}
+
+
+void AstarChaser::FindPath()
+{
+    _pathRef = _aster.GetPathToTarget(_owner.GetTilePos(), _targetPos, _searchRange);
+
     if (_pathRef.size() == 0)
         return;
-    
+
     //ターゲットの一つ前で止まる
     _pathRef.pop_back();
 }

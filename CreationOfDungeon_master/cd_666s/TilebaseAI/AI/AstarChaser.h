@@ -19,7 +19,9 @@ public:
     void Update() override;
     void Draw() override;
     void Reset() override;
-    
+
+    void FindPath();
+
     void SetSearchRange(int searchRange) { _searchRange = searchRange; }
     void SetTarget(TiledObject* target);
     void SetTarget(TiledVector targetPos);
