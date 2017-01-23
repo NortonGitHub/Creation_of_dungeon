@@ -6,8 +6,6 @@
 #include "../Sound/Sound.h"
 #include <memory>
 
-class PathFindingAIBase;
-class WallTracing;
 class AstarChaser;
 class ColleagueNotifyer;
 class MagicSquare;
@@ -15,7 +13,6 @@ class MagicSquare;
 class Monster : public Character
 {
 public:
-    Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName);
     ~Monster();
     
     void Appear();
@@ -47,12 +44,13 @@ public:
     void WarpToHome(const MagicSquare& square);
 
 private:
-    
+
+    Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName);
+
     virtual void OnAttacked(Character& attacker);
     virtual void OnDie() override;
     virtual void OnWin() override;
     
-    void SwitchAI(PathFindingAIBase* ai);
     void MoveToNext();
     
     //意思決定
@@ -63,15 +61,6 @@ private:
     
     //自分の召喚された陣
     MagicSquare* _home;
-    
-    //視界の広さ(何タイル先までか)
-    int _searchLength;
-    
-    //AIモジュール本体
-    PathFindingAIBase *_ai;
-    
-    TiledVector::Direction _direction;
-    std::vector<TiledVector> _sight;
     
     std::unique_ptr<AstarChaser> _astar;
     

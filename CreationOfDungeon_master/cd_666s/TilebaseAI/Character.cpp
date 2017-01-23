@@ -9,6 +9,7 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 : TiledObject(startPos)
 , _actCounter(0)
 , _actInterval(30)
+, _direction(TiledVector::Direction::FORWARD)
 , _battleParameter(param)
 , _notifyer(notifyer)
 , _maxHP(1)
@@ -39,6 +40,35 @@ void Character::Update()
 
 void Character::Draw()
 {
+}
+
+
+void Character::UpdateAttitude()
+{
+    TiledVector pos = GetTilePos();
+
+    //ˆÚ“®æ‚Æ‚Ì·•ª‚©‚çŒü‚«‚ðXV
+    TiledVector dir;
+    if (_pathToTarget.size() == 0)
+    {
+        if (_target != nullptr)
+            dir = _target->GetTilePos() - pos;
+    }
+    else
+    {
+        dir = _pathToTarget[0] - pos;
+    }
+
+    if (dir == TiledVector::up)
+        _direction = TiledVector::Direction::FORWARD;
+    else if (dir == TiledVector::down)
+        _direction = TiledVector::Direction::BACK;
+    else if (dir == TiledVector::left)
+        _direction = TiledVector::Direction::LEFT;
+    else if (dir == TiledVector::right)
+        _direction = TiledVector::Direction::RIGHT;
+
+    _beforeTilePos = pos;
 }
 
 

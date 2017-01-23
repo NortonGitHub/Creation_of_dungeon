@@ -18,9 +18,7 @@ int Enemy::_enemysNum = 0;
 Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName)
 : Character(startPos, params, notifyer)
 , _baseTarget(baseTarget)
-, _searchLength(4)
 , _hasAppeared(false)
-, _direction(TiledVector::Direction::FORWARD)
 , _enterSE("resourse/sound/blockSelect.wav")
 {
     _name = enemyName;
@@ -162,6 +160,7 @@ void Enemy::Update()
         else
             _countAfetrBattle = 0;
     }
+
     //状態確認フェイズ
     //目標を見失っていたら元の標的へ
     if (_target == nullptr || !_target->IsEnable())
@@ -203,22 +202,8 @@ void Enemy::Update()
 
 void Enemy::Act()
 {
-    TiledVector pos = GetTilePos();
-    if (pos != _beforeTilePos)
-        _beforeTilePos = pos;
-    
     //移動先との差分から向きを更新
-    auto dir = (_pathToTarget.size() == 0) ? _target->GetTilePos() - pos : _pathToTarget[0] - pos;
-    if (dir == TiledVector::up)
-        _direction = TiledVector::Direction::FORWARD;
-    else if (dir == TiledVector::down)
-        _direction = TiledVector::Direction::BACK;
-    else if (dir == TiledVector::left)
-        _direction = TiledVector::Direction::LEFT;
-    else if (dir == TiledVector::right)
-        _direction = TiledVector::Direction::RIGHT;
-    
-    _beforeTilePos = pos;
+    UpdateAttitude();
     
     //移動が完了してるないなら
     if (0 < _pathToTarget.size())

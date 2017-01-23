@@ -5,7 +5,6 @@
 #include <memory>
 #include <string>
 
-class PathFindingAIBase;
 class AstarChaser;
 class ColleagueNotifyer;
 class StartPoint;
@@ -38,6 +37,7 @@ public:
     }
 
 private:
+
     Enemy(TiledVector, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName);
     
     //意思決定
@@ -63,17 +63,8 @@ private:
     virtual void OnDie() override;
     virtual void OnWin() override;
     
-    //視界の広さ(何タイル先までか)
-    int _searchLength;
-    
     //AI行動の基準となるキャラ
     TiledObject& _baseTarget;
-    
-    //AIモジュール本体
-    PathFindingAIBase *_ai;
-    
-    TiledVector::Direction _direction;
-    std::vector<TiledVector> _sight;
     
     std::unique_ptr<AstarChaser> _astar;
     

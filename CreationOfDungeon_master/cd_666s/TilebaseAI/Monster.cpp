@@ -1,10 +1,8 @@
 #include "Monster.h"
 #include "TileField.h"
-#include "AI/WallTracing.h"
 #include "AI/AstarChaser.h"
 #include "../Resources/AllResourceManager.h"
 #include "../DebugDraw.h"
-#include "../InputManager/InputManager.h"
 #include "ColleagueNotifyer.h"
 #include "MagicSquare.h"
 #include "BattlingTile.h"
@@ -17,8 +15,6 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
 : Character(startPos, param, notifyer)
 , _hasChoosed(false)
 , _hasAppeared(false)
-, _searchLength(4)
-, _direction(TiledVector::Direction::FORWARD)
 , _defeatSE("resourse/sound/enemy_fall2.wav")
 , _appearSE("resourse/sound/flame.wav")
 {
@@ -105,17 +101,6 @@ void Monster::Init()
 }
 
 
-void Monster::SwitchAI(PathFindingAIBase* ai)
-{
-    //現在と同じAIだったら変更なし
-    if (_ai == ai)
-        return;
-    
-    _ai->Reset();
-    _ai = ai;
-}
-
-
 void Monster::Think()
 {
     if (_target != nullptr)
@@ -174,43 +159,10 @@ void Monster::Update()
 
 void Monster::Act()
 {
-    TiledVector pos = GetTilePos();
-
     //移動先との差分から向きを更新
-    TiledVector dir;
-    if (_pathToTarget.size() == 0)
-    {
-        if ( _target != nullptr)
-            dir = _target->GetTilePos() - pos;
-    }
-    else 
-    {
-        dir = _pathToTarget[0] - pos;
-    }
-    if (_target != nullptr)
-        _target->GetTilePos() - pos;
-    else if (0 < _pathToTarget.size())
-        _pathToTarget[0] - pos;
-    
-    if (dir == TiledVector::up)
-        _direction = TiledVector::Direction::FORWARD;
-    else if (dir == TiledVector::down)
-        _direction = TiledVector::Direction::BACK;
-    else if (dir == TiledVector::left)
-        _direction = TiledVector::Direction::LEFT;
-    else if (dir == TiledVector::right)
-        _direction = TiledVector::Direction::RIGHT;
-    
-    _beforeTilePos = pos;
-    
-    if (_target == nullptr)
-    {
-        if (_pathToTarget.size() != 0)
-            MoveToNext();
-        
-        return;
-    }
-    
+    UpdateAttitude();
+   
+    //次のタイルへ移動
     MoveToNext();
 }
 

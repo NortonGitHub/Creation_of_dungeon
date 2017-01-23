@@ -1,6 +1,7 @@
 #pragma once
 #include "TiledObject.h"
 #include "TiledVector.h"
+#include "AI/PathFindingAIBase.h"
 
 struct BattleParameter;
 class ColleagueNotifyer;
@@ -55,11 +56,20 @@ protected:
     //同系列のキャラ間で情報共有するための通信機
     ColleagueNotifyer& _notifyer;
     
+    //AIモジュールの参照
+    PathFindingAIBase *_ai;
+
     //AI行動の基準となるキャラ
     TiledObject *_target;
     
     //AIで算出されるパス
     std::vector<TiledVector> _pathToTarget;
+
+    //姿勢情報
+    TiledVector::Direction _direction;
+
+    //視界
+    std::vector<TiledVector> _sight;
     
     //自分の参加しているバトル情報
     BattlingTile* _battle;
@@ -68,6 +78,8 @@ protected:
 
     std::string _name;
 
+
+    void UpdateAttitude();
     void Attack(Character &defender);
     
     //意思決定
