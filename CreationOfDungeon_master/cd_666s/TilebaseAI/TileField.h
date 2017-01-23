@@ -3,11 +3,12 @@
 #include "MapTile.h"
 #include "AI/Breadcrumb.h"
 #include <vector>
+#include <memory>
 
 class TileField : public Singleton <TileField>
 {
     friend class Singleton<TileField>;
-    typedef std::vector<std::vector<MapTile*>> Field;
+    typedef std::vector<std::vector<std::weak_ptr<MapTile>>> Field;
     typedef std::vector<std::vector<int>> StepTable;
     
 public:
@@ -48,7 +49,7 @@ public:
     const bool IsMovableThere(TiledVector pos, TiledObject& moveObj) const
     {
         return (     IsInside(pos)
-                &&  _field[pos._y][pos._x]->IsRegistable(moveObj));
+                &&  _field[pos._y][pos._x].lock()->IsRegistable(moveObj));
     }
     
     const Breadcrumb* GetBreadcrumb(TiledVector pos) const
@@ -56,7 +57,7 @@ public:
         if (!IsInside(pos))
             return nullptr;
         
-        return _field[pos._y][pos._x]->GetBreadcrumb();
+        return _field[pos._y][pos._x].lock()->GetBreadcrumb();
     }
     
     const TiledVector GetFieldSize() const { return _fieldSize; }
@@ -75,7 +76,7 @@ private:
     
     TiledVector _fieldSize;
     Field _field;
-    std::vector<GraphicalObject *> _gobjs;
+    std::vector<std::shared_ptr<MapTile>> _gobjs;
 
     //マップチップ番号
     std::vector<std::vector<int>> _rawData;

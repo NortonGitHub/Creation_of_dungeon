@@ -77,20 +77,21 @@ bool MapTile::IsRegistable(TiledObject& obj) const
 }
 
 
-void MapTile::Regist(TiledObject* obj)
+void MapTile::Regist(TiledObject* obj, std::weak_ptr<MapTile> tile)
 {
-    _objects.push_back(obj);
-    obj->SetTile(this);
+    tile.lock()->_objects.push_back(obj);
+    obj->SetTile(tile);
 }
 
 
-void MapTile::Remove(TiledObject* obj)
+void MapTile::Remove(TiledObject* obj, std::weak_ptr<MapTile> tile)
 {
-    auto it = std::find(_objects.begin(), _objects.end(), obj);
-    if (it != _objects.end())
+    auto& objects = tile.lock()->_objects;
+    auto it = std::find(objects.begin(), objects.end(), obj);
+    if (it != objects.end())
     {
-        _objects.erase(it);
-        obj->SetTile(nullptr);
+        objects.erase(it);
+        obj->SetTile(tile);
     }
 }
 

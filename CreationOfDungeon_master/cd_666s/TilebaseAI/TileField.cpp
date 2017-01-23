@@ -14,14 +14,7 @@ TileField::~TileField()
 
 void TileField::Clear()
 {
-    for (size_t i = 0; i < _fieldSize._y; i++)
-    {
-        for (size_t j = 0; j < _fieldSize._x; j++)
-        {
-            delete _field[i][j];
-        }
-    }
-
+    _gobjs.clear();
     _gobjs.resize(0);
     _rawData.resize(0);
     _fieldSize.Set(0, 0);
@@ -44,9 +37,8 @@ void TileField::Init(int width, int height)
     {
         for (size_t j = 0; j < width; j++)
         {
-            auto tile = new MapTile(i, j);
-            _field[i][j] = tile;
-            _gobjs.push_back(tile);
+            _gobjs.push_back(std::make_shared<MapTile>(i, j));
+            _field[i][j] = _gobjs[_gobjs.size() - 1];
         }
     }
 }
@@ -54,13 +46,8 @@ void TileField::Init(int width, int height)
 
 void TileField::Setup()
 {
-    for (size_t i = 0; i < _fieldSize._y; i++)
-    {
-        for (size_t j = 0; j < _fieldSize._x; j++)
-        {
-            _field[i][j]->Init();
-        }
-    }
+    for (auto obj : _gobjs)
+        obj->Init();
 }
 
 void TileField::Draw()
@@ -83,10 +70,12 @@ void TileField::RegistObject(TiledObject &obj, TiledVector pos)
     if (!IsInside(pos))
         return;
     
-    if (!_field[pos._y][pos._x]->IsRegistable(obj))
+    auto tile = _field[pos._y][pos._x].lock();
+
+    if (!tile->IsRegistable(obj))
         return;
     
-    _field[pos._y][pos._x]->Regist(&obj);
+    MapTile::Regist(&obj, tile);
 }
 
 
@@ -99,7 +88,8 @@ void TileField::RemoveObject(TiledObject &obj)
     if (!IsInside(pos))
         return;
     
-    _field[pos._y][pos._x]->Remove(&obj);
+    auto tile = _field[pos._y][pos._x].lock();
+    tile->Remove(&obj, tile);
 }
 
 
@@ -110,7 +100,7 @@ void TileField::MoveObject(TiledObject &obj, TiledVector pos)
     if (!IsInside(pos))
         return;
     
-    if (!_field[pos._y][pos._x]->IsRegistable(obj))
+    if (!_field[pos._y][pos._x].lock()->IsRegistable(obj))
         return;
     
     RemoveObject(obj);
@@ -124,7 +114,7 @@ TiledObject* TileField::GetTiledObject(const TiledVector &pos)
     if (!IsInside(pos))
         return nullptr;
     
-    return _field[pos._y][pos._x]->GetTiledObject();
+    return _field[pos._y][pos._x].lock()->GetTiledObject();
 }
 
 
@@ -137,7 +127,7 @@ std::vector<TiledObject*> TileField::GetTiledObjects(const TiledVector &pos)
         return std::move(empty);
     }
     
-    return _field[pos._y][pos._x]->GetTiledObjects();
+    return _field[pos._y][pos._x].lock()->GetTiledObjects();
 }
 
 
@@ -167,7 +157,7 @@ void TileField::RegistBreadcrumb(Breadcrumb *crumb, TiledVector pos)
     if (!IsInside(pos))
         return;
     
-    _field[pos._y][pos._x]->Regist(crumb);
+    _field[pos._y][pos._x].lock()->Regist(crumb);
 }
 
 
@@ -180,7 +170,7 @@ void TileField::RemoveBreadcrumb(Breadcrumb *crumb)
     if (!IsInside(pos))
         return;
     
-    _field[pos._y][pos._x]->Remove(crumb);
+    _field[pos._y][pos._x].lock()->Remove(crumb);
     delete crumb;
 }
 
@@ -232,8 +222,8 @@ void TileField::CalcMovableCell(const TiledVector &pos, StepTable& stepTable, in
         return;
     
     //指定位置のCellが移動可能か調べる
-    MapTile *cell = _field[y][x];
-    TiledObject *obj = cell->GetTiledObject();
+    std::weak_ptr<MapTile> cell = _field[y][x];
+    TiledObject *obj = cell.lock()->GetTiledObject();
     bool isMovable = (obj == nullptr) || (obj != nullptr && obj->GetType() != TiledObject::Type::BLOCK);
     
     //指定位置のマスが移動可能なら
@@ -385,8 +375,8 @@ void TileField::CalcParabolicMovableCell(TiledVector pos, const TiledVector &bas
         return;
     
     //指定位置のCellが移動可能か調べる
-    MapTile *cell = _field[y][x];
-    TiledObject *obj = cell->GetTiledObject();
+    std::weak_ptr<MapTile> cell = _field[y][x];
+    TiledObject *obj = cell.lock()->GetTiledObject();
     bool isMovable = (obj == nullptr) || (obj != nullptr && obj->GetType() != TiledObject::Type::BLOCK);
     
     //指定位置のマスが移動可能なら

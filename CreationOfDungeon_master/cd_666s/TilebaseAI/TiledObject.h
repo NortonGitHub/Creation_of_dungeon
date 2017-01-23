@@ -42,12 +42,13 @@ public:
     //Ú×‚ÈğŒ‚Í”h¶æ‚É‚æ‚Á‚ÄˆÙ‚È‚é.
     virtual bool IsEnable() const { return true; }
     
-    void SetTile(MapTile *tile) { _tile = tile; }
+    void SetTile(std::weak_ptr<MapTile> tile) { _tile = tile; }
+    void ExitTile() { _tile.reset(); }
     
     Type GetType() const { return _type; }
-    MapTile *GetTile() { return _tile; }
+    std::weak_ptr<MapTile> GetTile() { return _tile; }
     TiledVector GetTilePos() const;
-    
+
 protected:
     
     void CheckClicked();
@@ -56,7 +57,6 @@ protected:
     Type _type;
     
 private:
-    MapTile *_tile;
-    
+    std::weak_ptr<MapTile> _tile;
 };
 

@@ -62,7 +62,7 @@ void MagicSquare::Update()
 void MagicSquare::WarpHomeMonster()
 {
     //上に何かあるなどでモンスターを移動できないとワープできない
-    if (!GetTile()->IsRegistable(_monster))
+    if (!GetTile().lock()->IsRegistable(_monster))
         return;
         
     _monster.WarpToHome(*this);
@@ -72,7 +72,7 @@ void MagicSquare::WarpHomeMonster()
 void MagicSquare::ProduceMonster()
 {
     //上に何かあるなどでモンスターを移動できないと召喚できない
-    if (!GetTile()->IsRegistable(_monster))
+    if (!GetTile().lock()->IsRegistable(_monster))
         return;
     
     if (_monster.IsReadyToProduce())

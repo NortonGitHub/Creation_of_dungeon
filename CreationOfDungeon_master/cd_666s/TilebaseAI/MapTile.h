@@ -18,8 +18,8 @@ public:
     void Init();
     void Draw() override;
     
-    void Regist(TiledObject* obj);
-    void Remove(TiledObject* obj);
+    static void Regist(TiledObject* obj, std::weak_ptr<MapTile> tile);
+    static void Remove(TiledObject* obj, std::weak_ptr<MapTile> tile);
     
     void Regist(Breadcrumb* obj);
     void Remove(Breadcrumb* obj);

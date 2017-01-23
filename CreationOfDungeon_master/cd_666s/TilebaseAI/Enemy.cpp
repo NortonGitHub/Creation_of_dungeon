@@ -229,7 +229,7 @@ void Enemy::Act()
     }
     
     //–Ú•W‚Ìã‚É‚¢‚È‚¯‚ê‚ÎI—¹
-    if (_target->GetTile() != GetTile())
+    if (_target->GetTile().lock() != GetTile().lock())
         return;
 
      switch(_target->GetType())

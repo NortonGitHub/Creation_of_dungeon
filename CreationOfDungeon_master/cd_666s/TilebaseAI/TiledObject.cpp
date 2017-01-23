@@ -4,8 +4,7 @@
 #include "../InputManager/MouseInput.h"
 
 TiledObject::TiledObject(TiledVector pos)
-: _tile(nullptr)
-, _type(Type::DEFAULT)
+:  _type(Type::DEFAULT)
 {
     FIELD->RegistObject(*this, pos);
 }
@@ -13,17 +12,17 @@ TiledObject::TiledObject(TiledVector pos)
 
 TiledObject::~TiledObject()
 {
-    if (_tile != nullptr)
+    if (!_tile.expired())
         FIELD->RemoveObject(*this);
 }
 
 
 TiledVector TiledObject::GetTilePos() const
 {
-    if (_tile == nullptr)
+    if (_tile.expired())
         return TiledVector::zero;
     
-    return _tile->GetTilePos();
+    return _tile.lock()->GetTilePos();
 }
 
 
@@ -48,7 +47,7 @@ void TiledObject::CheckClicked()
     if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
     {
         auto cursorPos = MOUSE->GetCursorPos();
-        if (TiledVector::ConvertToTiledPos(cursorPos) == _tile->GetTilePos())
+        if (TiledVector::ConvertToTiledPos(cursorPos) == _tile.lock()->GetTilePos())
             OnClicked();
     }
 }
