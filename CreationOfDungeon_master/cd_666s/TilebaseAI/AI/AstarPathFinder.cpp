@@ -9,13 +9,14 @@ AstarPathFinder::AstarPathFinder(Character& owner, std::vector<TiledVector> &pat
 , _owner(owner)
 {
     auto fieldSize = FIELD->GetFieldSize();
-    _nodeTable.resize(fieldSize._y, std::vector<AstarNode *>());
     
     for (int i = 0; i < fieldSize._y; ++i)
     {
+        _nodeTable.push_back(std::move(std::vector<std::unique_ptr<AstarNode>>()));
+
         for (int j = 0; j < fieldSize._x; ++j)
         {
-            _nodeTable[i].push_back(new AstarNode(TiledVector(j, i)));
+            _nodeTable[i].push_back(std::make_unique<AstarNode>(TiledVector(j, i)));
         }
     }
     
@@ -68,8 +69,8 @@ void AstarPathFinder::Search(TiledVector startPos, TiledVector targetPos)
     //検索開始
     AstarNode *origin = nullptr;
     //自身の位置からスタート
-    AstarNode *startNode = _nodeTable[startPos._y][startPos._x];
-    AstarNode *targetNode = _nodeTable[targetPos._y][targetPos._x];
+    AstarNode *startNode = _nodeTable[startPos._y][startPos._x].get();
+    AstarNode *targetNode = _nodeTable[targetPos._y][targetPos._x].get();
     //最初だけは手動で
     startNode->Open(nullptr, targetNode);
     _openList.push_back(startNode);
@@ -174,7 +175,7 @@ void AstarPathFinder::OpenAround(AstarNode *node, AstarNode *targetNode)
         if( !FIELD->IsInside(pos) )
             continue;
         
-        AstarNode *nextNode = _nodeTable[pos._y][pos._x];
+        AstarNode *nextNode = _nodeTable[pos._y][pos._x].get();
         
         //次の位置に
         auto objects = FIELD->GetTiledObjects(pos);

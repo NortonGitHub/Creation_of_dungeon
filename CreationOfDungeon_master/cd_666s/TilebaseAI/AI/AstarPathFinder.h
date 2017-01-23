@@ -4,6 +4,7 @@
 #include "AstarNode.h"
 #include <vector>
 #include <functional>
+#include <memory>
 #include "../Character.h"
 
 class TiledObject;
@@ -38,7 +39,7 @@ private:
     std::vector<TiledVector> &_pathStack;
     
     std::vector<AstarNode *> _openList;
-    std::vector<std::vector<AstarNode *>> _nodeTable;
+    std::vector<std::vector<std::unique_ptr<AstarNode>>> _nodeTable;
     
     Character& _owner;
 };
