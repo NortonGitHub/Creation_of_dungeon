@@ -27,19 +27,19 @@ void Camera::Clear()
 }
 
 
-void Camera::AddRenderModel(Texture2D *model)
+void Camera::AddRenderModel(std::weak_ptr<Texture2D> model)
 {
     _renderModels.Add(model);
-    CountPriority(model->GetPriority());
+    CountPriority(model.lock()->GetPriority());
     _needResize = true;
     _needAliment = true;
 }
 
 
-void Camera::RemoveRenderModel(Texture2D *model)
+void Camera::RemoveRenderModel(std::weak_ptr<Texture2D> model)
 {
     _renderModels.Remove(model);
-    DiscountPriority(model->GetPriority());
+    DiscountPriority(model.lock()->GetPriority());
     _needResize = true;
     _needAliment = true;
 }
@@ -89,7 +89,7 @@ void Camera::AlimentDrawCall()
 {
     //描画コールを初期化
     if (_needResize)
-        _renderOrders.resize(_renderModels._objects.size(), nullptr);
+        _renderOrders.resize(_renderModels._objects.size());
 //    else
 //        _renderOrders(nullptr);
     
@@ -111,7 +111,7 @@ void Camera::AlimentDrawCall()
             
             //所属するpriority値が出たら
             //そのpriority値を何番目に使ったかを加算して終了
-            if (image->GetPriority() == pInfo->_priority)
+            if (image.lock()->GetPriority() == pInfo->_priority)
             {
                 index += pInfo->_count;
                 pInfo->_count++;
@@ -136,8 +136,8 @@ void Camera::Render()
 
     for (auto image : _renderOrders)
     {
-        if (image != nullptr)
-            image->Render(*this);
+        if (!image.expired())
+            image.lock()->Render(*this);
     }
 }
 

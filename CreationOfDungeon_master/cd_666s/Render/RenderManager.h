@@ -22,8 +22,8 @@ public:
     ~RenderManager();
     
     void AddDebugCall(std::unique_ptr<Debug::DebugDraw> debugDrawCall) { _debugDrawCalls.push_back(std::move(debugDrawCall)); }
-    void AddRenderModel(Texture2D *model);
-    void RemoveRenderModel(Texture2D *model);
+    void AddRenderModel(std::weak_ptr<Texture2D> model);
+    void RemoveRenderModel(std::weak_ptr<Texture2D> model);
     void ClearModel();
     
     void Init();

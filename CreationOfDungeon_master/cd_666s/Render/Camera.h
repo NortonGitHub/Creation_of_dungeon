@@ -12,8 +12,8 @@ public:
     Camera(Vector2D pos, double angle, Vector2D viewPortSize);
     ~Camera();
     
-    void AddRenderModel(Texture2D *model);
-    void RemoveRenderModel(Texture2D *model);
+    void AddRenderModel(std::weak_ptr<Texture2D> model);
+    void RemoveRenderModel(std::weak_ptr<Texture2D> model);
     
     void Clear();
     void Render();
@@ -56,7 +56,7 @@ private:
     PoolingSystem<Texture2D> _renderModels;
 
     //ï`âÊÉRÅ[ÉãÇó≠ÇﬂçûÇﬁ
-    std::vector<Texture2D *>_renderOrders;
+    std::vector<std::weak_ptr<Texture2D>>_renderOrders;
     
     Vector2D _position;
     Vector2D _viewPortSize;

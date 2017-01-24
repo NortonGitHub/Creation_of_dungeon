@@ -29,9 +29,9 @@ Texture2D::~Texture2D()
 
 void Texture2D::SetRenderType(RenderType type)
 {
-    RENDER_MGR->RemoveRenderModel(this);
+    RENDER_MGR->RemoveRenderModel(shared_from_this());
     _type = type;
-    RENDER_MGR->AddRenderModel(this);
+    RENDER_MGR->AddRenderModel(shared_from_this());
 }
 
 

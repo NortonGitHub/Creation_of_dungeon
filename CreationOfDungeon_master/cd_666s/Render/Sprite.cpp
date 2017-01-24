@@ -27,7 +27,6 @@ Sprite::~Sprite()
     //描画リストから削除
     RENDER_MGR->RemoveRenderModel(_tex);
 
-    delete _tex;
     _tex = nullptr;
     
     //リソース解放
@@ -41,7 +40,7 @@ void Sprite::Load(std::string fileName)
     if (_textureResource == nullptr)
         return;
     
-    _tex = new Texture2D(_textureResource->GetHandle());
+    _tex = std::make_shared<Texture2D>(_textureResource->GetHandle());
     _tex->BuildTexture(_position, _textureResource->GetWidth(), _textureResource->GetHeight());
     RENDER_MGR->AddRenderModel(_tex);
 }

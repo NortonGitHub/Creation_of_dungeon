@@ -33,13 +33,11 @@ void TiledObject::Init()
 
 
 void TiledObject::Interact(Character& character)
-{
-}
+{}
 
 
 void TiledObject::OnClicked()
-{
-}
+{}
 
 
 void TiledObject::CheckClicked()

@@ -51,8 +51,8 @@ private:
     ColleagueNotifyer _enemys, _monsters;
     
     //開始点と終了地点はグローバルなレベルでインスタンス生成しておく
-    Goal* _goal;
-    StartPoint* _start;
+    std::shared_ptr<Goal> _goal;
+    std::shared_ptr<StartPoint> _start;
 
     //モンスター操作モジュール
     MonsterController _controller;

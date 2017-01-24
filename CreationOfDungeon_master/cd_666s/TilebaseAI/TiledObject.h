@@ -29,7 +29,7 @@ public:
     virtual void Init();
 
     //能動動作できるオブジェクトから呼び出される関数
-    virtual void Interact(Character& character);
+    virtual void Interact(const std::weak_ptr<Character>& character);
     
     //そのオブジェクトの上に別のオブジェクトが乗れるかどうか
     //overwriter : 上に乗ろうとするオブジェクト
@@ -42,7 +42,7 @@ public:
     //詳細な条件は派生先によって異なる.
     virtual bool IsEnable() const { return true; }
     
-    void SetTile(std::weak_ptr<MapTile> tile) { _tile = tile; }
+    void SetTile(const std::weak_ptr<MapTile>& tile) { _tile = tile; }
     void ExitTile() { _tile.reset(); }
     
     Type GetType() const { return _type; }

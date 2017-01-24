@@ -3,55 +3,45 @@
 
 #include "PoolingSystem.h"
 
-template <typename T>
-PoolingSystem<T>::PoolingSystem(bool autoDelete)
+template <class T>
+PoolingSystem<T>::PoolingSystem()
 : _needRefresh(false)
-, _autoDelete(autoDelete)
 {
 }
 
 
-template <typename T>
+template <class T>
 PoolingSystem<T>::~PoolingSystem()
 {
     Clear();
 }
 
 
-template <typename T>
-void PoolingSystem<T>::Add(T* addOrder)
+template <class T>
+void PoolingSystem<T>::Add(std::weak_ptr<T> addOrder)
 {
-    if (addOrder != nullptr)
-        _addOrders.push_back(addOrder);
+    if (addOrder.expired())
+        return;
+    
+    _addOrders.push_back(addOrder);
 }
 
 
-template <typename T>
-void PoolingSystem<T>::Remove(T* deleteOrder)
+template <class T>
+void PoolingSystem<T>::Remove(std::weak_ptr<T> deleteOrder)
 {
-    if (deleteOrder != nullptr)
-    {
-        _deleteOrders.push_back(deleteOrder);
-        _needRefresh = true;
-    }
+    if (deleteOrder.expired())
+        return;
+    
+    _deleteOrders.push_back(deleteOrder);
+    _needRefresh = true;
+    
 }
 
 
-template <typename T>
+template <class T>
 void PoolingSystem<T>::Clear()
 {
-    if (_autoDelete)
-    {
-        for (size_t i= 0; i < _objects.size(); ++i)
-        {
-            if (_objects[i] == nullptr)
-                continue;
-            
-            delete _objects[i];
-            _objects[i] = nullptr;
-        }
-    }
-    
     _objects.clear();
     _objects.resize(0);
     
@@ -63,7 +53,7 @@ void PoolingSystem<T>::Clear()
 }
 
 
-template <typename T>
+template <class T>
 void PoolingSystem<T>::Update()
 {
     for (auto order : _addOrders)
@@ -76,25 +66,22 @@ void PoolingSystem<T>::Update()
     
     for (auto order : _deleteOrders)
     {
-        if (order == nullptr)
-            continue;
-        
         for (size_t i= 0; i < _objects.size(); ++i)
         {
-            if (_objects[i] == nullptr)
+            if (_objects[i].expired())
                 continue;
             
             //削除依頼のものが全リスト中にあったら削除
-            if (order != _objects[i])
+            auto ptr = _objects[i].lock();
+            auto orderPtr = order.lock();
+            if (orderPtr != ptr)
                 continue;
-                
-            if (_autoDelete)
-                delete _objects[i];
             
-            _objects[i] = nullptr;
+            _objects[i].reset();
             break;
         }
     }
+
     _deleteOrders.clear();
     _deleteOrders.resize(0);
     
@@ -107,15 +94,19 @@ void PoolingSystem<T>::Update()
 }
 
 
-template <typename T>
+template <class T>
 void PoolingSystem<T>::Refresh()
 {
     //swap技法用の配列
-    std::vector<T *> swaped;
+    std::vector<std::weak_ptr<T>> swaped;
     
     for (auto obj : _objects)
     {
-        if (obj == nullptr)
+        if (obj.expired())
+            continue;
+
+        auto ptr = obj.lock();
+        if (ptr == nullptr)
             continue;
         
         //empty以外を追加する

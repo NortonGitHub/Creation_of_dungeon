@@ -79,7 +79,7 @@ void Dungeon::Init()
     FIELD->Init(fieldSizeH, fieldSizeV);
     
     //オブジェクトを読み込む
-    std::vector<TiledObject*>& _objs = OBJECT_MGR->_objects._objects;
+    auto& _objs = OBJECT_MGR->_objects;
     for (auto data : dataArray)
     {
         //受け取ったデータを変換表をもとに変換
@@ -119,7 +119,7 @@ void Dungeon::Init()
     
     for (auto obj : _objs)
     {
-        if (obj != nullptr)
+        if (obj.get() != nullptr)
             obj->Init();
     }
 }
@@ -129,28 +129,28 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 {
     FIELD->SetRawNumber(TiledVector(countX, countY), stoi(typeName));
 
-    std::vector<TiledObject*>& _objs = OBJECT_MGR->_objects._objects;
+    auto& _objs = OBJECT_MGR->_objects;
     switch(stoi(typeName))
     {
         case 0:
             return;
             
         case 1:
-            _objs.push_back(new Obstacle(TiledVector(countX, countY)));
+            _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
             return;
             
         case 2:
-            _objs.push_back(new EnemysItem(TiledVector(countX, countY)));
+            _objs.push_back(std::make_shared<EnemysItem>(TiledVector(countX, countY)));
             return;
 
         case 6:
-            _objs.push_back(new River(TiledVector(countX, countY)));
+            _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
             return;
 
         case 100:
             if (_goal == nullptr)
             {
-                _goal = new Goal(TiledVector(countX, countY), _monsters);
+                _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
                 _objs.push_back(_goal);
             }
             return;
@@ -158,7 +158,7 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
         case 200:
             if (_start == nullptr)
             {
-                _start = new StartPoint(TiledVector(countX, countY));
+                _start = std::make_shared<StartPoint>(TiledVector(countX, countY));
                 _objs.push_back(_start);
             }
             return;
@@ -171,7 +171,7 @@ void Dungeon::Clear()
     _infoDrawer.Clear();
 
     FIELD->Clear();
-    OBJECT_MGR->_objects.Clear();
+    OBJECT_MGR->Clear();
     
     _start = nullptr;
     _goal = nullptr;
@@ -221,7 +221,7 @@ void Dungeon::Update()
     //捜査情報更新
     _controller.Update();
     
-    for (auto obj : OBJECT_MGR->_objects._objects)
+    for (auto obj : OBJECT_MGR->_objects)
     {
         if (obj != nullptr)
             obj->Update();
@@ -236,7 +236,7 @@ void Dungeon::Draw()
         return;
 
     FIELD->Draw();
-    for (auto obj : OBJECT_MGR->_objects._objects)
+    for (auto obj : OBJECT_MGR->_objects)
     {
         if (obj != nullptr)
             obj->Draw();

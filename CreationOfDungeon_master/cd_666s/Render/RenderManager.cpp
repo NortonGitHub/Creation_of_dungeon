@@ -57,9 +57,9 @@ void RenderManager::RenderImage()
 }
 
 
-void RenderManager::AddRenderModel(Texture2D *model)
+void RenderManager::AddRenderModel(std::weak_ptr<Texture2D> model)
 {
-    auto type = model->GetRenderType();
+    auto type = model.lock()->GetRenderType();
     switch(type)
     {
         case Texture2D::RenderType::UI:
@@ -73,9 +73,9 @@ void RenderManager::AddRenderModel(Texture2D *model)
 }
 
 
-void RenderManager::RemoveRenderModel(Texture2D *model)
+void RenderManager::RemoveRenderModel(std::weak_ptr<Texture2D> model)
 {
-    auto type = model->GetRenderType();
+    auto type = model.lock()->GetRenderType();
     switch(type)
     {
         case Texture2D::RenderType::UI:

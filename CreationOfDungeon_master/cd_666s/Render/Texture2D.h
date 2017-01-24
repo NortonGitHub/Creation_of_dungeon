@@ -2,13 +2,14 @@
 #define Texture2D_h
 
 #include <vector>
+#include <memory>
 #include "../Resources/Resource.h"
 #include "../Color.h"
 #include "../../Vector2D.h"
 
 class Camera;
 
-class Texture2D
+class Texture2D : public std::enable_shared_from_this<Texture2D>
 {
     friend class GraphArray;
 public:

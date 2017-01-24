@@ -31,7 +31,7 @@ public:
     void SetPriority(int priority) { if (_tex != nullptr) _tex->SetPriority(priority); }
     void SetPriority(Priority priority) { if (_tex != nullptr) _tex->SetPriority(static_cast<int>(priority)); }
 
-    Texture2D* GetTexturePtr() { return _tex; }
+    Texture2D* GetTexturePtr() { return _tex.get(); }
     
     void Load(std::string fileName);
     
@@ -42,7 +42,7 @@ public:
 protected:
     
     std::shared_ptr<ImageResource> _textureResource;
-    Texture2D *_tex;
+    std::shared_ptr<Texture2D> _tex;
     Vector2D _position;
 };
 
