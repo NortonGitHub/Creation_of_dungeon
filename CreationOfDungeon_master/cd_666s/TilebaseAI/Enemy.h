@@ -13,6 +13,7 @@ class Goal;
 class Enemy : public Character
 {
 public:
+    Enemy(TiledVector, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName);
     ~Enemy();
     
     void SetTarget(Character *target) { _target = target; };
@@ -26,7 +27,7 @@ public:
     
     void Appear();
     
-    static void LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Goal* goal, ColleagueNotifyer& notifyer, std::string fileName);
+    static void LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& point, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName);
 
     static bool HasWipeOuted()
     {
@@ -37,8 +38,6 @@ public:
     }
 
 private:
-
-    Enemy(TiledVector, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName);
     
     //ˆÓŽvŒˆ’è
     virtual void Think() override;

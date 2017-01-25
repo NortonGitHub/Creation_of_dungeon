@@ -67,7 +67,7 @@ public:
     {
         _index = index;
         _currentTime = index * (_endTime / _handleArray.size());
-        _graphPtr->GetTexturePtr()->_handle = _handleArray[_index];
+        _graphPtr->GetTexturePtr().lock()->_handle = _handleArray[_index];
     }
     void SetSpeed(int speed) { _speed = speed; }
 

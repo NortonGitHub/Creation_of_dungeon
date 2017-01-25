@@ -42,7 +42,7 @@ void StartPoint::Init()
 }
 
 
-void StartPoint::AddToAppearList(Enemy* enemy, long appearFrame)
+void StartPoint::AddToAppearList(std::weak_ptr<Enemy> enemy, long appearFrame)
 {
     _appearData.push_back(std::make_pair(enemy, appearFrame));
 }
@@ -52,9 +52,12 @@ void StartPoint::Update()
 {
     for (size_t i=0; i<_appearData.size(); ++i)
     {
+        if (_appearData[i].first.expired())
+            continue;
+
         if (_appearData[i].second == _frameFromStart)
         {
-            _appearData[i].first->Appear();
+            _appearData[i].first.lock()->Appear();
             _currentIndex++;
         }
     }
@@ -95,5 +98,8 @@ Character* StartPoint::GetNextEnemy()
     if (_appearData.size() <= _currentIndex)
         return nullptr;
 
-    return _appearData[_currentIndex].first;
+    if (_appearData[_currentIndex].first.expired())
+        return nullptr;
+
+    return _appearData[_currentIndex].first.lock().get();
 }

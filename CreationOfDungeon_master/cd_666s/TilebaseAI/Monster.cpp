@@ -38,7 +38,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
     _left.SetWithCreate(fileName + "_left.png", 32, 32, 2, 24);
     _back.SetWithCreate(fileName + "_back.png", 32, 32, 2, 24);
 
-    _currentGraphPtr->GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _currentGraphPtr->SetRenderType(Texture2D::RenderType::UI);
     _right.GetGraphPtr()->SetDisplayMode(false);
     _left.GetGraphPtr()->SetDisplayMode(false);
     _front.GetGraphPtr()->SetDisplayMode(false);
@@ -57,7 +57,7 @@ Monster::~Monster()
 }
 
 
-void Monster::LoadMonsters(std::vector<TiledObject*>& objects, ColleagueNotifyer& notifyer, std::string fileName)
+void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName)
 {
     std::vector<std::string> dataArray;
     CSVReader reader;
@@ -81,11 +81,11 @@ void Monster::LoadMonsters(std::vector<TiledObject*>& objects, ColleagueNotifyer
             TiledVector startPos(params[4], params[5]);
             
             auto str = data.substr(1, data.size());
-            Monster* monster = new Monster(startPos, param, nullptr, notifyer, str);
+            auto monster = std::make_shared<Monster>(startPos, param, nullptr, notifyer, str);
             objects.push_back(monster);
             
-            auto magicSquare = new MagicSquare(startPos, *monster);
-            monster->_home = magicSquare;
+            auto magicSquare = std::make_shared<MagicSquare>(startPos, *monster);
+            monster->_home = magicSquare.get();
             objects.push_back(magicSquare);
             
             //ŽŸ‚ÌƒLƒƒƒ‰‚Ö

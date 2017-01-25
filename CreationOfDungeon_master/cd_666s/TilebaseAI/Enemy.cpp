@@ -43,7 +43,7 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     _left.SetWithCreate(fileName + "_left.png", 32, 32, 2, 24);
     _back.SetWithCreate(fileName + "_back.png", 32, 32, 2, 24);
 
-    _currentGraphPtr->GetTexturePtr()->SetRenderType(Texture2D::RenderType::UI);
+    _currentGraphPtr->SetRenderType(Texture2D::RenderType::UI);
     _right.GetGraphPtr()->SetDisplayMode(false);
     _left.GetGraphPtr()->SetDisplayMode(false);
     _front.GetGraphPtr()->SetDisplayMode(false);
@@ -60,7 +60,7 @@ Enemy::~Enemy()
 }
 
 
-void Enemy::LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Goal* goal, ColleagueNotifyer& notifyer, std::string fileName)
+void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& start, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName)
 {
     _defeatedNum = 0;
     _enemysNum = 0;
@@ -86,10 +86,10 @@ void Enemy::LoadEnemys(std::vector<TiledObject*>& objects, StartPoint* point, Go
             //戦闘データ設定
             BattleParameter param = { params[0], params[1], params[2], params[3] };
             auto str = data.substr(1, data.size());
-            Enemy* enemy = new Enemy(point->GetTilePos(), param, *goal, notifyer, str);
+            auto enemy = std::make_shared<Enemy>(start.GetTilePos(), param, goal, notifyer, str);
             objects.push_back(enemy);
             //出現時間を秒単位に変換して入場者リストに追加
-            point->AddToAppearList(enemy, params[4] * 60);
+            start.AddToAppearList(enemy, params[4] * 60);
             
             //次のキャラへ
             count = 0;
@@ -314,7 +314,7 @@ void Enemy::Battle(TiledObject* target)
 {
     // TODO : 応急処置として。
     auto chara = dynamic_cast<Monster*>(target);
-    OBJECT_MGR->Add(new BattlingTile(*this, *chara, GetTilePos()));
+    OBJECT_MGR->Add(std::make_shared<BattlingTile>(*this, *chara, GetTilePos()));
 }
 
 

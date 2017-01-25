@@ -121,7 +121,7 @@ void GraphArray::Set(Sprite *arg_graph, const int sizeH, const int sizeV
     _graphPtr = arg_graph;
     _endTime = endTime;
 
-    Vector2D graphSize = _graphPtr->GetTexturePtr()->GetSize();
+    Vector2D graphSize = _graphPtr->GetSize();
 
     //元画像と指定分割サイズから分割数を算出
     int divNumH = graphSize._x / sizeH;
@@ -152,7 +152,7 @@ Sprite* GraphArray::SetWithCreate(std::string name
     _graphPtr = new Sprite(std::move(name));
     _endTime = endTime;
 
-    Vector2D graphSize = _graphPtr->GetTexturePtr()->GetSize();
+    Vector2D graphSize = _graphPtr->GetSize();
 
     //元画像と指定分割サイズから分割数を算出
     int divNumH = graphSize._x / sizeH;
@@ -170,7 +170,7 @@ Sprite* GraphArray::SetWithCreate(std::string name)
     _graphPtr = new Sprite(std::move(name));
     _endTime = 1;
 
-    Vector2D graphSize = _graphPtr->GetTexturePtr()->GetSize();
+    Vector2D graphSize = _graphPtr->GetSize();
 
     CreateArray(1, 1, graphSize._x, graphSize._y, 1);
 
@@ -197,7 +197,7 @@ void GraphArray::CreateArray(const int divNumH, const int divNumV
             static_cast<int>(upperLeft._x),
             static_cast<int>(upperLeft._y),
             sizeH, sizeV,
-            _graphPtr->GetTexturePtr()->GetHandle()
+            _graphPtr->GetResourceHandle()
             );
 
         _handleArray.push_back(handle);
@@ -214,7 +214,7 @@ void GraphArray::CreateArray(const int divNumH, const int divNumV
     _singleSize = Vector2D(sizeH, sizeV);
 
     //画像に設定
-    _graphPtr->GetTexturePtr()->_handle = _handleArray[_index];
+    _graphPtr->GetTexturePtr().lock()->_handle = _handleArray[_index];
 }
 
 void GraphArray::Update()
@@ -246,5 +246,5 @@ void GraphArray::Update()
     _index = min(_handleArray.size() - 1, max(0, _index));
 
     //画像に設定
-    _graphPtr->GetTexturePtr()->_handle = _handleArray[_index];
+    _graphPtr->GetTexturePtr().lock()->_handle = _handleArray[_index];
 }

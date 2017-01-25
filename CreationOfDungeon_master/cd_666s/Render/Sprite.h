@@ -21,17 +21,27 @@ public:
         UI = 100,
     };
 
+    int GetResourceHandle() const 
+    {
+        if (_textureResource == nullptr)
+            return -1;
+        
+        return _textureResource->GetHandle();
+    }
+
     Vector2D GetPosition() const { return _position; }
+    Vector2D GetSize() const { return (_tex != nullptr) ? _tex->GetSize() : Vector2D::zero; }
     Vector2D GetScale() const;
 
     void SetPosition(Vector2D pos);
     void SetScale(Vector2D scale);
     void SetBaseColor(Color4 color){ if(_tex != nullptr) _tex->SetBaseColor(color); }
     void SetDisplayMode(bool isDisplaying) { if (_tex != nullptr) _tex->SetDisplayMode(isDisplaying); }
+    void SetRenderType(Texture2D::RenderType type) { if (_tex != nullptr) _tex->SetRenderType(type); }
     void SetPriority(int priority) { if (_tex != nullptr) _tex->SetPriority(priority); }
     void SetPriority(Priority priority) { if (_tex != nullptr) _tex->SetPriority(static_cast<int>(priority)); }
 
-    Texture2D* GetTexturePtr() { return _tex.get(); }
+    std::weak_ptr<Texture2D> GetTexturePtr() { return _tex; }
     
     void Load(std::string fileName);
     

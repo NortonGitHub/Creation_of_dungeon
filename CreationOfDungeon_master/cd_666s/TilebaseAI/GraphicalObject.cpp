@@ -24,10 +24,11 @@ void GraphicalObject::Draw()
 
 bool GraphicalObject::Contain(Vector2D pos)
 {
-    auto texture = _graph.GetTexturePtr();
-    if (texture == nullptr)
+    auto texturePtr = _graph.GetTexturePtr();
+    if (texturePtr.expired())
         return false;
     
+    auto texture = texturePtr.lock();
     auto size = texture->GetBaseSize();
     if (pos._x <= _position._x)
         return false;

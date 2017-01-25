@@ -13,6 +13,7 @@ class MagicSquare;
 class Monster : public Character
 {
 public:
+    Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName);
     ~Monster();
     
     void Appear();
@@ -26,7 +27,7 @@ public:
     bool IsEnable() const override;
     bool IsRunnable();
     
-    static void LoadMonsters(std::vector<TiledObject*>& objects, ColleagueNotifyer& notifyer, std::string fileName);
+    static void LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName);
     
     void DrawTargetMarker();
     void ExitBattle();
@@ -44,8 +45,6 @@ public:
     void WarpToHome(const MagicSquare& square);
 
 private:
-
-    Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName);
 
     virtual void OnAttacked(Character& attacker);
     virtual void OnDie() override;

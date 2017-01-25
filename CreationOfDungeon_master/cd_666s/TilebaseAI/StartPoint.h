@@ -8,7 +8,7 @@ class Enemy;
 
 class StartPoint : public TiledObject
 {
-    typedef std::pair<Enemy *, long> AppearData;
+    typedef std::pair<std::weak_ptr<Enemy>, long> AppearData;
 public:
     StartPoint(TiledVector tilePos);
     ~StartPoint();
@@ -19,7 +19,7 @@ public:
     void Update() override;
     void Draw() override;
     
-    void AddToAppearList(Enemy* enemy, long appearFrame);
+    void AddToAppearList(std::weak_ptr<Enemy> enemy, long appearFrame);
     
     Character* GetNextEnemy();
 

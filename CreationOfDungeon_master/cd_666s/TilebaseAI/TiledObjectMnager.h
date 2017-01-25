@@ -12,9 +12,11 @@ public:
     TiledObjectManager();
     ~TiledObjectManager();
     
-    void Add(TiledObject* obj);
-    void Remove(TiledObject* obj);
+    void Add(std::shared_ptr<TiledObject> obj);
+    //void Remove(std::weak_ptr<TiledObject> obj);
+    void Remove(const TiledObject* obj);
     
+    void Clear();
     void Refresh();
     
     //タイルが点を含んでいるオブジェクトを取得
@@ -22,7 +24,11 @@ public:
     
 private:
     
-    PoolingSystem<TiledObject> _objects;
+    std::vector<std::shared_ptr<TiledObject>> _objects;
+
+    bool _needRefresh;
+    std::vector<const TiledObject*> _deleteOrders;
+    std::vector<std::shared_ptr<TiledObject>> _addOrders;
 };
 
 #define OBJECT_MGR TiledObjectManager::GetInstance()

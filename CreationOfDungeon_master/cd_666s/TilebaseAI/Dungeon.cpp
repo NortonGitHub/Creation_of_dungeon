@@ -100,12 +100,12 @@ void Dungeon::Init()
     assert( (_goal != nullptr) && (_start != nullptr) && "Cannot Read Start and Goal");
     
     //侵入位置を設定
-    _intruderInformation.InitWithSetup(_start);
+    _intruderInformation.InitWithSetup(_start.get());
 
     //キャラたちをロード
     fileName = "csv/StageData/enemys";
     fileName += (_stageName + ".csv");
-    Enemy::LoadEnemys(_objs, _start, _goal, _enemys, fileName);
+    Enemy::LoadEnemys(_objs, *_start, *_goal, _enemys, fileName);
 
     fileName = "csv/StageData/monsters";
     fileName += (_stageName + ".csv");
@@ -170,11 +170,10 @@ void Dungeon::Clear()
 {
     _infoDrawer.Clear();
 
-    FIELD->Clear();
     OBJECT_MGR->Clear();
-    
     _start = nullptr;
     _goal = nullptr;
+    FIELD->Clear();
 
     RESOURCE_TABLE->Refresh();
 }
