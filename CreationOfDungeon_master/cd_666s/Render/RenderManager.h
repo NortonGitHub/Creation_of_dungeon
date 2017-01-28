@@ -33,7 +33,7 @@ public:
     
     //‰æ–Ê‚Ì‰Šú‰»F‚ğİ’è‚·‚é
     void SetClearColor(Color4 color) { _clearColor = color; };
-    void ChangePriority(Texture2D *model, int oldPriority, int newPriority);
+    void ChangePriority(std::weak_ptr<Texture2D> model, int oldPriority, int newPriority);
     
 private:
     

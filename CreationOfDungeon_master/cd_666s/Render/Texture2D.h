@@ -29,6 +29,7 @@ public:
     };
     
     void SetPosition(Vector2D pos){ _pos = pos; }
+    void BuildTextureWithInit(int handle, int width, int height);
     void BuildTexture(Vector2D pos, int width, int height);
     void BuildTexture(Vector2D pos, int width, int height, Vector2D scale);
     void Render(const Camera& camera);

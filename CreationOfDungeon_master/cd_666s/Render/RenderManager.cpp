@@ -89,9 +89,9 @@ void RenderManager::RemoveRenderModel(std::weak_ptr<Texture2D> model)
 }
 
 
-void RenderManager::ChangePriority(Texture2D* model, int oldPriority, int newPriority)
+void RenderManager::ChangePriority(std::weak_ptr<Texture2D> model, int oldPriority, int newPriority)
 {
-    auto type = model->GetRenderType();
+    auto type = model.lock()->GetRenderType();
     switch(type)
     {
         case Texture2D::RenderType::UI:

@@ -30,8 +30,8 @@ public:
     }
 
     Vector2D GetPosition() const { return _position; }
-    Vector2D GetSize() const { return (_tex != nullptr) ? _tex->GetSize() : Vector2D::zero; }
-    Vector2D GetScale() const;
+    Vector2D GetSize() const    { return (_tex != nullptr) ? _tex->GetSize()    : Vector2D::zero; }
+    Vector2D GetScale() const   { return (_tex != nullptr) ? _tex->GetScale()   : Vector2D::zero; }
 
     void SetPosition(Vector2D pos);
     void SetScale(Vector2D scale);
@@ -43,6 +43,7 @@ public:
 
     std::weak_ptr<Texture2D> GetTexturePtr() { return _tex; }
     
+    void SetResource(std::shared_ptr<ImageResource> resource);
     void Load(std::string fileName);
     
     void Rotate(double angle) { if (_tex != nullptr) _tex->_angle = angle; }

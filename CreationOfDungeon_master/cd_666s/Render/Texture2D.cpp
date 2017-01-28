@@ -37,8 +37,15 @@ void Texture2D::SetRenderType(RenderType type)
 
 void Texture2D::SetPriority(int priority)
 {
-    RENDER_MGR->ChangePriority(this, _priority, priority);
+    RENDER_MGR->ChangePriority(shared_from_this(), _priority, priority);
     _priority = priority;
+}
+
+
+void Texture2D::BuildTextureWithInit(int handle, int width, int height)
+{
+    _handle = handle;
+    _baseSize.Set(_scale._x * width, _scale._y * height);
 }
 
 
@@ -61,6 +68,9 @@ void Texture2D::BuildTexture(Vector2D pos, int width, int height, Vector2D scale
 
 void Texture2D::Render(const Camera& camera)
 {
+    if (_handle == NULL)
+        return;
+
     if (!_isDisplaying)
         return;
 
