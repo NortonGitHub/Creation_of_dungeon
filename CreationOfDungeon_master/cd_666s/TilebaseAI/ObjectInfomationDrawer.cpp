@@ -7,11 +7,11 @@
 #include "../InputManager/InputManager.h"
 #include "../DebugDraw.h"
 
-ObjectInformationDrawer::ObjectInformationDrawer()
+ObjectInformationDrawer::ObjectInformationDrawer(const TiledObjectDictionary& iconDictionary)
 : _character1(nullptr)
 , _character2(nullptr)
-, _thumbnail1({ 920, 140 })
-, _thumbnail2({ 920, 430 })
+, _thumbnail1(iconDictionary, { 920, 140 })
+, _thumbnail2(iconDictionary, { 920, 430 })
 , _selectSE("resourse/sound/decide.wav")
 {
     Init();
@@ -41,54 +41,6 @@ void ObjectInformationDrawer::Init()
 
     _thumbnail1.Init();
     _thumbnail2.Init();
-}
-
-
-std::string ObjectInformationDrawer::GetIconNameFromName(std::string name)
-{
-    if (name == "magician")
-        return "resourse/graph/tiledObject/magician.png";
-
-    if (name == "blaver")
-        return "resourse/graph/tiledObject/blaver.png";
-
-    if (name == "fighter")
-        return "resourse/graph/tiledObject/fighter.png";
-
-    if (name == "minotaur")
-        return "resourse/graph/tiledObject/minotaur.png";
-
-    if (name == "bone")
-        return "resourse/graph/tiledObject/bone.png";
-
-    if (name == "ghost")
-        return "resourse/graph/tiledObject/ghost.png";
-
-    return "";
-}
-
-
-int ObjectInformationDrawer::GetIndexFromName(std::string name)
-{
-    if (name == "blaver")
-        return 0;
-
-    if (name == "magician")
-        return 1;
-
-    if (name == "fighter")
-        return 2;
-
-    if (name == "bone")
-        return 3;
-
-    if (name == "ghost")
-        return 4;
-
-    if (name == "minotaur")
-        return 5;
-
-    return -1;
 }
 
 

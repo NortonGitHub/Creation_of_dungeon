@@ -7,6 +7,7 @@
 #include "ColleagueNotifyer.h"
 #include "ObjectInformationDrawer.h"
 #include "IntruderInfomation.h"
+#include "TiledObjectDictionary.h"
 #include "DungeonTimer.h"
 #include "../../Vector2D.h"
 #include "../Render/Sprite.h"
@@ -57,6 +58,9 @@ private:
     //モンスター操作モジュール
     MonsterController _controller;
 
+    //アイコンと名前の対応表
+    const TiledObjectDictionary _dictionary;
+
     //選択したモンスターの情報
     ObjectInformationDrawer _infoDrawer;
 
@@ -65,7 +69,6 @@ private:
 
     // MEMO : debug用
     Sprite _face, _messageUI, _mainsFrame, _background, _windowBackground, _waveInfomartionBoard;
-    //std::vector<Sprite*> _icons;
 };
 
 #endif /* Dungeon_h */

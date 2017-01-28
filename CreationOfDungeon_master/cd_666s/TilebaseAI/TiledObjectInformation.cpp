@@ -4,18 +4,14 @@
 #include "../DebugDraw.h"
 
 
-TiledObjectInformation::TiledObjectInformation(Vector2D position)
+TiledObjectInformation::TiledObjectInformation(const TiledObjectDictionary& iconDictionary, Vector2D position)
     : _position(position)
     , _character(nullptr)
+    , _iconDictionary(iconDictionary)
     , _enemyThumbnail("resourse/graph/enemy_thumbnail.png", position)
     , _allyThumbnail("resourse/graph/ally_thumbnail.png", position)
 {
-    _icon.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("blaver")));
-    _icon.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("magician")));
-    _icon.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("fighter")));
-    _icon.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("bone")));
-    _icon.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("ghost")));
-    _icon.push_back(new Sprite(ObjectInformationDrawer::GetIconNameFromName("minotaur")));
+    _icon = std::make_unique<Sprite>();
 
     _enemyThumbnail.SetDisplayMode(false);
     _allyThumbnail.SetDisplayMode(false);
@@ -34,27 +30,20 @@ TiledObjectInformation::~TiledObjectInformation()
 
 void TiledObjectInformation::Init()
 {
-    for (auto icon : _icon)
-    {
-        icon->SetDisplayMode(false);
-        icon->SetPriority(1090);
-        icon->SetPosition(_position + Vector2D(140, 32));
-    }
+    if (_icon == nullptr)
+        return;
+    
+    _icon->SetDisplayMode(true);
+    _icon->SetPriority(1090);
+    _icon->SetScale({ 2, 2 });
+    _icon->SetPosition(_position + Vector2D(140, 32));
 }
 
 
 void TiledObjectInformation::Clear()
 {
-    for (auto icon : _icon)
-    {
-        if (icon == nullptr)
-            continue;
-
-        delete icon;
-        icon = nullptr;
-    }
-    _icon.clear();
-    _icon.resize(0);
+    _icon = nullptr;
+    _character = nullptr;
 }
 
 
@@ -67,28 +56,16 @@ void TiledObjectInformation::Draw()
         _enemyThumbnail.SetDisplayMode(isEnemy);
         _allyThumbnail.SetDisplayMode(!isEnemy);
 
+        _icon->SetResource(_iconDictionary.GetImageFromName(_character->GetName()));
+        Init();
+
         DrawInformation(_character);
-
-        for (auto icon : _icon)
-        {
-            icon->SetDisplayMode(false);
-            icon->SetPriority(100);
-        }
-
-        Sprite* iconPtr = _icon[ObjectInformationDrawer::GetIndexFromName(_character->GetName())];
-        iconPtr->SetScale(Vector2D(2, 2));
-        iconPtr->SetDisplayMode(true);
     }
     else
     {
         _enemyThumbnail.SetDisplayMode(false);
         _allyThumbnail.SetDisplayMode(false);
-
-        for (auto icon : _icon)
-        {
-            icon->SetDisplayMode(false);
-            icon->SetPriority(100);
-        }
+        _icon->SetDisplayMode(false);
     }
 }
 

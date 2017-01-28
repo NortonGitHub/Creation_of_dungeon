@@ -73,11 +73,6 @@ void TiledObjectManager::Refresh()
             //íœˆË—Š‚Ì‚à‚Ì‚ª‘SƒŠƒXƒg’†‚É‚ ‚Á‚½‚çíœ
             if (order != _objects[i].get())
                 continue;
-            /*
-            auto orderPtr = order.lock();
-            if (orderPtr.get() != _objects[i].get())
-                continue;
-            */
 
             _objects[i] = nullptr;
             _objects[i].reset();

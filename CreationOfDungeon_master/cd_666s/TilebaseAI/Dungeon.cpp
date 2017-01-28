@@ -26,9 +26,11 @@ Dungeon::Dungeon(std::string stageName)
     , _face("resourse/graph/devilGirlUsual.png", Vector2D(40, 545))
     , _messageUI("resourse/graph/ui/message_window.png", Vector2D(20, 520))
     , _mainsFrame("resourse/graph/ui/main_window.png", Vector2D(20, 20))
-    , _background("resourse/graph/background/background.png", Vector2D(0, 0))
+    , _background("resourse/graph/background/background.png", Vector2D(0, 7600))
     , _windowBackground("resourse/graph/ui/main_window_background1.png", Vector2D(28, 28))
     , _waveInfomartionBoard("resourse/graph/ui/enemyinformation.png", Vector2D(754, 248))
+    , _infoDrawer(_dictionary)
+    , _intruderInformation(_dictionary)
 {
     _face.SetScale(Vector2D(2, 2));
 
@@ -100,7 +102,7 @@ void Dungeon::Init()
     assert( (_goal != nullptr) && (_start != nullptr) && "Cannot Read Start and Goal");
     
     //侵入位置を設定
-    _intruderInformation.InitWithSetup(_start.get());
+    _intruderInformation.InitWithSetup(_start);
 
     //キャラたちをロード
     fileName = "csv/StageData/enemys";

@@ -11,17 +11,13 @@ class Character;
 class ObjectInformationDrawer
 {
 public:
-    ObjectInformationDrawer();
+    ObjectInformationDrawer(const TiledObjectDictionary& iconDictionary);
     ~ObjectInformationDrawer();
 
     void Clear();
     void Init();
     void Update();
     void Draw();
-
-    // TODO :あとでもっと楽に共有アクセスできるようにする
-    static int GetIndexFromName(std::string name);
-    static std::string GetIconNameFromName(std::string name);
 
 private:
 

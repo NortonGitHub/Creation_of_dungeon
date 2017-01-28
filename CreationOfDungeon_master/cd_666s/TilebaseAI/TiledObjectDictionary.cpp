@@ -1,36 +1,53 @@
 #include "TiledObjectDictionary.h"
-
+#include "../Resources/ImageResource.h"
 
 
 TiledObjectDictionary::TiledObjectDictionary()
 {
+    AddRecord("magician");
+    AddRecord("blaver");
+    AddRecord("fighter");
+    AddRecord("minotaur");
+    AddRecord("bone");
+    AddRecord("ghost");
 }
 
 
 TiledObjectDictionary::~TiledObjectDictionary()
 {
+    _records.clear();
 }
 
 
-std::string TiledObjectDictionary::GetIconNameFromName(std::string name)
+std::string TiledObjectDictionary::GetIconNameFromName(std::string name) const
 {
-    if (name == "magician")
-        return "resourse/graph/tiledObject/magician.png";
-
-    if (name == "blaver")
-        return "resourse/graph/tiledObject/blaver.png";
-
-    if (name == "fighter")
-        return "resourse/graph/tiledObject/fighter.png";
-
-    if (name == "minotaur")
-        return "resourse/graph/tiledObject/minotaur.png";
-
-    if (name == "bone")
-        return "resourse/graph/tiledObject/bone.png";
-
-    if (name == "ghost")
-        return "resourse/graph/tiledObject/ghost.png";
+    for (auto& record : _records)
+    {
+        if (name == record.first)
+            return record.second->GetName();
+    }
 
     return "";
+}
+
+
+TiledObjectDictionary::ImageResourcePtr TiledObjectDictionary::GetImageFromName(std::string name) const 
+{
+    for (auto& record : _records)
+    {
+        if (name == record.first)
+            return record.second;
+    }
+
+    return nullptr;
+}
+
+
+void TiledObjectDictionary::AddRecord(std::string name)
+{
+    std::string folderPath = "resourse/graph/tiledObject/";
+    std::string format = ".png";
+
+    auto record = std::make_pair(name, std::make_shared<ImageResource>(folderPath + name + format));
+    _records.push_back(std::move(record));
 }

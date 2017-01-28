@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "TiledObjectDictionary.h"
 #include "../Render/Sprite.h"
 
 class StartPoint;
@@ -7,17 +8,19 @@ class StartPoint;
 class IntruderInfomation
 {
 public:
-    IntruderInfomation();
+    IntruderInfomation(const TiledObjectDictionary& dictionary);
     ~IntruderInfomation();
 
-    void InitWithSetup(StartPoint* intrudePoint);
+    void InitWithSetup(const std::weak_ptr<StartPoint>& intrudePoint);
     void Update();
     void Draw();
 
 private:
 
     Vector2D _position;
-    StartPoint* _intrudePoint;
-    std::vector<Sprite*> _icons;
+    std::weak_ptr<StartPoint> _intrudePoint;
+
+    std::unique_ptr<Sprite> _icon;
+    const TiledObjectDictionary& _dictionary;
 };
 
