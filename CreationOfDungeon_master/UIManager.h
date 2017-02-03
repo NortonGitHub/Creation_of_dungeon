@@ -2,7 +2,6 @@
 #include <vector>
 #include <unordered_map>
 #include <iterator>
-//#include "UIFactory.h"
 #include "UIContent.h"
 #include "UIProduct.h"
 

@@ -11,38 +11,6 @@ CSVDataLoader::~CSVDataLoader()
 {
 }
 
-void CSVDataLoader::LoadMapCSV(std::vector<MapData> &map_data, int stagenum)
-{
-    std::string filename = "stage_" + stagenum;
-    filename += ".csv";
-    std::ifstream ifs(filename);
-    if (!ifs) {
-        return;
-    }
-
-    //csvファイルを1行ずつ読み込む
-    std::string str;
-    int now_row = 0;    //行
-    int now_column = 0; //列    
-
-    while (!ifs.eof()) {
-        std::string token;
-        std::istringstream stream(str);
-
-        now_column = 0;
-
-        while (getline(stream, token, ',')) {
-            //すべて文字列として読み込まれるため
-            //数値は変換が必要
-
-            int temp = stoi(token); //stof(string str) : stringをfloatに変換
-            map_data.push_back(MapData(now_column, now_row, temp));
-            now_column++;
-        }
-        now_row++;
-    }
-}
-
 /*
 int,temp_i[]
          [0]: x

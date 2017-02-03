@@ -1,6 +1,5 @@
 #pragma once
 #include "SceneBase.h"
-#include "MapProcessManager.h"
 #include "cd_666s/Sound/Sound.h"
 #include "cd_666s/TilebaseAI/Dungeon.h"
 
@@ -21,8 +20,6 @@ private:
     std::string class_name;
 
     std::string stage_num;
-
-    MapProcessManager map_process_manager;
 
     std::vector<std::string> _functions;
 
