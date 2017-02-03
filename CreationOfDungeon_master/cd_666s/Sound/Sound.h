@@ -9,7 +9,7 @@
 class Sound
 {
 public:
-    Sound(std::string fileName, bool isBGM = false);
+    Sound(std::string fileName, bool isLoopType = false);
     ~Sound();
     
     void Play();
@@ -35,9 +35,6 @@ private:
 
     //音量
     int _volume;
-
-    //この音声はBGMかどうか
-    const bool _isBGM;
 
     //基本音量 (リソースごとの音量に掛けられる値)
     static int BGM_BASE_VOLUME;

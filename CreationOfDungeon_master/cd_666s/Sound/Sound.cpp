@@ -6,9 +6,8 @@
 int Sound::BGM_BASE_VOLUME = 50;
 int Sound::SE_BASE_VOLUME = 75;
 
-Sound::Sound(std::string fileName, bool isBGM)
-    : _isBGM(isBGM)
-    , _isLoop(isBGM)
+Sound::Sound(std::string fileName, bool isLoopType)
+    : _isLoop(isLoopType)
 {
     //ファイルを読み込んで音声データ生成
     _soundResource = SOUND_RESOURCE_TABLE->Create(SOUND_RESOURCE_TABLE->GetFolderPath() + fileName);
@@ -47,7 +46,8 @@ void Sound::SetVolume(int volume)
     _volume = volume;
 
     //音声ファイルタイプの基本音量を取得して
-    double ratio = (_isBGM) ? static_cast<double>(BGM_BASE_VOLUME)
+    // MEMO : _isBGM を一時的に廃止しているので _isLoopかどうかで判定
+    double ratio = (_isLoop) ? static_cast<double>(BGM_BASE_VOLUME)
         : static_cast<double>(SE_BASE_VOLUME);
     ratio /= 100.0;
 
