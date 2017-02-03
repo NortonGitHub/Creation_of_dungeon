@@ -8,6 +8,7 @@ int Sound::SE_BASE_VOLUME = 75;
 
 Sound::Sound(std::string fileName, bool isBGM)
     : _isBGM(isBGM)
+    , _isLoop(isBGM)
 {
     //ファイルを読み込んで音声データ生成
     _soundResource = SOUND_RESOURCE_TABLE->Create(SOUND_RESOURCE_TABLE->GetFolderPath() + fileName);
