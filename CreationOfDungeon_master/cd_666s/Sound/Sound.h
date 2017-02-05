@@ -9,9 +9,11 @@
 class Sound
 {
 public:
-    Sound(std::string fileName, bool isLoopType = false);
+    Sound(std::string fileName = "", bool isLoopType = false);
     ~Sound();
     
+    void Load(std::string fileName);
+
     void Play();
     void Stop();
 

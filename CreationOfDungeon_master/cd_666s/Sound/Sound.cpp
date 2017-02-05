@@ -9,6 +9,9 @@ int Sound::SE_BASE_VOLUME = 75;
 Sound::Sound(std::string fileName, bool isLoopType)
     : _isLoop(isLoopType)
 {
+    if (fileName == "")
+        return;
+
     //ファイルを読み込んで音声データ生成
     _soundResource = SOUND_RESOURCE_TABLE->Create(SOUND_RESOURCE_TABLE->GetFolderPath() + fileName);
 }
@@ -18,6 +21,13 @@ Sound::~Sound()
 {
     Stop();
     _soundResource = nullptr;
+}
+
+
+void Sound::Load(std::string fileName)
+{
+    //ファイルを読み込んで音声データ生成
+    _soundResource = SOUND_RESOURCE_TABLE->Create(SOUND_RESOURCE_TABLE->GetFolderPath() + fileName);
 }
 
 
