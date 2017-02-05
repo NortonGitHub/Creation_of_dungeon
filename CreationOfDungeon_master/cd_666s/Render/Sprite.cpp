@@ -8,9 +8,8 @@ Sprite::Sprite()
 : _position(Vector2D::zero)
 , _tex(nullptr)
 {
-//    _tex = std::make_shared<Texture2D>(NULL);
-//    _tex->BuildTexture(_position, 1, 1);
-//    RENDER_MGR->AddRenderModel(_tex);
+    _tex = std::make_shared<Texture2D>(NULL);
+    RENDER_MGR->AddRenderModel(_tex);
 }
 
 
@@ -18,8 +17,9 @@ Sprite::Sprite(std::string fileName, Vector2D pos)
     : _position(pos)
     , _tex(nullptr)
 {
+    _tex = std::make_shared<Texture2D>(NULL);
     Load(fileName);
-//    RENDER_MGR->AddRenderModel(_tex);
+    RENDER_MGR->AddRenderModel(_tex);
 }
 
 
@@ -41,26 +41,14 @@ Sprite::~Sprite()
 void Sprite::SetResource(std::shared_ptr<ImageResource> resource)
 {
     _textureResource = resource;
-
     if (_textureResource == nullptr)
     {
-        if (_tex != nullptr)
-        {
-            RENDER_MGR->RemoveRenderModel(_tex);
-            _tex = nullptr;
-        }
-        return;
+        _tex->BuildTextureWithInit(NULL, 1, 1);
     }
-
-    if (_tex != nullptr)
+    else
     {
         _tex->BuildTextureWithInit(_textureResource->GetHandle(), _textureResource->GetWidth(), _textureResource->GetHeight());
-        return;
     }
-
-    _tex = std::make_shared<Texture2D>(_textureResource->GetHandle());
-    _tex->BuildTexture(_position, _textureResource->GetWidth(), _textureResource->GetHeight());
-    RENDER_MGR->AddRenderModel(_tex);
 }
 
 
@@ -68,11 +56,14 @@ void Sprite::Load(std::string fileName)
 {
     _textureResource = IMAGE_RESOURCE_TABLE->Create(IMAGE_RESOURCE_TABLE->GetFolderPath() + fileName);
     if (_textureResource == nullptr)
-        return;
-
-    _tex = std::make_shared<Texture2D>(_textureResource->GetHandle());
-    _tex->BuildTexture(_position, _textureResource->GetWidth(), _textureResource->GetHeight());
-    RENDER_MGR->AddRenderModel(_tex);
+    {
+        _tex->BuildTexture(_position, 1, 1);
+    }
+    else
+    {
+        _tex->SetPosition(_position);
+        _tex->BuildTextureWithInit(_textureResource->GetHandle(), _textureResource->GetWidth(), _textureResource->GetHeight());
+    }
 }
 
 
