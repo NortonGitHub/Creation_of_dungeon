@@ -1,9 +1,12 @@
 #pragma once
 #include <string>
-#include<vector>
-#include<stdexcept>
-#include<functional>
+#include <vector>
+#include <stdexcept>
+#include <functional>
+
 #include "Graph.h"
+#include "cd_666s/Resources/ResourceManager.h"
+
 class UIContent
 {
 public:
@@ -76,5 +79,5 @@ private:
     std::string particular_function_name;
     std::function<void()> particular_function;
 
-    int _test_handle;
+    std::shared_ptr<ImageResource> _image_resource;
 };

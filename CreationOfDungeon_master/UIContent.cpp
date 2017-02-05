@@ -51,9 +51,6 @@ UIContent::UIContent(int x, int y, std::string type_name, std::string data_name,
 
     _type_name = (it != TYPE_DATA.end()) ? type_name : TYPE_DATA[0];
 
-    //    _graph_data = Graph(data_name);
-    //    _graph_data.Load(data_name);
-
     is_UI_button = (type_name == "button") ? true : false;
 
     particular_function_name = data_name;
@@ -61,25 +58,20 @@ UIContent::UIContent(int x, int y, std::string type_name, std::string data_name,
     _func_type = func_type;
 
     //Žb’è
-    std::string load_name = "resourse/" + data_name;
-    _test_handle = std::move(ResourceLoader::Load(load_name.c_str()));
+    std::string load_name = "resourse/" + data_name + ".png";
+    _image_resource = IMAGE_RESOURCE_TABLE->Create(load_name);
     //assert((_test_handle != -1) && "‰æ‘œ“Ç‚Ýž‚ÝŽ¸”s");
-    int _sizeX, _sizeY;
-    GetGraphSize(_test_handle, &_sizeX, &_sizeY);
-    _size.Set(_sizeX, _sizeY);
+    _size.Set(_image_resource->GetWidth(), _image_resource->GetHeight());
 }
 
 UIContent::~UIContent()
 {
-//    DeleteGraph(_test_handle);
+    _image_resource = nullptr;
 }
 
 
 void UIContent::Draw()
 {
-    //_graph_data.SetPosition(_position);
-    //_graph_data.Draw();
-
     //Žb’è
-    DrawGraph(_position._x, _position._y, _test_handle, FALSE);
+    DrawGraph(_position._x, _position._y, _image_resource->GetHandle(), FALSE);
 }

@@ -4,8 +4,7 @@
 #include <assert.h>
 
 Graph::Graph()
-    : _handle(NULL)
-    , _alpha(255)
+    : _alpha(255)
     , _angle(0)
 {
     _scale._x = 1.0;
@@ -14,8 +13,7 @@ Graph::Graph()
 
 
 Graph::Graph(std::string fileName)
-    : _handle(NULL)
-    , _alpha(255)
+    : _alpha(255)
     , _angle(0)
 {
     Load(fileName);
@@ -27,8 +25,7 @@ Graph::Graph(std::string fileName)
 
 
 Graph::Graph(std::string fileName, Vector2D point, Vector2D scale)
-    : _handle(NULL)
-    , _alpha(255)
+    : _alpha(255)
     , _angle(0)
     , _anchor(point)
 {
@@ -39,22 +36,18 @@ Graph::Graph(std::string fileName, Vector2D point, Vector2D scale)
 
 Graph::~Graph()
 {
-    DeleteGraph(_handle);
+    _imageResource = nullptr;
 }
 
 
 void Graph::Load(std::string fileName)
 {
     //‰æ‘œ‚ð“Ç‚Ýž‚ÝA‰æ‘œƒTƒCƒY‚à“Ç‚Ýž‚Þ
-    _handle = ResourceLoader::Load(fileName.c_str());
+    _imageResource = IMAGE_RESOURCE_TABLE->Create(fileName);
 
-    assert((_handle != -1) && "‰æ‘œ“Ç‚Ýž‚ÝŽ¸”s");
+    assert((_imageResource->GetHandle() != -1) && "‰æ‘œ“Ç‚Ýž‚ÝŽ¸”s");
 
-    int sizeX = 0;
-    int sizeY = 0;
-    GetGraphSize(_handle, &sizeX, &sizeY);
-
-    _size.Set(sizeX, sizeY);
+    _size.Set(_imageResource->GetWidth(), _imageResource->GetHeight());
 
     _alpha = 255;
     _angle = 0;
@@ -70,7 +63,8 @@ void Graph::SetGUIScale(double argWidth, double argHeight)
 
 void Graph::Draw(bool flip)
 {
-    if (_handle == NULL)
+    int handle = _imageResource->GetHandle();
+    if (handle == NULL)
         return;
 
     DrawRotaGraph3F(
@@ -81,7 +75,7 @@ void Graph::Draw(bool flip)
         _scale._x,
         _scale._y, 
         _angle * DX_PI,
-        _handle, 
+        handle,
         true, 
         flip);
 }

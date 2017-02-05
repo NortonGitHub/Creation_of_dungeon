@@ -3,12 +3,12 @@
 #include <memory>
 #include <utility>
 #include <string>
-#include <algorithm>
 
+#include "cd_666s/Resources//ResourceManager.h"
 #include "Vector2D.h"
 
 /*
-汎用的な画像クラス
+簡易的に利用可能な画像クラス
 */
 
 class Graph
@@ -53,11 +53,6 @@ public:
         return Vector2D(_size._x * _scale._x, _size._y * _scale._y);
     }
 
-    //【注意！！】以下の関数は暫定的なものです！
-    Vector2D GetP() const { return _anchor; }   //使用禁止
-    int GetH() const { return _handle; }        //使用禁止
-
-    // 暫定関数
 private:
 
     //画像の基本サイズ
@@ -72,7 +67,7 @@ private:
     //描画の基準位置
     Vector2D _anchor;
 
-    int _handle;
+    std::shared_ptr<ImageResource> _imageResource;
 
     //透明度
     int _alpha;

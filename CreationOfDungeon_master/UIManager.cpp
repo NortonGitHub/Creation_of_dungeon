@@ -24,7 +24,7 @@ UIManager::UIManager() {
 }
 
 
-UIManager::UIManager(std::string scene_name) : test("resourse/test_666/omote")
+UIManager::UIManager(std::string scene_name) : test("resourse/test_666/omote.png")
 {
     /***Sample Code***
     UIFactory* a = new MessageUIFactory();
