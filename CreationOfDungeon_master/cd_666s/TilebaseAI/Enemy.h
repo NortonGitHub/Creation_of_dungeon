@@ -1,7 +1,5 @@
 #pragma once
 #include "Character.h"
-#include "../Sound/Sound.h"
-#include "../../mw_animation/Animator.h"
 #include <memory>
 #include <string>
 
@@ -17,16 +15,12 @@ public:
     ~Enemy();
     
     void SetTarget(Character *target) { _target = target; };
+    void ResetTarget() override;
     
-    void Init() override;
     void Update() override;
-    void Draw() override;
     
     bool IsOverwritable(TiledObject* overwriter) override;
-    bool IsEnable() const override;
-    
-    void Appear();
-    
+   
     static void LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& point, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName);
 
     static bool HasWipeOuted()
@@ -44,10 +38,7 @@ private:
     
     //意思遂行
     virtual void Act() override;
-    
-    //思考切り替え
-    void SwitchAI(PathFindingAIBase* ai);
-    
+
     //敵対種族と戦闘
     void Battle(TiledObject* target);
     //アイテムの取得
@@ -60,22 +51,13 @@ private:
     
     virtual void OnAttacked(Character& attacker);
     virtual void OnDie() override;
-    virtual void OnWin() override;
     
     //AI行動の基準となるキャラ
     TiledObject& _baseTarget;
     
     std::unique_ptr<AstarChaser> _astar;
     
-    //自分が召喚済みかどうか
-    bool _hasAppeared;
-    
-    // TODO : 複数枚の画像を別途用意せずに済むようにする
-    GraphArray _front, _left, _right, _back;
-
     static int _defeatedNum;
     static int _enemysNum;
-
-    Sound _enterSE;
 };
 

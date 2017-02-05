@@ -1,6 +1,8 @@
 #pragma once
 #include "TiledObject.h"
 #include "TiledVector.h"
+#include "../Sound/Sound.h"
+#include "../../mw_animation/Animator.h"
 #include "AI/PathFindingAIBase.h"
 
 struct BattleParameter;
@@ -21,7 +23,7 @@ public:
         int _speed;
     };
     
-    Character(TiledVector startPos, BattleParameter param, ColleagueNotifyer& notifyer);
+    Character(TiledVector startPos, BattleParameter param, ColleagueNotifyer& notifyer, std::string name);
     virtual ~Character();
     
     virtual void Update() override;
@@ -36,6 +38,10 @@ public:
     void OnOccuredBattle(BattlingTile* battle);
     void OnFinishBattle(BattlingTile* battle);
 
+    void Appear();
+
+
+    bool IsEnable() const override;
     bool IsAlive();
     std::string GetName() const { return _name; }
 
@@ -47,9 +53,6 @@ public:
     bool _isBattling;
     
 protected:
-
-    // TODO : Animationに対応
-    Sprite* _currentGraphPtr;
 
     TiledVector _beforeTilePos;
     
@@ -76,8 +79,12 @@ protected:
     
     int _countAfetrBattle;
 
-    std::string _name;
+    //自分が召喚済みかどうか
+    bool _hasAppeared;
 
+    Animator _animator;
+
+    Sound _appearSE, _defeatSE;
 
     void UpdateAttitude();
     void Attack(Character &defender);
@@ -95,18 +102,23 @@ protected:
     //敵を倒した時
     virtual void OnWin();
     
+    bool CheckActable(const int recoverCountFromAfterBattle);
+
     //カウンタを更新して行動可能かどうかを返す
     bool CheckActCounter();
-    void ResetCounter() { _actCounter = 0; }
+    void ResetCounter() { _actCounter = _actInterval; }
 
     //カウンタの数値取得
     int GetActCounter() const { return _actCounter; }
     int GetActInterval() const { return _actInterval; }
     
 private:
-    
+
     //次の行動までのカウンタ
     int _actCounter;
     int _actInterval;
+
+    //キャラの名前
+    std::string _name;
 };
 

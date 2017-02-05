@@ -5,7 +5,7 @@
 #include "BattlingTile.h"
 #include "../DebugDraw.h"
 
-Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer)
+Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer, std::string name)
 : TiledObject(startPos)
 , _actCounter(0)
 , _actInterval(30)
@@ -14,8 +14,11 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 , _notifyer(notifyer)
 , _maxHP(1)
 , _countAfetrBattle(0)
+, _name(name)
 , _isBattling(false)
+, _hasAppeared(false)
 , _target(nullptr)
+, _defeatSE("resourse/sound/enemy_fall2.wav")
 {
     _notifyer.AddColleague(*this);
     _maxHP = _battleParameter._hp;
@@ -23,6 +26,25 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
     _battleParameter._speed = fmin(100, fmax(_battleParameter._speed, 0));
     double speedRatio = static_cast<double>(100 - _battleParameter._speed + 15) / 100;
     _actInterval *= speedRatio;
+
+    std::string fileName = "resourse/graph/tiledObject/";
+    fileName += _name;
+    _animator.AddAnimation("front", std::make_shared<GraphArray>(fileName + "_front.png", 32, 32, 2, 24));
+    _animator.AddAnimation("right", std::make_shared<GraphArray>(fileName + "_right.png", 32, 32, 2, 24));
+    _animator.AddAnimation("left", std::make_shared<GraphArray>(fileName + "_left.png", 32, 32, 2, 24));
+    _animator.AddAnimation("back", std::make_shared<GraphArray>(fileName + "_back.png", 32, 32, 2, 24));
+
+    _position = startPos.GetWorldPos();
+    _beforeTilePos = GetTilePos();
+
+    auto currentGraph = _animator.GetCurrentGraph();
+    currentGraph->SetDisplayMode(false);
+    _animator.Transform([&](GraphArray* animation)
+    {
+        animation->GetGraphPtr()->SetPosition(_position);
+        animation->GetGraphPtr()->SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+        animation->GetGraphPtr()->SetRenderType(Texture2D::RenderType::UI);
+    });
 }
 
 
@@ -35,11 +57,48 @@ Character::~Character()
 void Character::Update()
 {
     GraphicalObject::Update();
+    _animator.Transform([&](GraphArray* animation)
+    {
+        animation->GetGraphPtr()->SetPosition(_position);
+    });
 }
 
 
 void Character::Draw()
 {
+    auto currentGraph = _animator.GetCurrentGraph();
+    currentGraph->SetDisplayMode(_hasAppeared && !_isBattling);
+
+    if (!_hasAppeared || _isBattling)
+        return;
+
+    switch (_direction)
+    {
+    case TiledVector::Direction::FORWARD:
+        _animator.SwitchWithReset("front");
+        break;
+
+    case TiledVector::Direction::LEFT:
+        _animator.SwitchWithReset("left");
+        break;
+
+    case TiledVector::Direction::RIGHT:
+        _animator.SwitchWithReset("right");
+        break;
+
+    case TiledVector::Direction::BACK:
+        _animator.SwitchWithReset("back");
+        break;
+    }
+
+    if (_position != GetTilePos().GetWorldPos())
+    {
+        _animator.Update();
+    }
+
+    //AIのデバッグ情報
+    if (_ai != nullptr)
+        _ai->Draw();
 }
 
 
@@ -99,16 +158,40 @@ bool Character::IsOverwritable(TiledObject* overwriter)
 }
 
 
-bool Character::CheckActCounter()
+bool Character::CheckActable(const int recoverCountFromAfterBattle)
 {
-    if (_actCounter <  _actInterval)
-    {
-        _actCounter++;
+    //出現してなければ行動できない
+    if (!_hasAppeared)
         return false;
+
+    //バトル中なら行動できない
+    if (_isBattling)
+        return false;
+
+    //バトル直後は動けない(連戦防止)
+    if (0 < _countAfetrBattle)
+    {
+        _countAfetrBattle++;
+
+        if (_countAfetrBattle < recoverCountFromAfterBattle)
+            return false;
+        else
+            _countAfetrBattle = 0;
     }
     
-    _actCounter = 0;
     return true;
+}
+
+
+bool Character::CheckActCounter()
+{
+    bool result = (_actCounter == _actInterval);
+
+    _actCounter++;
+    if (_actInterval < _actCounter)
+        _actCounter = 0;
+
+    return result;
 }
 
 
@@ -161,10 +244,25 @@ void Character::OnDie()
 
 void Character::OnWin()
 {
+    ResetTarget();
+    _defeatSE.Play();
+}
+
+
+void Character::Appear()
+{
+    _hasAppeared = true;
+    _appearSE.Play();
 }
 
 
 bool Character::IsAlive()
 {
     return (0 < _battleParameter._hp);
+}
+
+
+bool Character::IsEnable() const
+{
+    return _hasAppeared;
 }

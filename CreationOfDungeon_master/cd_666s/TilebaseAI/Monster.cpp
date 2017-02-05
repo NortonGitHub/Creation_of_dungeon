@@ -1,24 +1,15 @@
 #include "Monster.h"
 #include "TileField.h"
 #include "AI/AstarChaser.h"
-#include "../Resources/AllResourceManager.h"
 #include "../DebugDraw.h"
 #include "ColleagueNotifyer.h"
-#include "MagicSquare.h"
 #include "BattlingTile.h"
 #include "TiledObjectMnager.h"
 
-#include <array>
-#include "../Utility/CSVReader.h"
-
 Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName)
-: Character(startPos, param, notifyer)
+: Character(startPos, param, notifyer, monsterName)
 , _hasChoosed(false)
-, _hasAppeared(false)
-, _defeatSE("resourse/sound/enemy_fall2.wav")
-, _appearSE("resourse/sound/flame.wav")
 {
-    _name = monsterName;
     _target = target;
     _astar = std::make_unique<AstarChaser>(_target, *this, _pathToTarget, 100, true);
     _astar->SetAdditionalFunc(std::move([&](TiledObject* obj)
@@ -31,72 +22,14 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
     }));
 
     _ai = _astar.get();
-    std::string fileName = "resourse/graph/tiledObject/";
-    fileName += _name;
-    _currentGraphPtr = _front.SetWithCreate(fileName + "_front.png", 32, 32, 2, 24);
-    _right.SetWithCreate(fileName + "_right.png", 32, 32, 2, 24);
-    _left.SetWithCreate(fileName + "_left.png", 32, 32, 2, 24);
-    _back.SetWithCreate(fileName + "_back.png", 32, 32, 2, 24);
 
-    _currentGraphPtr->SetRenderType(Texture2D::RenderType::UI);
-    _right.GetGraphPtr()->SetDisplayMode(false);
-    _left.GetGraphPtr()->SetDisplayMode(false);
-    _front.GetGraphPtr()->SetDisplayMode(false);
-    _back.GetGraphPtr()->SetDisplayMode(false);
-
-    _position = startPos.GetWorldPos();
-    _beforeTilePos = GetTilePos();
-    
     _type = TiledObject::Type::MONSTER;
+    _appearSE.Load("resourse/sound/flame.wav");
     _appearSE.SetVolume(200);
 }
 
 
 Monster::~Monster()
-{
-}
-
-
-void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName)
-{
-    std::vector<std::string> dataArray;
-    CSVReader reader;
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
-    
-    const int parameterNum = 7;
-    std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
-    int idx = 0;
-    int count = 0;
-    for (auto data : dataArray)
-    {
-        // MEMO : 最後だけはファイル名をそのまま使う
-        if (count < parameterNum - 1)
-            params[count] = std::stoi(data);
-
-        count++;
-        
-        if (count == parameterNum)
-        {
-            BattleParameter param = { params[0], params[1], params[2], params[3] };
-            TiledVector startPos(params[4], params[5]);
-            
-            auto str = data.substr(1, data.size());
-            auto monster = std::make_shared<Monster>(startPos, param, nullptr, notifyer, str);
-            objects.push_back(monster);
-            
-            auto magicSquare = std::make_shared<MagicSquare>(startPos, *monster);
-            monster->_home = magicSquare.get();
-            objects.push_back(magicSquare);
-            
-            //次のキャラへ
-            count = 0;
-            idx++;
-        }
-    }
-}
-
-
-void Monster::Init()
 {
 }
 
@@ -110,6 +43,8 @@ void Monster::Think()
 
 void Monster::Update()
 {
+    Character::Update();
+
     //魔法陣の上にいるならさらに回復
     auto objs = FIELD->GetTiledObjects(GetTilePos());
     for (auto obj : objs)
@@ -122,20 +57,24 @@ void Monster::Update()
         }
     }
     
+    //出現してなければ行動できない
+    if (!_hasAppeared)
+        return;
+
+    //バトル中なら行動できない
+    if (_isBattling)
+        return;
+
+    //バトル直後は動けない(連戦防止)
     if (0 < _countAfetrBattle)
     {
         _countAfetrBattle++;
-        
-        if (60 < _countAfetrBattle)
+
+        if (30 < _countAfetrBattle)
             _countAfetrBattle = 0;
     }
-    
-    if (!_hasAppeared)
-        return;
-    
-    if (_isBattling)
-        return;
-    
+
+
     if (CheckActCounter())
     {
         //指示がなければ終了
@@ -172,7 +111,7 @@ void Monster::MoveToNext()
     if (_pathToTarget.size() == 0)
         return;
 
-    if (_countAfetrBattle == 0)
+    if (_countAfetrBattle == 0 )
     {
         auto objects = FIELD->GetTiledObjects(GetTilePos());
 
@@ -213,63 +152,6 @@ void Monster::DrawTargetMarker()
         Debug::DrawLine(worldPos + Vector2D(0, -TILE_SIZE / 2), worldPos + Vector2D(0, TILE_SIZE / 2), ColorPalette::BLACK4);
     }
 }
-
-
-void Monster::Draw()
-{
-    _currentGraphPtr->SetDisplayMode(false);
-    GraphArray* currentAnimation = nullptr;
-
-    if (!_hasAppeared || _isBattling)
-        return;
-    
-    switch (_direction)
-    {
-    case TiledVector::Direction::FORWARD:
-        //        _animator.SwitchWithReset("forward");
-        _currentGraphPtr = _front.GetGraphPtr();
-        currentAnimation = &_front;
-        break;
-
-    case TiledVector::Direction::LEFT:
-        //        _animator.SwitchWithReset("left");
-        _currentGraphPtr = _left.GetGraphPtr();
-        currentAnimation = &_left;
-        break;
-
-    case TiledVector::Direction::RIGHT:
-        //        _animator.SwitchWithReset("right");
-        _currentGraphPtr = _right.GetGraphPtr();
-        currentAnimation = &_right;
-        break;
-
-    case TiledVector::Direction::BACK:
-        //        _animator.SwitchWithReset("back");
-        _currentGraphPtr = _back.GetGraphPtr();
-        currentAnimation = &_back;
-        break;
-    }
-
-    if (_position != GetTilePos().GetWorldPos())
-        currentAnimation->Update();
-
-    _currentGraphPtr->SetDisplayMode(true);
-
-    //AIのデバッグ情報
-    if (_ai != nullptr)
-        _ai->Draw();
-
-    _currentGraphPtr->SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
-    _currentGraphPtr->SetPosition(_position);
-}
-
-
-void Monster::Appear()
-{
-    _hasAppeared = true;
-    _appearSE.Play();
-}
-
 
 //魔法陣への呼び戻し
 void Monster::WarpToHome(const MagicSquare& square)
@@ -325,32 +207,6 @@ void Monster::SetTarget(TiledVector pos)
 }
 
 
-void Monster::ExitBattle()
-{
-    auto tilePos = GetTilePos();
-    
-    if (FIELD->IsMovableThere(tilePos + TiledVector(0, 1), *this))
-    {
-        tilePos += TiledVector(0, 1);
-    }
-    else if (FIELD->IsMovableThere(tilePos + TiledVector(0, -1), *this))
-    {
-        tilePos += TiledVector(0, -1);
-    }
-    else if (FIELD->IsMovableThere(tilePos + TiledVector(1, 0), *this))
-    {
-        tilePos += TiledVector(1, 0);
-    }
-    else if (FIELD->IsMovableThere(tilePos + TiledVector(-1, 0), *this))
-    {
-        tilePos += TiledVector(-1, 0);
-    }
-    
-    FIELD->MoveObject(*this, tilePos);
-    _position = tilePos.GetWorldPos();
-}
-
-
 void Monster::OnAttacked(Character& attacker)
 {
     //攻撃されたら標的を攻撃してきたやつに変更
@@ -366,22 +222,15 @@ void Monster::OnDie()
     _beforeTilePos = homePos;
     _position = homePos.GetWorldPos();
     FIELD->MoveObject(*this, homePos);
+
+    //各パラメータをリセット
+    _hasChoosed = false;
     
     //各パラメータをリセット
     ResetCounter();
     ResetTarget();
     _pathToTarget.resize(0);
-    _hasChoosed = false;
     _hasAppeared = false;
-}
-
-
-void Monster::OnWin()
-{
-    Character::OnWin();
-    ResetTarget();
-
-    _defeatSE.Play();
 }
 
 
@@ -402,12 +251,6 @@ bool Monster::IsRunnable()
         return true;
     
     return false;
-}
-
-
-bool Monster::IsEnable() const
-{
-    return _hasAppeared;
 }
 
 //召喚可能かどうか

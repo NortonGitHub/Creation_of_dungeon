@@ -1,27 +1,18 @@
 #include "Enemy.h"
 #include "TileField.h"
 #include "AI/AstarChaser.h"
-#include "../Resources/AllResourceManager.h"
 #include "../DebugDraw.h"
-#include "StartPoint.h"
-#include "Goal.h"
 #include "ColleagueNotifyer.h"
 #include "TiledObjectMnager.h"
 #include "BattlingTile.h"
-
-#include <array>
-#include "../Utility/CSVReader.h"
 
 int Enemy::_defeatedNum = 0;
 int Enemy::_enemysNum = 0;
 
 Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName)
-: Character(startPos, params, notifyer)
+: Character(startPos, params, notifyer, enemyName)
 , _baseTarget(baseTarget)
-, _hasAppeared(false)
-, _enterSE("resourse/sound/blockSelect.wav")
 {
-    _name = enemyName;
     _target = &baseTarget;
     
     _astar = std::make_unique<AstarChaser>(_target, *this, _pathToTarget, 20, true);
@@ -36,84 +27,14 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     }));
     _ai = _astar.get();
 
-    std::string fileName = "resourse/graph/tiledObject/";
-    fileName += _name;
-    _currentGraphPtr = _front.SetWithCreate(fileName + "_front.png", 32, 32, 2, 24);
-    _right.SetWithCreate(fileName + "_right.png", 32, 32, 2, 24);
-    _left.SetWithCreate(fileName + "_left.png", 32, 32, 2, 24);
-    _back.SetWithCreate(fileName + "_back.png", 32, 32, 2, 24);
-
-    _currentGraphPtr->SetRenderType(Texture2D::RenderType::UI);
-    _right.GetGraphPtr()->SetDisplayMode(false);
-    _left.GetGraphPtr()->SetDisplayMode(false);
-    _front.GetGraphPtr()->SetDisplayMode(false);
-    _back.GetGraphPtr()->SetDisplayMode(false);
-
-    _position = startPos.GetWorldPos();
-    _beforeTilePos = GetTilePos();
     _type = TiledObject::Type::ENEMY;
+
+    _appearSE.Load("resourse/sound/blockSelect.wav");
 }
 
 
 Enemy::~Enemy()
 {
-}
-
-
-void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& start, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName)
-{
-    _defeatedNum = 0;
-    _enemysNum = 0;
-
-    std::vector<std::string> dataArray;
-    CSVReader reader;
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
-    
-    const int parameterNum = 6;
-    std::array<int, parameterNum> params = {0, 0, 0, 0, 0, 0};
-    int idx = 0;
-    int count = 0;
-    for (auto data : dataArray)
-    {
-        // MEMO : 最後だけはファイル名をそのまま使う
-        if (count < parameterNum - 1)
-            params[count] = std::stoi(data);
-
-        count++;
-        
-        if (count == parameterNum)
-        {
-            //戦闘データ設定
-            BattleParameter param = { params[0], params[1], params[2], params[3] };
-            auto str = data.substr(1, data.size());
-            auto enemy = std::make_shared<Enemy>(start.GetTilePos(), param, goal, notifyer, str);
-            objects.push_back(enemy);
-            //出現時間を秒単位に変換して入場者リストに追加
-            start.AddToAppearList(enemy, params[4] * 60);
-            
-            //次のキャラへ
-            count = 0;
-            idx++;
-
-            _enemysNum++;
-        }
-    }
-}
-
-
-void Enemy::Init()
-{
-}
-
-
-void Enemy::SwitchAI(PathFindingAIBase* ai)
-{
-    //現在と同じAIだったら変更なし
-    if (_ai == ai)
-        return;
-    
-    _ai->Reset();
-    _ai = ai;
 }
 
 
@@ -145,21 +66,10 @@ void Enemy::Think()
 
 void Enemy::Update()
 {
-    if (!_hasAppeared)
+    Character::Update();
+
+    if (!CheckActable(60))
         return;
-    
-    if (_isBattling)
-        return;
-    
-    if (0 < _countAfetrBattle)
-    {
-        _countAfetrBattle++;
-        
-        if (_countAfetrBattle < 60)
-            return;
-        else
-            _countAfetrBattle = 0;
-    }
 
     //状態確認フェイズ
     //目標を見失っていたら元の標的へ
@@ -269,7 +179,6 @@ bool Enemy::SearchTarget()
                     continue;
             }
 
-
             minOffset = offset;
             _target = obj;
             hasFound = true;
@@ -332,49 +241,11 @@ void Enemy::MoveToNext()
 }
 
 
-void Enemy::Draw()
+void Enemy::ResetTarget()
 {
-    _currentGraphPtr->SetDisplayMode(false);
-    GraphArray* currentAnimation = nullptr;
-
-    if (!_hasAppeared || _isBattling)
-        return;
-    
-    switch (_direction)
-    {
-    case TiledVector::Direction::FORWARD:
-//        _animator.SwitchWithReset("forward");
-        _currentGraphPtr = _front.GetGraphPtr();
-        currentAnimation = &_front;
-        break;
-
-    case TiledVector::Direction::LEFT:
-//        _animator.SwitchWithReset("left");
-        _currentGraphPtr = _left.GetGraphPtr();
-        currentAnimation = &_left;
-        break;
-
-    case TiledVector::Direction::RIGHT:
-//        _animator.SwitchWithReset("right");
-        _currentGraphPtr = _right.GetGraphPtr();
-        currentAnimation = &_right;
-        break;
-
-    case TiledVector::Direction::BACK:
-//        _animator.SwitchWithReset("back");
-        _currentGraphPtr = _back.GetGraphPtr();
-        currentAnimation = &_back;
-        break;
-    }
-
-    currentAnimation->Update();
-    _currentGraphPtr->SetDisplayMode(true);
-
-    //AIのデバッグ情報
-    _ai->Draw();
-
-    _currentGraphPtr->SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
-    _currentGraphPtr->SetPosition(_position);
+    Character::ResetTarget();
+    _target = &_baseTarget;
+    _astar->SetTarget(_target);
 }
 
 
@@ -398,21 +269,6 @@ void Enemy::OnDie()
 }
 
 
-void Enemy::OnWin()
-{
-    Character::OnWin();
-    _target = &_baseTarget;
-    _astar->SetTarget(_target);
-}
-
-
-void Enemy::Appear()
-{
-    _hasAppeared = true;
-    _enterSE.Play();
-}
-
-
 bool Enemy::IsOverwritable(TiledObject* overwriter)
 {
     if (overwriter == this)
@@ -422,10 +278,4 @@ bool Enemy::IsOverwritable(TiledObject* overwriter)
         return (!_hasAppeared) && (!_isBattling);
     
     return true;
-}
-
-
-bool Enemy::IsEnable() const
-{
-    return _hasAppeared;
 }
