@@ -6,7 +6,7 @@
 
 /*
 画像を特定の感覚で区切り
-配列で管理する DxLib用Spriteクラスの拡張モジュール
+配列で管理する Spriteクラスの拡張モジュール
 */
 
 class GraphArray
@@ -82,9 +82,6 @@ public:
     Vector2D GetSingleSize() const { return _singleSize; }
 
     Sprite* GetGraphPtr() { return _graphPtr; }
-
-    //ループを止め、指定されたインデクスの画像を表示する
-    void DeterminHandle(int index);
 
     //アニメーションをループさせるときはこれを呼ぶ
     void Update();
