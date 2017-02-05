@@ -1,5 +1,4 @@
 #include "Graph.h"
-#include "ResourceLoader.h"
 #include "DxLib.h"
 #include <assert.h>
 

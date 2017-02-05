@@ -1,6 +1,5 @@
 #include "UIContent.h"
 #include"DxLib.h"
-#include "ResourceLoader.h"
 #include <assert.h>
 
 UIContent::UIContent()
