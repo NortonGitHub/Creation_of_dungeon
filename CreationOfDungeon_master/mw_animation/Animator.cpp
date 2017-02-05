@@ -13,7 +13,14 @@ Animator::~Animator()
 //再生するアニメ―ション切り替え
 void Animator::Switch(std::string animationName)
 {
+    auto beforeAnimation = _animation;
+    if (beforeAnimation != nullptr)
+        beforeAnimation->GetGraphPtr()->SetDisplayMode(false);
+
     _animation = _animations[animationName];
+    if (_animation != nullptr)
+        _animation->GetGraphPtr()->SetDisplayMode(true);
+
     _currentName = animationName;
 }
 
@@ -31,13 +38,19 @@ void Animator::SwitchWithReset(std::string animationName)
         temp->SetCurrentTime(0);
     }
 
-    _animation = _animations[animationName];
-    _currentName = animationName;
+    Switch(animationName);
 }
 
 void Animator::AddAnimation(std::string name, std::shared_ptr<GraphArray> animation)
 {
+    bool isFirstAdd = (_animations.size() == 0);
     _animations.insert(std::make_pair(name, animation));
+
+    if (animation != nullptr)
+        animation->GetGraphPtr()->SetDisplayMode(false);
+
+    if (isFirstAdd)
+        Switch(name);
 }
 
 void Animator::RemoveAnimation(std::string animationName)
@@ -55,6 +68,9 @@ void Animator::RemoveAnimation(std::string animationName)
 
 void Animator::Update()
 {
+    if (_animation == nullptr)
+        return;
+
     _animation->Update();
 }
 

@@ -1,6 +1,7 @@
 #ifndef ANIMATOR_H
 #define ANIMATOR_H
 
+#include <functional>
 #include <unordered_map>
 #include <memory>
 
@@ -31,6 +32,15 @@ public:
 
     void Update();
     //void Draw(const Vector2D vec, bool flip);
+
+    void Transform(std::function<void(GraphArray*)> func)
+    {
+        for (auto animation : _animations)
+        {
+            if (animation.second != nullptr)
+                func(animation.second.get());
+        }
+    }
 
     std::string GetCurrentAnimationName(){ return _currentName; }
     Sprite* GetCurrentGraph() { return _animation->_graphPtr; }
