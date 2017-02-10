@@ -74,7 +74,6 @@ void Monster::Update()
             _countAfetrBattle = 0;
     }
 
-
     if (CheckActCounter())
     {
         //w¦‚ª‚È‚¯‚ê‚ÎI—¹

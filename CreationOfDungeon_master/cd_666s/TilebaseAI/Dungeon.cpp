@@ -15,6 +15,8 @@
 #include "TiledObjectMnager.h"
 #include "StartPoint.h"
 
+#include "MineBomb.h"
+
 #include <assert.h>
 
 
@@ -79,9 +81,11 @@ void Dungeon::Init()
     int countX = 0;
     int countY = 0;
     FIELD->Init(fieldSizeH, fieldSizeV);
-    
+
     //オブジェクトを読み込む
     auto& _objs = OBJECT_MGR->_objects;
+    _objs.push_back(std::make_shared<MineBomb>(TiledVector(6, 5)));
+
     for (auto data : dataArray)
     {
         //受け取ったデータを変換表をもとに変換
