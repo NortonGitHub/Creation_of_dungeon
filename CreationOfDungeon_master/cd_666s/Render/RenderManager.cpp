@@ -1,6 +1,7 @@
 #include "RenderManager.h"
 #include "Texture2D.h"
 #include "../../Main.h"
+#include "DxLib.h"
 
 RenderManager::RenderManager()
     : _clearColor(1.0, 1.0, 1.0, 1.0)
@@ -54,6 +55,8 @@ void RenderManager::RenderImage()
     _debugDrawCalls.resize(0);
 
     _uiCamera.Render();
+
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 

@@ -76,6 +76,8 @@ void Texture2D::Render(const Camera& camera)
 
     Vector2D pos = _pos + camera.GetPosition();
 
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(_baseColor._a * 255));
+
     DrawRotaGraph3F(
         static_cast<float>(_pos._x + _baseSize._x / 2 * _scale._x), 
         static_cast<float>(_pos._y + _baseSize._y / 2 * _scale._y),
