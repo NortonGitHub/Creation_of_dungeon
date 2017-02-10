@@ -39,7 +39,7 @@ public:
     void OnFinishBattle(BattlingTile* battle);
 
     void Appear();
-
+    void Damaged(int damage);
 
     bool IsEnable() const override;
     bool IsAlive();

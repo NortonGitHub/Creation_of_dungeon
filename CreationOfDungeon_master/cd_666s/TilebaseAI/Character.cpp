@@ -215,6 +215,25 @@ void Character::Interact(Character& chara)
 }
 
 
+void Character::Damaged(int damage)
+{
+    if (IsEnable())
+        _battleParameter._hp -= damage;
+
+    //戦闘で倒されたかを確認して
+    if (!IsAlive())
+    {
+        OnDie();
+
+        //情報共有網からも除外
+        _notifyer.NotifyRemoveTarget(*this);
+        ResetTarget();
+        OnWin();
+    }
+}
+
+
+
 void Character::Attack(Character &defender)
 {
     BattleParameter& defenderParameter = defender._battleParameter;
