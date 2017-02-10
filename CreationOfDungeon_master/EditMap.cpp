@@ -14,7 +14,7 @@ EditMap::~EditMap()
 
 SceneBase * EditMap::Update(UIManager _ui)
 {
-    return nullptr;
+    return this;
 }
 
 void EditMap::Draw()
