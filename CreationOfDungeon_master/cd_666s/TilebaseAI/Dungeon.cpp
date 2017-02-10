@@ -84,7 +84,8 @@ void Dungeon::Init()
 
     //オブジェクトを読み込む
     auto& _objs = OBJECT_MGR->_objects;
-    _objs.push_back(std::make_shared<MineBomb>(TiledVector(6, 5)));
+    _objs.push_back(std::make_shared<MineBomb>(TiledVector(4, 3)));
+    _objs.push_back(std::make_shared<MineBomb>(TiledVector(8, 1)));
 
     for (auto data : dataArray)
     {

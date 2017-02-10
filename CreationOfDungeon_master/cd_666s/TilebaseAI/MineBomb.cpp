@@ -26,7 +26,6 @@ MineBomb::~MineBomb()
 
 void MineBomb::Update()
 {
-    Trap::Update();
     auto objects = GetTile().lock()->GetTiledObjects();
     Character* target = nullptr;
 
@@ -38,13 +37,18 @@ void MineBomb::Update()
 
         //àÍíËãóó£Ç‹Ç≈ãﬂÇ√Ç¢ÇΩÇÁî≠ìÆ
         auto distance = (obj->GetPosition() - _position).GetLength();
-        if (TILE_SIZE / 2 < distance)
+        if (TILE_SIZE / 4 < distance)
             continue;
 
         target = dynamic_cast<Character*>(obj);
         needActivate = true;
         break;
     }
+
+    //è„Ç…âΩÇ‡Ç»ÇØÇÍÇŒ(ÇªÇÃÉ}ÉXÇ…é©ï™ÇµÇ©Ç¢Ç»ÇØÇÍÇŒ)âÒïú
+    if (objects.size() == 1)
+        Trap::Update();
+
 
     if (needActivate && IsEnable())
     {
