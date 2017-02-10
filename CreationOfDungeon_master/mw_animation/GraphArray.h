@@ -91,6 +91,8 @@ public:
     //‚±‚ê‚ð—LŒø/–³Œø‚É‚·‚é‚ÆUpdate‚ª“®‚­/“®‚©‚È‚­‚È‚é
     bool _isLoop;
 
+    bool _isPlaying;
+
 private:
 
     void CreateArray(const int divNumH, const int divNumV

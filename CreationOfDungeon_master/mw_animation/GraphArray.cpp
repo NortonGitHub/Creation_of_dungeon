@@ -11,6 +11,7 @@ GraphArray::GraphArray()
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
@@ -33,6 +34,7 @@ GraphArray::GraphArray(Sprite *arg_graph
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
@@ -49,6 +51,7 @@ GraphArray::GraphArray(std::string name
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
@@ -64,6 +67,7 @@ GraphArray::GraphArray(std::string name
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
@@ -77,6 +81,7 @@ GraphArray::GraphArray(std::string name)
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
@@ -222,19 +227,24 @@ void GraphArray::Update()
     assert(_handleArray.size() != 0
         && "‰æ‘œ”z—ñ‚ÉŽw’è‚³‚ê‚½‰æ‘œ‚ª–³Œø‚Å‚·");
 
+    if (!_isPlaying)
+        return;
+
     _hasEnd = false;
 
     _currentTime += _speed;
 
     if (_endTime <= _currentTime)
     {
+        _hasEnd = true;
         if (_isLoop)
         {
             _currentTime = 0;
-            _hasEnd = true;
         }
         else
         {
+            _isPlaying = false;
+            SetIndex(0);
             return;
         }
     }
