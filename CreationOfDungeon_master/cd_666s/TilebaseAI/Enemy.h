@@ -1,5 +1,6 @@
 #pragma once
 #include "Character.h"
+#include "Equipment.h"
 #include <memory>
 #include <string>
 
@@ -31,6 +32,8 @@ public:
         return (_enemysNum <= _defeatedNum);
     }
 
+    void SetItem(std::unique_ptr<Equipment> itemContents) { _attackItem = std::move(itemContents); };
+
 private:
     
     //意思決定
@@ -54,7 +57,10 @@ private:
     
     //AI行動の基準となるキャラ
     TiledObject& _baseTarget;
-    
+
+    //装備品
+    std::unique_ptr<Equipment> _attackItem;// , _defenceItem;
+
     std::unique_ptr<AstarChaser> _astar;
     
     static int _defeatedNum;

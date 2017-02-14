@@ -147,7 +147,8 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
             return;
             
         case 2:
-            _objs.push_back(std::make_shared<EnemysItem>(TiledVector(countX, countY)));
+            //_objs.push_back(std::make_shared<EnemysItem>(param, TiledVector(countX, countY)));
+            EnemysItem::LoadItem(countX, countY, _objs, "");
             return;
 
         case 6:

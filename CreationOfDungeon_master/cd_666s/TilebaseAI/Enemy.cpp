@@ -5,6 +5,7 @@
 #include "ColleagueNotifyer.h"
 #include "TiledObjectMnager.h"
 #include "BattlingTile.h"
+#include "EnemysItem.h"
 
 int Enemy::_defeatedNum = 0;
 int Enemy::_enemysNum = 0;
@@ -195,11 +196,17 @@ void Enemy::ObtainItem(TiledObject* target)
     auto offset = _target->GetTilePos() - GetTilePos();
     if (offset.GetBresenhamLength(false) > 1)
         return;
-    
+
+    auto item = dynamic_cast<EnemysItem*>(target);
+    if (item == nullptr)
+        return;
+
     //あればアイテム取得
-    _target->Interact(*this);
+    item->GiveItem(*this);
     _notifyer.NotifyRemoveTarget(*_target);
     
+    _battleParameter += _attackItem->GetBonusParam();
+
     //元の目標へ
     _target = &_baseTarget;
     _astar->SetTarget(&_baseTarget);

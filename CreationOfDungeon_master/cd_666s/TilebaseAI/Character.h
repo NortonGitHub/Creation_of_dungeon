@@ -1,11 +1,11 @@
 #pragma once
 #include "TiledObject.h"
 #include "TiledVector.h"
+#include "BattleParameter.h"
 #include "../Sound/Sound.h"
 #include "../../mw_animation/Animator.h"
 #include "AI/PathFindingAIBase.h"
 
-struct BattleParameter;
 class ColleagueNotifyer;
 class BattlingTile;
 
@@ -14,15 +14,7 @@ class Character : public TiledObject
     friend class ColleagueNotifyer;
     
 public:
-    
-    struct BattleParameter
-    {
-        int _hp;
-        int _attack;
-        int _defence;
-        int _speed;
-    };
-    
+
     Character(TiledVector startPos, BattleParameter param, ColleagueNotifyer& notifyer, std::string name);
     virtual ~Character();
     
