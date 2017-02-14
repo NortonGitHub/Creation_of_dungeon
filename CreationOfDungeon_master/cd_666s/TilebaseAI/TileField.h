@@ -34,8 +34,28 @@ public:
     //除外して登録する処理を一気に行う
     void MoveObject(TiledObject &obj, TiledVector pos);
     
-    TiledObject* GetTiledObject(const TiledVector &pos);
-    std::vector<TiledObject*> GetTiledObjects(const TiledVector &pos);
+    template<class T = TiledObject>
+    T* GetTiledObject(const TiledVector &pos)
+    {
+        //範囲外を参照しようとしたらnullを返す
+        if (!IsInside(pos))
+            return nullptr;
+
+        return _field[pos._y][pos._x].lock()->GetTiledObject<T>();
+    }
+
+    template<class T = TiledObject>
+    std::vector<T*> GetTiledObjects(const TiledVector &pos)
+    {
+        //範囲外を参照しようとしたらnullを返す
+        if (!IsInside(pos))
+        {
+            std::vector<TiledObject*> empty;
+            return std::move(empty);
+        }
+
+        return _field[pos._y][pos._x].lock()->GetTiledObjects<T>();
+    }
 
     int GetRawNumber(const TiledVector &pos) const;
     void SetRawNumber(const TiledVector &pos, int number);

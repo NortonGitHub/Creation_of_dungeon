@@ -72,7 +72,7 @@ void TiledObjectInformation::Draw()
 
 void TiledObjectInformation::DrawInformation(Character* chara)
 {
-    const Character::BattleParameter& param = chara->_battleParameter;
+    const BattleParameter& param = chara->_battleParameter;
 
     auto color = (chara->GetType() == TiledObject::Type::ENEMY) ? ColorPalette::RED4 : ColorPalette::BLUE4;
     Vector2D hpOffset(110, 130);

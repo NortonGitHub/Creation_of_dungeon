@@ -26,36 +26,28 @@ MineBomb::~MineBomb()
 
 void MineBomb::Update()
 {
-    auto objects = GetTile().lock()->GetTiledObjects();
-    Character* target = nullptr;
+    bool isOverrided = false;
 
-    bool needActivate = false;
-    for (auto obj : objects)
+    //敵が自分のマスにいるかどうか
+    Enemy* target = GetTile().lock()->GetTiledObject<Enemy>();
+    if (target != nullptr)
     {
-        if (obj->GetType() != Type::ENEMY)
-            continue;
-
         //一定距離まで近づいたら発動
-        auto distance = (obj->GetPosition() - _position).GetLength();
-        if (TILE_SIZE / 4 < distance)
-            continue;
-
-        target = dynamic_cast<Character*>(obj);
-        needActivate = true;
-        break;
+        auto distance = (target->GetPosition() - _position).GetLength();
+        if (distance < TILE_SIZE / 4)
+            isOverrided = true;
     }
 
-    //上に何もなければ(そのマスに自分しかいなければ)回復
-    if (objects.size() == 1)
-        Trap::Update();
-
-
-    if (needActivate && IsEnable())
+    //起動したらそのループでの処理は終了
+    if (isOverrided && IsEnable())
     {
         _graphArray._isPlaying = true;
         _duravity -= _cost;
         target->Damaged(_damage);
+        return;
     }
+
+    Trap::Update();
 }
 
 

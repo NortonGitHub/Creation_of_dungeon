@@ -46,16 +46,9 @@ void Monster::Update()
     Character::Update();
 
     //魔法陣の上にいるならさらに回復
-    auto objs = FIELD->GetTiledObjects(GetTilePos());
-    for (auto obj : objs)
-    {
-        if (obj->GetType() == TiledObject::Type::MAGIC_SQUARE
-            && _home == obj)
-        {
-            obj->Interact(*this);
-            break;
-        }
-    }
+    auto magicSquare = FIELD->GetTiledObject<MagicSquare>(GetTilePos());
+    if (magicSquare != nullptr)
+         magicSquare->Interact(*this);
     
     //出現してなければ行動できない
     if (!_hasAppeared)
@@ -112,14 +105,10 @@ void Monster::MoveToNext()
 
     if (_countAfetrBattle == 0 )
     {
-        auto objects = FIELD->GetTiledObjects(GetTilePos());
-
         //敵が正面から来るなら待ち構える
-        for (auto obj : objects)
-        {
-            if (obj->GetType() == Type::ENEMY)
-                return;
-        }
+        auto obj = FIELD->GetTiledObject<Enemy>(GetTilePos());
+        if (obj != nullptr)
+            return;
     }
     
     //移動先を取り出して

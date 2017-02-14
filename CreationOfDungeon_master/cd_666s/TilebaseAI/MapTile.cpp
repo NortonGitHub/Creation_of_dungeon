@@ -55,15 +55,6 @@ void MapTile::Init()
 }
 
 
-TiledObject* MapTile::GetTiledObject() const
-{
-    if (_objects.size() == 0)
-        return nullptr;
-    
-    return _objects[_objects.size() - 1];
-}
-
-
 bool MapTile::IsRegistable(TiledObject& obj) const
 {
     //登録されているオブジェクトがすべて上書き可能なものなら登録できる

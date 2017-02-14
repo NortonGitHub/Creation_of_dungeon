@@ -108,29 +108,6 @@ void TileField::MoveObject(TiledObject &obj, TiledVector pos)
 }
 
 
-TiledObject* TileField::GetTiledObject(const TiledVector &pos)
-{
-    //範囲外を参照しようとしたらnullを返す
-    if (!IsInside(pos))
-        return nullptr;
-    
-    return _field[pos._y][pos._x].lock()->GetTiledObject();
-}
-
-
-std::vector<TiledObject*> TileField::GetTiledObjects(const TiledVector &pos)
-{
-    //範囲外を参照しようとしたらnullを返す
-    if (!IsInside(pos))
-    {
-        std::vector<TiledObject*> empty;
-        return std::move(empty);
-    }
-    
-    return _field[pos._y][pos._x].lock()->GetTiledObjects();
-}
-
-
 int TileField::GetRawNumber(const TiledVector &pos) const
 {
     //範囲外を参照しようとしたら-1を返す
@@ -223,7 +200,7 @@ void TileField::CalcMovableCell(const TiledVector &pos, StepTable& stepTable, in
     
     //指定位置のCellが移動可能か調べる
     std::weak_ptr<MapTile> cell = _field[y][x];
-    TiledObject *obj = cell.lock()->GetTiledObject();
+    TiledObject *obj = cell.lock()->GetTiledObject<TiledObject>();
     bool isMovable = (obj == nullptr) || (obj != nullptr && obj->GetType() != TiledObject::Type::BLOCK);
     
     //指定位置のマスが移動可能なら
@@ -376,7 +353,7 @@ void TileField::CalcParabolicMovableCell(TiledVector pos, const TiledVector &bas
     
     //指定位置のCellが移動可能か調べる
     std::weak_ptr<MapTile> cell = _field[y][x];
-    TiledObject *obj = cell.lock()->GetTiledObject();
+    TiledObject *obj = cell.lock()->GetTiledObject<TiledObject>();
     bool isMovable = (obj == nullptr) || (obj != nullptr && obj->GetType() != TiledObject::Type::BLOCK);
     
     //指定位置のマスが移動可能なら

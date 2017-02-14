@@ -90,7 +90,7 @@ void ObjectInformationDrawer::SelectObject()
     
     //タイル区切りで何も見つからないなら画像区切りで探す
     if (targets.size() == 0)
-        targets = std::move(OBJECT_MGR->GetContainedObjects(cursorPos));
+        targets = std::move(OBJECT_MGR->GetContainedObjects<TiledObject>(cursorPos));
     
     //本当に何もないところなら終了
     if (targets.size() == 0)
