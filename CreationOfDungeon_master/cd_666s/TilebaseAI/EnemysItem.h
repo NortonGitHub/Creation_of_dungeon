@@ -25,7 +25,10 @@ public:
     
 private:
     
+    Sprite _contentsGraph;
     std::unique_ptr<Equipment> _contents;
+
+    int _countAfterEmpty;
 };
 
 #endif /* EnemysItem_h */

@@ -17,6 +17,7 @@ public:
     
     void ResetTarget() override;
     void Update() override;
+    void DrawParameter(Vector2D anchorPos) override;
     
     bool IsOverwritable(TiledObject* overwriter) override;
     bool IsRunnable();

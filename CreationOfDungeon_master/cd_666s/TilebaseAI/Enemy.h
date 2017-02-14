@@ -19,6 +19,7 @@ public:
     void ResetTarget() override;
     
     void Update() override;
+    void DrawParameter(Vector2D anchorPos) override;
     
     bool IsOverwritable(TiledObject* overwriter) override;
    
@@ -65,5 +66,7 @@ private:
     
     static int _defeatedNum;
     static int _enemysNum;
+
+    Sprite _equipmentsGraph;
 };
 

@@ -1,6 +1,8 @@
 #include "TiledObjectInformation.h"
 #include "ObjectInformationDrawer.h"
 #include "Character.h"
+#include "Monster.h"
+#include "Enemy.h"
 #include "../DebugDraw.h"
 
 
@@ -59,7 +61,7 @@ void TiledObjectInformation::Draw()
         _icon->SetResource(_iconDictionary.GetImageFromName(_character->GetName()));
         Init();
 
-        DrawInformation(_character);
+        _character->DrawParameter(_position);
     }
     else
     {
@@ -70,33 +72,77 @@ void TiledObjectInformation::Draw()
 }
 
 
-void TiledObjectInformation::DrawInformation(Character* chara)
+void Character::DrawParameter(Vector2D anchorPos)
 {
-    const BattleParameter& param = chara->_battleParameter;
-
-    auto color = (chara->GetType() == TiledObject::Type::ENEMY) ? ColorPalette::RED4 : ColorPalette::BLUE4;
-    Vector2D hpOffset(110, 130);
-    Debug::DrawString(_position + hpOffset, "HP");
-    Debug::DrawRectWithSize(_position + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(chara->_maxHP) * 96, 12), color, true);
-    Debug::DrawRectWithSize(_position + hpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+    const BattleParameter& param = _battleParameter;
 
     std::string paramStr = "ATK : ";
     paramStr += std::to_string(param._attack);
-    Debug::DrawString(_position + Vector2D(90, 170), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(90, 190), paramStr);
 
     paramStr = "DEF : ";
     paramStr += std::to_string(param._defence);
-    Debug::DrawString(_position + Vector2D(190, 170), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(190, 190), paramStr);
 
     paramStr = "MATK : ";
     paramStr += std::to_string(param._attack);
-    Debug::DrawString(_position + Vector2D(90, 200), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(90, 215), paramStr);
 
     paramStr = "MDEF : ";
     paramStr += std::to_string(param._defence);
-    Debug::DrawString(_position + Vector2D(180, 200), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(180, 215), paramStr);
 
     paramStr = "SPD : ";
     paramStr += std::to_string(param._speed);
-    Debug::DrawString(_position + Vector2D(130, 230), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(130, 240), paramStr);
+}
+
+
+void Monster::DrawParameter(Vector2D anchorPos)
+{
+    const BattleParameter& param = _battleParameter;
+    auto color = ColorPalette::BLUE4;
+
+    Vector2D hpOffset(110, 130);
+    Debug::DrawString(anchorPos + hpOffset, "HP");
+    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(_maxHP) * 96, 12), color, true);
+    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+
+    Vector2D mpOffset(110, 160);
+    Debug::DrawString(anchorPos + mpOffset, "MP");
+    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(param._hp / double(_maxHP) * 96, 12), color, true);
+    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+
+    //äÓñ{èÓïÒï`âÊ
+    Character::DrawParameter(anchorPos);
+}
+
+
+void Enemy::DrawParameter(Vector2D anchorPos)
+{
+    const BattleParameter& param = _battleParameter;
+    auto color = ColorPalette::RED4;
+
+    Vector2D hpOffset(60, 130);
+    Debug::DrawString(anchorPos + hpOffset, "HP");
+    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(_maxHP) * 96, 12), color, true);
+    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+
+    Vector2D mpOffset(60, 160);
+    Debug::DrawString(anchorPos + mpOffset, "MP");
+    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(param._hp / double(_maxHP) * 96, 12), color, true);
+    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+
+    //äÓñ{èÓïÒï`âÊ
+    Character::DrawParameter(anchorPos);
+
+    //èäéùïêäÌï\é¶
+    Debug::DrawString(anchorPos + Vector2D(240, 128), "ITEM");
+
+    if (_equipmentsGraph.HasLoaded())
+        _equipmentsGraph.SetPosition(anchorPos + Vector2D(220, 148));
+    else
+        Debug::DrawRectWithSize(anchorPos + Vector2D(220, 148), {32.0, 32.0}, ColorPalette::BLACK4, false);
+
+    Debug::DrawRectWithSize(anchorPos + Vector2D(260, 148), { 32.0, 32.0 }, ColorPalette::BLACK4, false);
 }

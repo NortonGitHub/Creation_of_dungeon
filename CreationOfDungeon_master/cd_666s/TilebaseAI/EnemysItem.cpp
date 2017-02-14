@@ -8,9 +8,14 @@
 EnemysItem::EnemysItem(std::unique_ptr<Equipment> contents, TiledVector tilePos)
 : TiledObject(tilePos)
 , _contents(std::move(contents))
+, _countAfterEmpty(0)
 {
     _type = TiledObject::Type::ITEM;
     _graph.Load("resourse/graph/background/treasure01.png");
+    _contentsGraph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    _contentsGraph.SetResource(_contents->_image);
+    _contentsGraph.SetPriority(5);
+    _contentsGraph.SetDisplayMode(false);
 }
 
 
@@ -29,6 +34,23 @@ void EnemysItem::LoadItem(int countX, int countY, std::vector<std::shared_ptr<Ti
 
 void EnemysItem::Update()
 {
+    if (_contents != nullptr)
+        return;
+
+    _countAfterEmpty++;
+    if (_countAfterEmpty < 60)
+    {
+        if (60 / 2 < _countAfterEmpty)
+            return;
+
+        auto currentPos = _position;
+        currentPos -= {0, TILE_SIZE * 1.5 * (_countAfterEmpty / 60.0) * TILE_SIZE / 32.0};
+        _contentsGraph.SetPosition(currentPos);
+    }
+    else
+    {
+        OBJECT_MGR->Remove(this);
+    }
 }
 
 
@@ -37,7 +59,6 @@ void EnemysItem::Draw()
     if (!IsEnable())
         return;
 
-    //_graph.SetDisplayMode(_isEnable);
     _position = GetTilePos().GetWorldPos();
     GraphicalObject::Draw();
 }
@@ -58,6 +79,8 @@ void EnemysItem::Interact(Character& character)
 void EnemysItem::GiveItem(Enemy& enemy)
 {
     enemy.SetItem(std::move(_contents));
+    _contentsGraph.SetDisplayMode(true);
+    //OBJECT_MGR->Remove(this);
 }
 
 

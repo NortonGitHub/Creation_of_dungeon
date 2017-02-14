@@ -20,6 +20,7 @@ public:
     
     virtual void Update() override;
     virtual void Draw() override;
+    virtual void DrawParameter(Vector2D anchorPos);
     
     virtual void Interact(Character& chara) override;
     virtual bool IsOverwritable(TiledObject* overwriter) override;

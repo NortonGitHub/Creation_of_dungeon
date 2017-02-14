@@ -1,5 +1,7 @@
 #pragma once
+#include <memory>
 #include "BattleParameter.h"
+#include "../Resources/ImageResource.h"
 
 class Equipment
 {
@@ -12,6 +14,8 @@ public:
     int GetGoldValue() const { return _goldValue; };
 
     //const static Equipment _empty;
+
+    std::shared_ptr<ImageResource> _image;
 
 private:
 

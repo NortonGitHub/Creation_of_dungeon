@@ -31,6 +31,7 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     _type = TiledObject::Type::ENEMY;
 
     _appearSE.Load("resourse/sound/blockSelect.wav");
+    _equipmentsGraph.SetPriority(1090);
 }
 
 
@@ -206,6 +207,7 @@ void Enemy::ObtainItem(TiledObject* target)
     _notifyer.NotifyRemoveTarget(*_target);
     
     _battleParameter += _attackItem->GetBonusParam();
+    _equipmentsGraph.SetResource(_attackItem->_image);
 
     //Œ³‚Ì–Ú•W‚Ö
     _target = &_baseTarget;
