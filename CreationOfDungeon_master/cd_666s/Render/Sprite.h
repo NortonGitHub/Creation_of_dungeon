@@ -49,6 +49,8 @@ public:
     void Rotate(double angle) { if (_tex != nullptr) _tex->_angle = angle; }
     void LookAt(Vector2D dir);
     
+    //‰æ‘œ‚ª“Ç‚İ‚Ü‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
+    bool HasLoaded() const { return (_textureResource.get() != nullptr); }
 
 protected:
     
