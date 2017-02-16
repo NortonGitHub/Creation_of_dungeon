@@ -2,9 +2,11 @@
 #include "TiledObject.h"
 #include "TiledVector.h"
 #include "BattleParameter.h"
+#include "CharactersSkill.h"
+#include "AI/PathFindingAIBase.h"
+
 #include "../Sound/Sound.h"
 #include "../../mw_animation/Animator.h"
-#include "AI/PathFindingAIBase.h"
 
 class ColleagueNotifyer;
 class BattlingTile;
@@ -36,12 +38,13 @@ public:
 
     bool IsEnable() const override;
     bool IsAlive();
+
     std::string GetName() const { return _name; }
+    TiledVector::Direction GetDirection() const { return _direction; }
 
     
     //戦闘用パラメータ
     BattleParameter _battleParameter;
-    int _maxHP;
     
     bool _isBattling;
     
@@ -52,6 +55,9 @@ protected:
     //同系列のキャラ間で情報共有するための通信機
     ColleagueNotifyer& _notifyer;
     
+    //キャラクター固有のスキル
+    std::unique_ptr<CharactersSkill> _skill;
+
     //AIモジュールの参照
     PathFindingAIBase *_ai;
 

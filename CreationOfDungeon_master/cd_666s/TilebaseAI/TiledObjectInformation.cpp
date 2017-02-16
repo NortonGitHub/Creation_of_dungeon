@@ -105,12 +105,12 @@ void Monster::DrawParameter(Vector2D anchorPos)
 
     Vector2D hpOffset(110, 130);
     Debug::DrawString(anchorPos + hpOffset, "HP");
-    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(_maxHP) * 96, 12), color, true);
+    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(param._maxHP) * 96, 12), color, true);
     Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
 
     Vector2D mpOffset(110, 160);
     Debug::DrawString(anchorPos + mpOffset, "MP");
-    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(param._hp / double(_maxHP) * 96, 12), color, true);
+    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(param._mp / double(param._maxMP) * 96, 12), color, true);
     Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
 
     //äÓñ{èÓïÒï`âÊ
@@ -125,12 +125,12 @@ void Enemy::DrawParameter(Vector2D anchorPos)
 
     Vector2D hpOffset(60, 130);
     Debug::DrawString(anchorPos + hpOffset, "HP");
-    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(_maxHP) * 96, 12), color, true);
+    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(param._maxHP) * 96, 12), color, true);
     Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
 
     Vector2D mpOffset(60, 160);
     Debug::DrawString(anchorPos + mpOffset, "MP");
-    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(param._hp / double(_maxHP) * 96, 12), color, true);
+    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(param._mp / double(param._maxMP) * 96, 12), color, true);
     Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
 
     //äÓñ{èÓïÒï`âÊ

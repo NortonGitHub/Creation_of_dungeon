@@ -5,6 +5,8 @@
 #include "BattlingTile.h"
 #include "../DebugDraw.h"
 
+#include "ShootMagicBall.h"
+
 Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer, std::string name)
 : TiledObject(startPos)
 , _actCounter(0)
@@ -12,7 +14,6 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 , _direction(TiledVector::Direction::FORWARD)
 , _battleParameter(param)
 , _notifyer(notifyer)
-, _maxHP(1)
 , _countAfetrBattle(0)
 , _name(name)
 , _isBattling(false)
@@ -21,7 +22,6 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 , _defeatSE("resourse/sound/enemy_fall2.wav")
 {
     _notifyer.AddColleague(*this);
-    _maxHP = _battleParameter._hp;
     
     _battleParameter._speed = fmin(100, fmax(_battleParameter._speed, 0));
     double speedRatio = static_cast<double>(100 - _battleParameter._speed + 15) / 100;
@@ -45,6 +45,8 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
         animation->GetGraphPtr()->SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
         animation->GetGraphPtr()->SetRenderType(Texture2D::RenderType::UI);
     });
+
+    _skill = std::make_unique<ShootMagicBall>(_battleParameter, *this, 3);
 }
 
 
@@ -61,6 +63,9 @@ void Character::Update()
     {
         animation->GetGraphPtr()->SetPosition(_position);
     });
+
+    if (IsEnable())
+        _skill->Update();
 }
 
 

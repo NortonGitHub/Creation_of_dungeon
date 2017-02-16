@@ -16,6 +16,7 @@ public:
     void Draw() override;
     
     //í“¬‚ÉŠ±Â‚Å‚«‚é‚Ì‚Í‰“‹——£UŒ‚‚Ì‚İ
+    void Damaged(int damage, TiledObject::Type type);
     //void Interact(const Character& atkObj);
     
     //í“¬‚©‚ç—£’E

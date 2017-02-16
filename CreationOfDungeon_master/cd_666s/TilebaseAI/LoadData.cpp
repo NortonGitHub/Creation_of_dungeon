@@ -32,7 +32,7 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
         if (count == parameterNum)
         {
             //í“¬ƒf[ƒ^İ’è
-            BattleParameter param = { params[0], params[1], params[2], params[3] };
+            BattleParameter param = { params[0], 60, params[1], params[2], params[3] };
             auto str = data.substr(1, data.size());
             auto enemy = std::make_shared<Enemy>(start.GetTilePos(), param, goal, notifyer, str);
             objects.push_back(enemy);
@@ -69,7 +69,7 @@ void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, C
 
         if (count == parameterNum)
         {
-            BattleParameter param = { params[0], params[1], params[2], params[3] };
+            BattleParameter param = { params[0], 180, params[1], params[2], params[3] };
             TiledVector startPos(params[4], params[5]);
 
             auto str = data.substr(1, data.size());

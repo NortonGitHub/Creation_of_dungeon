@@ -102,7 +102,10 @@ void Enemy::Update()
     
         //意思決定
         Think();
-    
+
+        //移動先との差分から向きを更新
+        UpdateAttitude();
+
         //意思遂行
         Act();
     }
@@ -114,8 +117,14 @@ void Enemy::Update()
 
 void Enemy::Act()
 {
+    if (_skill->IsReadyToUse() && _skill->ShouldActivate())
+    {
+        _skill->Activate();
+        return;
+    }
+
     //移動先との差分から向きを更新
-    UpdateAttitude();
+    //UpdateAttitude();
     
     //移動が完了してるないなら
     if (0 < _pathToTarget.size())

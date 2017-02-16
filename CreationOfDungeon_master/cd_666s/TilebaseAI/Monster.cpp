@@ -245,7 +245,7 @@ bool Monster::IsRunnable()
 bool Monster::IsReadyToProduce() const
 {
     //‘Ì—Í‚ªÅ‘å & ¢Š«‚³‚ê‚Ä‚È‚¢‚È‚ç¢Š«‰Â”\
-    return (_maxHP == _battleParameter._hp)
+    return (_battleParameter._maxHP == _battleParameter._hp)
             && (!_hasAppeared);
 }
 

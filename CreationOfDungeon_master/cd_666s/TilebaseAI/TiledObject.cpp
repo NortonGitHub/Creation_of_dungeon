@@ -6,6 +6,7 @@
 TiledObject::TiledObject(TiledVector pos)
 :  _type(Type::DEFAULT)
 {
+    _position = pos.GetWorldPos();
     FIELD->RegistObject(*this, pos);
 }
 

@@ -69,6 +69,23 @@ void BattlingTile::Draw()
     }
 }
 
+//第三者からの攻撃
+void BattlingTile::Damaged(int damage, TiledObject::Type type)
+{
+    //enemyからの攻撃ならmonsterに
+    if (type == Type::ENEMY)
+    {
+        _monster.Damaged(damage);
+        return;
+    }
+
+    if (type == Type::MONSTER)
+    {
+        _enemy.Damaged(damage);
+        return;
+    }
+}
+
 //勝利したキャラは戦闘マスに立つ
 void BattlingTile::Win(Character& chara)
 {

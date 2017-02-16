@@ -108,10 +108,11 @@ bool MagicSquare::IsOverwritable(TiledObject* overwriter)
 void MagicSquare::Interact(Character& character)
 {
     auto hp = character._battleParameter._hp;
-    if (hp < character._maxHP)
+    auto maxHP = character._battleParameter._maxHP;
+    if (hp < maxHP)
     {
         hp += 1;
-        hp = max(0, min(hp, character._maxHP));
+        hp = max(0, min(hp, maxHP));
         character._battleParameter._hp = hp;
     }
 }

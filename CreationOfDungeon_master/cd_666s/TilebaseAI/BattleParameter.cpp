@@ -1,8 +1,11 @@
 #include "BattleParameter.h"
 #include <algorithm>
 
-BattleParameter::BattleParameter(int hp, int attack, int defence, int speed)
+BattleParameter::BattleParameter(int hp, int mp, int attack, int defence, int speed)
     : _hp(hp)
+    , _maxHP(hp)
+    , _mp(0)
+    , _maxMP(mp)
     , _attack(attack)
     , _defence(defence)
     , _speed(speed)
@@ -18,7 +21,7 @@ BattleParameter::~BattleParameter()
 
 const BattleParameter BattleParameter::operator+(const BattleParameter& param)
 {
-    BattleParameter retParam(_hp, _attack, _defence, _speed);
+    BattleParameter retParam(_hp, _mp, _attack, _defence, _speed);
     retParam._hp += param._hp;
     retParam._attack += param._attack;
     retParam._defence += param._defence;
@@ -41,7 +44,7 @@ const BattleParameter BattleParameter::operator+=(const BattleParameter& param)
 
 const BattleParameter BattleParameter::operator-(const BattleParameter& param)
 {
-    BattleParameter retParam(_hp, _attack, _defence, _speed);
+    BattleParameter retParam(_hp, _mp, _attack, _defence, _speed);
 
     retParam._hp -= param._hp;
     if (retParam._hp < 0)
