@@ -117,7 +117,7 @@ void Enemy::Update()
 
 void Enemy::Act()
 {
-    if (_skill->IsReadyToUse() && _skill->ShouldActivate())
+    if (_skill.get() != nullptr && _skill->IsReadyToUse() && _skill->ShouldActivate())
     {
         _skill->Activate();
         return;

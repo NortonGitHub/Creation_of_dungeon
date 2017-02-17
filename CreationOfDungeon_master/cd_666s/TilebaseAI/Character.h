@@ -46,6 +46,9 @@ public:
     //戦闘用パラメータ
     BattleParameter _battleParameter;
     
+    //キャラクター固有のスキル
+    std::unique_ptr<CharactersSkill> _skill;
+
     bool _isBattling;
     
 protected:
@@ -55,9 +58,6 @@ protected:
     //同系列のキャラ間で情報共有するための通信機
     ColleagueNotifyer& _notifyer;
     
-    //キャラクター固有のスキル
-    std::unique_ptr<CharactersSkill> _skill;
-
     //AIモジュールの参照
     PathFindingAIBase *_ai;
 
@@ -92,8 +92,7 @@ protected:
     virtual void Think() = 0;
     //意思遂行
     virtual void Act() = 0;
-    
-    
+        
     //攻撃されたとき
     virtual void OnAttacked(Character& attacker);
     //倒されたとき

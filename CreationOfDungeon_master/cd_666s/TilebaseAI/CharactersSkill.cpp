@@ -2,8 +2,10 @@
 #include "DxLib.h"
 
 
-CharactersSkill::CharactersSkill(BattleParameter& param)
+CharactersSkill::CharactersSkill(BattleParameter& param, int cost)
     : _param(param)
+    , _mp(0)
+    , _mpCost(cost)
 {
 }
 
@@ -15,13 +17,12 @@ CharactersSkill::~CharactersSkill()
 
 void CharactersSkill::Update()
 {
-    auto mp = _param._mp;
-    mp++;
-    _param._mp = max(0, min(mp, _param._maxMP));
+    _mp++;
+    _mp = max(0, min(_mp, _mpCost));
 }
 
 
 bool CharactersSkill::IsReadyToUse()
 {
-    return (_param._maxMP == _param._mp);
+    return (_mpCost == _mp);
 }

@@ -27,7 +27,7 @@ EnemysItem::~EnemysItem()
 void EnemysItem::LoadItem(int countX, int countY, std::vector<std::shared_ptr<TiledObject>>& objects, std::string fileName)
 {
     //アイテムを生成して宝箱内にセット
-   auto param = std::make_unique<Equipment>(BattleParameter(0, 0, 10, 15, 0), 100);
+   auto param = std::make_unique<Equipment>(BattleParameter(0, 0, 0, 10, 15, 0), 100);
    objects.push_back(std::make_shared<EnemysItem>(std::move(param), TiledVector(countX, countY)));
 }
 

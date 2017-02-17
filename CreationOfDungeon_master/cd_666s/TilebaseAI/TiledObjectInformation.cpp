@@ -85,11 +85,11 @@ void Character::DrawParameter(Vector2D anchorPos)
     Debug::DrawString(anchorPos + Vector2D(190, 190), paramStr);
 
     paramStr = "MATK : ";
-    paramStr += std::to_string(param._attack);
+    paramStr += std::to_string(param._magicAttack);
     Debug::DrawString(anchorPos + Vector2D(90, 215), paramStr);
 
     paramStr = "MDEF : ";
-    paramStr += std::to_string(param._defence);
+    paramStr += std::to_string(param._magicDefence);
     Debug::DrawString(anchorPos + Vector2D(180, 215), paramStr);
 
     paramStr = "SPD : ";
@@ -110,9 +110,15 @@ void Monster::DrawParameter(Vector2D anchorPos)
 
     Vector2D mpOffset(110, 160);
     Debug::DrawString(anchorPos + mpOffset, "MP");
-    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(param._mp / double(param._maxMP) * 96, 12), color, true);
-    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
-
+    if (_skill != nullptr)
+    {
+        Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(_skill->_mp / double(_skill->_mpCost) * 96, 12), color, true);
+        Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+    }
+    else
+    {
+        Debug::DrawString(anchorPos + mpOffset + Vector2D(24, 0), "スキルなし");
+    }
     //基本情報描画
     Character::DrawParameter(anchorPos);
 }
@@ -130,9 +136,15 @@ void Enemy::DrawParameter(Vector2D anchorPos)
 
     Vector2D mpOffset(60, 160);
     Debug::DrawString(anchorPos + mpOffset, "MP");
-    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(param._mp / double(param._maxMP) * 96, 12), color, true);
-    Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
-
+    if (_skill != nullptr)
+    {
+        Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(_skill->_mp / double(_skill->_mpCost) * 96, 12), color, true);
+        Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+    }
+    else
+    {
+        Debug::DrawString(anchorPos + mpOffset + Vector2D(24, 0), "スキルなし");
+    }
     //基本情報描画
     Character::DrawParameter(anchorPos);
 

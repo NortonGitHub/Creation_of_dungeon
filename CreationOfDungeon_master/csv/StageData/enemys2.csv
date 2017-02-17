@@ -1,5 +1,5 @@
-hp, attack, defence, speed, interval(sec), name
-10, 20, 20, 10, 5, blaver
-10, 20, 20, 10, 10, blaver
-10, 20, 20, 10, 15, blaver
-80, 20, 20, 10, 25, blaver
+hp, attack, defence, magic_attack, magic_defence, speed, interval(sec), name, skill & cost
+10,20,20,1,1,5,5,blaver,null
+10,20,20,1,1,10,15,blaver,null
+10,20,20,1,1,20,20,blaver,null
+80,20,20,1,1,10,25,blaver,null

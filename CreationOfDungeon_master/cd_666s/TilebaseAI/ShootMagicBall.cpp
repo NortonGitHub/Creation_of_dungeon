@@ -5,8 +5,8 @@
 #include "TiledObjectMnager.h"
 #include "TileField.h"
 
-ShootMagicBall::ShootMagicBall(BattleParameter& param, Character& chara, int range)
-    : CharactersSkill(param)
+ShootMagicBall::ShootMagicBall(int cost, Character& chara, int range)
+    : CharactersSkill(chara._battleParameter, cost)
     , _character(chara)
     , _range(range)
 {
@@ -77,5 +77,5 @@ void ShootMagicBall::Activate()
 
     OBJECT_MGR->Add(std::make_shared<MagicBall>(tilePos, direction, type));
 
-    _param._mp = 0;
+    _mp = 0;
 }

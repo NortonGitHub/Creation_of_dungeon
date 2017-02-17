@@ -5,8 +5,6 @@
 #include "BattlingTile.h"
 #include "../DebugDraw.h"
 
-#include "ShootMagicBall.h"
-
 Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer, std::string name)
 : TiledObject(startPos)
 , _actCounter(0)
@@ -45,8 +43,6 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
         animation->GetGraphPtr()->SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
         animation->GetGraphPtr()->SetRenderType(Texture2D::RenderType::UI);
     });
-
-    _skill = std::make_unique<ShootMagicBall>(_battleParameter, *this, 3);
 }
 
 
@@ -64,7 +60,7 @@ void Character::Update()
         animation->GetGraphPtr()->SetPosition(_position);
     });
 
-    if (IsEnable())
+    if (_skill.get() != nullptr && IsEnable())
         _skill->Update();
 }
 
