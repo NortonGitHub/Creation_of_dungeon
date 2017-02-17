@@ -113,7 +113,7 @@ CharactersSkill* CharactersSkill::CreateSkill(std::string skillData, Character& 
     if (skillData.find("null") != std::string::npos)
         return nullptr;
 
-    if (skillData.find("magic_ball") != std::string::npos)
+    if (skillData.find("magic_ball#1") != std::string::npos)
         return new ShootMagicBall(180, chara, 3);
 
     return nullptr;
