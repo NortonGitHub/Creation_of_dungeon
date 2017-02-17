@@ -24,11 +24,24 @@ EnemysItem::~EnemysItem()
 }
 
 
-void EnemysItem::LoadItem(int countX, int countY, std::vector<std::shared_ptr<TiledObject>>& objects, std::string fileName)
+void EnemysItem::LoadItem(std::string itemData, int countX, int countY, std::vector<std::shared_ptr<TiledObject>>& objects)
 {
-    //アイテムを生成して宝箱内にセット
-   auto param = std::make_unique<Equipment>(BattleParameter(0, 0, 0, 10, 15, 0), 100);
-   objects.push_back(std::make_shared<EnemysItem>(std::move(param), TiledVector(countX, countY)));
+    std::string fileName = "";
+    std::unique_ptr<Equipment> contents;
+
+    if (itemData.find("&book") != std::string::npos)
+    {
+        fileName = "book.png";
+        contents = std::make_unique<Equipment>(fileName, BattleParameter(0, 0, 0, 10, 10, 0), 100);
+    }
+    else if (itemData.find("&block") != std::string::npos)
+    {
+        fileName = "block.png";
+        contents = std::make_unique<Equipment>(fileName, BattleParameter(0, 0, 10, 0, 10, 0), 100);
+    }
+
+    //生成したアイテムを宝箱内にセット
+   objects.push_back(std::make_shared<EnemysItem>(std::move(contents), TiledVector(countX, countY)));
 }
 
 

@@ -169,16 +169,25 @@ bool Enemy::SearchTarget()
             if (obj == &_baseTarget)
                 continue;
             
-            if (obj->GetType() != TiledObject::Type::MONSTER
-                && obj->GetType() != TiledObject::Type::ITEM)
-                continue;
+            //追跡対象かどうかチェック
+            if (obj->GetType() != TiledObject::Type::MONSTER)
+            {
+                //アイテムが取得可能かチェック
+                if (obj->GetType() != TiledObject::Type::ITEM)
+                    continue;
+                else if (_attackItem != nullptr)
+                    continue;
+            }
             
+            //対象が無効(存在しないなど)なら無視
             if (!obj->IsEnable())
                 continue;
             
+            //別の仲間がすでに対象にしているなら無視
             if (!_notifyer.IsChasable(*obj))
                 continue;
             
+            //ここまで来たら近いほうを優先するようにする
             int offset = (_sight[i] - GetTilePos()).GetBresenhamLength(false);
             if (minOffset <= offset)
                 continue;

@@ -137,39 +137,45 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
     FIELD->SetRawNumber(TiledVector(countX, countY), stoi(typeName));
 
     auto& _objs = OBJECT_MGR->_objects;
-    switch(stoi(typeName))
+    if(typeName== "0")
+        return;
+            
+    if (typeName == "1")
     {
-        case 0:
-            return;
-            
-        case 1:
-            _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
-            return;
-            
-        case 2:
-            //_objs.push_back(std::make_shared<EnemysItem>(param, TiledVector(countX, countY)));
-            EnemysItem::LoadItem(countX, countY, _objs, "");
-            return;
+        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+        return;
+    }
 
-        case 6:
-            _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
-            return;
+    if (typeName.find("2&") != std::string::npos)
+    {
+        EnemysItem::LoadItem(typeName, countX, countY, _objs);
+        return;
+    }
 
-        case 100:
-            if (_goal == nullptr)
-            {
-                _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
-                _objs.push_back(_goal);
-            }
-            return;
-            
-        case 200:
-            if (_start == nullptr)
-            {
-                _start = std::make_shared<StartPoint>(TiledVector(countX, countY));
-                _objs.push_back(_start);
-            }
-            return;
+    if (typeName == "6")
+    {
+        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
+        return;
+    }
+
+    if (typeName == "100")
+    {
+        if (_goal == nullptr)
+        {
+            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
+            _objs.push_back(_goal);
+        }
+        return;
+    }
+
+    if (typeName == "200")
+    {
+        if (_start == nullptr)
+        {
+            _start = std::make_shared<StartPoint>(TiledVector(countX, countY));
+            _objs.push_back(_start);
+        }
+        return;
     }
 }
 

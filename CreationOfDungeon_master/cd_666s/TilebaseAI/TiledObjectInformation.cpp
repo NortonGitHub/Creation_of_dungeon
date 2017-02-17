@@ -152,9 +152,9 @@ void Enemy::DrawParameter(Vector2D anchorPos)
     Debug::DrawString(anchorPos + Vector2D(240, 128), "ITEM");
 
     if (_equipmentsGraph.HasLoaded())
-        _equipmentsGraph.SetPosition(anchorPos + Vector2D(220, 148));
+        _equipmentsGraph.SetPosition(anchorPos + Vector2D(240, 148));
     else
-        Debug::DrawRectWithSize(anchorPos + Vector2D(220, 148), {32.0, 32.0}, ColorPalette::BLACK4, false);
+        Debug::DrawRectWithSize(anchorPos + Vector2D(240, 148), {32.0, 32.0}, ColorPalette::BLACK4, false);
 
-    Debug::DrawRectWithSize(anchorPos + Vector2D(260, 148), { 32.0, 32.0 }, ColorPalette::BLACK4, false);
+    //Debug::DrawRectWithSize(anchorPos + Vector2D(260, 148), { 32.0, 32.0 }, ColorPalette::BLACK4, false);
 }

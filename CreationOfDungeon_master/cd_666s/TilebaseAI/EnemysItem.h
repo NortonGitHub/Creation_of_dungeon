@@ -12,7 +12,7 @@ public:
     EnemysItem(std::unique_ptr<Equipment> contents, TiledVector tilePos);
     ~EnemysItem();
     
-    static void LoadItem(int countX, int countY, std::vector<std::shared_ptr<TiledObject>>& objects, std::string fileName);
+    static void LoadItem(std::string itemData, int countX, int countY, std::vector<std::shared_ptr<TiledObject>>& objects);
 
     bool IsOverwritable(TiledObject* overwriter) override;
     void Interact(Character& character) override;

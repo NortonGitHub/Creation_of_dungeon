@@ -3,11 +3,12 @@
 
 //const Equipment::_empty = Equipment(BattleParameter(0, 0, 0, 0), 0);
 
-Equipment::Equipment(BattleParameter bonus, int goldValue)
+Equipment::Equipment(std::string fileName, BattleParameter bonus, int goldValue)
     : _goldValue(goldValue)
     , _bonusParameter(bonus)
 {
-    _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/item/book.png");
+    auto path = "resourse/graph/item/";
+    _image = IMAGE_RESOURCE_TABLE->Create(path + fileName);
 }
 
 

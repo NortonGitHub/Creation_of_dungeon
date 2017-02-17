@@ -33,6 +33,13 @@ MagicBall::MagicBall(TiledVector pos, TiledVector::Direction direction, TiledObj
 
     _moveVec *= _speed;
     _position += Vector2D(16, 16);
+
+    if (_shooterType == TiledObject::Type::ENEMY)
+        _graph.Load("resourse/graph/tiledobject/magicBall_R.png");
+    else
+        _graph.Load("resourse/graph/tiledobject/magicBall_B.png");
+
+    _graph.SetScale(Vector2D(TILE_SIZE / 24, TILE_SIZE / 24));
 }
 
 
@@ -50,7 +57,7 @@ void MagicBall::Update()
     if (!FIELD->IsInside(GetTilePos()))
         OBJECT_MGR->Remove(this);
 
-    Debug::DrawCircle(_position, 12, ColorPalette::RED4, true);
+    _graph.SetPosition(_position);
 }
 
 
