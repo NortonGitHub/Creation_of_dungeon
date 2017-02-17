@@ -71,6 +71,9 @@ bool ShootMagicBall::ShouldActivate()
 
 void ShootMagicBall::Activate()
 {
+    if (_mp < _mpCost)
+        return;
+
     auto tilePos = _character.GetTilePos();
     auto type = _character.GetType();
     auto direction = _character.GetDirection();
