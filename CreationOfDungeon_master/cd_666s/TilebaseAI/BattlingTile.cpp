@@ -76,12 +76,14 @@ void BattlingTile::Damaged(int damage, TiledObject::Type type)
     if (type == Type::ENEMY)
     {
         _monster.Damaged(damage);
+        CheckAlive();
         return;
     }
 
     if (type == Type::MONSTER)
     {
         _enemy.Damaged(damage);
+        CheckAlive();
         return;
     }
 }
