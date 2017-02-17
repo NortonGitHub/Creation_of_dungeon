@@ -10,8 +10,10 @@
 MagicBall::MagicBall(TiledVector pos, TiledVector::Direction direction, TiledObject::Type type)
     : TiledObject(pos)
     , _shooterType(type)
-    , _speed(6)
+    , _speed(3 * TILE_SIZE / 32.0)
 {
+    _name = "skill_shoot";
+
     switch (direction)
     {
     case TiledVector::Direction::FORWARD:
@@ -32,14 +34,14 @@ MagicBall::MagicBall(TiledVector pos, TiledVector::Direction direction, TiledObj
     }
 
     _moveVec *= _speed;
-    _position += Vector2D(16, 16);
+    _position += Vector2D(8 * TILE_SIZE / 32.0, 8 * TILE_SIZE / 32.0);
 
     if (_shooterType == TiledObject::Type::ENEMY)
-        _graph.Load("resourse/graph/tiledobject/magicBall_R.png");
+        _graph.Load("resourse/graph/tiledObject/magicBall_R.png");
     else
-        _graph.Load("resourse/graph/tiledobject/magicBall_B.png");
+        _graph.Load("resourse/graph/tiledObject/magicBall_B.png");
 
-    _graph.SetScale(Vector2D(TILE_SIZE / 24, TILE_SIZE / 24));
+    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 }
 
 
@@ -73,13 +75,19 @@ void MagicBall::Move()
 
 void MagicBall::CheckHit()
 {
-    auto objects = GetTile().lock()->GetTiledObjects<TiledObject>();
+    auto objects = OBJECT_MGR->GetContainedObjects<TiledObject>(_position);
     auto opponentType = (_shooterType == Type::ENEMY) ? Type::MONSTER : Type::ENEMY;
     bool hasHit = false;
+    
+    if (objects.size() == 0)
+        return;
 
     for (auto obj : objects)
     {
-        if (obj->GetType() == opponentType)
+        if (!obj->IsEnable())
+            continue;
+
+        if (obj->GetType() == Type::MONSTER)
         {
             auto chara = dynamic_cast<Character*>(obj);
             chara->Damaged(20);
