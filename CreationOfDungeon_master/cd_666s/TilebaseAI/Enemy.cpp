@@ -136,6 +136,20 @@ void Enemy::Act()
     //移動先との差分から向きを更新
     //UpdateAttitude();
     
+    //体力が半分以下でアイテムを所持しているなら回復
+    if (_battleParameter._hp <= _battleParameter._maxHP / 2)
+    {
+        for (size_t i = 0; i < _consumableItems.size(); ++i)
+        {
+            if (_consumableItems[i] != nullptr)
+            {
+                _consumableItems[i] = nullptr;
+                _battleParameter._hp += _battleParameter._maxHP / 2;
+                return;
+            }
+        }
+    }
+
     //移動が完了してるないなら
     if (0 < _pathToTarget.size())
     {
@@ -185,8 +199,28 @@ bool Enemy::SearchTarget()
                 //アイテムが取得可能かチェック
                 if (obj->GetType() != TiledObject::Type::ITEM)
                     continue;
-                else if (_equipItem != nullptr)
-                    continue;
+
+                auto objPtr = dynamic_cast<EnemysItem<Equipment>*>(obj);
+                if (objPtr != nullptr)
+                {
+                    if (_equipItem != nullptr)
+                        continue;
+                }
+                else
+                {
+                    bool result = false;
+                    for (size_t i = 0; i<_consumableItems.size(); ++i)
+                    {
+                        if (_consumableItems[i] == nullptr)
+                        {
+                            result = true;
+                            break;
+                        }
+                    }
+
+                    if (!result)
+                        continue;
+                }
             }
             
             //対象が無効(存在しないなど)なら無視

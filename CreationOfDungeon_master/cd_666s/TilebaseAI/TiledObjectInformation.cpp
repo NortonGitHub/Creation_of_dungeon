@@ -149,19 +149,19 @@ void Enemy::DrawParameter(Vector2D anchorPos)
     Character::DrawParameter(anchorPos);
 
     //èäéùïêäÌï\é¶
-    Debug::DrawString(anchorPos + Vector2D(260, 128), "ITEM");
+    Debug::DrawString(anchorPos + Vector2D(230, 128), "ITEM");
 
     if (_equipmentsGraph.HasLoaded())
-        _equipmentsGraph.SetPosition(anchorPos + Vector2D(220, 148));
+        _equipmentsGraph.SetPosition(anchorPos + Vector2D(200, 148));
     else
-        Debug::DrawRectWithSize(anchorPos + Vector2D(220, 148), {32.0, 32.0}, ColorPalette::BLACK4, false);
+        Debug::DrawRectWithSize(anchorPos + Vector2D(200, 148), {32.0, 32.0}, ColorPalette::BLACK4, false);
 
     for (size_t i=0; i<_consumableItems.size(); ++i)
     {
         if (_consumableItemGraphs[i].HasLoaded())
-            _consumableItemGraphs[i].SetPosition(anchorPos + Vector2D(240 + i * 32 + 4, 148));
+            _consumableItemGraphs[i].SetPosition(anchorPos + Vector2D(234 + i * 32 + 2 * i, 148));
         else
-            Debug::DrawRectWithSize(anchorPos + Vector2D(240 + i * 32 + 4, 148), { 32.0, 32.0 }, ColorPalette::BLACK4, false);
+            Debug::DrawRectWithSize(anchorPos + Vector2D(234 + i * 32 + 2 * i, 148), { 32.0, 32.0 }, ColorPalette::BLACK4, false);
     }
 
     //Debug::DrawRectWithSize(anchorPos + Vector2D(260, 148), { 32.0, 32.0 }, ColorPalette::BLACK4, false);
