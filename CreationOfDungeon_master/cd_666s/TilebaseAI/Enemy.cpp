@@ -144,6 +144,7 @@ void Enemy::Act()
             if (_consumableItems[i] != nullptr)
             {
                 _consumableItems[i] = nullptr;
+                _consumableItemGraphs[i].SetResource(nullptr);
                 _battleParameter._hp += _battleParameter._maxHP / 2;
                 return;
             }
@@ -201,13 +202,21 @@ bool Enemy::SearchTarget()
                     continue;
 
                 auto objPtr = dynamic_cast<EnemysItem<Equipment>*>(obj);
+
                 if (objPtr != nullptr)
                 {
+                    if (objPtr->IsEmpty())
+                        continue;
+
                     if (_equipItem != nullptr)
                         continue;
                 }
                 else
                 {
+                    auto ptr = dynamic_cast<EnemysItem<ConsumableItem>*>(obj);
+                    if (ptr->IsEmpty())
+                        continue;
+
                     bool result = false;
                     for (size_t i = 0; i<_consumableItems.size(); ++i)
                     {

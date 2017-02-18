@@ -17,9 +17,15 @@ EnemysItem<T>::EnemysItem(std::unique_ptr<T> contents, TiledVector tilePos)
     _type = TiledObject::Type::ITEM;
 
     if (typeid(T) == typeid(Equipment))
+    {
         _graph.Load("resourse/graph/background/treasure01.png");
+        _openedImage = IMAGE_RESOURCE_TABLE->Create("resourse/graph/background/treasure05.png");
+    }
     else if (typeid(T) == typeid(ConsumableItem))
+    {
         _graph.Load("resourse/graph/background/treasureB01.png");
+        _openedImage = IMAGE_RESOURCE_TABLE->Create("resourse/graph/background/treasure05.png");
+    }
 
     _contentsGraph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
     _contentsGraph.SetResource(_contents->_image);
@@ -76,9 +82,9 @@ void EnemysItem<T>::Update()
         currentPos -= {0, TILE_SIZE * 1.5 * (_countAfterEmpty / 60.0) * TILE_SIZE / 32.0};
         _contentsGraph.SetPosition(currentPos);
     }
-    else
+    else if (_countAfterEmpty == 60)
     {
-        OBJECT_MGR->Remove(this);
+        _contentsGraph.SetDisplayMode(false);
     }
 }
 
@@ -101,18 +107,11 @@ bool EnemysItem<T>::IsOverwritable(TiledObject* overwriter)
 
 
 template<class T>
-void EnemysItem<T>::Interact(Character& character)
-{
-    OBJECT_MGR->Remove(this);
-}
-
-
-template<class T>
 void EnemysItem<T>::GiveItem(Enemy& enemy)
 {
     enemy.SetItem(std::move(_contents));
     _contentsGraph.SetDisplayMode(true);
-    //OBJECT_MGR->Remove(this);
+    _graph.SetResource(_openedImage);
 }
 
 

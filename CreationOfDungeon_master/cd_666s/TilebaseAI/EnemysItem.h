@@ -13,7 +13,6 @@ public:
     ~EnemysItem();
     
     bool IsOverwritable(TiledObject* overwriter) override;
-    void Interact(Character& character) override;
     void GiveItem(Enemy& character);
     
     void Update() override;
@@ -21,9 +20,13 @@ public:
     
     bool IsEnable() const override;
     
+    bool IsEmpty() const { return (_contents == nullptr); }
+
 private:
     
     Sprite _contentsGraph;
+    std::shared_ptr<ImageResource> _openedImage;
+
     std::unique_ptr<T> _contents;
 
     int _countAfterEmpty;
