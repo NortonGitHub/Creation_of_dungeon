@@ -32,12 +32,12 @@ void EnemysItem::LoadItem(std::string itemData, int countX, int countY, std::vec
     if (itemData.find("&book") != std::string::npos)
     {
         fileName = "book.png";
-        contents = std::make_unique<Equipment>(fileName, BattleParameter(0, 0, 0, 10, 10, 0), 100);
+        contents = std::make_unique<Equipment>(BattleParameter(0, 0, 0, 10, 10, 0), 100, fileName);
     }
     else if (itemData.find("&block") != std::string::npos)
     {
         fileName = "block.png";
-        contents = std::make_unique<Equipment>(fileName, BattleParameter(0, 0, 10, 0, 10, 0), 100);
+        contents = std::make_unique<Equipment>(BattleParameter(0, 0, 10, 0, 10, 0), 100, fileName);
     }
 
     //生成したアイテムを宝箱内にセット
