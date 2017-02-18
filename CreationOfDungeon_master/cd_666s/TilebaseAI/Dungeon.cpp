@@ -148,7 +148,7 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 
     if (typeName.find("2&") != std::string::npos)
     {
-        EnemysItem::LoadItem(typeName, countX, countY, _objs);
+        LoadItem(typeName, countX, countY, _objs);
         return;
     }
 

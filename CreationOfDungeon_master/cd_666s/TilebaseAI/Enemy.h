@@ -1,6 +1,7 @@
 #pragma once
 #include "Character.h"
 #include "Equipment.h"
+#include "ConsumableItem.h"
 #include <memory>
 #include <string>
 
@@ -8,6 +9,7 @@ class AstarChaser;
 class ColleagueNotifyer;
 class StartPoint;
 class Goal;
+class ConsumableItem;
 
 class Enemy : public Character
 {
@@ -33,7 +35,24 @@ public:
         return (_enemysNum <= _defeatedNum);
     }
 
-    void SetItem(std::unique_ptr<Equipment> itemContents) { _attackItem = std::move(itemContents); };
+    void SetItem(std::unique_ptr<Equipment> itemContents) 
+    {
+        _equipItem = std::move(itemContents); 
+        _equipmentsGraph.SetResource(_equipItem->_image);
+    };
+
+    void SetItem(std::unique_ptr<ConsumableItem> itemContents) 
+    {
+        for (size_t i = 0; i < _consumableItems.size(); ++i)
+        {
+            if (_consumableItems[i] == nullptr)
+            {
+                _consumableItems[i] = (std::move(itemContents));
+                _consumableItemGraphs[i].SetResource(_consumableItems[i]->_image);
+                return;
+            }
+        }
+    };
 
 private:
     
@@ -60,7 +79,9 @@ private:
     TiledObject& _baseTarget;
 
     //‘•”õ•i
-    std::unique_ptr<Equipment> _attackItem;// , _defenceItem;
+    std::unique_ptr<Equipment> _equipItem;
+    //Š•i
+    std::vector<std::unique_ptr<ConsumableItem>> _consumableItems;
 
     std::unique_ptr<AstarChaser> _astar;
     
@@ -68,5 +89,6 @@ private:
     static int _enemysNum;
 
     Sprite _equipmentsGraph;
+    std::vector<Sprite> _consumableItemGraphs;
 };
 

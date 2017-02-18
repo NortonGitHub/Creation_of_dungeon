@@ -31,6 +31,14 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     _type = TiledObject::Type::ENEMY;
 
     _appearSE.Load("resourse/sound/blockSelect.wav");
+
+    _consumableItems.resize(3);
+    _consumableItemGraphs.resize(3);
+
+    for (size_t i = 0; i<_consumableItemGraphs.size(); ++i)
+    {
+        _consumableItemGraphs[i].SetPriority(1090);
+    }
     _equipmentsGraph.SetPriority(1090);
 }
 
@@ -177,7 +185,7 @@ bool Enemy::SearchTarget()
                 //アイテムが取得可能かチェック
                 if (obj->GetType() != TiledObject::Type::ITEM)
                     continue;
-                else if (_attackItem != nullptr)
+                else if (_equipItem != nullptr)
                     continue;
             }
             
@@ -218,16 +226,27 @@ void Enemy::ObtainItem(TiledObject* target)
     if (offset.GetBresenhamLength(false) > 1)
         return;
 
-    auto item = dynamic_cast<EnemysItem*>(target);
-    if (item == nullptr)
-        return;
+    auto equipment = dynamic_cast<EnemysItem<Equipment>*>(target);
+    if (equipment != nullptr)
+    {
+        //あればアイテム取得
+        equipment->GiveItem(*this);
+    }
+    else
+    {
+        auto item = dynamic_cast<EnemysItem<ConsumableItem>*>(target);
+        if (item != nullptr)
+        {
+            //あればアイテム取得
+            item->GiveItem(*this);
+        }
+        else
+        {
+            return;
+        }
+    }
 
-    //あればアイテム取得
-    item->GiveItem(*this);
     _notifyer.NotifyRemoveTarget(*_target);
-    
-    _battleParameter += _attackItem->GetBonusParam();
-    _equipmentsGraph.SetResource(_attackItem->_image);
 
     //元の目標へ
     _target = &_baseTarget;
