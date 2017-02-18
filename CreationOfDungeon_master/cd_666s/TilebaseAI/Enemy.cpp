@@ -185,8 +185,28 @@ bool Enemy::SearchTarget()
                 //アイテムが取得可能かチェック
                 if (obj->GetType() != TiledObject::Type::ITEM)
                     continue;
-                else if (_equipItem != nullptr)
-                    continue;
+
+                auto objPtr = dynamic_cast<EnemysItem<Equipment>*>(obj);
+                if (objPtr != nullptr)
+                {
+                    if (_equipItem != nullptr)
+                        continue;
+                }
+                else
+                {
+                    bool result = false;
+                    for (size_t i = 0; i<_consumableItems.size(); ++i)
+                    {
+                        if (_consumableItems[i] == nullptr)
+                        {
+                            result = true;
+                            break;
+                        }
+                    }
+
+                    if (!result)
+                        continue;
+                }
             }
             
             //対象が無効(存在しないなど)なら無視
