@@ -2,6 +2,7 @@
 #include "TiledObject.h"
 #include "TiledVector.h"
 #include "BattleParameter.h"
+#include "ParameterEffecter.h"
 #include "CharactersSkill.h"
 #include "AI/PathFindingAIBase.h"
 
@@ -14,6 +15,7 @@ class BattlingTile;
 class Character : public TiledObject
 {
     friend class ColleagueNotifyer;
+    friend class MagicSquare;
     
 public:
 
@@ -36,20 +38,22 @@ public:
     void Appear();
     void Damaged(int damage);
 
+    void AddParameterEffecter(std::unique_ptr<ParameterEffecter> effecter) { _effecters.push_back(std::move(effecter)); };
+    //void ClearPositiveEffecter();
+    //void ClearNegativeEffecter();
+
     bool IsEnable() const override;
     bool IsAlive();
 
     std::string GetName() const { return _name; }
     TiledVector::Direction GetDirection() const { return _direction; }
-
-    
-    //戦闘用パラメータ
-    BattleParameter _battleParameter;
     
     //キャラクター固有のスキル
     std::unique_ptr<CharactersSkill> _skill;
 
     bool _isBattling;
+
+    BattleParameter GetAffectedParameter();
     
 protected:
 
@@ -110,6 +114,8 @@ protected:
     int GetActCounter() const { return _actCounter; }
     int GetActInterval() const { return _actInterval; }
     
+    std::vector<std::unique_ptr<ParameterEffecter>> _effecters;
+
 private:
 
     //次の行動までのカウンタ
@@ -118,5 +124,8 @@ private:
 
     //キャラの名前
     std::string _name;
+
+    //戦闘用パラメータ
+    BattleParameter _battleParameter;
 };
 

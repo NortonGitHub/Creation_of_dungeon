@@ -34,7 +34,7 @@ public:
     
 //魔法陣から呼び出す関数
     //召喚可能かどうか
-    bool IsReadyToProduce() const;
+    bool IsReadyToProduce();
     //魔法陣への呼び戻し
     void WarpToHome(const MagicSquare& square);
 

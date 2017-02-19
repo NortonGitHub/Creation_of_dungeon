@@ -242,10 +242,11 @@ bool Monster::IsRunnable()
 }
 
 //¢Š«‰Â”\‚©‚Ç‚¤‚©
-bool Monster::IsReadyToProduce() const
+bool Monster::IsReadyToProduce()
 {
+    auto param = GetAffectedParameter();
     //‘Ì—Í‚ªÅ‘å & ¢Š«‚³‚ê‚Ä‚È‚¢‚È‚ç¢Š«‰Â”\
-    return (_battleParameter._maxHP == _battleParameter._hp)
+    return (param._maxHP == param._hp)
             && (!_hasAppeared);
 }
 

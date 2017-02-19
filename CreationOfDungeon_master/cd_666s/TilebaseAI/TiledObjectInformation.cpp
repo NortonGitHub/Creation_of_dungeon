@@ -74,33 +74,44 @@ void TiledObjectInformation::Draw()
 
 void Character::DrawParameter(Vector2D anchorPos)
 {
-    const BattleParameter& param = _battleParameter;
+    const BattleParameter& param = GetAffectedParameter();
 
     std::string paramStr = "ATK : ";
     paramStr += std::to_string(param._attack);
-    Debug::DrawString(anchorPos + Vector2D(90, 190), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(40, 190), paramStr);
 
     paramStr = "DEF : ";
     paramStr += std::to_string(param._defence);
-    Debug::DrawString(anchorPos + Vector2D(190, 190), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(140, 190), paramStr);
 
     paramStr = "MATK : ";
     paramStr += std::to_string(param._magicAttack);
-    Debug::DrawString(anchorPos + Vector2D(90, 215), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(40, 215), paramStr);
 
     paramStr = "MDEF : ";
     paramStr += std::to_string(param._magicDefence);
-    Debug::DrawString(anchorPos + Vector2D(180, 215), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(140, 215), paramStr);
 
     paramStr = "SPD : ";
     paramStr += std::to_string(param._speed);
-    Debug::DrawString(anchorPos + Vector2D(130, 240), paramStr);
+    Debug::DrawString(anchorPos + Vector2D(240, 190), paramStr);
+
+    size_t enableCount = 0;
+    for (size_t i = 0; i < _effecters.size(); ++i)
+    {
+        if (!_effecters[i]->IsEnable())
+            continue;
+
+        Vector2D anchor = anchorPos + Vector2D(90 + i * 40, 250);
+        _effecters[i]->DrawEffecter(anchor);
+        enableCount++;
+    }
 }
 
 
 void Monster::DrawParameter(Vector2D anchorPos)
 {
-    const BattleParameter& param = _battleParameter;
+    const BattleParameter param = GetAffectedParameter();
     auto color = ColorPalette::BLUE4;
 
     Vector2D hpOffset(110, 130);
@@ -126,7 +137,7 @@ void Monster::DrawParameter(Vector2D anchorPos)
 
 void Enemy::DrawParameter(Vector2D anchorPos)
 {
-    const BattleParameter& param = _battleParameter;
+    const BattleParameter param = GetAffectedParameter();
     auto color = ColorPalette::RED4;
 
     Vector2D hpOffset(60, 130);

@@ -137,7 +137,8 @@ void Enemy::Act()
     //UpdateAttitude();
     
     //‘Ì—Í‚ª”¼•ªˆÈ‰º‚ÅƒAƒCƒeƒ€‚ğŠ‚µ‚Ä‚¢‚é‚È‚ç‰ñ•œ
-    if (_battleParameter._hp <= _battleParameter._maxHP / 2)
+    auto param = GetAffectedParameter();
+    if (param._hp <= param._maxHP / 2)
     {
         for (size_t i = 0; i < _consumableItems.size(); ++i)
         {
@@ -145,7 +146,7 @@ void Enemy::Act()
             {
                 _consumableItems[i] = nullptr;
                 _consumableItemGraphs[i].SetResource(nullptr);
-                _battleParameter._hp += _battleParameter._maxHP / 2;
+                param._hp += param._maxHP / 2;
                 return;
             }
         }

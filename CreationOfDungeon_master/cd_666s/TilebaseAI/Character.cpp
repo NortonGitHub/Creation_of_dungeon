@@ -55,12 +55,30 @@ Character::~Character()
 void Character::Update()
 {
     GraphicalObject::Update();
+
+    if (!IsEnable())
+        return;
+
+    //姿勢情報更新
     _animator.Transform([&](GraphArray* animation)
     {
         animation->GetGraphPtr()->SetPosition(_position);
     });
 
-    if (_skill.get() != nullptr && IsEnable())
+    //バフ更新
+    std::vector<std::unique_ptr<ParameterEffecter>> copy;
+    for (size_t i = 0; i<_effecters.size(); ++i)
+    {
+        if (_effecters[i]->IsEnable())
+        {
+            _effecters[i]->UpdateCounter();
+            copy.push_back(std::move(_effecters[i]));
+        }
+    }
+    _effecters = std::move(copy);
+
+    //スキル更新
+    if (_skill.get() != nullptr)
         _skill->Update();
 }
 
@@ -213,6 +231,19 @@ void Character::Interact(Character& chara)
         chara.ResetTarget();
         chara.OnWin();
     }
+}
+
+
+BattleParameter Character::GetAffectedParameter()
+{
+    BattleParameter param = _battleParameter;
+    for (size_t i=0; i<_effecters.size(); ++i)
+    {
+        if (_effecters[i]->IsEnable())
+            _effecters[i]->AffectParameter(param);
+    }
+
+    return param;
 }
 
 
