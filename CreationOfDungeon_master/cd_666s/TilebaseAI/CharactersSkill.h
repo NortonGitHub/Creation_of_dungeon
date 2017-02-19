@@ -7,7 +7,7 @@ class Character;
 class CharactersSkill
 {
 public:
-    CharactersSkill(BattleParameter& param, int cost);
+    CharactersSkill(int cost);
     ~CharactersSkill();
 
     //static CharactersSkill* CreateSkill(std::string skillData, Character& charam);
@@ -22,7 +22,5 @@ public:
 
     int _mp;
     int _mpCost;
-
-    BattleParameter& _param;
 };
 

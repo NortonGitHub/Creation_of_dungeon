@@ -2,9 +2,8 @@
 #include "DxLib.h"
 
 
-CharactersSkill::CharactersSkill(BattleParameter& param, int cost)
-    : _param(param)
-    , _mp(0)
+CharactersSkill::CharactersSkill(int cost)
+    : _mp(0)
     , _mpCost(cost)
 {
 }

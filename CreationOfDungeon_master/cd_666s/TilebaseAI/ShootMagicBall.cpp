@@ -6,7 +6,7 @@
 #include "TileField.h"
 
 ShootMagicBall::ShootMagicBall(int cost, Character& chara, int range)
-    : CharactersSkill(chara._battleParameter, cost)
+    : CharactersSkill(cost)
     , _character(chara)
     , _range(range)
 {
