@@ -6,8 +6,9 @@
 #include "Goal.h"
 #include "Enemy.h"
 #include "Monster.h"
-#include "ShootMagicBall.h"
 
+#include "ShootMagicBall.h"
+#include "RiseParameter.h"
 
 void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& start, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName)
 {
@@ -115,6 +116,13 @@ CharactersSkill* CharactersSkill::CreateSkill(std::string skillData, Character& 
 
     if (skillData.find("magic_ball#1") != std::string::npos)
         return new ShootMagicBall(180, chara, 3);
+
+    if (skillData.find("param_rise#1") != std::string::npos)
+    {
+        BattleParameter percentParam(100, 125, 100, 100, 100, 100);
+        ParameterMultiplier param(percentParam, 300, true);
+        return new RiseParameter(std::move(param), 100, chara);
+    }
 
     return nullptr;
 }
