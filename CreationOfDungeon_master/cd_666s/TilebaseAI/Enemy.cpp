@@ -203,7 +203,6 @@ bool Enemy::SearchTarget()
                     continue;
 
                 auto objPtr = dynamic_cast<EnemysItem<Equipment>*>(obj);
-
                 if (objPtr != nullptr)
                 {
                     if (objPtr->IsEmpty())
