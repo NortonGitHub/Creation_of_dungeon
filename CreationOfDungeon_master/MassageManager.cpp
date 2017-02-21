@@ -6,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <math.h>
+#include <algorithm>
 
 #pragma once
 
@@ -23,13 +24,16 @@ MassageManager::MassageManager() {
     autoMessage = true;
 
     TalkStorage.clear();
-
+    
     for (int i = 0; i < TalkTypeNum; i++) {
 
         std::string str = "";
 
         if (i == 0) {
             str = "data\\talkData\\nomal.csv";
+        }
+        else if (i == 1) {
+            str = "data\\talkData\\dynamic.csv";
         }
 
 
@@ -43,6 +47,8 @@ MassageManager::MassageManager() {
         int load = 0;   //0でロードする文章を発見していない 1でロードする文章を発見し読み込み中 2でロード終了
 
         int talkNum = 0;
+
+        TalkDatabase tdb;
 
         while (getline(ifs, str)) {
             std::string::size_type index = str.find("#");  // "#"を検索
@@ -71,10 +77,10 @@ MassageManager::MassageManager() {
 
                 if (load == 0) {
                     if (num == 1) {
-                        talkNum = stoi(token);
+                        tdb.TalkGroupNum = stoi(token);
                     }
                     if (num == 2) {
-                        talkDatabase[i][talkNum].importance = stoi(token);
+                        tdb.talkData.importance = stoi(token);
                         load = 1;
                         break;
                     }
@@ -113,11 +119,23 @@ MassageManager::MassageManager() {
 
             if (load == 2) {
                 load = 0;
-                talkDatabase[i][talkNum].isStartMassage = true;
+                tdb.talkData.isStartMassage = true;
+                switch (i) {
+                case 0:
+                    tdb.TalkType = nomal;
+                    break;
+                case 1:
+                    tdb.TalkType = dynamic;
+                    break;
+                default:
+                    break;
+                }
+                talkDatabase.push_back(tdb);
+                tdb.talkData.messageData.clear();
             }
 
             if (load == 1 && mes.message.allMessage.empty() == 0) {
-                talkDatabase[i][talkNum].messageData.push_back(mes);
+                tdb.talkData.messageData.push_back(mes);
             }
 
 
@@ -130,6 +148,15 @@ MassageManager::MassageManager() {
 
 
 }
+
+MassageManager::MassageManager(std::string situation) {
+
+
+
+}
+
+
+
 
 MassageManager::~MassageManager() {
 
@@ -239,53 +266,167 @@ void MassageManager::Draw() {
 
 void MassageManager::IntoTalkStorage(std::string talkType, int talkNum) {
 
-    int tt;
+    Talk_Type tt;
 
     if (talkType == "nomal") {
-        tt = 0;
+        tt = nomal;
     }
+    else if (talkType == "dynamic") {
+        tt = dynamic;
+    }
+
+
+    std::vector<TalkDatabase>::iterator itr1;
+
+    for (itr1 = talkDatabase.begin(); itr1 != talkDatabase.end(); itr1++) {
+
+        if (itr1->TalkType == tt && itr1->TalkGroupNum == talkNum) {
+            break;
+        }
+
+    }
+
+    if (itr1 == talkDatabase.end()) {
+        return;
+    }
+    
 
     if (TalkStorage.empty() == 0) {
 
-        std::vector<TalkData>::iterator itr;
 
-        for (itr = TalkStorage.begin(); itr != TalkStorage.end(); itr++) {
-            if (talkDatabase[tt][talkNum].importance > itr->importance) {
-                if (itr->isStartMassage == false) {
+        std::vector<TalkData>::iterator itr2;
+
+        for (itr2 = TalkStorage.begin(); itr2 != TalkStorage.end(); itr2++) {
+            if (itr1->talkData.importance > itr2->importance) {
+                if (itr2->isStartMassage == false) {
                     TalkStorage.erase(TalkStorage.begin());
-                    TalkStorage.insert(TalkStorage.begin(), talkDatabase[tt][talkNum]);
+                    TalkStorage.insert(TalkStorage.begin(), itr1->talkData);
                     count = 0;
                     lastMessage = false;
-                    itr = TalkStorage.begin();
+                    itr2 = TalkStorage.begin();
                     break;
                 }
-                else if (itr->messageData[0].message.displayedMessage.empty() == 0) {
+                else if (itr2->messageData[0].message.displayedMessage.empty() == 0) {
                     TalkStorage.erase(TalkStorage.begin());
-                    TalkStorage.insert(TalkStorage.begin(), talkDatabase[tt][talkNum]);
+                    TalkStorage.insert(TalkStorage.begin(), itr1->talkData);
                     count = 0;
                     lastMessage = false;
-                    itr = TalkStorage.begin();
+                    itr2 = TalkStorage.begin();
                     break;
                 }else{
-                    TalkStorage.insert(itr, talkDatabase[tt][talkNum]);
-                    itr = TalkStorage.begin();
+                    TalkStorage.insert(itr2, itr1->talkData);
+                    itr2 = TalkStorage.begin();
                     break;
                 }
             }
         }
 
-        if (itr == TalkStorage.end()) {
-            TalkStorage.push_back(talkDatabase[tt][talkNum]);
+        if (itr2 == TalkStorage.end()) {
+            TalkStorage.push_back(itr1->talkData);
         }
 
     }
     else {
-        TalkStorage.push_back(talkDatabase[tt][talkNum]);
+        TalkStorage.push_back(itr1->talkData);
     }
 
     
 
 }
+
+void MassageManager::IntoTalkStorage(std::string talkType, int talkNum, std::string* str, int strSize) {
+
+
+    Talk_Type tt;
+
+    if (talkType == "nomal") {
+        tt = nomal;
+    }
+    else if (talkType == "dynamic") {
+        tt = dynamic;
+    }
+
+
+    std::vector<TalkDatabase>::iterator itr1;
+
+    for (itr1 = talkDatabase.begin(); itr1 != talkDatabase.end(); itr1++) {
+
+        if (itr1->TalkType == tt && itr1->TalkGroupNum == talkNum) {
+            break;
+        }
+
+    }
+
+    if (itr1 == talkDatabase.end()) {
+        return;
+    }
+
+    TalkDatabase tdb = (*itr1);
+
+    std::string::size_type index;
+
+    for (int i = 0; i < strSize; i++) {
+        for (int j = 0; j < tdb.talkData.messageData.size(); j++) {
+            index = tdb.talkData.messageData[j].message.allMessage.find("<%=%>");
+            if (index != std::string::npos) {
+                tdb.talkData.messageData[j].message.allMessage.replace(index, 5, str[i]);
+                tdb.talkData.messageData[j].message.hiddenMessage.replace(index, 5, str[i]);
+                break;
+            }
+        }
+        if (index == std::string::npos) {
+            break;
+        }
+    }
+
+
+    if (TalkStorage.empty() == 0) {
+
+
+        std::vector<TalkData>::iterator itr2;
+
+        for (itr2 = TalkStorage.begin(); itr2 != TalkStorage.end(); itr2++) {
+            if (tdb.talkData.importance > itr2->importance) {
+                if (itr2->isStartMassage == false) {
+                    TalkStorage.erase(TalkStorage.begin());
+                    TalkStorage.insert(TalkStorage.begin(), tdb.talkData);
+                    count = 0;
+                    lastMessage = false;
+                    itr2 = TalkStorage.begin();
+                    break;
+                }
+                else if (itr2->messageData[0].message.displayedMessage.empty() == 0) {
+                    TalkStorage.erase(TalkStorage.begin());
+                    TalkStorage.insert(TalkStorage.begin(), tdb.talkData);
+                    count = 0;
+                    lastMessage = false;
+                    itr2 = TalkStorage.begin();
+                    break;
+                }
+                else {
+                    TalkStorage.insert(itr2, tdb.talkData);
+                    itr2 = TalkStorage.begin();
+                    break;
+                }
+            }
+        }
+
+        if (itr2 == TalkStorage.end()) {
+            TalkStorage.push_back(tdb.talkData);
+        }
+
+    }
+    else {
+        TalkStorage.push_back(tdb.talkData);
+    }
+
+
+}
+
+
+
+
+
 
 bool MassageManager::isEmpty() {
     if (TalkStorage.empty()) {
@@ -304,6 +445,8 @@ void MassageManager::setAutoMessage(bool a) {
 bool MassageManager::getAutoMessage() {
     return autoMessage;
 }
+
+
 
 
 

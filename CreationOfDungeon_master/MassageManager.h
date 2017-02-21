@@ -3,6 +3,13 @@
 #include <vector>
 
 
+typedef enum {
+    nomal = 0,
+    dynamic = 1,
+}Talk_Type;
+
+
+
 //構造体の宣言
 struct Message    //メッセージ
 {
@@ -34,6 +41,17 @@ struct TalkData    //会話データ
 
 };
 
+struct TalkDatabase    //会話データの集合体
+{
+    
+    TalkData talkData;
+
+    int TalkGroupNum;
+
+    Talk_Type TalkType;
+
+};
+
 
 
 class MassageManager {
@@ -45,10 +63,10 @@ private:
     static const int waitFrame = 5;
     static const int lastWaitFrame = 100;
 
-    static const int TalkTypeNum = 1; //会話の種類の数 nomal=0
+    static const int TalkTypeNum = 2; //会話の種類の数 nomal=0 dynamic=1
     static const int TalkGroupNum = 100; //会話の数
 
-    TalkData talkDatabase[TalkTypeNum][TalkGroupNum];
+    std::vector<TalkDatabase> talkDatabase;
 
     int count;
 
@@ -61,6 +79,7 @@ private:
 public:
 
     MassageManager();
+    MassageManager(std::string situation);
     ~MassageManager();
 
     void Update();
@@ -68,11 +87,15 @@ public:
 
     void IntoTalkStorage(std::string talkType,int talkNum);
 
+    void IntoTalkStorage(std::string talkType, int talkNum,std::string* str,int strSize);
+
     //メッセージが残っているかどうか　残っていればfalse 残ってなければtrue
     bool isEmpty();
 
     void setAutoMessage(bool a);
     bool getAutoMessage();
+
+
 
 };
 
