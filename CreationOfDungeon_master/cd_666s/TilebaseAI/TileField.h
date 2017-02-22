@@ -50,7 +50,7 @@ public:
         //”ÍˆÍŠO‚ğQÆ‚µ‚æ‚¤‚Æ‚µ‚½‚çnull‚ğ•Ô‚·
         if (!IsInside(pos))
         {
-            std::vector<TiledObject*> empty;
+            std::vector<T*> empty;
             return std::move(empty);
         }
 
