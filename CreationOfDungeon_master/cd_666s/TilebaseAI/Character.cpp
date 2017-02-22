@@ -250,7 +250,10 @@ BattleParameter Character::GetAffectedParameter()
 void Character::Damaged(int damage)
 {
     if (IsEnable())
+    {
         _battleParameter._hp -= damage;
+        _battleParameter._hp = min(_battleParameter._maxHP, max(_battleParameter._hp, 0));
+    }
 
     //í“¬‚Å“|‚³‚ê‚½‚©‚ğŠm”F‚µ‚Ä
     if (!IsAlive())
