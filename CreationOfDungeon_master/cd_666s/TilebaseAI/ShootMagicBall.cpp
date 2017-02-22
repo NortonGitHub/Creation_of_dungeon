@@ -5,9 +5,10 @@
 #include "TiledObjectMnager.h"
 #include "TileField.h"
 
-ShootMagicBall::ShootMagicBall(int cost, Character& chara, int range)
+ShootMagicBall::ShootMagicBall(double power, int cost, Character& chara, int range)
     : CharactersSkill(cost)
     , _character(chara)
+    , _power(power)
     , _range(range)
 {
 }
@@ -78,7 +79,8 @@ void ShootMagicBall::Activate()
     auto type = _character.GetType();
     auto direction = _character.GetDirection();
 
-    OBJECT_MGR->Add(std::make_shared<MagicBall>(tilePos, direction, type));
+    int actualPower = _power * (_character.GetAffectedParameter()._magicAttack);
+    OBJECT_MGR->Add(std::make_shared<MagicBall>(actualPower, _range, tilePos, direction, type));
 
     _mp = 0;
 }

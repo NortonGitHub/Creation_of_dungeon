@@ -4,13 +4,16 @@
 class MagicBall: public TiledObject
 {
 public:
-    MagicBall(TiledVector pos, TiledVector::Direction direction, TiledObject::Type type);
+    MagicBall(int power, int range, TiledVector pos, TiledVector::Direction direction, TiledObject::Type type);
     ~MagicBall();
 
     void Update() override;
     bool IsOverwritable(TiledObject* overwriter) override;
 
 private:
+
+    int _range;
+    int _power;
 
     double _speed;
 

@@ -8,7 +8,10 @@
 #include "Monster.h"
 
 #include "ShootMagicBall.h"
+#include "MagicAttackAround.h"
 #include "RiseParameter.h"
+#include "MagicHeal.h"
+#include "MagicHealAround.h"
 
 void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& start, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName)
 {
@@ -111,11 +114,46 @@ void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, C
 
 CharactersSkill* CharactersSkill::CreateSkill(std::string skillData, Character& chara)
 {
+    if (skillData.find("") == std::string::npos)
+        return nullptr;
+
     if (skillData.find("null") != std::string::npos)
         return nullptr;
 
-    if (skillData.find("magic_ball#1") != std::string::npos)
-        return new ShootMagicBall(180, chara, 3);
+
+    if (skillData.find("magic_attack#1") != std::string::npos)
+        return new ShootMagicBall(0.3, 120, chara, 3);
+
+    if (skillData.find("magic_attack#2") != std::string::npos)
+        return new MagicAttackAround(0.3, 180, chara, 1);
+
+    if (skillData.find("magic_attack#3") != std::string::npos)
+        return new ShootMagicBall(0.5, 120, chara, 5);
+
+    if (skillData.find("magic_attack#4") != std::string::npos)
+        return new MagicAttackAround(0.5, 180, chara, 2);
+
+    if (skillData.find("magic_attack#5") != std::string::npos)
+        return new ShootMagicBall(0.8, 120, chara, 5);
+
+
+
+    if (skillData.find("magic_heal#1") != std::string::npos)
+        return new MagicHeal(0.5, 180, chara, 3);
+
+    if (skillData.find("magic_heal#2") != std::string::npos)
+        return new MagicHealAround(0.25, 180, chara, 5);
+
+    if (skillData.find("magic_heal#3") != std::string::npos)
+        return new MagicHeal(0.8, 180, chara, 5);
+
+    if (skillData.find("magic_heal#4") != std::string::npos)
+        return new MagicHealAround(0.5, 180, chara, 8);
+
+    if (skillData.find("magic_heal#5") != std::string::npos)
+        return new MagicHealAround(0.8, 180, chara, 10);
+
+
 
     if (skillData.find("param_rise#1") != std::string::npos)
     {

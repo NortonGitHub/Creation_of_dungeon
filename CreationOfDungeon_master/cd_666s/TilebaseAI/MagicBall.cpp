@@ -7,8 +7,10 @@
 
 #include "../DebugDraw.h"
 
-MagicBall::MagicBall(TiledVector pos, TiledVector::Direction direction, TiledObject::Type type)
+MagicBall::MagicBall(int power, int range, TiledVector pos, TiledVector::Direction direction, TiledObject::Type type)
     : TiledObject(pos)
+    , _power(power)
+    , _range(range)
     , _shooterType(type)
     , _speed(3 * TILE_SIZE / 32.0)
 {
@@ -87,7 +89,7 @@ void MagicBall::CheckHit()
         if (!obj->IsEnable())
             continue;
 
-        if (obj->GetType() == Type::MONSTER)
+        if (obj->GetType() == opponentType)
         {
             auto chara = dynamic_cast<Character*>(obj);
             chara->Damaged(20);

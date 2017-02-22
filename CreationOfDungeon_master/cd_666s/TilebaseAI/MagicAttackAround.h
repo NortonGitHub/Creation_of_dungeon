@@ -3,11 +3,11 @@
 
 class Character;
 
-class ShootMagicBall : public CharactersSkill
+class MagicAttackAround : public CharactersSkill
 {
 public:
-    ShootMagicBall(double power, int cost, Character& chara, int range);
-    ~ShootMagicBall();
+    MagicAttackAround(double power, int cost, Character& chara, int range);
+    ~MagicAttackAround();
 
     bool ShouldActivate() override;
     void Activate() override;
