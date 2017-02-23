@@ -1,5 +1,5 @@
-hp, attack, defence, magic_attack, magic_defence, speed, interval(sec), name, skill & cost
-10,20,20,1,1,10,5,blaver,null
-10,10,10,20,20,10,10,magician,magic_ball#1
-10,20,20,1,1,10,30,fighter,null
-10,20,20,1,1,10,40,blaver,null
+hp, attack, defence, magic_attack, magic_defence, speed, interval(sec), name, skill
+1000,50,50,10,10,10,5,blaver,null
+1000,10,30,50,50,10,10,magician,magic_attack#1
+1000,70,30,10,10,10,20,fighter,param_rise#1
+1500,60,60,60,60,20,30,magician,magic_heal#1
