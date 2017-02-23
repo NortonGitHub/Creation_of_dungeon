@@ -4,9 +4,10 @@
 #include "BattlingTile.h"
 //#include "Character.h"
 
-MagicExplosion::MagicExplosion(int power, int range, TiledVector pos, TiledObject::Type type)
+MagicExplosion::MagicExplosion(int power, int attack, int range, TiledVector pos, TiledObject::Type type)
     : TiledObject(pos)
     , _power(power)
+    , _magicAttack(attack)
     , _range(range)
     , _shooterType(type)
     , _hasJudged(false)
@@ -70,14 +71,24 @@ void MagicExplosion::CheckHit()
                 if (obj->GetType() == opponentType)
                 {
                     auto chara = dynamic_cast<Character*>(obj);
-                    chara->Damaged(20);
+                    auto opponentParam = chara->GetAffectedParameter();
+
+                    if (opponentType == Type::ENEMY)
+                        chara->Damaged(Battle::GetMagicalAttackDamage(_power, _magicAttack, opponentParam._magicDefence));
+                    else
+                        chara->Damaged(Battle::GetMagicalDefencedDamage(_power, _magicAttack, opponentParam._magicDefence));
+
                     break;
                 }
 
                 if (obj->GetType() == Type::BATTLE)
                 {
                     auto battle = dynamic_cast<BattlingTile*>(obj);
-                    battle->Damaged(20, _shooterType);
+                    if (opponentType == Type::ENEMY)
+                        battle->MagicalAttack(_power, _magicAttack);
+                    else
+                        battle->MagicalDamaged(_power, _magicAttack);
+
                     break;
                 }
             }

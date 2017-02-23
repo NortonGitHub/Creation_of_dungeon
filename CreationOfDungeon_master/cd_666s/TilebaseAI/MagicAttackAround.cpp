@@ -58,9 +58,8 @@ void MagicAttackAround::Activate()
 
     auto tilePos = _character.GetTilePos();
     auto type = _character.GetType();
-
-    int actualPower = _power * (_character.GetAffectedParameter()._magicAttack);
-    OBJECT_MGR->Add(std::make_shared<MagicExplosion>(actualPower, _range, tilePos, type));
+    int magicAttack = _character.GetAffectedParameter()._magicAttack;
+    OBJECT_MGR->Add(std::make_shared<MagicExplosion>(_power, magicAttack,  _range, tilePos, type));
 
     _mp = 0;
 }

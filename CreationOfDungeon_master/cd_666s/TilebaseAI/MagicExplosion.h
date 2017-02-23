@@ -7,7 +7,7 @@ class MagicExplosion : public TiledObject
 //class MagicExplosion : public GraphicalObject
 {
 public:
-    MagicExplosion(int power, int range, TiledVector pos, TiledObject::Type type);
+    MagicExplosion(int power, int attack, int range, TiledVector pos, TiledObject::Type type);
     ~MagicExplosion();
 
     void Update() override;
@@ -19,6 +19,7 @@ private:
     //“G‚Éƒqƒbƒg‚µ‚½‚©
     void CheckHit();
 
+    int _magicAttack;
     int _power;
     int _range;
 

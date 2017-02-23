@@ -15,8 +15,13 @@ public:
     void Update() override;
     void Draw() override;
     
-    //戦闘に干渉できるのは遠距離攻撃のみ
-    void Damaged(int damage, TiledObject::Type type);
+    //自軍攻撃用ダメージ計算
+    void PhysicalAttack(int power, int attack);
+    void MagicalAttack(int power, int attack);
+    //自軍防御用ダメージ計算
+    void PhysicalDamaged(int power, int attack);
+    void MagicalDamaged(int power, int attack);
+
     //void Interact(const Character& atkObj);
     
     //戦闘から離脱
@@ -42,6 +47,18 @@ private:
     bool _attackMonster;
 
     Sprite _dust2;
+};
+
+namespace Battle
+{
+    //物理攻撃用
+    double GetPhysicalAttackDamage(int power, int attack, int defence);
+    //魔法攻撃用
+    double GetMagicalAttackDamage(int power, int attack, int defence);
+    //物理被ダメージ用
+    double GetPhysicalDefencedDamage(int power, int attack, int defence);
+    //魔法被ダメージ用
+    double GetMagicalDefencedDamage(int power, int attack, int defence);
 };
 
 #endif /* BattlingTile_h */

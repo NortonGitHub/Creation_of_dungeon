@@ -43,10 +43,20 @@ void BattlingTile::Update()
     if (_count < 15)
         return;
 
+
+    auto monsterParam = _monster.GetAffectedParameter();
+    auto enemyParam = _enemy.GetAffectedParameter();
+
     if (_attackMonster)
-        _monster.Interact(_enemy);
+    {
+        int damage = Battle::GetPhysicalAttackDamage(100, monsterParam._attack, enemyParam._defence);
+        _enemy.Damaged(damage);
+    }
     else
-        _enemy.Interact(_monster);
+    {
+        int damage = Battle::GetPhysicalDefencedDamage(100, enemyParam._attack, monsterParam._defence);
+        _monster.Damaged(damage);
+    }
 
     CheckAlive();
 
@@ -69,24 +79,38 @@ void BattlingTile::Draw()
     }
 }
 
-//第三者からの攻撃
-void BattlingTile::Damaged(int damage, TiledObject::Type type)
-{
-    //enemyからの攻撃ならmonsterに
-    if (type == Type::ENEMY)
-    {
-        _monster.Damaged(damage);
-        CheckAlive();
-        return;
-    }
 
-    if (type == Type::MONSTER)
-    {
-        _enemy.Damaged(damage);
-        CheckAlive();
-        return;
-    }
+void BattlingTile::PhysicalAttack(int power, int attack)
+{
+    Character* defender = &_enemy;
+    auto defenderParam = defender->GetAffectedParameter();
+    defender->Damaged(Battle::GetPhysicalAttackDamage(power, attack, defenderParam._defence));
 }
+
+
+void BattlingTile::MagicalAttack(int power, int attack)
+{
+    Character* defender = &_enemy;
+    auto defenderParam = defender->GetAffectedParameter();
+    defender->Damaged(Battle::GetMagicalAttackDamage(power, attack, defenderParam._magicDefence));
+}
+
+
+void BattlingTile::PhysicalDamaged(int power, int attack)
+{
+    Character* defender = &_monster;
+    auto defenderParam = defender->GetAffectedParameter();
+    defender->Damaged(Battle::GetPhysicalDefencedDamage(power, attack, defenderParam._defence));
+}
+
+
+void BattlingTile::MagicalDamaged(int power, int attack)
+{
+    Character* defender = &_monster;
+    auto defenderParam = defender->GetAffectedParameter();    
+    defender->Damaged(Battle::GetMagicalDefencedDamage(power, attack, defenderParam._magicDefence));
+}
+
 
 //勝利したキャラは戦闘マスに立つ
 void BattlingTile::Win(Character& chara)
@@ -130,3 +154,71 @@ bool BattlingTile::IsOverwritable(TiledObject* overwriter)
 {
     return false;
 }
+
+
+namespace Battle
+{
+    //物理攻撃用
+    double GetPhysicalAttackDamage(int power, int attack, int defence)
+    {
+        double atk = attack;
+        double def = defence;
+        double damage = 0;
+
+        if (atk <= 805)
+            damage = 5 + std::pow(atk, 1.8) * std::pow(def, -0.5) * power * 0.01;
+        else
+            damage = 5 + std::pow(atk, 0.5) * std::pow(def, -0.5) * power * 60;
+
+        return damage;
+    }
+
+    //魔法攻撃用
+    double GetMagicalAttackDamage(int power, int attack, int defence)
+    {
+        double magicAtk = attack;
+        double magicDef = defence;
+        double damage = 0;
+
+        if (magicAtk <= 1055)
+            damage = 5 + std::pow(magicAtk, 1.65) * std::pow(magicDef, -0.5) * power * 0.01;
+        else
+            damage = 5 + std::pow(magicAtk, 0.5) * std::pow(magicDef, -0.5) * power * 30;
+
+        return damage;
+    }
+
+    //物理被ダメージ用
+    double GetPhysicalDefencedDamage(int power, int attack, int defence)
+    {
+        double atk = attack;
+        double def = defence;
+        double damage = 0;
+
+        if (atk <= 346)
+            damage = 5 + std::pow(atk, 2.0) * std::pow(def, -0.84) * power * 0.01;
+        else
+            damage = 5 + std::pow(atk, 0.7) * std::pow(def, -0.84) * power * 20;
+
+        return damage;
+    }
+
+    //魔法被ダメージ用
+    double GetMagicalDefencedDamage(int power, int attack, int defence)
+    {
+        double magicAtk = attack;
+        double magicDef = defence;
+        double damage = 0;
+
+        if (magicAtk <= 742)
+        {
+            damage = 5 + std::pow(magicAtk, 1.85) * std::pow(magicDef, -0.84) * power * 0.01;
+        }
+        else
+        {
+            damage = 5 + std::pow(magicAtk, 0.7) * std::pow(magicDef, -0.84) * power * 20;
+        }
+
+        return damage;
+    }
+};

@@ -79,8 +79,8 @@ void ShootMagicBall::Activate()
     auto type = _character.GetType();
     auto direction = _character.GetDirection();
 
-    int actualPower = _power * (_character.GetAffectedParameter()._magicAttack);
-    OBJECT_MGR->Add(std::make_shared<MagicBall>(actualPower, _range, tilePos, direction, type));
+    int magicAttack = _character.GetAffectedParameter()._magicAttack;
+    OBJECT_MGR->Add(std::make_shared<MagicBall>(_power, magicAttack, _range, tilePos, direction, type));
 
     _mp = 0;
 }

@@ -4,7 +4,7 @@
 class MagicBall: public TiledObject
 {
 public:
-    MagicBall(int power, int range, TiledVector pos, TiledVector::Direction direction, TiledObject::Type type);
+    MagicBall(int power, int magicAttack, int range, TiledVector pos, TiledVector::Direction direction, TiledObject::Type type);
     ~MagicBall();
 
     void Update() override;
@@ -13,6 +13,7 @@ public:
 private:
 
     int _range;
+    int _magicAttack;
     int _power;
 
     double _speed;

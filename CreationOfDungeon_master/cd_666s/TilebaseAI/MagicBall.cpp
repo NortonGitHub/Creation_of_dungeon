@@ -7,9 +7,10 @@
 
 #include "../DebugDraw.h"
 
-MagicBall::MagicBall(int power, int range, TiledVector pos, TiledVector::Direction direction, TiledObject::Type type)
+MagicBall::MagicBall(int power, int attack, int range, TiledVector pos, TiledVector::Direction direction, TiledObject::Type type)
     : TiledObject(pos)
     , _power(power)
+    , _magicAttack(attack)
     , _range(range)
     , _shooterType(type)
     , _speed(3 * TILE_SIZE / 32.0)
@@ -100,7 +101,12 @@ void MagicBall::CheckHit()
         if (obj->GetType() == Type::BATTLE)
         {
             auto battle = dynamic_cast<BattlingTile*>(obj);
-            battle->Damaged(20, _shooterType);
+
+            if (opponentType == Type::ENEMY)
+                battle->MagicalAttack(_power, _magicAttack);
+            else
+                battle->MagicalDamaged(_power, _magicAttack);
+
             hasHit = true;
             break;
         }
