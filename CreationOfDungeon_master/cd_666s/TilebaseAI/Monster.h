@@ -40,7 +40,6 @@ public:
 
 private:
 
-    virtual void OnAttacked(Character& attacker);
     virtual void OnDie() override;
     
     void MoveToNext();

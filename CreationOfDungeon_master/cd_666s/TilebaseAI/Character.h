@@ -26,10 +26,15 @@ public:
     virtual void Draw() override;
     virtual void DrawParameter(Vector2D anchorPos);
     
-    virtual void Interact(Character& chara) override;
+    //virtual void Interact(Character& chara) override;
     virtual bool IsOverwritable(TiledObject* overwriter) override;
 
-    virtual void ResetTarget() { _target = nullptr; }
+    virtual void ResetTarget() 
+    {
+        _target = nullptr; 
+        _pathToTarget.clear();
+        _pathToTarget.resize(0);
+    }
     
     //バトルの入退場時のイベント
     void OnOccuredBattle(BattlingTile* battle);
@@ -47,15 +52,15 @@ public:
 
     std::string GetName() const { return _name; }
     TiledVector::Direction GetDirection() const { return _direction; }
-    
-    //キャラクター固有のスキル
-    std::unique_ptr<CharactersSkill> _skill;
 
     bool _isBattling;
 
     BattleParameter GetAffectedParameter();
     
 protected:
+
+    //キャラクター固有のスキル
+    std::unique_ptr<CharactersSkill> _skill;
 
     TiledVector _beforeTilePos;
     
@@ -90,15 +95,13 @@ protected:
     Sound _appearSE, _defeatSE;
 
     void UpdateAttitude();
-    void Attack(Character &defender);
+    //void Attack(Character &defender);
     
     //意思決定
     virtual void Think() = 0;
     //意思遂行
     virtual void Act() = 0;
         
-    //攻撃されたとき
-    virtual void OnAttacked(Character& attacker);
     //倒されたとき
     virtual void OnDie();
     //敵を倒した時

@@ -146,7 +146,7 @@ void Enemy::Act()
             {
                 _consumableItems[i] = nullptr;
                 _consumableItemGraphs[i].SetResource(nullptr);
-                param._hp += param._maxHP / 2;
+                Damaged(-param._maxHP / 2);
                 return;
             }
         }
@@ -332,19 +332,24 @@ void Enemy::MoveToNext()
 }
 
 
+void Enemy::SetTarget(Character *target) 
+{
+    if (!IsEnable() || !IsAlive())
+        return;
+
+    //–Ú•W‚Ì‰Šú‰»
+    ResetTarget();
+
+    _target = target; 
+    _astar->SetTarget(target); 
+}
+
+
 void Enemy::ResetTarget()
 {
     Character::ResetTarget();
     _target = &_baseTarget;
     _astar->SetTarget(_target);
-}
-
-
-void Enemy::OnAttacked(Character& attacker)
-{
-    //UŒ‚‚³‚ê‚½‚ç•W“I‚ðUŒ‚‚µ‚Ä‚«‚½‚â‚Â‚É•ÏX
-    Character::OnAttacked(attacker);
-    _astar->SetTarget(&attacker);
 }
 
 
@@ -366,7 +371,7 @@ bool Enemy::IsOverwritable(TiledObject* overwriter)
         return true;
     
     if (overwriter->GetType() == Type::ENEMY)
-        return (!_hasAppeared) && (!_isBattling);
+        return (!IsEnable());
     
     return true;
 }

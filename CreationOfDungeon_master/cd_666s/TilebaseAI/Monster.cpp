@@ -112,9 +112,7 @@ void Monster::MoveToNext()
     }
     
     //移動先を取り出して
-    TiledVector pos = GetTilePos();
-    pos = _pathToTarget[0];
-    
+    TiledVector pos = _pathToTarget[0];
     //キューから削除
     _pathToTarget.erase(_pathToTarget.begin());
     FIELD->MoveObject(*this, pos);
@@ -195,14 +193,6 @@ void Monster::SetTarget(TiledVector pos)
 }
 
 
-void Monster::OnAttacked(Character& attacker)
-{
-    //攻撃されたら標的を攻撃してきたやつに変更
-    Character::OnAttacked(attacker);
-    _astar->SetTarget(&attacker);
-}
-
-
 void Monster::OnDie()
 {
     //陣に戻る
@@ -217,7 +207,6 @@ void Monster::OnDie()
     //各パラメータをリセット
     ResetCounter();
     ResetTarget();
-    _pathToTarget.resize(0);
     _hasAppeared = false;
 }
 

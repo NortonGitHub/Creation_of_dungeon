@@ -17,6 +17,7 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 , _isBattling(false)
 , _hasAppeared(false)
 , _target(nullptr)
+, _battle(nullptr)
 , _defeatSE("resourse/sound/enemy_fall2.wav")
 {
     _notifyer.AddColleague(*this);
@@ -156,8 +157,8 @@ void Character::OnOccuredBattle(BattlingTile* battle)
     _position = GetTilePos().GetWorldPos();
     _battle = battle;
     _isBattling = true;
-    _pathToTarget.clear();
-    _pathToTarget.resize(0);
+
+    ResetTarget();
 }
 
 
@@ -214,26 +215,6 @@ bool Character::CheckActCounter()
 }
 
 
-void Character::Interact(Character& chara)
-{
-    //敵が隣にいれば戦闘
-    chara.Attack(*this);
-    
-    OnAttacked(chara);
-    
-    //戦闘で倒されたかを確認して
-    if (!IsAlive())
-    {
-        OnDie();
-        
-        //情報共有網からも除外
-        chara._notifyer.NotifyRemoveTarget(*this);
-        chara.ResetTarget();
-        chara.OnWin();
-    }
-}
-
-
 BattleParameter Character::GetAffectedParameter()
 {
     BattleParameter param = _battleParameter;
@@ -265,27 +246,6 @@ void Character::Damaged(int damage)
         ResetTarget();
         OnWin();
     }
-}
-
-
-
-void Character::Attack(Character &defender)
-{
-    BattleParameter& defenderParameter = defender._battleParameter;
-    
-    //ダメージの計算式 : こちらの攻撃力 - 相手の防御力
-    int damage = _battleParameter._attack - defenderParameter._defence;
-    //ダメージは0以上
-    damage = fmax(damage, 0);
-    
-    defenderParameter._hp -= damage;
-}
-
-
-void Character::OnAttacked(Character& attacker)
-{
-    //相手は攻撃元に気づく
-    _target = &attacker;
 }
 
 

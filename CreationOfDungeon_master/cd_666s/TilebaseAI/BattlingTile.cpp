@@ -51,6 +51,7 @@ void BattlingTile::Update()
     {
         int damage = Battle::GetPhysicalAttackDamage(100, monsterParam._attack, enemyParam._defence);
         _enemy.Damaged(damage);
+        _enemy.SetTarget(&_monster);
     }
     else
     {

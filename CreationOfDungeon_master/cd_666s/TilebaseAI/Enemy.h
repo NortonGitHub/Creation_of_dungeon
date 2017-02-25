@@ -17,7 +17,7 @@ public:
     Enemy(TiledVector, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName);
     ~Enemy();
     
-    void SetTarget(Character *target) { _target = target; };
+    void SetTarget(Character *target);
     void ResetTarget() override;
     
     void Update() override;
@@ -72,7 +72,6 @@ private:
     void MoveToNext();
     bool SearchTarget();
     
-    virtual void OnAttacked(Character& attacker);
     virtual void OnDie() override;
     
     //AIs“®‚ÌŠî€‚Æ‚È‚éƒLƒƒƒ‰
