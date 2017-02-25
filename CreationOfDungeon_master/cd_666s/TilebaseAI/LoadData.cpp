@@ -122,19 +122,19 @@ CharactersSkill* CharactersSkill::CreateSkill(std::string skillData, Character& 
 
 
     if (skillData.find("magic_attack#1") != std::string::npos)
-        return new ShootMagicBall(0.3, 120, chara, 3);
+        return new ShootMagicBall(100, 120, chara, 3);
 
     if (skillData.find("magic_attack#2") != std::string::npos)
-        return new MagicAttackAround(0.3, 180, chara, 1);
+        return new MagicAttackAround(120, 180, chara, 1);
 
     if (skillData.find("magic_attack#3") != std::string::npos)
-        return new ShootMagicBall(0.5, 120, chara, 5);
+        return new ShootMagicBall(150, 120, chara, 5);
 
     if (skillData.find("magic_attack#4") != std::string::npos)
-        return new MagicAttackAround(0.5, 180, chara, 2);
+        return new MagicAttackAround(200, 180, chara, 2);
 
     if (skillData.find("magic_attack#5") != std::string::npos)
-        return new ShootMagicBall(0.8, 120, chara, 5);
+        return new ShootMagicBall(250, 120, chara, 5);
 
 
 

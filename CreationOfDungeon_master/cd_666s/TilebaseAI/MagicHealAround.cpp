@@ -79,9 +79,11 @@ bool MagicHealAround::ShouldActivate()
 
 void MagicHealAround::Activate()
 {
+    auto magicAttack = _character.GetAffectedParameter()._magicAttack;
     for (auto target : _targetsCache)
     {
-        target->Damaged(-100 * _power);
+        auto targetMaxHP = target->GetAffectedParameter()._maxHP;
+        target->Damaged(-targetMaxHP * (_power * magicAttack / 100));
     }
 
     _mp = 0;

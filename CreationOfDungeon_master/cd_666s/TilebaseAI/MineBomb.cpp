@@ -43,7 +43,7 @@ void MineBomb::Update()
     {
         _graphArray._isPlaying = true;
         _duravity -= _cost;
-        target->Damaged(_damage);
+        target->Damaged(target->GetAffectedParameter()._maxHP / 2);
         return;
     }
 

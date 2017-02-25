@@ -79,6 +79,8 @@ void MagicHeal::Activate()
     if (_targetCache == nullptr)
         return;
 
-    _targetCache->Damaged(-100 * _power);
+    auto magicAttack = _character.GetAffectedParameter()._magicAttack;
+    auto targetMaxHP = _targetCache->GetAffectedParameter()._maxHP;
+    _targetCache->Damaged(-targetMaxHP * (_power * magicAttack / 100) );
     _mp = 0;
 }

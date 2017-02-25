@@ -117,7 +117,7 @@ void MagicSquare::Interact(Character& character)
     if (hp < maxHP)
     {
         //character.Damaged(-1);
-        hp += 1;
+        hp += maxHP / 300 + 1;
         hp = max(0, min(hp, maxHP));
         character._battleParameter._hp = hp;
     }
