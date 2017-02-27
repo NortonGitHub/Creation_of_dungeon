@@ -114,7 +114,7 @@ std::function<void()> UIManager::SetUIFunction(std::string func_name)
     return std::function<void()>();
 }
 
-void UIManager::Update(std::vector<std::string> &_functions) {
+void UIManager::Update(std::vector<std::string> &_functions, std::string &_obj_name) {
 
     std::string func_name = "";
 
@@ -123,6 +123,7 @@ void UIManager::Update(std::vector<std::string> &_functions) {
             func_name = pro->Update();
             if (func_name != "") {
                 _functions.push_back(func_name);
+                _obj_name = pro->GetUIName();
             }
         }
     }

@@ -22,9 +22,9 @@ public:
     //タイルが点を含んでいるオブジェクトを取得
     std::vector<TiledObject*> GetContainedObjects(Vector2D vec);
     
-private:
-    
     std::vector<std::shared_ptr<TiledObject>> _objects;
+    
+private:
 
     bool _needRefresh;
     std::vector<const TiledObject*> _deleteOrders;

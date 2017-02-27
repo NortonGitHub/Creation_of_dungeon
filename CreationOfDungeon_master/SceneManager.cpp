@@ -1,8 +1,9 @@
 #include "SceneManager.h"
 #include "Title.h"
+/*for test including*/
+#include "EditMap.h"
 
-
-SceneManager::SceneManager() : now_scene(new Title()), test(Graph("resourse/test_666/omote.png"))
+SceneManager::SceneManager() : now_scene(new EditMap("1")/*Title()*/), test(Graph("resourse/test_666/omote.png"))
 {
     auto class_name = now_scene->GetClassNameData();
     now_scene->Init(class_name);

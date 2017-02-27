@@ -14,7 +14,7 @@ public:
     UIManager(std::string scene_name);
     ~UIManager();
 
-    void Update(std::vector<std::string> &_functions);
+    void Update(std::vector<std::string> &_functions, std::string &_obj_name);
     void Draw();
 
     void Init(std::string scene_name);

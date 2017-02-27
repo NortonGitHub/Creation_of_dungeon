@@ -25,5 +25,8 @@ private:
     std::string stage_num;
 
     std::shared_ptr<MakeDungeon> _dungeon;
+
+    std::vector<std::string> _functions;
+
 };
 

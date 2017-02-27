@@ -10,6 +10,8 @@ public:
     std::string Update();
     void Draw();
 
+    std::string GetUIName() const { return ui.GetDataName(); };
+
 private:
     bool is_click;
 

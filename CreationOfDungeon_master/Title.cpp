@@ -37,7 +37,9 @@ SceneBase * Title::Update(UIManager _ui)
 
     _functions.resize(0);
 
-    _ui.Update(_functions);
+    std::string _ui_name;
+
+    _ui.Update(_functions,_ui_name);
 
     for (auto f : _functions) {
         if (f.find("MOVE") != std::string::npos){

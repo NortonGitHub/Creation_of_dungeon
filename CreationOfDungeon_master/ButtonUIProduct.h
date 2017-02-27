@@ -15,6 +15,8 @@ public:
     void MoveSceneFunction(std::string button_name);
     void QuitFunction();
 
+    std::string GetUIName() const { return ui.GetDataName(); }
+
 private:
     bool is_click;
 
