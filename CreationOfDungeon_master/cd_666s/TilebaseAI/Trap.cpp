@@ -2,11 +2,10 @@
 
 
 
-Trap::Trap(TiledVector startPos, int duravity, int cost, int level)
+Trap::Trap(TiledVector startPos, int duravity, int level)
     : TiledObject(startPos)
-    , _maxDuravity(duravity)
     , _duravity(duravity)
-    , _cost(cost)
+    , _cost(duravity)
     , _level(level)
 {
     _type = TiledObject::Type::TRAP;
@@ -22,5 +21,5 @@ Trap::~Trap()
 void Trap::Update()
 {
     _duravity++;
-    _duravity = min(_maxDuravity, max(_duravity, 0));
+    _duravity = min(_cost, max(_duravity, 0));
 }

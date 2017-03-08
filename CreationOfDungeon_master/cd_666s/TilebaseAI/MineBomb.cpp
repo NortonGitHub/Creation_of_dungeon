@@ -5,7 +5,7 @@
 #include "TiledObjectMnager.h"
 
 MineBomb::MineBomb(TiledVector trapPos)
-    : Trap(trapPos, 220, 220, 5)
+    : Trap(trapPos, 220, 5)
     , _range(1)
     , _damage(50)
 {
@@ -64,7 +64,7 @@ void MineBomb::Draw()
     //ëœãvóÕÉQÅ[ÉWÇï\é¶Ç∑ÇÈÇ©
     if (!display)
     {
-        double ratio = static_cast<double>(_duravity) / static_cast<double>(_maxDuravity);
+        double ratio = static_cast<double>(_duravity) / static_cast<double>(_cost);
         Debug::DrawRectWithSize(_position + Vector2D(-16, 0), Vector2D(64, 8), ColorPalette::BLACK4, false);
         Debug::DrawRectWithSize(_position + Vector2D(-16, 0), Vector2D(64 * ratio, 8), ColorPalette::BLUE4, true);
     }
@@ -73,5 +73,5 @@ void MineBomb::Draw()
 
 bool MineBomb::IsEnable() const
 {
-    return (_maxDuravity == _duravity);
+    return (_cost <= _duravity);
 }

@@ -4,7 +4,7 @@
 class Trap : public TiledObject
 {
 public:
-    Trap(TiledVector startPos, int duravity, int cost, int level);
+    Trap(TiledVector startPos, int duravity, int level);
     ~Trap();
 
     virtual void Update() override;
@@ -24,9 +24,6 @@ public:
 
 protected:
 
-    //Å‘å‘Ï‹v—Í
-    int _maxDuravity;
-        
     //‘Ï‹v—Í
     int _duravity;
 
