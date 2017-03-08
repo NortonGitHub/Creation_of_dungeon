@@ -47,7 +47,7 @@ public:
     void ExitTile() { _tile.reset(); }
     
     Type GetType() const { return _type; }
-    std::weak_ptr<MapTile> GetTile() { return _tile; }
+    std::weak_ptr<MapTile> GetTile() const { return _tile; }
     TiledVector GetTilePos() const;
 
 protected:

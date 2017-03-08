@@ -2,6 +2,8 @@
 #include "Trap.h"
 #include "../../mw_animation/GraphArray.h"
 
+class Enemy;
+
 class MineBomb : public Trap
 {
 public:
@@ -10,7 +12,10 @@ public:
 
     void Update() override;
     void Draw() override;
+	void Activate() override;
+
     bool IsEnable() const override;
+	bool IsActivatable() const override;
 
 private:
 
@@ -21,5 +26,7 @@ private:
     int _damage;
 
     GraphArray _graphArray;
+
+	mutable Enemy* _targetCache;
 };
 

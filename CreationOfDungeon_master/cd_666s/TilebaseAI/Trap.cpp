@@ -22,4 +22,19 @@ void Trap::Update()
 {
     _duravity++;
     _duravity = min(_cost, max(_duravity, 0));
+
+	if (IsActivatable())
+		Activate();
+}
+
+//トラップを起動できるかどうか
+bool Trap::IsActivatable() const
+{
+	return IsEnable();
+}
+
+//トラップを起動
+void Trap::Activate()
+{
+	_duravity -= _cost;
 }

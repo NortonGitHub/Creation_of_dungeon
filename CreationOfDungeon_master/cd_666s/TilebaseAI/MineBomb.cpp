@@ -8,6 +8,7 @@ MineBomb::MineBomb(TiledVector trapPos)
     : Trap(trapPos, 220, 5)
     , _range(1)
     , _damage(50)
+	, _targetCache(nullptr)
 {
     _name = "mine";
     _graph.Load("resourse/graph/tiledObject/mine.png");
@@ -26,27 +27,6 @@ MineBomb::~MineBomb()
 
 void MineBomb::Update()
 {
-    bool isOverrided = false;
-
-    //敵が自分のマスにいるかどうか
-    Enemy* target = GetTile().lock()->GetTiledObject<Enemy>();
-    if (target != nullptr)
-    {
-        //一定距離まで近づいたら発動
-        auto distance = (target->GetPosition() - _position).GetLength();
-        if (distance < TILE_SIZE / 4)
-            isOverrided = true;
-    }
-
-    //起動したらそのループでの処理は終了
-    if (isOverrided && IsEnable())
-    {
-        _graphArray._isPlaying = true;
-        _duravity -= _cost;
-        target->Damaged(target->GetAffectedParameter()._maxHP / 2);
-        return;
-    }
-
     Trap::Update();
 }
 
@@ -71,7 +51,39 @@ void MineBomb::Draw()
 }
 
 
+void MineBomb::Activate()
+{
+	if (_targetCache == nullptr)
+		return;
+
+	Trap::Activate();
+	_graphArray._isPlaying = true;
+	_targetCache->Damaged(_targetCache->GetAffectedParameter()._maxHP / 2);
+}
+
+
 bool MineBomb::IsEnable() const
 {
     return (_cost <= _duravity);
+}
+
+
+bool MineBomb::IsActivatable() const
+{
+	bool isOverrided = false;
+
+	//敵が自分のマスにいるかどうか
+	Enemy* target = GetTile().lock()->GetTiledObject<Enemy>();
+	if (target != nullptr)
+	{
+		//一定距離まで近づいたら発動
+		auto distance = (target->GetPosition() - _position).GetLength();
+		if (distance < TILE_SIZE / 4)
+		{
+			isOverrided = true;
+			_targetCache = target;
+		}
+	}
+
+	return (Trap::IsActivatable() && isOverrided);
 }

@@ -22,6 +22,12 @@ public:
     //オブジェクトは生成しても判定に用いるかどうかを判断するのに用いる.
     virtual bool IsEnable() const { return true; }
 
+	//トラップを起動できるかどうか
+	virtual bool IsActivatable() const;
+
+	//トラップを起動
+	virtual void Activate();
+
 protected:
 
     //耐久力
