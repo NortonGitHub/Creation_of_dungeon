@@ -26,7 +26,6 @@ public:
     virtual void Draw() override;
     virtual void DrawParameter(Vector2D anchorPos);
     
-    //virtual void Interact(Character& chara) override;
     virtual bool IsOverwritable(TiledObject* overwriter) override;
 
     virtual void ResetTarget() 
@@ -55,7 +54,9 @@ public:
 
     bool _isBattling;
 
+    
     BattleParameter GetAffectedParameter();
+	BattleParameter GetRawParameter() const { return _battleParameter; };
     
 protected:
 
@@ -95,7 +96,6 @@ protected:
     Sound _appearSE, _defeatSE;
 
     void UpdateAttitude();
-    //void Attack(Character &defender);
     
     //ˆÓŽvŒˆ’è
     virtual void Think() = 0;

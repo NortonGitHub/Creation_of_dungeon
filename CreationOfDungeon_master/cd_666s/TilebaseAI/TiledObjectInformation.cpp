@@ -4,7 +4,9 @@
 #include "Monster.h"
 #include "Enemy.h"
 #include "../DebugDraw.h"
+#include "../Color.h"
 
+void DrawAffectedParameter(std::string paramName, int affectedParam, int rawParam, Vector2D anchorPos);
 
 TiledObjectInformation::TiledObjectInformation(const TiledObjectDictionary& iconDictionary, Vector2D position)
     : _position(position)
@@ -75,26 +77,13 @@ void TiledObjectInformation::Draw()
 void Character::DrawParameter(Vector2D anchorPos)
 {
     const BattleParameter& param = GetAffectedParameter();
+	const BattleParameter& rawParam = GetRawParameter();
 
-    std::string paramStr = "ATK : ";
-    paramStr += std::to_string(param._attack);
-    Debug::DrawString(anchorPos + Vector2D(40, 190), paramStr);
-
-    paramStr = "DEF : ";
-    paramStr += std::to_string(param._defence);
-    Debug::DrawString(anchorPos + Vector2D(140, 190), paramStr);
-
-    paramStr = "MATK : ";
-    paramStr += std::to_string(param._magicAttack);
-    Debug::DrawString(anchorPos + Vector2D(40, 215), paramStr);
-
-    paramStr = "MDEF : ";
-    paramStr += std::to_string(param._magicDefence);
-    Debug::DrawString(anchorPos + Vector2D(140, 215), paramStr);
-
-    paramStr = "SPD : ";
-    paramStr += std::to_string(param._speed);
-    Debug::DrawString(anchorPos + Vector2D(240, 190), paramStr);
+	DrawAffectedParameter("ATK : ", param._attack, rawParam._attack, anchorPos + Vector2D(40, 190));
+	DrawAffectedParameter("DEF : ", param._defence, rawParam._defence, anchorPos + Vector2D(140, 190));
+	DrawAffectedParameter("MATK : ", param._magicAttack, rawParam._magicAttack, anchorPos + Vector2D(40, 215));
+	DrawAffectedParameter("MDEF : ", param._magicDefence, rawParam._magicDefence, anchorPos + Vector2D(140, 215));
+	DrawAffectedParameter("SPD : ", param._speed, rawParam._speed, anchorPos + Vector2D(240, 190));
 
     size_t enableCount = 0;
     for (size_t i = 0; i < _effecters.size(); ++i)
@@ -130,6 +119,7 @@ void Monster::DrawParameter(Vector2D anchorPos)
     {
         Debug::DrawString(anchorPos + mpOffset + Vector2D(24, 0), "スキルなし");
     }
+
     //基本情報描画
     Character::DrawParameter(anchorPos);
 }
@@ -174,6 +164,20 @@ void Enemy::DrawParameter(Vector2D anchorPos)
         else
             Debug::DrawRectWithSize(anchorPos + Vector2D(234 + i * 32 + 2 * i, 148), { 32.0, 32.0 }, ColorPalette::BLACK4, false);
     }
+}
 
-    //Debug::DrawRectWithSize(anchorPos + Vector2D(260, 148), { 32.0, 32.0 }, ColorPalette::BLACK4, false);
+
+void DrawAffectedParameter(std::string paramName, int affectedParam, int rawParam, Vector2D anchorPos)
+{
+	paramName += std::to_string(affectedParam);
+
+	if (affectedParam == rawParam)
+	{
+		Debug::DrawString(anchorPos, paramName);
+		return;
+	}
+
+	//値が初期値から変わっていたら色付きで出力
+	auto color = (affectedParam < rawParam) ? ColorPalette::BLUE4 : ColorPalette::RED4;
+	Debug::DrawString(anchorPos, paramName, color);
 }
