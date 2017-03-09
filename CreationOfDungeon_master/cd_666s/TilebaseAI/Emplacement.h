@@ -12,6 +12,8 @@ public:
     void Activate() override;
     bool IsActivatable() const override;
 
+    static std::shared_ptr<Emplacement> Create(std::string data, TiledVector pos);
+
 private:
 
     //UŒ‚—Í

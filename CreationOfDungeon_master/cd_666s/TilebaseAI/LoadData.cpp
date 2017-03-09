@@ -13,6 +13,25 @@
 #include "MagicHeal.h"
 #include "MagicHealAround.h"
 
+#include "MineBomb.h"
+#include "CurseArea.h"
+#include "MagicBomb.h"
+#include "Sanctuary.h"
+#include "Emplacement.h"
+
+
+//ラベルを取り払い、ラベル後続の値を読み取る
+std::string LoadLabeledElem(const std::string& label, const std::string& rawData)
+{
+    size_t it = rawData.find(label);
+    std::string cutData = rawData.substr(it + label.length());
+
+    size_t dataEnd = cutData.find("&");
+    cutData = cutData.substr(0, dataEnd);
+    return cutData;
+}
+
+
 void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& start, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName)
 {
     _defeatedNum = 0;
@@ -163,4 +182,120 @@ CharactersSkill* CharactersSkill::CreateSkill(std::string skillData, Character& 
     }
 
     return nullptr;
+}
+
+
+void Trap::CreateTrap(std::string typeName, int countX, int countY, std::vector<std::shared_ptr<TiledObject>>& objects)
+{
+    auto tilePos = TiledVector(countX, countY);
+
+    if (typeName.find("name:mine") != std::string::npos)
+    {
+        objects.push_back(MineBomb::Create(typeName, tilePos));
+        return;
+    }
+    if (typeName.find("name:magic_bomb") != std::string::npos)
+    {
+        objects.push_back(MagicBomb::Create(typeName, tilePos));
+        return;
+    }
+    if (typeName.find("name:curse") != std::string::npos)
+    {
+        objects.push_back(CurseArea::Create(typeName, tilePos));
+        return;
+    }
+    if (typeName.find("name:sanctuary") != std::string::npos)
+    {
+        objects.push_back(Sanctuary::Create(typeName, tilePos));
+        return;
+    }
+    if (typeName.find("name:emplacement") != std::string::npos)
+    {
+        objects.push_back(Emplacement::Create(typeName, tilePos));
+        return;
+    }
+}
+
+
+std::shared_ptr<MineBomb> MineBomb::Create(std::string data, TiledVector pos)
+{
+    int cost = std::stoi(LoadLabeledElem("cost:", data));
+    int range = std::stoi(LoadLabeledElem("range:", data));
+    int power = std::stoi(LoadLabeledElem("power:", data));
+    int attack = std::stoi(LoadLabeledElem("attack:", data));
+    double stuckTimeSec = std::stod(LoadLabeledElem("stuck:", data)); // MEMO : 秒単位で設定させるため
+    int stuckTime = static_cast<int>(stuckTimeSec * 60.0);
+
+    return std::make_shared<MineBomb>(pos, cost, range, power, attack, stuckTime);
+}
+
+
+std::shared_ptr<MagicBomb> MagicBomb::Create(std::string data, TiledVector pos)
+{
+    int cost = std::stoi(LoadLabeledElem("cost:", data));
+    int range = std::stoi(LoadLabeledElem("range:", data));
+    int power = std::stoi(LoadLabeledElem("power:", data));
+    int attack = std::stoi(LoadLabeledElem("attack:", data));
+
+    return std::make_shared<MagicBomb>(pos, cost, range, power, attack);
+}
+
+
+std::shared_ptr<CurseArea> CurseArea::Create(std::string data, TiledVector pos)
+{
+    int cost = std::stoi(LoadLabeledElem("cost:", data));
+    int hp = std::stoi(LoadLabeledElem("hp:", data));
+    int atk = std::stoi(LoadLabeledElem("atk:", data));
+    int def = std::stoi(LoadLabeledElem("def:", data));
+    int matk = std::stoi(LoadLabeledElem("matk:", data));
+    int mdef = std::stoi(LoadLabeledElem("mdef:", data));
+    int spd = std::stoi(LoadLabeledElem("spd:", data));
+
+    double continuousTimeSec = std::stod(LoadLabeledElem("time:", data));
+    int continuousTime = static_cast<int>(continuousTimeSec * 60.0);
+
+    BattleParameter param(hp, atk, def, matk, mdef, spd);
+    ParameterMultiplier multiplier(std::move(param), continuousTime, false);
+    return std::make_shared<CurseArea>(pos, cost, std::move(multiplier));
+}
+
+
+std::shared_ptr<Sanctuary> Sanctuary::Create(std::string data, TiledVector pos)
+{
+    int cost = std::stoi(LoadLabeledElem("cost:", data));
+    int range = std::stoi(LoadLabeledElem("range:", data));
+
+    int hp = std::stoi(LoadLabeledElem("hp:", data));
+    int atk = std::stoi(LoadLabeledElem("atk:", data));
+    int def = std::stoi(LoadLabeledElem("def:", data));
+    int matk = std::stoi(LoadLabeledElem("matk:", data));
+    int mdef = std::stoi(LoadLabeledElem("mdef:", data));
+    int spd = std::stoi(LoadLabeledElem("spd:", data));
+
+    double continuousTimeSec = std::stod(LoadLabeledElem("time:", data));
+    int continuousTime = static_cast<int>(continuousTimeSec * 60.0);
+
+    BattleParameter param(hp, atk, def, matk, mdef, spd);
+    ParameterMultiplier multiplier(std::move(param), continuousTime, false);
+
+    return std::make_shared<Sanctuary>(pos, range, cost, std::move(multiplier));
+}
+
+
+std::shared_ptr<Emplacement> Emplacement::Create(std::string data, TiledVector pos)
+{
+    int cost = std::stoi(LoadLabeledElem("cost:", data));
+    int power = std::stoi(LoadLabeledElem("power:", data));
+    int attack = std::stoi(LoadLabeledElem("attack:", data));
+
+    auto directionStr = LoadLabeledElem("direction:", data);
+    auto direction = TiledVector::BACK;
+    if (directionStr == "left")
+        direction = TiledVector::LEFT;
+    else if (directionStr == "right")
+        direction = TiledVector::RIGHT;
+    else if (directionStr == "down")
+        direction = TiledVector::FORWARD;
+
+    return std::make_shared<Emplacement>(pos, cost, power, attack, direction);
 }

@@ -11,6 +11,8 @@ public:
     void Activate() override;
     bool IsActivatable() const override;
 
+    static std::shared_ptr<MagicBomb> Create(std::string data, TiledVector pos);
+
 private:
 
     //”š•—”ÍˆÍ

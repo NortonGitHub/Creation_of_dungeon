@@ -88,7 +88,7 @@ void Dungeon::Init()
 
     //オブジェクトを読み込む
     auto& _objs = OBJECT_MGR->_objects;
-    _objs.push_back(std::make_shared<MineBomb>(TiledVector(8, 1), 220, 1, 50, 50, 120));
+//    _objs.push_back(std::make_shared<MineBomb>(TiledVector(8, 1), 220, 1, 50, 50, 120));
 
 //    _objs.push_back(std::make_shared<MagicBomb>(TiledVector(8, 1), 220, 1, 50, 50));
 
@@ -98,7 +98,7 @@ void Dungeon::Init()
 //    ParameterMultiplier param2({ 100, 20, 20, 20, 20, 20 }, 300, false);
 //    _objs.push_back(std::make_shared<CurseArea>(TiledVector(8, 3), 220, param2));
 
-    _objs.push_back(std::make_shared<Emplacement>(TiledVector(8, 2), 220, 50, 50, TiledVector::Direction::RIGHT));
+//    _objs.push_back(std::make_shared<Emplacement>(TiledVector(8, 2), 220, 50, 50, TiledVector::Direction::RIGHT));
 
     for (auto data : dataArray)
     {
@@ -150,18 +150,25 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
     FIELD->SetRawNumber(TiledVector(countX, countY), stoi(typeName));
 
     auto& _objs = OBJECT_MGR->_objects;
-    if(typeName== "0")
-        return;
-            
-    if (typeName == "1")
+
+    if (typeName.find("9#") != std::string::npos)
     {
-        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+        Trap::CreateTrap(typeName, countX, countY, _objs);
         return;
     }
 
     if (typeName.find("2&") != std::string::npos)
     {
         LoadItem(typeName, countX, countY, _objs);
+        return;
+    }
+
+    if(typeName== "0")
+        return;
+            
+    if (typeName == "1")
+    {
+        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
         return;
     }
 

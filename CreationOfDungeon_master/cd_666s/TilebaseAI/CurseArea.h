@@ -13,6 +13,8 @@ public:
     void Activate() override;
     bool IsActivatable() const override;
 
+    static std::shared_ptr<CurseArea> Create(std::string data, TiledVector pos);
+
 private:
 
     //パラメータ変動値

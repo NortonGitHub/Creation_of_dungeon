@@ -29,6 +29,8 @@ public:
     //トラップを起動
     virtual void Activate();
 
+    static void CreateTrap(std::string typeName, int countX, int countY, std::vector<std::shared_ptr<TiledObject>>& objects);
+
 protected:
 
     //耐久力
