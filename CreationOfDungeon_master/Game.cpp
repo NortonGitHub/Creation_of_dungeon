@@ -10,6 +10,10 @@
 Game::Game()
     :_stageNumber(1)
     , _fadeoutCount(0)
+    , _fadeinInterval(100)
+    , _fadingInterval(200)
+    , _fadeoutInterval(255)
+    , _fadingout(true)
     , _state(GameState::READY)
     , _bgm("resourse/sound/Stage_N_Noon.ogg")
 {
@@ -121,6 +125,7 @@ void Game::Init()
 
     _state = GameState::READY;
     _fadeoutCount = 0;
+    _fadingout = true;
     _bgm.Stop();
 
 
@@ -177,8 +182,20 @@ void Game::GameOverDraw()
 
 bool Game::StageClearUpdate() {
 
+    if (_fadeoutCount < _fadingInterval)
+    {
+        _fadeoutCount++;
+        return false;
+    }
+
+    if (_fadeoutCount == _fadingInterval)
+        _fadingout = MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L);
+
+    if (!_fadingout)
+        return false;
+
     _fadeoutCount++;
-    if (_fadeoutCount > 200 && MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L)) 
+    if (_fadeoutCount == _fadeoutInterval)
     {
         Clear();
         Init();
@@ -192,20 +209,25 @@ void Game::StageClearDraw() {
 
     double blend = double(_fadeoutCount) * 17 / 10;
 
-    if (blend > 150) {
-        blend = 150;
+    if (!_fadingout) {
+        if (blend > 150) {
+            blend = 150;
+        }
+    }
+    else {
+        blend = 150 + 105 * (static_cast<double>(_fadeoutCount - _fadingInterval) / static_cast<double>(_fadeoutInterval - _fadingInterval));
     }
 
     auto color = Color4(0, 0, 0, 1.0 * blend / 255);
     Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
 
-    if (_fadeoutCount > 150) {
+    if (_fadeoutCount >= 150
+        && _fadeoutCount <= _fadingInterval) {
         Debug::DrawString(Vector2D(200, 200), "ステージクリア", ColorPalette::WHITE4);
     }
-    if (_fadeoutCount > 200) {
+    if (_fadeoutCount == _fadingInterval) {
         Debug::DrawString(Vector2D(200, 400), "左クリックで次へ進む", ColorPalette::WHITE4);
     }
-
 }
 
 bool Game::GameClearUpdate() {
@@ -235,16 +257,27 @@ void Game::GameClearDraw() {
     if (_fadeoutCount > 150) {
         Debug::DrawString(Vector2D(200, 200), "ゲームクリア", ColorPalette::WHITE4);
     }
-    if (_fadeoutCount > 200) {
+    if (_fadeoutCount > _fadingInterval) {
         Debug::DrawString(Vector2D(200, 400), "左クリックで戻る", ColorPalette::WHITE4);
     }
 }
 
 bool Game::GameReadyUpdate()
 {
+    if (_fadingout)
+    {
+        if (_fadeoutCount < _fadeinInterval)
+            _fadeoutCount++;
+        else
+            _fadingout = false;
+
+        return false;
+    }
+
     if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L)) 
     {
         _state = GameState::GAMING;
+        _fadeoutCount = 0;
         _bgm.Play();
         return true;
     }
@@ -255,9 +288,12 @@ bool Game::GameReadyUpdate()
 
 void Game::GameReadyDraw(){
 
-    auto color = Color4(0, 0, 0, 0.7);
+    double blend = 0.3 * (_fadeinInterval - _fadeoutCount) / _fadeinInterval + 0.7;
+    auto color = Color4(0, 0, 0, blend);
     Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
-    Debug::DrawString(Vector2D(200, 200), "左クリックで開始", ColorPalette::WHITE4);
+
+    if (_fadeinInterval <= _fadeoutCount)
+        Debug::DrawString(Vector2D(200, 200), "左クリックで開始", ColorPalette::WHITE4);
 }
 
 void Game::GamingUpdate()

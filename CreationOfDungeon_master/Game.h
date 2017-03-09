@@ -36,8 +36,15 @@ private:
         GAME_CLEAR
     };
     GameState _state;
+
+    //‰‰o—p‚ÌˆÃ“]ŠÔ
+    const int _fadeinInterval;  //ˆÃ“]‚©‚ç“r’†‚Ü‚Å
+    const int _fadingInterval; //’Êí‚©‚ç“r’†‚Ü‚Å
+    const int _fadeoutInterval; //“r’†‚©‚çˆÃ“]‚Ü‚Å
+
     //‰‰o—p‚ÌˆÃ“]ƒJƒEƒ“ƒg
     int _fadeoutCount;
+    bool _fadingout;
 
     //‚±‚±‚©‚ç‰º‚ª’Ç‰Á‚µ‚½•”•ª(negative)
     bool GameOverUpdate();
