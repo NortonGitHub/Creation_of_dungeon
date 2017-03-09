@@ -8,6 +8,7 @@ public:
     ~Trap();
 
     virtual void Update() override;
+    virtual void Draw() override;
 
     bool IsBrakeable(int brokerLevel) const { return _level <= brokerLevel; };
 
@@ -20,13 +21,13 @@ public:
 
     //アイテム取得での消失や召喚されたかどうかなど、
     //オブジェクトは生成しても判定に用いるかどうかを判断するのに用いる.
-    virtual bool IsEnable() const { return true; }
+    virtual bool IsEnable() const { return (_cost <= _duravity); }
 
-	//トラップを起動できるかどうか
-	virtual bool IsActivatable() const;
+    //トラップを起動できるかどうか
+    virtual bool IsActivatable() const;
 
-	//トラップを起動
-	virtual void Activate();
+    //トラップを起動
+    virtual void Activate();
 
 protected:
 

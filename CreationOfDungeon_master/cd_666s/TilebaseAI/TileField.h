@@ -54,7 +54,7 @@ public:
             return std::move(empty);
         }
 
-        return _field[pos._y][pos._x].lock()->GetTiledObjects<T>();
+        return std::move(_field[pos._y][pos._x].lock()->GetTiledObjects<T>());
     }
 
     int GetRawNumber(const TiledVector &pos) const;

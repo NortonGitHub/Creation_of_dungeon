@@ -54,8 +54,37 @@ public:
         }
     };
 
+
+    void StuckOn(int interval) 
+    {
+        _stuckedTime = interval; 
+        _stuckedCount = 0; 
+        _startCount = true;
+    };
+
 private:
-    
+
+    int _stuckedCount;
+    int _stuckedTime;
+    bool _startCount;
+    bool IsStuckedDowned() 
+    {
+        if (!_startCount)
+            return false;
+
+        return (_stuckedCount < _stuckedTime);
+    };
+    void UpdateStuckCount() 
+    {
+        if (!_startCount)
+            return;
+
+        if (_stuckedCount < _stuckedTime)
+            _stuckedCount++;
+        else
+            _startCount = false;
+    }
+
     //ˆÓŽvŒˆ’è
     virtual void Think() override;
     

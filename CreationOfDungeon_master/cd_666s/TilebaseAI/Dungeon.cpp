@@ -16,6 +16,10 @@
 #include "StartPoint.h"
 
 #include "MineBomb.h"
+#include "CurseArea.h"
+#include "MagicBomb.h"
+#include "Sanctuary.h"
+#include "Emplacement.h"
 
 #include <assert.h>
 
@@ -84,8 +88,17 @@ void Dungeon::Init()
 
     //オブジェクトを読み込む
     auto& _objs = OBJECT_MGR->_objects;
-    _objs.push_back(std::make_shared<MineBomb>(TiledVector(4, 3)));
-    _objs.push_back(std::make_shared<MineBomb>(TiledVector(8, 1)));
+    _objs.push_back(std::make_shared<MineBomb>(TiledVector(8, 1), 220, 1, 50, 50, 120));
+
+//    _objs.push_back(std::make_shared<MagicBomb>(TiledVector(8, 1), 220, 1, 50, 50));
+
+//    ParameterMultiplier param({100, 120, 120, 120, 120, 200}, 300, true);
+//    _objs.push_back(std::make_shared<Sanctuary>(TiledVector(8, 1), 3, 220, param));
+
+//    ParameterMultiplier param2({ 100, 20, 20, 20, 20, 20 }, 300, false);
+//    _objs.push_back(std::make_shared<CurseArea>(TiledVector(8, 3), 220, param2));
+
+    _objs.push_back(std::make_shared<Emplacement>(TiledVector(8, 2), 220, 50, 50, TiledVector::Direction::RIGHT));
 
     for (auto data : dataArray)
     {

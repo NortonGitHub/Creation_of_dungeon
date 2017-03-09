@@ -2,6 +2,7 @@
 #include "TileField.h"
 #include "TiledObjectMnager.h"
 #include "BattlingTile.h"
+#include "BattleCaliculate.h"
 //#include "Character.h"
 
 MagicExplosion::MagicExplosion(int power, int attack, int range, TiledVector pos, TiledObject::Type type)

@@ -12,7 +12,7 @@ public:
     virtual void Draw();
 
     Vector2D GetPosition() const { return _position; }
-    bool Contain(Vector2D pos);
+    bool Contain(Vector2D pos) const;
 
 protected:
 

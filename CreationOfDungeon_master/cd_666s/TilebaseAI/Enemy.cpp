@@ -13,6 +13,10 @@ int Enemy::_enemysNum = 0;
 Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName)
 : Character(startPos, params, notifyer, enemyName)
 , _baseTarget(baseTarget)
+
+, _startCount(false)
+, _stuckedCount(0)
+, _stuckedTime(30)
 {
     _target = &baseTarget;
     
@@ -78,6 +82,10 @@ void Enemy::Update()
 {
     Character::Update();
 
+
+    if (IsStuckedDowned())
+        UpdateStuckCount();
+
     if (!CheckActable(60))
         return;
 
@@ -95,13 +103,16 @@ void Enemy::Update()
         auto offset = _target->GetPosition() - _position;
         
         if (_target->GetType() == TiledObject::Type::MONSTER
-            && offset.GetLength() < TILE_SIZE / 2)
+            && offset.GetLength() < TILE_SIZE / 4)
         {
             Battle(_target);
             return;
         }
     }
     
+    if (IsStuckedDowned())
+        return;
+
     //行動フェイズ
     if (CheckActCounter())
     {

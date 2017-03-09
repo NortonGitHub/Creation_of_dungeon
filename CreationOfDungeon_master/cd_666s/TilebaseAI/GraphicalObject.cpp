@@ -22,7 +22,7 @@ void GraphicalObject::Draw()
 }
 
 
-bool GraphicalObject::Contain(Vector2D pos)
+bool GraphicalObject::Contain(Vector2D pos) const
 {
     auto texturePtr = _graph.GetTexturePtr();
     if (texturePtr.expired())

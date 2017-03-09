@@ -2,15 +2,12 @@
 #include "Trap.h"
 #include "../../mw_animation/GraphArray.h"
 
-class Enemy;
-
-class MineBomb : public Trap
+class MagicBomb : public Trap
 {
 public:
-    MineBomb(TiledVector trap, int cost, int range, int power, int attack, int stuckTime);
-    ~MineBomb();
+    MagicBomb(TiledVector trap, int cost, int range, int power, int attack);
+    ~MagicBomb();
 
-    void Draw() override;
     void Activate() override;
     bool IsActivatable() const override;
 
@@ -23,11 +20,6 @@ private:
     int _power;
     int _attack;
 
-    //çdíºéûä‘
-    int _stuckedTime;
-
     GraphArray _graphArray;
-
-    mutable Enemy* _targetCache;
 };
 

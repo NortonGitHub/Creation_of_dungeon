@@ -41,7 +41,7 @@ public:
     void SetPriority(int priority) { if (_tex != nullptr) _tex->SetPriority(priority); }
     void SetPriority(Priority priority) { if (_tex != nullptr) _tex->SetPriority(static_cast<int>(priority)); }
 
-    std::weak_ptr<Texture2D> GetTexturePtr() { return _tex; }
+    std::weak_ptr<Texture2D> GetTexturePtr()  const { return _tex; }
     
     void SetResource(std::shared_ptr<ImageResource> resource);
     void Load(std::string fileName);

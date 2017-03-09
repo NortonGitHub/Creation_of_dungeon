@@ -65,7 +65,7 @@ public:
                 continue;
 
             //該当タイプがなければ終了
-            if (typeid(T*) != typeid(_objects[i]))
+            if (typeid(T) != typeid(*_objects[i]))
                 continue;
 
             //変換可能なら追加
@@ -76,7 +76,7 @@ public:
             results.push_back(objPtr);
         }
 
-        return results;
+        return std::move(results);
     }
 
 
