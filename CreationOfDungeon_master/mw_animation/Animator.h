@@ -42,9 +42,9 @@ public:
         }
     }
 
-    std::string GetCurrentAnimationName(){ return _currentName; }
-    Sprite* GetCurrentGraph() { return _animation->_graphPtr; }
-    std::shared_ptr<GraphArray> GetCurrentAnimation() { return _animation; }
+    std::string GetCurrentAnimationName() const { return _currentName; }
+    Sprite* GetCurrentGraph() const { return _animation->_graphPtr; }
+    std::shared_ptr<GraphArray> GetCurrentAnimation() const { return _animation; }
 
 private:
 

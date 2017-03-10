@@ -8,7 +8,7 @@ class CharactersSkill
 {
 public:
     CharactersSkill(int cost);
-    ~CharactersSkill();
+    virtual ~CharactersSkill();
 
     //static CharactersSkill* CreateSkill(std::string skillData, Character& charam);
     static CharactersSkill* CreateSkill(std::string skillData, Character& charam);

@@ -25,8 +25,9 @@ public:
     virtual void Update() override;
     virtual void Draw() override;
     virtual void DrawParameter(Vector2D anchorPos);
-    
+
     virtual bool IsOverwritable(TiledObject* overwriter) override;
+    virtual bool Contain(Vector2D pos) const override;
 
     virtual void ResetTarget() 
     {

@@ -98,15 +98,21 @@ void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, C
     CSVReader reader;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
 
-    const int parameterNum = 9;
+    const int parameterNum = 10;
     std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
     int idx = 0;
     int count = 0;
+    std::string name;
+    std::string skill;
     for (auto data : dataArray)
     {
         // MEMO : 最後だけはファイル名をそのまま使う
-        if (count < parameterNum - 1)
+        if (count < parameterNum - 2)
             params[count] = std::stoi(data);
+        else if (count == parameterNum - 2)
+            name = data;
+        else if (count == parameterNum - 1)
+            skill = data;
 
         count++;
 
@@ -115,8 +121,7 @@ void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, C
             BattleParameter param = { params[0], params[1], params[2], params[3], params[4], params[5] };
             TiledVector startPos(params[6], params[7]);
 
-            auto str = data.substr(1, data.size());
-            auto monster = std::make_shared<Monster>(startPos, param, nullptr, notifyer, str);
+            auto monster = std::make_shared<Monster>(startPos, param, nullptr, notifyer, name, skill);
             objects.push_back(monster);
 
             auto magicSquare = std::make_shared<MagicSquare>(startPos, *monster);
@@ -128,6 +133,51 @@ void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, C
             idx++;
         }
     }
+}
+
+
+std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, std::string skillData)
+{
+    if (skillData == "")
+        return nullptr;
+    if (skillData == "null")
+        return nullptr;
+
+    if (name == "ghost")
+    {
+        auto cost = std::stoi(LoadLabeledElem("cost:", skillData));
+        auto paramValue = std::stoi(LoadLabeledElem("param:", skillData));
+        auto timeSec = std::stod(LoadLabeledElem("time:", skillData));
+        auto time = static_cast<int>(timeSec * 60);
+        BattleParameter percentParam(100, 100, paramValue, 100, paramValue, 100);
+        ParameterMultiplier param(percentParam, time, true);
+        return std::make_unique<RiseParameter>(std::move(param), cost, *this);
+    }
+
+    if (name == "minotaur")
+    {
+        auto cost = std::stoi(LoadLabeledElem("cost:", skillData));
+        auto paramValue = std::stoi(LoadLabeledElem("param:", skillData));
+        auto timeSec = std::stod(LoadLabeledElem("time:", skillData));
+        auto time = static_cast<int>(timeSec * 60);
+        BattleParameter percentParam(100, paramValue, 100, 100, 100, 100);
+        ParameterMultiplier param(percentParam, time, true);
+        return std::make_unique<RiseParameter>(std::move(param), cost, *this);
+    }
+    /*
+    if (name == "bone")
+    {
+        auto cost = std::stoi(LoadLabeledElem("cost:", skillData));
+        auto param = std::stoi(LoadLabeledElem("param:", skillData));
+        auto timeSec = std::stod(LoadLabeledElem("time:", skillData));
+        auto time = static_cast<int>(timeSec * 60);
+        BattleParameter percentParam(100, param, 100, 100, 100, 100);
+        ParameterMultiplier param(percentParam, time, true);
+        return std::make_unique<ShootMagicBall>(100, 120, *this, 3);
+    }
+    */
+
+    return nullptr;
 }
 
 
@@ -276,7 +326,7 @@ std::shared_ptr<Sanctuary> Sanctuary::Create(std::string data, TiledVector pos)
     int continuousTime = static_cast<int>(continuousTimeSec * 60.0);
 
     BattleParameter param(hp, atk, def, matk, mdef, spd);
-    ParameterMultiplier multiplier(std::move(param), continuousTime, false);
+    ParameterMultiplier multiplier(std::move(param), continuousTime, true);
 
     return std::make_shared<Sanctuary>(pos, range, cost, std::move(multiplier));
 }

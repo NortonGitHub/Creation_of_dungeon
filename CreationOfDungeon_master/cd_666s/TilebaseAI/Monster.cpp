@@ -1,14 +1,16 @@
 #include "Monster.h"
 #include "TileField.h"
 #include "AI/AstarChaser.h"
-#include "../DebugDraw.h"
 #include "ColleagueNotifyer.h"
 #include "BattlingTile.h"
 #include "TiledObjectMnager.h"
+#include "../DebugDraw.h"
+#include "../InputManager/InputManager.h"
 
-Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName)
+Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName, std::string skillData)
 : Character(startPos, param, notifyer, monsterName)
 , _hasChoosed(false)
+, _countAfterUsingSkill(30)
 {
     _target = target;
     _astar = std::make_unique<AstarChaser>(_target, *this, _pathToTarget, 100, true);
@@ -21,6 +23,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
         return (!enemy->_isBattling); 
     }));
 
+    _skill = CreateSkillFromName(monsterName, skillData);
     _ai = _astar.get();
 
     _type = TiledObject::Type::MONSTER;
@@ -67,6 +70,22 @@ void Monster::Update()
             _countAfetrBattle = 0;
     }
 
+
+    if (_skill.get() != nullptr
+        && _skill->IsReadyToUse()
+        && MOUSE->DoubleClicked()
+        && Contain(MOUSE->GetCursorPos()))
+    {
+        _skill->Activate();
+    }
+
+    if (_skill.get() != nullptr
+        && _countAfterUsingSkill < 30)
+    {
+        _countAfterUsingSkill++;
+        return;
+    }
+
     if (CheckActCounter())
     {
         //指示がなければ終了
@@ -82,7 +101,7 @@ void Monster::Update()
         //意思遂行
         Act();
     }
-    
+
     auto vec = (GetTilePos() - _beforeTilePos).GetWorldPos() - Vector2D(FIELD_OFFSET_X, FIELD_OFFSET_Y);
     _position += vec * (1.0 / (GetActInterval() + 1));
 }
