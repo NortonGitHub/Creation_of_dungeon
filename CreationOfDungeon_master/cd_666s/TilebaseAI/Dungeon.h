@@ -9,15 +9,13 @@
 #include "IntruderInfomation.h"
 #include "TiledObjectDictionary.h"
 #include "DungeonTimer.h"
-#include "../../Vector2D.h"
+#include "MessageReciever.h"
+
 #include "../Render/Sprite.h"
 #include "../Sound/Sound.h"
 
-class GraphicalObject;
-class TiledObject;
-class Sprite;
-class Sound;
-class Action;
+
+
 class Goal;
 class StartPoint;
 
@@ -67,8 +65,11 @@ private:
     //次に侵入してくるモンスターの情報
     IntruderInfomation _intruderInformation;
 
+    //メッセージウィンドウ
+    MessageReciever _messageReciever;
+
     // MEMO : debug用
-    Sprite _face, _messageUI, _mainsFrame, _background, _windowBackground, _waveInfomartionBoard;
+    Sprite _mainsFrame, _background, _windowBackground, _waveInfomartionBoard;
 };
 
 #endif /* Dungeon_h */

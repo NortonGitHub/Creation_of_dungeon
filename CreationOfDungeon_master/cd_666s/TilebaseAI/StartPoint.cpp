@@ -2,15 +2,19 @@
 #include "TiledVector.h"
 #include "TileField.h"
 #include "Enemy.h"
+#include "MessageReciever.h"
 #include "../DebugDraw.h"
 #include "../Resources/ResourceManager.h"
 
-StartPoint::StartPoint(TiledVector tilePos)
+StartPoint::StartPoint(TiledVector tilePos, MessageReciever& reciever)
 : TiledObject(tilePos)
 , _frameFromStart(0)
 , _currentIndex(0)
+, _reciever(reciever)
 {
     _type = TiledObject::Type::START;
+
+    _intrudeMessage = _reciever._processer.CreateTalkData("csv/talkData/blaver_intruding.csv", Talk_Type::dynamic);
 }
 
 
@@ -55,10 +59,13 @@ void StartPoint::Update()
         if (_appearData[i].first.expired())
             continue;
 
+        //“’BŠÔ‚É’B‚µ‚½“G‚©‚ç’Ç‰Á
         if (_appearData[i].second == _frameFromStart)
         {
             _appearData[i].first.lock()->Appear();
             _currentIndex++;
+
+            _reciever.Recieve(_intrudeMessage);
         }
     }
     

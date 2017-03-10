@@ -14,12 +14,7 @@
 #include "Goal.h"
 #include "TiledObjectMnager.h"
 #include "StartPoint.h"
-
-#include "MineBomb.h"
-#include "CurseArea.h"
-#include "MagicBomb.h"
-#include "Sanctuary.h"
-#include "Emplacement.h"
+#include "Trap.h"
 
 #include <assert.h>
 
@@ -29,8 +24,6 @@ Dungeon::Dungeon(std::string stageName)
     , _stageName(stageName)
     , _goal(nullptr)
     , _start(nullptr)
-    , _face("resourse/graph/devilGirlUsual.png", Vector2D(40, 545))
-    , _messageUI("resourse/graph/ui/message_window.png", Vector2D(20, 520))
     , _mainsFrame("resourse/graph/ui/main_window.png", Vector2D(20, 20))
     , _background("resourse/graph/background/background.png", Vector2D(0, 7600))
     , _windowBackground("resourse/graph/ui/main_window_background1.png", Vector2D(28, 28))
@@ -38,9 +31,6 @@ Dungeon::Dungeon(std::string stageName)
     , _infoDrawer(_dictionary)
     , _intruderInformation(_dictionary)
 {
-    _face.SetScale(Vector2D(2, 2));
-
-    _messageUI.SetPriority(Sprite::Priority::UI);
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
     _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
@@ -59,7 +49,11 @@ void Dungeon::Init()
 {
     _controller.Init();
     _infoDrawer.Init();
-    
+
+    _messageReciever.Init();
+    auto tbd = _messageReciever._processer.CreateTalkData("csv/talkData/secretary.csv", Talk_Type::dynamic);
+    _messageReciever.Recieve(tbd);
+
     //ステージ生成
     std::vector<std::string> dataArray;
     CSVReader reader;
@@ -88,18 +82,6 @@ void Dungeon::Init()
 
     //オブジェクトを読み込む
     auto& _objs = OBJECT_MGR->_objects;
-//    _objs.push_back(std::make_shared<MineBomb>(TiledVector(8, 1), 220, 1, 50, 50, 120));
-
-//    _objs.push_back(std::make_shared<MagicBomb>(TiledVector(8, 1), 220, 1, 50, 50));
-
-//    ParameterMultiplier param({100, 120, 120, 120, 120, 200}, 300, true);
-//    _objs.push_back(std::make_shared<Sanctuary>(TiledVector(8, 1), 3, 220, param));
-
-//    ParameterMultiplier param2({ 100, 20, 20, 20, 20, 20 }, 300, false);
-//    _objs.push_back(std::make_shared<CurseArea>(TiledVector(8, 3), 220, param2));
-
-//    _objs.push_back(std::make_shared<Emplacement>(TiledVector(8, 2), 220, 50, 50, TiledVector::Direction::RIGHT));
-
     for (auto data : dataArray)
     {
         //受け取ったデータを変換表をもとに変換
@@ -192,7 +174,7 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
     {
         if (_start == nullptr)
         {
-            _start = std::make_shared<StartPoint>(TiledVector(countX, countY));
+            _start = std::make_shared<StartPoint>(TiledVector(countX, countY), _messageReciever);
             _objs.push_back(_start);
         }
         return;
@@ -281,8 +263,10 @@ void Dungeon::Draw()
     
     OBJECT_MGR->Refresh();
 
-    //メッセージウィンドウ仮表示
-    Debug::DrawString(Vector2D(300, 600), "クリエイションオブダンジョン体験版にようこそ");
+
+    //メッセージウィンドウ更新
+    _messageReciever.Update();
+    _messageReciever.Draw();
 
     //ステージ名表示
     Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), Color4(0.5, 0.65, 0.85, 1.0), true);
