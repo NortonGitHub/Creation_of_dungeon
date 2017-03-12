@@ -5,12 +5,15 @@
 #include "TiledObjectMnager.h"
 #include "TileField.h"
 
-ShootMagicBall::ShootMagicBall(double power, int cost, Character& chara, int range)
+
+ShootMagicBall::ShootMagicBall(double power, int cost, double speed, int range, Character& chara)
     : CharactersSkill(cost)
     , _character(chara)
     , _power(power)
     , _range(range)
+    , _speed(speed)
 {
+    _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/tiledObject/magicBall_R.png");
 }
 
 
@@ -80,7 +83,7 @@ void ShootMagicBall::Activate()
     auto direction = _character.GetDirection();
 
     int magicAttack = _character.GetAffectedParameter()._magicAttack;
-    OBJECT_MGR->Add(std::make_shared<MagicBall>(_power, magicAttack, _range, tilePos, direction, type));
+    OBJECT_MGR->Add(std::make_shared<MagicBall>(_power, magicAttack, _range, _speed, tilePos, direction, type, _image));
 
     _mp = 0;
 }

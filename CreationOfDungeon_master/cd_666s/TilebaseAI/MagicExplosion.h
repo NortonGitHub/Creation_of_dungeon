@@ -1,13 +1,12 @@
 #pragma once
 #include "TiledObject.h"
-#include "GraphicalObject.h"
+#include "../Resources/ImageResource.h"
 #include "../../mw_animation/GraphArray.h"
 
 class MagicExplosion : public TiledObject
-//class MagicExplosion : public GraphicalObject
 {
 public:
-    MagicExplosion(int power, int attack, int range, TiledVector pos, TiledObject::Type type);
+    MagicExplosion(int power, int attack, int range, TiledVector pos, TiledObject::Type type, std::shared_ptr<ImageResource> image);
     ~MagicExplosion();
 
     void Update() override;

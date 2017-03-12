@@ -7,13 +7,13 @@
 
 #include "../DebugDraw.h"
 
-MagicBall::MagicBall(int power, int attack, int range, TiledVector pos, TiledVector::Direction direction, TiledObject::Type type)
-    : TiledObject(pos)
+MagicBall::MagicBall(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image)
+    : TiledObject(startPos)
     , _power(power)
-    , _magicAttack(attack)
+    , _attack(attack)
     , _range(range)
     , _shooterType(type)
-    , _speed(3 * TILE_SIZE / 32.0)
+    , _speed(speed * TILE_SCALE)
 {
     _name = "skill_shoot";
 
@@ -37,14 +37,16 @@ MagicBall::MagicBall(int power, int attack, int range, TiledVector pos, TiledVec
     }
 
     _moveVec *= _speed;
-    _position += Vector2D(8 * TILE_SIZE / 32.0, 8 * TILE_SIZE / 32.0);
+    _position += Vector2D(8 * TILE_SCALE, 8 * TILE_SCALE);
 
+    /*
     if (_shooterType == TiledObject::Type::ENEMY)
         _graph.Load("resourse/graph/tiledObject/magicBall_R.png");
     else
         _graph.Load("resourse/graph/tiledObject/magicBall_B.png");
-
-    _graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+    */
+    _graph.SetResource(image);
+    _graph.SetScale(Vector2D(TILE_SCALE, TILE_SCALE));
 }
 
 
@@ -103,9 +105,9 @@ void MagicBall::CheckHit()
             auto battle = dynamic_cast<BattlingTile*>(obj);
 
             if (opponentType == Type::ENEMY)
-                battle->MagicalAttack(_power, _magicAttack);
+                battle->MagicalAttack(_power, _attack);
             else
-                battle->MagicalDamaged(_power, _magicAttack);
+                battle->MagicalDamaged(_power, _attack);
 
             hasHit = true;
             break;

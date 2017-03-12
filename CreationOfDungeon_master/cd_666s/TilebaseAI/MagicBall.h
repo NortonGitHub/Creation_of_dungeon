@@ -1,10 +1,11 @@
 #pragma once
 #include "TiledObject.h"
+#include "../Resources/ImageResource.h"
 
 class MagicBall: public TiledObject
 {
 public:
-    MagicBall(int power, int magicAttack, int range, TiledVector pos, TiledVector::Direction direction, TiledObject::Type type);
+    MagicBall(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image);
     ~MagicBall();
 
     void Update() override;
@@ -13,15 +14,15 @@ public:
 private:
 
     int _range;
-    int _magicAttack;
+    int _attack;
     int _power;
 
     double _speed;
 
-    //–‚–@‹…‚ÌˆÚ“®
+    //‰“‹——£UŒ‚‚ÌˆÚ“®
     void Move();
 
-    //–‚–@‹…‚ª“G‚Éƒqƒbƒg‚µ‚½‚©
+    //‰“‹——£UŒ‚‚ª“G‚Éƒqƒbƒg‚µ‚½‚©
     void CheckHit();
 
     Vector2D _moveVec;

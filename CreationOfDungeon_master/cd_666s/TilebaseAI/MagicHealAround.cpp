@@ -7,7 +7,7 @@
 #include "Enemy.h"
 #include "BattlingTile.h"
 
-MagicHealAround::MagicHealAround(double power, int cost, Character& chara, int range)
+MagicHealAround::MagicHealAround(double power, int cost, int range, Character& chara)
     : CharactersSkill(cost)
     , _character(chara)
     , _power(power)

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <memory>
 #include "BattleParameter.h"
 
 class Character;
@@ -10,8 +11,7 @@ public:
     CharactersSkill(int cost);
     virtual ~CharactersSkill();
 
-    //static CharactersSkill* CreateSkill(std::string skillData, Character& charam);
-    static CharactersSkill* CreateSkill(std::string skillData, Character& charam);
+    static std::unique_ptr<CharactersSkill> CreateSkill(std::string skillData, Character& charam);
 
     virtual bool ShouldActivate() { return true; }
     virtual void Activate() = 0;

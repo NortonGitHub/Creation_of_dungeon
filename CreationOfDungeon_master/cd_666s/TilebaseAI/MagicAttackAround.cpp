@@ -4,12 +4,13 @@
 #include "TiledObjectMnager.h"
 #include "TileField.h"
 
-MagicAttackAround::MagicAttackAround(double power, int cost, Character& chara, int range)
+MagicAttackAround::MagicAttackAround(double power, int cost, int range, Character& chara)
     : CharactersSkill(cost)
     , _character(chara)
     , _power(power)
     , _range(range)
 {
+    _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/tiledObject/explosion.png");
 }
 
 
@@ -59,7 +60,7 @@ void MagicAttackAround::Activate()
     auto tilePos = _character.GetTilePos();
     auto type = _character.GetType();
     int magicAttack = _character.GetAffectedParameter()._magicAttack;
-    OBJECT_MGR->Add(std::make_shared<MagicExplosion>(_power, magicAttack,  _range, tilePos, type));
+    OBJECT_MGR->Add(std::make_shared<MagicExplosion>(_power, magicAttack, _range, tilePos, type, _image));
 
     _mp = 0;
 }

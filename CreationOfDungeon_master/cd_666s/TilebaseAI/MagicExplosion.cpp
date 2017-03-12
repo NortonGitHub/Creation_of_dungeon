@@ -3,9 +3,9 @@
 #include "TiledObjectMnager.h"
 #include "BattlingTile.h"
 #include "BattleCaliculate.h"
-//#include "Character.h"
 
-MagicExplosion::MagicExplosion(int power, int attack, int range, TiledVector pos, TiledObject::Type type)
+
+MagicExplosion::MagicExplosion(int power, int attack, int range, TiledVector pos, TiledObject::Type type, std::shared_ptr<ImageResource> image)
     : TiledObject(pos)
     , _power(power)
     , _magicAttack(attack)
@@ -13,16 +13,14 @@ MagicExplosion::MagicExplosion(int power, int attack, int range, TiledVector pos
     , _shooterType(type)
     , _hasJudged(false)
 {
-    if (_shooterType == TiledObject::Type::ENEMY)
-        _graph.Load("resourse/graph/tiledObject/explosion.png");
-    else
-        _graph.Load("resourse/graph/tiledObject/mine.png");
+    _graph.SetResource(image);
+    _graph.SetPosition((pos - TiledVector(range, range)).GetWorldPos());
+
+    auto scale = (range * 2 + 1) * TILE_SCALE;
+    _graph.SetScale(Vector2D(scale, scale));
 
     _animation.Set(&_graph, 32, 32, 8, 32);
-    _animation._isLoop = false;
-
-    _graph.SetPosition((pos - TiledVector(range, range)).GetWorldPos());
-    _graph.SetScale(Vector2D((range * 2 + 1) * TILE_SIZE / 32.0, (range * 2 + 1) * (TILE_SIZE / 32.0)));
+    _animation._isLoop = false;    
 }
 
 

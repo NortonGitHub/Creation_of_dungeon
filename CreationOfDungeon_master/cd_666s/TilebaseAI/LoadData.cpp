@@ -181,57 +181,90 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
 }
 
 
-CharactersSkill* CharactersSkill::CreateSkill(std::string skillData, Character& chara)
+std::unique_ptr<CharactersSkill> CharactersSkill::CreateSkill(std::string skillData, Character& chara)
 {
-    if (skillData.find("") == std::string::npos)
+    if (skillData == "")
         return nullptr;
 
-    if (skillData.find("null") != std::string::npos)
+    if (skillData == "null")
         return nullptr;
 
+    if (skillData.find("magic_shoot") != std::string::npos)
+        return ShootMagicBall::Create(skillData, chara);
 
-    if (skillData.find("magic_attack#1") != std::string::npos)
-        return new ShootMagicBall(100, 120, chara, 3);
+    if (skillData.find("magic_explode") != std::string::npos)
+        return MagicAttackAround::Create(skillData, chara);
 
-    if (skillData.find("magic_attack#2") != std::string::npos)
-        return new MagicAttackAround(120, 180, chara, 1);
+    if (skillData.find("heal") != std::string::npos)
+        return MagicHeal::Create(skillData, chara);
 
-    if (skillData.find("magic_attack#3") != std::string::npos)
-        return new ShootMagicBall(150, 120, chara, 5);
+    if (skillData.find("heal_around") != std::string::npos)
+        return MagicHealAround::Create(skillData, chara);
 
-    if (skillData.find("magic_attack#4") != std::string::npos)
-        return new MagicAttackAround(200, 180, chara, 2);
-
-    if (skillData.find("magic_attack#5") != std::string::npos)
-        return new ShootMagicBall(250, 120, chara, 5);
-
-
-
-    if (skillData.find("magic_heal#1") != std::string::npos)
-        return new MagicHeal(0.5, 180, chara, 3);
-
-    if (skillData.find("magic_heal#2") != std::string::npos)
-        return new MagicHealAround(0.25, 180, chara, 5);
-
-    if (skillData.find("magic_heal#3") != std::string::npos)
-        return new MagicHeal(0.8, 180, chara, 5);
-
-    if (skillData.find("magic_heal#4") != std::string::npos)
-        return new MagicHealAround(0.5, 180, chara, 8);
-
-    if (skillData.find("magic_heal#5") != std::string::npos)
-        return new MagicHealAround(0.8, 180, chara, 10);
-
-
-
-    if (skillData.find("param_rise#1") != std::string::npos)
-    {
-        BattleParameter percentParam(100, 125, 100, 100, 100, 100);
-        ParameterMultiplier param(percentParam, 300, true);
-        return new RiseParameter(std::move(param), 100, chara);
-    }
+    if (skillData.find("param_rise") != std::string::npos)
+        return RiseParameter::Create(skillData, chara);
 
     return nullptr;
+}
+
+
+std::unique_ptr<ShootMagicBall> ShootMagicBall::Create(std::string data, Character& chara)
+{
+    int cost = std::stoi(LoadLabeledElem("cost:", data));
+    int range = std::stoi(LoadLabeledElem("range:", data));
+    double power = std::stod(LoadLabeledElem("power:", data));
+    double speed = std::stod(LoadLabeledElem("speed:", data));
+    
+    return std::make_unique<ShootMagicBall>(power, cost, speed, range, chara);
+}
+
+
+std::unique_ptr<MagicAttackAround> MagicAttackAround::Create(std::string data, Character& chara)
+{
+    int cost = std::stoi(LoadLabeledElem("cost:", data));
+    int range = std::stoi(LoadLabeledElem("range:", data));
+    double power = std::stod(LoadLabeledElem("power:", data));
+
+    return std::make_unique<MagicAttackAround>(power, cost, range, chara);
+}
+
+
+std::unique_ptr<MagicHeal> MagicHeal::Create(std::string data, Character& chara)
+{
+    int cost = std::stoi(LoadLabeledElem("cost:", data));
+    int range = std::stoi(LoadLabeledElem("range:", data));
+    double power = std::stod(LoadLabeledElem("power:", data));
+
+    return std::make_unique<MagicHeal>(power, cost, range, chara);
+}
+
+
+std::unique_ptr<MagicHealAround> MagicHealAround::Create(std::string data, Character& chara)
+{
+    int cost = std::stoi(LoadLabeledElem("cost:", data));
+    int range = std::stoi(LoadLabeledElem("range:", data));
+    double power = std::stod(LoadLabeledElem("power:", data));
+
+    return std::make_unique<MagicHealAround>(power, cost, range, chara);
+}
+
+
+std::unique_ptr<RiseParameter> RiseParameter::Create(std::string data, Character& chara)
+{
+    auto cost = std::stoi(LoadLabeledElem("cost:", data));
+    auto timeSec = std::stod(LoadLabeledElem("time:", data));
+    auto time = static_cast<int>(timeSec * 60);
+
+    int hp = std::stod(LoadLabeledElem("hp:", data));
+    int atk = std::stod(LoadLabeledElem("atk:", data));
+    int def = std::stod(LoadLabeledElem("def:", data));
+    int matk = std::stod(LoadLabeledElem("matk:", data));
+    int mdef = std::stod(LoadLabeledElem("mdef:", data));
+    int spd = std::stoi(LoadLabeledElem("spd:", data));
+    BattleParameter percentParam(hp, atk, def, matk, mdef, spd);
+
+    ParameterMultiplier param(percentParam, time, true);
+    return std::make_unique<RiseParameter>(std::move(param), cost, chara);
 }
 
 

@@ -13,6 +13,8 @@ public:
     bool ShouldActivate() override;
     void Activate() override;
 
+    static std::unique_ptr<RiseParameter> Create(std::string data, Character& chara);
+
 private:
 
     Character& _chara;

@@ -7,11 +7,13 @@ class Character;
 class MagicHeal : public CharactersSkill
 {
 public:
-    MagicHeal(double power, int cost, Character& chara, int range);
+    MagicHeal(double power, int cost, int range, Character& chara);
     ~MagicHeal();
 
     bool ShouldActivate() override;
     void Activate() override;
+
+    static std::unique_ptr<MagicHeal> Create(std::string data, Character& chara);
 
 private:
 
