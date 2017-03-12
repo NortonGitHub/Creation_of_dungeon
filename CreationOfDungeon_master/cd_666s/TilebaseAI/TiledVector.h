@@ -1,5 +1,6 @@
 #pragma once
 #define TILE_SIZE TiledVector::_tileSize
+#define TILE_SCALE (TiledVector::_tileSize / 32.0)
 #define FIELD_OFFSET_X TiledVector::_fieldOffsetX
 #define FIELD_OFFSET_Y TiledVector::_fieldOffsetY
 
