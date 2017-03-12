@@ -1,5 +1,7 @@
 hp, attack, defence, magic_attack, magic_defence, speed, interval(sec), name, skill
 1000,50,50,50,50,10,5,blaver,null
-1000,30,30,70,50,10,10,magician,magic_attack#1
-1000,70,30,10,10,10,20,fighter,param_rise#1
-1500,60,60,60,60,20,30,magician,magic_heal#3
+1000,30,30,70,50,10,10,magician,magic_shoot#power:100&cost:300&speed:3.0&range:3
+1000,30,30,70,50,10,20,magician,magic_explode#power:100&cost:300&range:1
+1000,70,30,10,10,10,30,fighter,param_rise#cost:300&hp:100&atk:100&def:100&matk:100&mdef:100&spd:100&time:5
+1500,60,60,60,60,20,40,magician,heal_around#cost:300&range:3&power:0.5
+1500,60,60,60,60,20,50,magician,heal#cost:300&range:3&power:0.5
