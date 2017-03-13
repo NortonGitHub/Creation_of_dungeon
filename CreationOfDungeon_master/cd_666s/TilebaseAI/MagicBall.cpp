@@ -4,6 +4,7 @@
 
 #include "Character.h"
 #include "BattlingTile.h"
+#include "BattleCaliculate.h"
 
 #include "../DebugDraw.h"
 
@@ -39,12 +40,6 @@ MagicBall::MagicBall(int power, int attack, int range, double speed, TiledVector
     _moveVec *= _speed;
     _position += Vector2D(8 * TILE_SCALE, 8 * TILE_SCALE);
 
-    /*
-    if (_shooterType == TiledObject::Type::ENEMY)
-        _graph.Load("resourse/graph/tiledObject/magicBall_R.png");
-    else
-        _graph.Load("resourse/graph/tiledObject/magicBall_B.png");
-    */
     _graph.SetResource(image);
     _graph.SetScale(Vector2D(TILE_SCALE, TILE_SCALE));
 }
@@ -95,7 +90,12 @@ void MagicBall::CheckHit()
         if (obj->GetType() == opponentType)
         {
             auto chara = dynamic_cast<Character*>(obj);
-            chara->Damaged(20);
+            auto param = chara->GetAffectedParameter();
+            if (opponentType == Type::ENEMY)
+                chara->Damaged(Battle::GetMagicalAttackDamage(_power, _attack, param._magicDefence));
+            else
+                chara->Damaged(Battle::GetMagicalDefencedDamage(_power, _attack, param._magicDefence));
+
             hasHit = true;
             break;
         }
