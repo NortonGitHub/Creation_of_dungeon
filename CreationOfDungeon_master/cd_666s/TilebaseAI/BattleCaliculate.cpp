@@ -1,4 +1,5 @@
 #include <algorithm>
+#include "Character.h"
 
 namespace Battle
 {
@@ -61,6 +62,38 @@ namespace Battle
         else
         {
             damage = 5 + std::pow(magicAtk, 0.7) * std::pow(magicDef, -0.84) * power * 20;
+        }
+
+        return damage;
+    }
+
+    double GetDamage(int power, int attack, bool isPhysical, Character& opponent)
+    {
+        double damage = 0;
+        auto opponentType = opponent.GetType();
+        auto param = opponent.GetAffectedParameter();
+
+        if (opponentType == TiledObject::Type::ENEMY)
+        {
+            if (isPhysical)
+            {
+                damage = GetPhysicalAttackDamage(power, attack, param._defence);
+            }
+            else
+            {
+                damage = GetMagicalAttackDamage(power, attack, param._magicDefence);
+            }
+        }
+        else
+        {
+            if (isPhysical)
+            {
+                damage = GetPhysicalDefencedDamage(power, attack, param._defence);
+            }
+            else
+            {
+                damage = GetMagicalDefencedDamage(power, attack, param._magicDefence);
+            }
         }
 
         return damage;

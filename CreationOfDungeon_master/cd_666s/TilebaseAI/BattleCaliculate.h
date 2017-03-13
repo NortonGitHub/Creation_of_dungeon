@@ -1,7 +1,10 @@
 #pragma once
 
+class Character;
+
 namespace Battle
 {
+    double GetDamage(int power, int attack, bool isPhysical, Character& opponent);
     //•¨—UŒ‚—p
     double GetPhysicalAttackDamage(int power, int attack, int defence);
     //–‚–@UŒ‚—p

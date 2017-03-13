@@ -81,6 +81,19 @@ void BattlingTile::Draw()
 }
 
 
+void BattlingTile::AttackFromOutside(int power, int attack, bool isPhysical, TiledObject::Type defenderType)
+{
+    if (isPhysical)
+    {
+        (defenderType == Type::ENEMY) ? PhysicalAttack(power, attack) : PhysicalDamaged(power, attack);
+    }
+    else
+    {
+        (defenderType == Type::ENEMY) ? MagicalAttack(power, attack) : MagicalDamaged(power, attack);
+    }
+}
+
+
 void BattlingTile::PhysicalAttack(int power, int attack)
 {
     Character* defender = &_enemy;

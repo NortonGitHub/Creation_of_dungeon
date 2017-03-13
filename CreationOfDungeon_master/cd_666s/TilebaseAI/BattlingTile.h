@@ -15,6 +15,8 @@ public:
     void Update() override;
     void Draw() override;
     
+    //‰“‹——£UŒ‚
+    void AttackFromOutside(int power, int attack, bool isPhysical, TiledObject::Type defenderType);
     //©ŒRUŒ‚—pƒ_ƒ[ƒWŒvZ
     void PhysicalAttack(int power, int attack);
     void MagicalAttack(int power, int attack);
