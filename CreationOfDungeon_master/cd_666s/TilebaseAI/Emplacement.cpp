@@ -1,8 +1,9 @@
 #include "Emplacement.h"
 #include "TileField.h"
-#include "Enemy.h"
-#include "Obstacle.h"
-#include "BattleCaliculate.h"
+#include "TiledObjectMnager.h"
+#include "MagicBall.h"
+
+
 #include "../InputManager/MouseInput.h"
 #include "../DebugDraw.h"
 #include "../Resources/ResourceManager.h"
@@ -15,6 +16,7 @@ Emplacement::Emplacement(TiledVector pos, int cost, int power, int attack, Tiled
     , _shootDirection(direction)
 {
     _graph.Load("resourse/graph/item/block.png");
+    _bulletImage = IMAGE_RESOURCE_TABLE->Create("resourse/graph/tiledObject/magicBall_B.png");
 }
 
 
@@ -56,27 +58,7 @@ void Emplacement::Activate()
     }
 
     TiledVector tilePos = GetTilePos();
-    for (int i = 0; i < distance; ++i)
-    {
-        auto pos = tilePos;
-        pos += (move * i);
-
-        //‚»‚ÌêŠ‚ÉáŠQ•¨‚ª‚ ‚Á‚½‚çI—¹
-        auto obstacle = FIELD->GetTiledObject<Obstacle>(pos);
-        if (obstacle != nullptr)
-            return;
-
-        auto targets = FIELD->GetTiledObjects<Enemy>(pos);
-        for (auto target : targets)
-        {
-            if (!target->IsEnable())
-                continue;
-
-            auto param = target->GetAffectedParameter();
-            target->Damaged(Battle::GetPhysicalAttackDamage(_power, _attack, param._defence));
-            return;
-        }
-    }
+    OBJECT_MGR->Add(std::make_shared<MagicBall>(_power, _attack, distance, 10, tilePos, _shootDirection, TiledObject::Type::MONSTER, _bulletImage, true));
 }
 
 

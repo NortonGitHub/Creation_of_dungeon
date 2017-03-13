@@ -24,5 +24,8 @@ private:
 
     //UŒ‚•ûŒü
     TiledVector::Direction _shootDirection;
+
+    //‘Å‚¿o‚·‚à‚Ì‚Ì‰æ‘œ
+    std::shared_ptr<ImageResource> _bulletImage;
 };
 
