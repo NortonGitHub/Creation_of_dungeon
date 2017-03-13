@@ -15,8 +15,31 @@ Emplacement::Emplacement(TiledVector pos, int cost, int power, int attack, Tiled
     , _attack(attack)
     , _shootDirection(direction)
 {
-    _graph.Load("resourse/graph/item/block.png");
+    _graph.Load("resourse/graph/trap/bow.png");
     _bulletImage = IMAGE_RESOURCE_TABLE->Create("resourse/graph/tiledObject/magicBall_B.png");
+
+    _directedGraph.Set(&_graph, 32, 32, 4, 1);
+    _directedGraph._isPlaying = false;
+
+    switch (_shootDirection)
+    {
+    case TiledVector::Direction::LEFT:
+        _directedGraph.SetIndex(0);
+        break;
+
+    case TiledVector::Direction::RIGHT:
+        _directedGraph.SetIndex(2);
+        break;
+
+    case TiledVector::Direction::FORWARD:
+        _directedGraph.SetIndex(3);
+        break;
+
+
+    case TiledVector::Direction::BACK:
+        _directedGraph.SetIndex(1);
+        break;
+    }
 }
 
 

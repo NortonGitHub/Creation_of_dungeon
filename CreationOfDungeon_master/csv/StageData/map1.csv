@@ -4,5 +4,5 @@
 1,1,6,0,0,2&herb,2&book,6,9#name:curse&cost:200&hp:70&atk:70&def:70&matk:70&mdef:70&spd:70&time:5,6,6,1
 1,0,0,0,2&herb,2&herb,0,0,0,1,1,1
 1,1,6,2&herb,0,0,0,0,0,0,0,1
-1,6,6,2&herb,2&herb,2&herb,0,0,0,0,0,1
+1,6,6,2&herb,2&herb,2&herb,0,0,0,0,9#name:emplacement&cost:200&power:100&attack:100&direction:right,1
 1,1,1,1,1,1,1,1,200,1,1,1

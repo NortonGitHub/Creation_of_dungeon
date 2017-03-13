@@ -1,3 +1,3 @@
 hp, attack, defence, magic_attack, magic_defence, speed, startX, startY, name,skill
-3000,30,30,50,50,60,7,5,ghost,defUP#cost:300&param:120&time:5
-4000,70,70,20,50,60,5,5,minotaur,atkUP#cost:300&param:150&time:5
+3000,30,50,30,50,60,7,5,bone,cost:300&power:120&range:3&speed:5
+4000,70,70,20,50,60,5,5,minotaur,cost:300&param:150&time:5

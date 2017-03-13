@@ -1,5 +1,6 @@
 #pragma once
 #include "Trap.h"
+#include "../../mw_animation/GraphArray.h"
 
 class Enemy;
 
@@ -24,6 +25,9 @@ private:
 
     //UŒ‚•ûŒü
     TiledVector::Direction _shootDirection;
+
+    //UŒ‚•ûŒü‚É‘Î‰‚µ‚½‰æ‘œ
+    GraphArray _directedGraph;
 
     //‘Å‚¿o‚·‚à‚Ì‚Ì‰æ‘œ
     std::shared_ptr<ImageResource> _bulletImage;
