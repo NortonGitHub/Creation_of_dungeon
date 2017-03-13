@@ -5,7 +5,7 @@
 class MagicBall: public TiledObject
 {
 public:
-    MagicBall(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image);
+    MagicBall(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image, bool isPhysical);
     ~MagicBall();
 
     void Update() override;
@@ -17,6 +17,7 @@ private:
     int _attack;
     int _power;
 
+    bool _isPhysical;
     double _speed;
 
     //‰“‹——£UŒ‚‚ÌˆÚ“®

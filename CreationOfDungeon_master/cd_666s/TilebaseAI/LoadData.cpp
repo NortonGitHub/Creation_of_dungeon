@@ -164,18 +164,13 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
         ParameterMultiplier param(percentParam, time, true);
         return std::make_unique<RiseParameter>(std::move(param), cost, *this);
     }
-    /*
+    
     if (name == "bone")
     {
-        auto cost = std::stoi(LoadLabeledElem("cost:", skillData));
-        auto param = std::stoi(LoadLabeledElem("param:", skillData));
-        auto timeSec = std::stod(LoadLabeledElem("time:", skillData));
-        auto time = static_cast<int>(timeSec * 60);
-        BattleParameter percentParam(100, param, 100, 100, 100, 100);
-        ParameterMultiplier param(percentParam, time, true);
-        return std::make_unique<ShootMagicBall>(100, 120, *this, 3);
+        auto skill = ShootMagicBall::Create(skillData, *this, true);
+        skill->SetImage(IMAGE_RESOURCE_TABLE->Create("resourse/graph/tiledObject/magicBall_B.png"));
+        return skill;
     }
-    */
 
     return nullptr;
 }
@@ -190,7 +185,7 @@ std::unique_ptr<CharactersSkill> CharactersSkill::CreateSkill(std::string skillD
         return nullptr;
 
     if (skillData.find("magic_shoot") != std::string::npos)
-        return ShootMagicBall::Create(skillData, chara);
+        return ShootMagicBall::Create(skillData, chara, false);
 
     if (skillData.find("magic_explode") != std::string::npos)
         return MagicAttackAround::Create(skillData, chara);
@@ -208,14 +203,14 @@ std::unique_ptr<CharactersSkill> CharactersSkill::CreateSkill(std::string skillD
 }
 
 
-std::unique_ptr<ShootMagicBall> ShootMagicBall::Create(std::string data, Character& chara)
+std::unique_ptr<ShootMagicBall> ShootMagicBall::Create(std::string data, Character& chara, bool isPhysical)
 {
     int cost = std::stoi(LoadLabeledElem("cost:", data));
     int range = std::stoi(LoadLabeledElem("range:", data));
     double power = std::stod(LoadLabeledElem("power:", data));
     double speed = std::stod(LoadLabeledElem("speed:", data));
     
-    return std::make_unique<ShootMagicBall>(power, cost, speed, range, chara);
+    return std::make_unique<ShootMagicBall>(power, cost, speed, range, chara, true);
 }
 
 

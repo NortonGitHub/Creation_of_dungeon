@@ -8,13 +8,14 @@
 
 #include "../DebugDraw.h"
 
-MagicBall::MagicBall(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image)
+MagicBall::MagicBall(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image, bool isPhysical)
     : TiledObject(startPos)
     , _power(power)
     , _attack(attack)
     , _range(range)
     , _shooterType(type)
     , _speed(speed * TILE_SCALE)
+    , _isPhysical(isPhysical)
 {
     _name = "skill_shoot";
 
@@ -90,12 +91,7 @@ void MagicBall::CheckHit()
         if (obj->GetType() == opponentType)
         {
             auto chara = dynamic_cast<Character*>(obj);
-            auto param = chara->GetAffectedParameter();
-            if (opponentType == Type::ENEMY)
-                chara->Damaged(Battle::GetMagicalAttackDamage(_power, _attack, param._magicDefence));
-            else
-                chara->Damaged(Battle::GetMagicalDefencedDamage(_power, _attack, param._magicDefence));
-
+            chara->Damaged(Battle::GetDamage(_power, _attack, _isPhysical, *chara));
             hasHit = true;
             break;
         }
@@ -103,12 +99,7 @@ void MagicBall::CheckHit()
         if (obj->GetType() == Type::BATTLE)
         {
             auto battle = dynamic_cast<BattlingTile*>(obj);
-
-            if (opponentType == Type::ENEMY)
-                battle->MagicalAttack(_power, _attack);
-            else
-                battle->MagicalDamaged(_power, _attack);
-
+            battle->AttackFromOutside(_power, _attack, _isPhysical, opponentType);
             hasHit = true;
             break;
         }
