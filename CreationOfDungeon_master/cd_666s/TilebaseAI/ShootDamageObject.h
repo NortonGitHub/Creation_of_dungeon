@@ -4,16 +4,16 @@
 
 class Character;
 
-class ShootMagicBall : public CharactersSkill
+class ShootDamageObject : public CharactersSkill
 {
 public:
-    ShootMagicBall(double power, int cost, double speed, int range, Character& chara, bool isPhysical);
-    ~ShootMagicBall();
+    ShootDamageObject(double power, int cost, double speed, int range, Character& chara, bool isPhysical);
+    ~ShootDamageObject();
 
     bool ShouldActivate() override;
     void Activate() override;
 
-    static std::unique_ptr<ShootMagicBall> Create(std::string data, Character& chara, bool isPhysical);
+    static std::unique_ptr<ShootDamageObject> Create(std::string data, Character& chara, bool isPhysical);
 
     void SetImage(std::shared_ptr<ImageResource> image) { _image = image; };
 

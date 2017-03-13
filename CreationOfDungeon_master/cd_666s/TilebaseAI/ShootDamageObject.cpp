@@ -1,12 +1,12 @@
-#include "ShootMagicBall.h"
+#include "ShootDamageObject.h"
 #include "Character.h"
-#include "MagicBall.h"
+#include "ShottenObject.h"
 
 #include "TiledObjectMnager.h"
 #include "TileField.h"
 
 
-ShootMagicBall::ShootMagicBall(double power, int cost, double speed, int range, Character& chara, bool isPhysical)
+ShootDamageObject::ShootDamageObject(double power, int cost, double speed, int range, Character& chara, bool isPhysical)
     : CharactersSkill(cost)
     , _character(chara)
     , _power(power)
@@ -18,12 +18,12 @@ ShootMagicBall::ShootMagicBall(double power, int cost, double speed, int range, 
 }
 
 
-ShootMagicBall::~ShootMagicBall()
+ShootDamageObject::~ShootDamageObject()
 {
 }
 
 
-bool ShootMagicBall::ShouldActivate()
+bool ShootDamageObject::ShouldActivate()
 {
     auto tilePos = _character.GetTilePos();
     auto type = _character.GetType();
@@ -74,7 +74,7 @@ bool ShootMagicBall::ShouldActivate()
 }
 
 
-void ShootMagicBall::Activate()
+void ShootDamageObject::Activate()
 {
     if (_mp < _mpCost)
         return;
@@ -85,7 +85,7 @@ void ShootMagicBall::Activate()
     auto param = _character.GetAffectedParameter();
 
     int attack = (_isPhysical) ? param._attack : param._magicAttack;
-    OBJECT_MGR->Add(std::make_shared<MagicBall>(_power, attack, _range, _speed, tilePos, direction, type, _image, _isPhysical));
+    OBJECT_MGR->Add(std::make_shared<ShottenObject>(_power, attack, _range, _speed, tilePos, direction, type, _image, _isPhysical));
 
     _mp = 0;
 }

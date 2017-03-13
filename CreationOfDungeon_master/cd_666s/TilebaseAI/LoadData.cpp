@@ -7,7 +7,7 @@
 #include "Enemy.h"
 #include "Monster.h"
 
-#include "ShootMagicBall.h"
+#include "ShootDamageObject.h"
 #include "MagicAttackAround.h"
 #include "RiseParameter.h"
 #include "MagicHeal.h"
@@ -167,7 +167,7 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
     
     if (name == "bone")
     {
-        auto skill = ShootMagicBall::Create(skillData, *this, true);
+        auto skill = ShootDamageObject::Create(skillData, *this, true);
         skill->SetImage(IMAGE_RESOURCE_TABLE->Create("resourse/graph/tiledObject/magicBall_B.png"));
         return skill;
     }
@@ -185,7 +185,7 @@ std::unique_ptr<CharactersSkill> CharactersSkill::CreateSkill(std::string skillD
         return nullptr;
 
     if (skillData.find("magic_shoot") != std::string::npos)
-        return ShootMagicBall::Create(skillData, chara, false);
+        return ShootDamageObject::Create(skillData, chara, false);
 
     if (skillData.find("magic_explode") != std::string::npos)
         return MagicAttackAround::Create(skillData, chara);
@@ -203,14 +203,14 @@ std::unique_ptr<CharactersSkill> CharactersSkill::CreateSkill(std::string skillD
 }
 
 
-std::unique_ptr<ShootMagicBall> ShootMagicBall::Create(std::string data, Character& chara, bool isPhysical)
+std::unique_ptr<ShootDamageObject> ShootDamageObject::Create(std::string data, Character& chara, bool isPhysical)
 {
     int cost = std::stoi(LoadLabeledElem("cost:", data));
     int range = std::stoi(LoadLabeledElem("range:", data));
     double power = std::stod(LoadLabeledElem("power:", data));
     double speed = std::stod(LoadLabeledElem("speed:", data));
     
-    return std::make_unique<ShootMagicBall>(power, cost, speed, range, chara, true);
+    return std::make_unique<ShootDamageObject>(power, cost, speed, range, chara, true);
 }
 
 

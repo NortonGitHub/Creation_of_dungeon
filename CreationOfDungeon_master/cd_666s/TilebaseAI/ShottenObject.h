@@ -2,11 +2,11 @@
 #include "TiledObject.h"
 #include "../Resources/ImageResource.h"
 
-class MagicBall: public TiledObject
+class ShottenObject: public TiledObject
 {
 public:
-    MagicBall(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image, bool isPhysical);
-    ~MagicBall();
+    ShottenObject(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image, bool isPhysical);
+    ~ShottenObject();
 
     void Update() override;
     bool IsOverwritable(TiledObject* overwriter) override;

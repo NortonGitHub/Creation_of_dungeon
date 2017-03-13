@@ -1,7 +1,7 @@
 #include "Emplacement.h"
 #include "TileField.h"
 #include "TiledObjectMnager.h"
-#include "MagicBall.h"
+#include "ShottenObject.h"
 
 
 #include "../InputManager/MouseInput.h"
@@ -81,7 +81,7 @@ void Emplacement::Activate()
     }
 
     TiledVector tilePos = GetTilePos();
-    OBJECT_MGR->Add(std::make_shared<MagicBall>(_power, _attack, distance, 10, tilePos, _shootDirection, TiledObject::Type::MONSTER, _bulletImage, true));
+    OBJECT_MGR->Add(std::make_shared<ShottenObject>(_power, _attack, distance, 10, tilePos, _shootDirection, TiledObject::Type::MONSTER, _bulletImage, true));
 }
 
 

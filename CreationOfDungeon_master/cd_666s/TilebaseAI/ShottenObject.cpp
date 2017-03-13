@@ -1,4 +1,4 @@
-#include "MagicBall.h"
+#include "ShottenObject.h"
 #include "TiledObjectMnager.h"
 #include "TileField.h"
 
@@ -8,7 +8,7 @@
 
 #include "../DebugDraw.h"
 
-MagicBall::MagicBall(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image, bool isPhysical)
+ShottenObject::ShottenObject(int power, int attack, int range, double speed, TiledVector startPos, TiledVector::Direction direction, TiledObject::Type type, std::shared_ptr<ImageResource> image, bool isPhysical)
     : TiledObject(startPos)
     , _power(power)
     , _attack(attack)
@@ -46,12 +46,12 @@ MagicBall::MagicBall(int power, int attack, int range, double speed, TiledVector
 }
 
 
-MagicBall::~MagicBall()
+ShottenObject::~ShottenObject()
 {
 }
 
 
-void MagicBall::Update()
+void ShottenObject::Update()
 {
     GraphicalObject::Update();
     Move();
@@ -64,7 +64,7 @@ void MagicBall::Update()
 }
 
 
-void MagicBall::Move()
+void ShottenObject::Move()
 {
     _position += _moveVec;
     auto tilePos = TiledVector::ConvertToTiledPos(_position);
@@ -74,7 +74,7 @@ void MagicBall::Move()
 }
 
 
-void MagicBall::CheckHit()
+void ShottenObject::CheckHit()
 {
     auto objects = OBJECT_MGR->GetContainedObjects<TiledObject>(_position);
     auto opponentType = (_shooterType == Type::ENEMY) ? Type::MONSTER : Type::ENEMY;
@@ -116,7 +116,7 @@ void MagicBall::CheckHit()
 }
 
 
-bool MagicBall::IsOverwritable(TiledObject* overwriter)
+bool ShottenObject::IsOverwritable(TiledObject* overwriter)
 {
     return true;
 }
