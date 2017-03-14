@@ -143,7 +143,7 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
     if (skillData == "null")
         return nullptr;
 
-    if (name == "ghost")
+    if (name == "slime")
     {
         auto cost = std::stoi(LoadLabeledElem("cost:", skillData));
         auto paramValue = std::stoi(LoadLabeledElem("param:", skillData));

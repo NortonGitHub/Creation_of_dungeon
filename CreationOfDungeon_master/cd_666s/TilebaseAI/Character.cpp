@@ -28,10 +28,16 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 
     std::string fileName = "resourse/graph/tiledObject/";
     fileName += _name;
-    _animator.AddAnimation("front", std::make_shared<GraphArray>(fileName + "_front.png", 32, 32, 2, 24));
-    _animator.AddAnimation("right", std::make_shared<GraphArray>(fileName + "_right.png", 32, 32, 2, 24));
-    _animator.AddAnimation("left", std::make_shared<GraphArray>(fileName + "_left.png", 32, 32, 2, 24));
-    _animator.AddAnimation("back", std::make_shared<GraphArray>(fileName + "_back.png", 32, 32, 2, 24));
+
+    //TODO : 名前に対応したアニメーション読み込み
+    int divNum = 2;
+    if (_name == "slime")
+        divNum = 4;
+
+    _animator.AddAnimation("front", std::make_shared<GraphArray>(fileName + "_front.png", 32, 32, divNum, 24));
+    _animator.AddAnimation("right", std::make_shared<GraphArray>(fileName + "_right.png", 32, 32, divNum, 24));
+    _animator.AddAnimation("left", std::make_shared<GraphArray>(fileName + "_left.png", 32, 32, divNum, 24));
+    _animator.AddAnimation("back", std::make_shared<GraphArray>(fileName + "_back.png", 32, 32, divNum, 24));
 
     _position = startPos.GetWorldPos();
     _beforeTilePos = GetTilePos();

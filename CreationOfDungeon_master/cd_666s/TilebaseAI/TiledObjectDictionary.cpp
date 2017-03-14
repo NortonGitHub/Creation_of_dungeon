@@ -10,6 +10,7 @@ TiledObjectDictionary::TiledObjectDictionary()
     AddRecord("minotaur");
     AddRecord("bone");
     AddRecord("ghost");
+    AddRecord("slime");
 }
 
 
