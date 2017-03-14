@@ -333,7 +333,7 @@ void Game::GamingUpdate()
     }
     _dungeon->Update();
 
-    if (KEYBOARD->ButtonDown(KeyInput::KeyType::KEY_SPACE))
+    if (KEYBOARD->ButtonDown(KeyInput::KeyType::KEY_ESCAPE))
         _state = GameState::PAUSE;
 }
 
@@ -344,7 +344,7 @@ void Game::GamingDraw()
 
 bool Game::PauseUpdate()
 {
-    if (KEYBOARD->ButtonDown(KeyInput::KeyType::KEY_SPACE))
+    if (KEYBOARD->ButtonDown(KeyInput::KeyType::KEY_ESCAPE))
         _state = GameState::GAMING;
 
     auto backColor = Color4(0, 0, 0, 0.9f);
