@@ -53,9 +53,9 @@ bool MagicHeal::ShouldActivate()
                 {
                     auto battle = dynamic_cast<BattlingTile*>(obj);
                     if (type == TiledObject::Type::ENEMY)
-                        chara = &battle->_enemy;
+                        chara = battle->GetEmemy();
                     else
-                        chara = &battle->_monster;
+                        chara = battle->GetMonster();
                 }
                 else
                     continue;
@@ -64,7 +64,11 @@ bool MagicHeal::ShouldActivate()
                 if (objParam._maxHP / 2 < objParam._hp)
                     continue;
                 
-                _targetCache = chara;
+                if (chara != nullptr)
+                    _targetCache = chara;
+                else
+                    continue;
+
                 return true;
             }
         }

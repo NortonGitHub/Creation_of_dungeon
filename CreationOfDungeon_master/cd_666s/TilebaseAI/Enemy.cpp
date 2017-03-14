@@ -324,8 +324,9 @@ void Enemy::ArriveAtGoal(TiledObject* target)
 void Enemy::Battle(TiledObject* target)
 {
     // TODO : ‰‹}ˆ’u‚Æ‚µ‚ÄB
-    auto chara = dynamic_cast<Monster*>(target);
-    OBJECT_MGR->Add(std::make_shared<BattlingTile>(*this, *chara, GetTilePos()));
+    auto enemy = OBJECT_MGR->GetSharedObject<Enemy>(this);
+    auto monster = OBJECT_MGR->GetSharedObject<Monster>(target);
+    OBJECT_MGR->Add(std::make_shared<BattlingTile>(enemy, monster, GetTilePos()));
 }
 
 

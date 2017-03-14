@@ -54,9 +54,9 @@ bool MagicHealAround::ShouldActivate()
                 {
                     auto battle = dynamic_cast<BattlingTile*>(obj);
                     if (type == TiledObject::Type::ENEMY)
-                        chara = &battle->_enemy;
+                        chara = battle->GetEmemy();
                     else
-                        chara = &battle->_monster;
+                        chara = battle->GetMonster();
                 }
                 else
                     continue;
@@ -68,7 +68,8 @@ bool MagicHealAround::ShouldActivate()
                         continue;
                 }
 
-                _targetsCache.push_back(chara);
+                if (chara != nullptr)
+                    _targetsCache.push_back(chara);
             }
         }
     }

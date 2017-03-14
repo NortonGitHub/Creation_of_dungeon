@@ -104,7 +104,11 @@ void ObjectInformationDrawer::SelectObject()
         {
             _selectSE.Play();
             auto battle = dynamic_cast<BattlingTile*>(target);
-            SetCharacter(&battle->_monster, &battle->_enemy);
+            auto enemy = battle->GetEmemy();
+            auto monster = battle->GetMonster();
+            if (enemy != nullptr && monster != nullptr)
+                SetCharacter(monster, enemy);
+
             return;
         }
     }

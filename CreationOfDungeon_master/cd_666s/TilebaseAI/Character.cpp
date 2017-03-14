@@ -287,7 +287,7 @@ void Character::Appear()
 }
 
 
-bool Character::IsAlive()
+bool Character::IsAlive() const
 {
     return (0 < _battleParameter._hp);
 }

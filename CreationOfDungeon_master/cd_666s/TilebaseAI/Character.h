@@ -48,7 +48,7 @@ public:
     //void ClearNegativeEffecter();
 
     bool IsEnable() const override;
-    bool IsAlive();
+    bool IsAlive() const;
 
     std::string GetName() const { return _name; }
     TiledVector::Direction GetDirection() const { return _direction; }

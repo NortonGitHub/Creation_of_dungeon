@@ -4,6 +4,7 @@
 #include "../Utility/Singleton.h"
 #include "../Utility/PoolingSystem.h"
 #include "TiledObject.h"
+#include <memory>
 
 class TiledObjectManager : public Singleton<TiledObjectManager>
 {
@@ -100,6 +101,25 @@ public:
         return results;
     }
 
+    //特定のオブジェクトを取得
+    template<class T>
+    std::shared_ptr<T> GetSharedObject(TiledObject* rawPtr)
+    {
+        for (size_t i = 0; i < _objects.size(); ++i)
+        {
+            if (_objects[i] == nullptr)
+                continue;
+
+            //該当タイプがなければ終了
+            if (typeid(T) != typeid(*_objects[i]))
+                continue;
+
+            if (rawPtr == _objects[i].get())
+                return std::dynamic_pointer_cast<T>(_objects[i]);
+        }
+
+        return nullptr;
+    }
 
 private:
     
