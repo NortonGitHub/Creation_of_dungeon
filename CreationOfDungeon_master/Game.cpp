@@ -56,6 +56,10 @@ SceneBase * Game::Update(UIManager _ui)
         GamingUpdate();
         break;
 
+    case Game::GameState::PAUSE:
+        goTitle = PauseUpdate();
+        break;
+
     case Game::GameState::GAME_OVER:
         goTitle = GameOverUpdate();
         break;
@@ -89,6 +93,11 @@ void Game::Draw()
 
     case Game::GameState::GAMING:
         GamingDraw();
+        break;
+
+    case Game::GameState::PAUSE:
+        //GamingDraw();
+        PauseDraw();
         break;
 
     case Game::GameState::GAME_OVER:
@@ -323,9 +332,70 @@ void Game::GamingUpdate()
         _bgm.Stop();
     }
     _dungeon->Update();
+
+    if (KEYBOARD->ButtonDown(KeyInput::KeyType::KEY_SPACE))
+        _state = GameState::PAUSE;
 }
 
 void Game::GamingDraw()
 {
     _dungeon->Draw();
+}
+
+bool Game::PauseUpdate()
+{
+    if (KEYBOARD->ButtonDown(KeyInput::KeyType::KEY_SPACE))
+        _state = GameState::GAMING;
+
+    auto backColor = Color4(0, 0, 0, 0.9f);
+    Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), backColor, true);
+
+    Vector2D center(WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0);
+    Vector2D frameSize(WINDOW_WIDTH / 4.0, WINDOW_HEIGHT / 8.0);
+
+    auto frameColor = ColorPalette::WHITE4;
+    Vector2D upperPannelPos(center._x - frameSize._x / 2.0, center._y - frameSize._y / 1.5);
+    Vector2D lowerPannelPos(center._x - frameSize._x / 2.0, center._y + frameSize._y / 1.5);
+
+    int fontSize = 32;
+    Debug::DrawString(upperPannelPos + frameSize * 0.5 - Vector2D(fontSize * 2.5, fontSize / 2), "ゲームに戻る", ColorPalette::WHITE4, 24);
+    Debug::DrawString(lowerPannelPos + frameSize * 0.5 - Vector2D(fontSize * 3.5, fontSize / 2), "ステージ選択に戻る", ColorPalette::WHITE4, 24);
+
+    Debug::DrawRectWithSize(upperPannelPos, frameSize, frameColor, false);
+    Debug::DrawRectWithSize(lowerPannelPos, frameSize, frameColor, false);
+
+    auto mousePos = MOUSE->GetCursorPos();
+    bool mouseOnUpperPannel =
+        (upperPannelPos._x < mousePos._x
+            &&  upperPannelPos._y < mousePos._y
+            &&  mousePos._x < upperPannelPos._x + frameSize._x
+            &&  mousePos._y < upperPannelPos._y + frameSize._y);
+
+    bool mouseOnLowerPannel =
+        (lowerPannelPos._x < mousePos._x
+            &&  lowerPannelPos._y < mousePos._y
+            &&  mousePos._x < lowerPannelPos._x + frameSize._x
+            &&  mousePos._y < lowerPannelPos._y + frameSize._y);
+
+    auto fillColor = Color4(1.0f, 1.0f, 1.0f, 0.5f);
+    Debug::DrawRectWithSize(upperPannelPos, frameSize, fillColor, mouseOnUpperPannel);
+    Debug::DrawRectWithSize(lowerPannelPos, frameSize, fillColor, mouseOnLowerPannel);
+
+    if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
+    {
+        if (mouseOnUpperPannel)
+        {
+            _state = GameState::GAMING;
+        }
+        else if (mouseOnLowerPannel)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Game::PauseDraw()
+{
 }

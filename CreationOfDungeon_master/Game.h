@@ -33,7 +33,8 @@ private:
         GAMING,
         GAME_OVER,
         WAVE_CLEAR,
-        GAME_CLEAR
+        GAME_CLEAR,
+        PAUSE
     };
     GameState _state;
 
@@ -65,6 +66,9 @@ private:
 
     void GamingUpdate();
     void GamingDraw();
+
+    bool PauseUpdate();
+    void PauseDraw();
 
     // TODO : Ç†Ç∆Ç≈pointerÇ…ÇπÇ∏Ç∆Ç‡çœÇﬁÇÊÇ§Ç…Ç∑ÇÈ
     Dungeon* _dungeon;
