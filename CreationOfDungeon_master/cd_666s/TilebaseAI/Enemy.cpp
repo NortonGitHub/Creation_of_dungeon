@@ -381,8 +381,5 @@ bool Enemy::IsOverwritable(TiledObject* overwriter)
     if (overwriter == this)
         return true;
     
-    if (overwriter->GetType() == Type::ENEMY)
-        return (!IsEnable());
-    
     return true;
 }
