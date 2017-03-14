@@ -9,6 +9,8 @@ RenderManager::RenderManager()
     , _uiCamera(Vector2D(0, 0), 0, Vector2D(VIEWPORT_WIDTH, VIEWPORT_HEIGHT))
 {
     Camera::_mainCamera = &_defaultCamera;
+
+    _debugDrawCalls.reserve(64);
 }
 
 
@@ -37,24 +39,16 @@ void RenderManager::ClearScreen()
 
 void RenderManager::RenderImage()
 {
-    //ブレンド係数を設定する
-    //glBlendFunc(_defaultBlendRatio.first, _defaultBlendRatio.second);
-    
-    //レンダリング前に諸々設定を初期化
-    //glColor4f(0.0, 0.0, 1.0, 1.0);
-
     _defaultCamera.Render();
+    _uiCamera.Render();
 
     for (size_t i = 0; i < _debugDrawCalls.size(); ++i)
     {
         _debugDrawCalls[i]->Draw();
-//        delete _debugDrawCalls[i];
     }
 
     _debugDrawCalls.clear();
     _debugDrawCalls.resize(0);
-
-    _uiCamera.Render();
 
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
