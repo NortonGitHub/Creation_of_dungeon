@@ -25,7 +25,7 @@ public:
     enum class AnchorType
     {
         CENTER,
-        LOWER_LEFT
+        UPPER_LEFT
     };
     
     void SetPosition(Vector2D pos){ _pos = pos; }
