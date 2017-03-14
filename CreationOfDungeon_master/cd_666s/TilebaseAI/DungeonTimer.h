@@ -1,4 +1,5 @@
 #pragma once
+#include "../Render/Sprite.h"
 #include "../Sound/Sound.h"
 #include "../../Vector2D.h"
 
@@ -26,4 +27,5 @@ private:
 
     Vector2D _position;
     Sound _halfSE, _littleSE, _endSE;
+    Sprite _clock, _hand;
 };
