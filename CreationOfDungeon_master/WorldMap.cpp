@@ -1,12 +1,15 @@
-#include "Map.h"
+#include "WorldMap.h"
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <math.h>
 #include "DxLib.h"
+#include "Game.h"
+#include "Title.h"
 
+//　03/15にて　書き直すのが間に合いそうにないので、最低限の機能のみで動くようにします　従来のものはコメントアウトで
 
-Map::Map()
+WorldMap::WorldMap()
 {
 
     Init();
@@ -14,27 +17,92 @@ Map::Map()
 }
 
 
-Map::~Map()
+WorldMap::~WorldMap()
 {
 }
 
-SceneBase * Map::Update()
+SceneBase * WorldMap::Update()
 {
 
+    /*
     if (isMyMove == true) {
         Moving();
     }
     else {
         KeyJudge();
     }
+    */
+
+    char Buf[256];
+
+    GetHitKeyStateAll(Buf);
+
+    if (Buf[KEY_INPUT_ESCAPE] == 1)
+    {
+        if (keyFlag == false) {
+            isPause = !isPause;
+            keyFlag = true;
+        }
+        
+    }
+    else {
+        keyFlag = false;
+    }
+
+    if (isPause == false) {
+        if (blendFlag == 0) {
+            blend += 10;
+        }
+        else {
+            blend -= 10;
+        }
+
+        if (blend > 255) {
+            blend = 255;
+            blendFlag = 1;
+        }
+        if (blend < 0) {
+            blend = 0;
+            blendFlag = 0;
+        }
+
+        int mx, my;
+
+        GetMousePoint(&mx, &my);
+
+        if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+        {
+            if (pow((670 - mx)*(670 - mx) + (500 - my)*(500 - my), 0.5) < 8) {
+                return new Game();
+            }
+        }
+    }
+    else {
+
+        int mx, my;
+
+        GetMousePoint(&mx, &my);
+
+        if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+        {
+            if (mx > 400 && mx < 400 + 30 * 7 + 15 && my > 300 && my < 300 + 30) {
+                return new Title();
+            }
+
+            if (mx > 400 && mx < 400 + 30 * 8 + 15 && my > 400 && my < 400 + 30) {
+                isPause = !isPause;
+            }
+        }
+        
+    }
 
     
-    
+
     
     return this;
 }
 
-void Map::Draw()
+void WorldMap::Draw()
 {
     /*
     clsDx();
@@ -59,6 +127,7 @@ void Map::Draw()
     }
     */
 
+    /*
     for (auto itr = nowMapPointList.begin(); itr != nowMapPointList.end(); itr++) {
 
         DrawCircle(itr->x, itr->y, pointR, GetColor(255, 0, 0), TRUE);
@@ -102,14 +171,54 @@ void Map::Draw()
     SetFontSize(20);
     DrawFormatString(myX-10, myY-10, GetColor(255, 255, 255),"MY");
 
+    */
 
+    if (isPause == false) {
+        DrawExtendGraph(0, 0, 1024, 768, Area1Gr, TRUE);
+
+        DrawCircle(670, 500, 8, GetColor(255, 50, 50));
+
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, blend);
+        DrawCircle(670, 500, 8, GetColor(255, 255, 255));
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+    }
+    else {
+
+        DrawExtendGraph(0, 0, 1024, 768, Area1Gr, TRUE);
+
+        DrawCircle(670, 500, 8, GetColor(255, 50, 50));
+
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, blend);
+        DrawCircle(670, 500, 8, GetColor(255, 255, 255));
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
+
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+        DrawBox(0, 0, 1024, 768, GetColor(0, 0, 0),TRUE);
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
+        SetFontSize(60);
+        DrawFormatString(420, 100, GetColor(255, 255, 255), "ポーズ");
+
+        SetFontSize(30);
+        DrawFormatString(400, 300, GetColor(255, 255, 255), "タイトルに戻る");
+        DrawBox(400, 300, 400 + 30 * 7 + 15, 300 + 30, GetColor(255, 255, 255), FALSE);
+
+        DrawFormatString(400, 400, GetColor(255, 255, 255), "ゲームを再開する");
+        DrawBox(400, 400, 400 + 30 * 8 + 15, 400 + 30, GetColor(255, 255, 255), FALSE);
+
+    }
+
+    
 
 }
 
 
 
-void Map::Init() {
+void WorldMap::Init() {
 
+
+    /*
     nowMyMapNum = 1;
 
     nowMyPointNum = 0;
@@ -134,12 +243,23 @@ void Map::Init() {
 
     mySpeed = 3;
 
+    */
+
+    Area1Gr = LoadGraph("CreationOfDungeon_master/graph/Area1.png");
+
+    blend = 0;
+    blendFlag = 0;
+
+    isPause = false;
+    keyFlag = false;
+
 }
 
-bool Map::myPointSet(int PointNum) {
+bool WorldMap::myPointSet(int PointNum) {
 
     //std::vector<Point>::iterator itr;
 
+    /*
     for (auto itr = nowMapPointList.begin(); itr != nowMapPointList.end(); itr++) {
 
         if (itr->pointNum == PointNum) {
@@ -152,13 +272,17 @@ bool Map::myPointSet(int PointNum) {
 
     }
 
+    */
+
 
     return false;
+    
 
 }
 
-int Map::PointSearch(int pointNum) {
+int WorldMap::PointSearch(int pointNum) {
 
+    /*
     for (int vec = 0; vec < nowMapPointList.size(); vec++) {
 
         if (nowMapPointList[vec].pointNum == pointNum) {
@@ -167,11 +291,17 @@ int Map::PointSearch(int pointNum) {
 
     }
 
+    */
+
     return -1;
+
+    
 
 }
 
-int Map::RoadSearch(int startPointNum, int endPointNum) {
+int WorldMap::RoadSearch(int startPointNum, int endPointNum) {
+
+    /*
 
     for (int vec = 0; vec < nowMapRoadList.size(); vec++) {
 
@@ -184,12 +314,18 @@ int Map::RoadSearch(int startPointNum, int endPointNum) {
 
     }
 
+
+    */
+
     return -1;
+
+    
 
 }
 
-void Map::Moving() {
+void WorldMap::Moving() {
 
+    /*
     double radian = atan2(targetTurnPointList[0].y - myY, targetTurnPointList[0].x - myX);
 
     double tempX = cos(radian);
@@ -267,9 +403,13 @@ void Map::Moving() {
 
     }
 
+    */
+
 }
 
-void Map::KeyJudge() {
+void WorldMap::KeyJudge() {
+
+    /*
 
     char KeyBuf[256];
 
@@ -402,10 +542,14 @@ void Map::KeyJudge() {
         }
     }
 
+    */
+
 }
 
 
-bool Map::checkMoveReach() {
+bool WorldMap::checkMoveReach() {
+
+    /*
 
     double margin = 5.0;
 
@@ -417,11 +561,17 @@ bool Map::checkMoveReach() {
         return true;
     }
 
+    */
+
     return false;
+
+    
 
 }
 
-void Map::setNowMapPointList() {
+void WorldMap::setNowMapPointList() {
+
+    /*
 
     //ここからポイント情報の読み込み
     //ファイルの読み込み
@@ -503,10 +653,14 @@ void Map::setNowMapPointList() {
 
     }
 
+    */
+
 }
 
-void Map::setNowMapRoadList() {
+void WorldMap::setNowMapRoadList() {
 
+
+    /*
     //ここから道の情報の読み込み
     //ファイルの読み込み
     std::ifstream ifs2("CreationOfDungeon_master\\csv\\WorldMap\\Road\\Road.csv");
@@ -566,8 +720,9 @@ void Map::setNowMapRoadList() {
             std::string strPath = outstr.str();
             std::ifstream ifs2(strPath);
             if (ifs2.fail()) {
-                printfDx("fail\n");
-                return;
+                //printfDx("fail\n");
+                //return;
+                //csvがない場合はそのまま続ける
             }
 
             //csvファイルを1行ずつ読み込む
@@ -610,11 +765,15 @@ void Map::setNowMapRoadList() {
 
     }
 
+    */
+
 
 }
 
 
-int Map::MoveDirection(int startPointNum, int endPointNum) {
+int WorldMap::MoveDirection(int startPointNum, int endPointNum) {
+
+    /*
 
     for (int vec = 0; vec < nowMapRoadList.size(); vec++) {
 
@@ -627,7 +786,12 @@ int Map::MoveDirection(int startPointNum, int endPointNum) {
 
     }
 
+
+    */
+
     return -1;
+
+    
 
 }
 
