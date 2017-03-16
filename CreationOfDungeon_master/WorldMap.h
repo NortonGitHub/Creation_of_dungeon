@@ -41,7 +41,9 @@ private:
 
     bool isPause;
     bool keyFlag;
+    bool clickFlag;
 
+    int stageNum;
 
 public:
     WorldMap();
@@ -61,7 +63,8 @@ public:
     void setNowMapRoadList();
     int MoveDirection(int startPointNum, int endPointNum);
 
-
+    int ClickCheckBox(int x, int y, int rx, int ry);    //クリックしたときの判定（四角形）
+    int ClickCheckCircle(int x, int y, int r);    //クリックしたときの判定（円形）
 
 };
 

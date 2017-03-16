@@ -49,6 +49,10 @@ SceneBase * WorldMap::Update()
         keyFlag = false;
     }
 
+    int mx, my;
+
+    GetMousePoint(&mx, &my);
+
     if (isPause == false) {
         if (blendFlag == 0) {
             blend += 10;
@@ -66,38 +70,106 @@ SceneBase * WorldMap::Update()
             blendFlag = 0;
         }
 
-        int mx, my;
+        //ここからステージ1のクリック判定
 
-        GetMousePoint(&mx, &my);
+        int hit = 0;
 
-        if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
-        {
-            if (pow((670 - mx)*(670 - mx) + (500 - my)*(500 - my), 0.5) < 8) {
-                return new Game();
-            }
+        hit += ClickCheckCircle(836, 538, 9);
+        hit += ClickCheckCircle(836 - 5, 538, 8);
+        hit += ClickCheckCircle(836 - 5 - 4, 538, 7);
+        hit += ClickCheckCircle(836 - 5 - 4 - 3, 538, 6);
+        hit += ClickCheckCircle(836 + 5, 538, 8);
+        hit += ClickCheckCircle(836 + 5 + 4, 538, 7);
+        hit += ClickCheckCircle(836 + 5 + 4 + 3, 538, 6);
+
+        if (hit >= 1) {
+            stageNum = 1;
+            return new Game();
         }
+
+        //ここまで
+        
+
+        //ここからステージ2のクリック判定
+
+        hit = 0;
+
+        hit += ClickCheckCircle(560, 418, 9);
+        hit += ClickCheckCircle(560 - 5, 418, 8);
+        hit += ClickCheckCircle(560 - 5 - 4, 418, 7);
+        hit += ClickCheckCircle(560 - 5 - 4 - 3, 418, 6);
+        hit += ClickCheckCircle(560 + 5, 418, 8);
+        hit += ClickCheckCircle(560 + 5 + 4, 418, 7);
+        hit += ClickCheckCircle(560 + 5 + 4 + 3, 418, 6);
+
+        if (hit >= 1) {
+            stageNum = 2;
+            return new Game();
+        }
+
+        //ここまで
+
+
+        //ここからステージ3のクリック判定
+
+        hit = 0;
+
+        hit += ClickCheckCircle(601, 182, 9);
+        hit += ClickCheckCircle(601 - 5, 182, 8);
+        hit += ClickCheckCircle(601 - 5 - 4, 182, 7);
+        hit += ClickCheckCircle(601 - 5 - 4 - 3, 182, 6);
+        hit += ClickCheckCircle(601 + 5, 182, 8);
+        hit += ClickCheckCircle(601 + 5 + 4, 182, 7);
+        hit += ClickCheckCircle(601 + 5 + 4 + 3, 182, 6);
+
+        if (hit >= 1) {
+            stageNum = 3;
+            return new Game();
+        }
+
+
     }
     else {
 
-        int mx, my;
+        //ここから「タイトルに戻る」のクリック判定
 
-        GetMousePoint(&mx, &my);
+        int hit = 0;
 
-        if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
-        {
-            if (mx > 400 && mx < 400 + 30 * 7 + 15 && my > 300 && my < 300 + 30) {
-                return new Title();
-            }
+        hit += ClickCheckBox(530, 300, 30 * 7 + 15, 30);
 
-            if (mx > 400 && mx < 400 + 30 * 8 + 15 && my > 400 && my < 400 + 30) {
-                isPause = !isPause;
-            }
+        if (hit >= 1) {
+            return new Title();
         }
+
+        //ここまで
+
+        //ここから「ゲームを再開する」のクリック判定
+
+        hit = 0;
+
+        hit += ClickCheckBox(530, 400, 30 * 8 + 15, 30);
+
+        if (hit >= 1) {
+            isPause = !isPause;
+        }
+
+        //ここまで
         
     }
 
-    
+    if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+    {
 
+        if (clickFlag == false) {
+            clickFlag = true;
+        }
+
+    }
+    else {
+        clickFlag = false;
+    }
+    
+    printfDx("x:%d y:%d", mx, my);
     
     return this;
 }
@@ -174,38 +246,29 @@ void WorldMap::Draw()
     */
 
     if (isPause == false) {
-        DrawExtendGraph(0, 0, 1024, 768, Area1Gr, TRUE);
 
-        DrawCircle(670, 500, 8, GetColor(255, 50, 50));
+        DrawGraph(0, 0, Area1Gr, TRUE);
 
-        SetDrawBlendMode(DX_BLENDMODE_ALPHA, blend);
-        DrawCircle(670, 500, 8, GetColor(255, 255, 255));
-        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
     }
     else {
 
-        DrawExtendGraph(0, 0, 1024, 768, Area1Gr, TRUE);
-
-        DrawCircle(670, 500, 8, GetColor(255, 50, 50));
-
-        SetDrawBlendMode(DX_BLENDMODE_ALPHA, blend);
-        DrawCircle(670, 500, 8, GetColor(255, 255, 255));
-        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-
+        DrawGraph(0, 0, Area1Gr, TRUE);
 
         SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
-        DrawBox(0, 0, 1024, 768, GetColor(0, 0, 0),TRUE);
+        DrawBox(0, 0, 1280, 720, GetColor(0, 0, 0), TRUE);
         SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 
         SetFontSize(60);
-        DrawFormatString(420, 100, GetColor(255, 255, 255), "ポーズ");
+        DrawFormatString(550, 100, GetColor(255, 255, 255), "ポーズ");
 
         SetFontSize(30);
-        DrawFormatString(400, 300, GetColor(255, 255, 255), "タイトルに戻る");
-        DrawBox(400, 300, 400 + 30 * 7 + 15, 300 + 30, GetColor(255, 255, 255), FALSE);
+        DrawFormatString(530, 300, GetColor(255, 255, 255), "タイトルに戻る");
+        DrawBox(530, 300, 530 + 30 * 7 + 15, 300 + 30, GetColor(255, 255, 255), FALSE);
 
-        DrawFormatString(400, 400, GetColor(255, 255, 255), "ゲームを再開する");
-        DrawBox(400, 400, 400 + 30 * 8 + 15, 400 + 30, GetColor(255, 255, 255), FALSE);
+        DrawFormatString(530, 400, GetColor(255, 255, 255), "ゲームを再開する");
+        DrawBox(530, 400, 530 + 30 * 8 + 15, 400 + 30, GetColor(255, 255, 255), FALSE);
+
+        
 
     }
 
@@ -245,13 +308,15 @@ void WorldMap::Init() {
 
     */
 
-    Area1Gr = LoadGraph("CreationOfDungeon_master/graph/Area1.png");
+    Area1Gr = LoadGraph("CreationOfDungeon_master/graph/Area1Icon.png");
 
     blend = 0;
     blendFlag = 0;
 
     isPause = false;
     keyFlag = false;
+
+    clickFlag = false;
 
 }
 
@@ -794,5 +859,58 @@ int WorldMap::MoveDirection(int startPointNum, int endPointNum) {
     
 
 }
+
+
+
+int WorldMap::ClickCheckBox(int x, int y, int rx, int ry) {
+
+    int mx, my;
+
+    GetMousePoint(&mx, &my);
+
+    if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+    {
+
+        if (clickFlag == false) {
+            if (mx > x && mx < x + rx && my > y && my < y + ry) {
+                return 1;
+            }
+        }
+        
+    }
+
+    return 0;
+
+}
+
+
+int WorldMap::ClickCheckCircle(int x, int y, int r) {
+
+    int mx, my;
+
+    GetMousePoint(&mx, &my);
+
+    if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+    {
+
+        if (clickFlag == false) {
+            if (pow((x - mx)*(x - mx) + (y - my)*(y - my), 0.5) < r) {
+                return 1;
+            }
+        }
+        
+    }
+
+    return 0;
+
+}
+
+
+
+
+
+
+
+
 
 
