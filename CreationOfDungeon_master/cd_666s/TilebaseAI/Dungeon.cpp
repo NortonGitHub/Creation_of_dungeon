@@ -30,6 +30,7 @@ Dungeon::Dungeon(std::string stageName)
     , _waveInfomartionBoard("resourse/graph/ui/enemyinformation.png", Vector2D(754, 248))
     , _infoDrawer(_dictionary)
     , _intruderInformation(_dictionary)
+    , _intrudeLastCharacter(false)
 {
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
@@ -51,8 +52,10 @@ void Dungeon::Init()
     _infoDrawer.Init();
 
     _messageReciever.Init();
-    auto tbd = _messageReciever._processer.CreateTalkData("csv/talkData/secretary.csv", Talk_Type::dynamic);
-    _messageReciever.Recieve(tbd);
+    LoadMessage(_stageName);
+
+    //auto tbd = _messageReciever._processer.CreateTalkData("csv/talkData/secretary.csv", Talk_Type::dynamic);
+    //_messageReciever.Recieve(tbd);
 
     //ステージ生成
     std::vector<std::string> dataArray;
@@ -68,6 +71,12 @@ void Dungeon::Init()
     _timer.InitWithSetup(waveInterval);
     _permitivePassedNum = std::stoi(waveInfoArray[1]);
     
+
+    fileName = "csv/StageData/tilesize.csv";
+    std::vector<std::string> tileInfoArray;
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, tileInfoArray);
+    LoadTileSize(_stageName, tileInfoArray);
+
     //フィールドのサイズを読み込む
     fileName = "csv/StageData/map";
     fileName += (_stageName + ".csv");
@@ -164,7 +173,7 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
     {
         if (_goal == nullptr)
         {
-            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
+            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters, _messageReciever, _permitivePassedNum);
             _objs.push_back(_goal);
         }
         return;
@@ -227,6 +236,9 @@ bool Dungeon::HasGameOver()
 
 void Dungeon::Update()
 {
+    //メッセージ更新
+    UpdateSecretary();
+
     _timer.Update();
 
     //情報網更新
@@ -235,7 +247,7 @@ void Dungeon::Update()
     
     //捜査情報更新
     _controller.Update();
-    
+
     for (auto obj : OBJECT_MGR->_objects)
     {
         if (obj != nullptr)
@@ -286,4 +298,82 @@ void Dungeon::Draw()
 
     //侵入者情報表示
     _intruderInformation.Draw();
+}
+
+
+void Dungeon::LoadMessage(std::string stageName)
+{
+    int messageNum = 0;
+    if (stageName == "1")
+        messageNum = 1;
+    else if (stageName == "2")
+        messageNum = 2;
+    else if (stageName == "3")
+        messageNum = 3;
+
+    std::string filePath = "csv/talkData/stage";
+    filePath += stageName;
+    filePath += "/";
+    //_dungeonMessage.insert(std::make_pair("missed", _messageReciever._processer.CreateTalkData("csv/talkData/missed.csv", Talk_Type::nomal)));
+    _dungeonMessage.insert(std::make_pair("start", _messageReciever._processer.CreateTalkData(filePath + "0_secretary_start.csv", Talk_Type::nomal)));
+    _dungeonMessage.insert(std::make_pair("middle", _messageReciever._processer.CreateTalkData(filePath + "1_secretary_middle.csv", Talk_Type::nomal)));
+
+    if (messageNum != 3)
+    {
+        _dungeonMessage.insert(std::make_pair("last", _messageReciever._processer.CreateTalkData(filePath + "2_secretary_last.csv", Talk_Type::nomal)));
+    }
+    else
+    {
+        _dungeonMessage.insert(std::make_pair("blaver", _messageReciever._processer.CreateTalkData(filePath + "3_blaver_appeared.csv", Talk_Type::nomal)));
+        _dungeonMessage.insert(std::make_pair("last", _messageReciever._processer.CreateTalkData(filePath + "2_secretary_blaverAppeared.csv", Talk_Type::nomal)));
+    }
+}
+
+
+void Dungeon::UpdateSecretary()
+{
+    auto timeRatio = _timer.GetTimeRatio();
+
+    if (timeRatio == 0)
+    {
+        _messageReciever.Recieve(_dungeonMessage.at("start"));
+        return;
+    }
+
+    if (timeRatio == 0.5)
+    {
+        _messageReciever.Recieve(_dungeonMessage.at("middle"));
+        return;
+    }
+
+    if (_intrudeLastCharacter)
+        return;
+
+    if (_stageName == "1")
+    {
+        if ( (_timer.GetCount() / 60) == 40)
+        {
+            _messageReciever.Recieve(_dungeonMessage.at("last"));
+            _intrudeLastCharacter = true;
+            return;
+        }
+    }
+    else if (_stageName == "2")
+    {
+        if ((_timer.GetCount() / 60) == 50)
+        {
+            _messageReciever.Recieve(_dungeonMessage.at("last"));
+            _intrudeLastCharacter = true;
+            return;
+        }
+    }
+    else
+    {
+        if (_start->GetTimeUnitlNext() == -1)
+        {
+            _messageReciever.Recieve(_dungeonMessage.at("last"));
+            _messageReciever.Recieve(_dungeonMessage.at("blaver"));
+            _intrudeLastCharacter = true;
+        }
+    }
 }

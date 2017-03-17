@@ -11,8 +11,10 @@ MessageReciever::MessageReciever()
     _messageUI.SetPriority(Sprite::Priority::UI);
 
     _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/devilGirlUsual.png"));
+    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/devilGirlAngry.png"));
+    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/devilGirlSmile.png"));
+    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/devilGirlCry.png"));
     _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/face_braver.png"));
-    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/face_magician.png"));
 }
 
 
@@ -48,10 +50,9 @@ void MessageReciever::Draw()
         auto currentData = _processer.GetCurrentTalkData();
         if (0 <= currentData.speakPeople
             &&  currentData.speakPeople < _faces.size())
-            _face.SetResource(_faces[currentData.speakPeople]);
+            _face.SetResource(_faces[currentData.speakFace]);
     }
 
     //文字送り描画
     _processer.Draw(Vector2D(200, 550));
-    //Debug::DrawString(Vector2D(300, 600), "クリエイションオブダンジョン体験版にようこそ");
 }

@@ -2,6 +2,7 @@
 #define Goal_h
 
 #include "TiledObject.h"
+#include "MessageReciever.h"
 
 class Character;
 class ColleagueNotifyer;
@@ -9,7 +10,7 @@ class ColleagueNotifyer;
 class Goal : public TiledObject
 {
 public:
-    Goal(TiledVector tilePos, ColleagueNotifyer& notifyer);
+    Goal(TiledVector tilePos, ColleagueNotifyer& notifyer, MessageReciever& reciever, int permitivePassedNum);
     ~Goal();
     
     bool IsOverwritable(TiledObject* overwriter) override;
@@ -26,8 +27,12 @@ private:
     
     //同系列のキャラ間で情報共有するための通信機
     ColleagueNotifyer& _notifyer;
+
+    MessageReciever& _reciever;
+    TalkDatabase _tdb;
     
     int _passedNum;
+    int _permitivePassedNum;
 };
 
 #endif /* Goal_h */

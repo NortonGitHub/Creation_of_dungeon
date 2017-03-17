@@ -54,7 +54,7 @@ void DungeonTimer::Update()
         _count++;
     }
 
-    auto timeRatio = static_cast<double>(_count) / _waveInterval;
+    auto timeRatio = GetTimeRatio();
 
     if (timeRatio == 0.5)
     {

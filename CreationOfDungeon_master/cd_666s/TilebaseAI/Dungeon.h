@@ -2,6 +2,7 @@
 #define Dungeon_h
 
 #include <string>
+#include <unordered_map>
 #include "MonsterController.h"
 #include "TiledVector.h"
 #include "ColleagueNotifyer.h"
@@ -36,6 +37,8 @@ public:
     
 private:
     
+    void LoadTileSize(std::string stageName, std::vector<std::string>& rawData);
+
     //ゲーム時間と時間通知モジュール群
     DungeonTimer _timer;
 
@@ -70,6 +73,12 @@ private:
 
     // MEMO : debug用
     Sprite _mainsFrame, _background, _windowBackground, _waveInfomartionBoard;
+
+    // MEMO : 突貫工事用
+    void LoadMessage(std::string stageName);
+    void UpdateSecretary();
+    std::unordered_map<std::string, TalkDatabase> _dungeonMessage;
+    bool _intrudeLastCharacter;
 };
 
 #endif /* Dungeon_h */

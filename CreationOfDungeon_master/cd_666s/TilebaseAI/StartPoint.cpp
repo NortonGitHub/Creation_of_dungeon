@@ -65,7 +65,7 @@ void StartPoint::Update()
             _appearData[i].first.lock()->Appear();
             _currentIndex++;
 
-            _reciever.Recieve(_intrudeMessage);
+            //_reciever.Recieve(_intrudeMessage);
         }
     }
     

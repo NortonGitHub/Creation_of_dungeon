@@ -34,7 +34,7 @@ MessageManager::MessageManager() {
         //ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
         std::ifstream ifs(str);
         if (ifs.fail()) {
-            printfDx("fail\n");
+            //printfDx("fail\n");
             return;
         }
 

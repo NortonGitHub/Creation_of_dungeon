@@ -20,6 +20,8 @@ public:
 
     bool HasTimeUp() const { return (_waveInterval < _count); }
 
+    double GetTimeRatio() const { return static_cast<double>(_count) / _waveInterval; }
+
 private:
 
     long _count;

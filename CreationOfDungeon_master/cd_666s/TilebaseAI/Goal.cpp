@@ -6,12 +6,15 @@
 #include "../DebugDraw.h"
 #include "../Resources/ResourceManager.h"
 
-Goal::Goal(TiledVector tilePos, ColleagueNotifyer& notifyer)
+Goal::Goal(TiledVector tilePos, ColleagueNotifyer& notifyer, MessageReciever& reciever, int permitivePassedNum)
 : TiledObject(tilePos)
 , _passedNum(0)
+, _permitivePassedNum(permitivePassedNum)
 , _notifyer(notifyer)
+, _reciever(reciever)
 {
     _type = TiledObject::Type::GOAL;
+    _tdb = _reciever._processer.CreateTalkData("csv/talkData/missed.csv", Talk_Type::nomal);
 }
 
 
@@ -63,6 +66,9 @@ void Goal::Interact(Character &chara)
         //’Ê‰ß‚µ‚½ƒLƒƒƒ‰‚Í’ú‚ß‚é‚æ‚¤‚É’Ê’m‚·‚é
         _notifyer.NotifyRemoveTarget(chara);
         _passedNum++;
+
+        if (_passedNum == _permitivePassedNum)
+            _reciever.Recieve(_tdb);
     }
 }
 
