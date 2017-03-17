@@ -6,7 +6,7 @@
 class Game : public SceneBase
 {
 public:
-    Game();
+    Game(int stageNumber);
     ~Game();
 
     SceneBase* Update(UIManager _ui);
@@ -33,7 +33,7 @@ private:
         GAMING,
         GAME_OVER,
         WAVE_CLEAR,
-        GAME_CLEAR,
+        //GAME_CLEAR,
         PAUSE
     };
     GameState _state;
@@ -53,8 +53,8 @@ private:
 
     bool StageClearUpdate();
     void StageClearDraw();
-    bool GameClearUpdate();
-    void GameClearDraw();
+    //bool GameClearUpdate();
+    //void GameClearDraw();
 
 
     //666=======================================

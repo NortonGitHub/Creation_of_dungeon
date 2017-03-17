@@ -5,10 +5,10 @@
 #include "cd_666s/DebugDraw.h"
 #include "cd_666s/Resources/AllResourceManager.h"
 #include "Main.h"
-#include "Title.h"
+#include "WorldMap.h"
 
-Game::Game()
-    :_stageNumber(1)
+Game::Game(int stageNumber)
+    :_stageNumber(stageNumber)
     , _fadeoutCount(0)
     , _fadeinInterval(100)
     , _fadingInterval(200)
@@ -65,19 +65,20 @@ SceneBase * Game::Update(UIManager _ui)
         break;
 
     case Game::GameState::WAVE_CLEAR:
-        StageClearUpdate();
+        goTitle = StageClearUpdate();
         break;
-
+        /*
     case Game::GameState::GAME_CLEAR:
         goTitle = GameClearUpdate();
         break;
+        */
     default:
         break;
     }
 
     if (goTitle)
     {
-        return new Title();
+        return new WorldMap();
     }
 
     return this;
@@ -107,10 +108,11 @@ void Game::Draw()
     case Game::GameState::WAVE_CLEAR:
         StageClearDraw();
         break;
-
+        /*
     case Game::GameState::GAME_CLEAR:
         GameClearDraw();
         break;
+        */
     default:
         break;
     }
@@ -206,8 +208,9 @@ bool Game::StageClearUpdate() {
     _fadeoutCount++;
     if (_fadeoutCount == _fadeoutInterval)
     {
-        Clear();
-        Init();
+        //TODO : game^3が終わったらコメントアウトを外す
+        //Clear();
+        //Init();
         return true;
     }
 
@@ -235,10 +238,11 @@ void Game::StageClearDraw() {
         Debug::DrawString(Vector2D(200, 200), "ステージクリア", ColorPalette::WHITE4);
     }
     if (_fadeoutCount == _fadingInterval) {
-        Debug::DrawString(Vector2D(200, 400), "左クリックで次へ進む", ColorPalette::WHITE4);
+        Debug::DrawString(Vector2D(200, 400), "左クリックで戻る", ColorPalette::WHITE4);
     }
 }
 
+/*
 bool Game::GameClearUpdate() {
 
     _fadeoutCount++;
@@ -270,6 +274,7 @@ void Game::GameClearDraw() {
         Debug::DrawString(Vector2D(200, 400), "左クリックで戻る", ColorPalette::WHITE4);
     }
 }
+*/
 
 bool Game::GameReadyUpdate()
 {
@@ -309,18 +314,18 @@ void Game::GamingUpdate()
 {
     if (_dungeon->HasClear())
     {
-        if (_stageNumber < 3)
-        {
-            _stageNumber++;
+        //if (_stageNumber < 3)
+        //{
+        //    _stageNumber++;
             _state = GameState::WAVE_CLEAR;
             return;
-        }
-        else
-        {
-            _state = GameState::GAME_CLEAR;
-            _bgm.Stop();
-            return;
-        }
+        //}
+        //else
+        //{
+        //    _state = GameState::GAME_CLEAR;
+        //    _bgm.Stop();
+        //    return;
+        //}
     }
 
     if (!_bgm.IsPlaying())
