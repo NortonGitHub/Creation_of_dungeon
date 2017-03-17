@@ -14,7 +14,7 @@ ShootDamageObject::ShootDamageObject(double power, int cost, double speed, int r
     , _speed(speed)
     , _isPhysical(isPhysical)
 {
-    _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/tiledObject/magicBall_R.png");
+    _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/effect/fire_ball.png");
 }
 
 

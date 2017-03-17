@@ -1,6 +1,7 @@
 #pragma once
 #include "TiledObject.h"
 #include "../Resources/ImageResource.h"
+#include "../Sound/Sound.h"
 #include "../../mw_animation/GraphArray.h"
 
 class MagicExplosion : public TiledObject
@@ -24,6 +25,7 @@ private:
 
     TiledObject::Type _shooterType;
 
+    Sound _sound;
     GraphArray _animation;
 
     bool _hasJudged;

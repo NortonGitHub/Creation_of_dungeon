@@ -17,6 +17,8 @@ public:
 
 private:
 
+    Sound _sound;
+
     //パラメータ変動値
     ParameterMultiplier _multiplier;
 

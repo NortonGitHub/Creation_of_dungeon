@@ -11,6 +11,7 @@ Sanctuary::Sanctuary(TiledVector pos, int range, int cost, ParameterMultiplier m
     , _multiplier(std::move(multiplier))
 {
     _graph.Load("resourse/graph/trap/Sanctuary.png");
+    _sound.Load("resourse/sound/curseArea.wav");
 }
 
 
@@ -22,6 +23,7 @@ Sanctuary::~Sanctuary()
 void Sanctuary::Activate()
 {
     Trap::Activate();
+    _sound.Play();
 
     TiledVector tilePos = GetTilePos();
     for (int i = -_range; i <= _range; ++i)

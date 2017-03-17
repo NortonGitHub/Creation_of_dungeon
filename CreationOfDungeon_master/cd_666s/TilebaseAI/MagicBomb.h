@@ -22,6 +22,7 @@ private:
     int _power;
     int _attack;
 
+    std::shared_ptr<ImageResource> _image;
     GraphArray _graphArray;
 };
 

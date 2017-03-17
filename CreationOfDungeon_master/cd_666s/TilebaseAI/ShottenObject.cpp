@@ -16,6 +16,7 @@ ShottenObject::ShottenObject(int power, int attack, int range, double speed, Til
     , _shooterType(type)
     , _speed(speed * TILE_SCALE)
     , _isPhysical(isPhysical)
+    , _hasHit(false)
 {
     _name = "skill_shoot";
 
@@ -42,7 +43,28 @@ ShottenObject::ShottenObject(int power, int attack, int range, double speed, Til
     _position += Vector2D(8 * TILE_SCALE, 8 * TILE_SCALE);
 
     _graph.SetResource(image);
-    _graph.SetScale(Vector2D(TILE_SCALE, TILE_SCALE));
+
+    auto notmalAnimation = std::make_shared<GraphArray>();
+    int divNum = _graph.GetSize()._x / _graph.GetSize()._y;
+    notmalAnimation->Set(&_graph, 32, 32, divNum, 8);
+    _animator.AddAnimation("normal", notmalAnimation);
+
+    // TODO : 衝突後の炎用のオブジェクト作成
+    if (_shooterType == TiledObject::Type::ENEMY)
+    {
+        _graph.SetPriority(Sprite::Priority::UI);
+        _animator.AddAnimation("hit", std::make_shared<GraphArray>("resourse/graph/effect/fire.png", 32, 32, 5, 15));
+        _sound.Load("resourse/sound/flame.wav");
+    }
+    else
+    {
+        _sound.Load("resourse/sound/enemy_fall2.wav");
+    }
+
+    _animator.Transform([&](GraphArray* animation)
+    {
+        animation->GetGraphPtr()->SetScale(Vector2D(TILE_SCALE, TILE_SCALE));
+    });
 }
 
 
@@ -54,13 +76,39 @@ ShottenObject::~ShottenObject()
 void ShottenObject::Update()
 {
     GraphicalObject::Update();
-    Move();
-    CheckHit();
 
-    if (!FIELD->IsInside(GetTilePos()))
-        OBJECT_MGR->Remove(this);
+    if (!_hasHit)
+    {
+        Move();
+        CheckHit();
 
-    _graph.SetPosition(_position);
+        if (!FIELD->IsInside(GetTilePos()))
+            OBJECT_MGR->Remove(this);
+
+        _graph.SetPosition(_position);
+        //_graphArray.Update();
+        _animator.Transform([&](GraphArray* animation)
+        {
+            animation->GetGraphPtr()->SetPosition(_position);
+        });
+    }
+    else
+    {
+        bool isErasable = (!_sound.IsPlaying());
+        if (_shooterType == Type::ENEMY)
+            isErasable &= _animator.GetCurrentAnimation()->HasEndedUp();
+
+        if (isErasable)
+            OBJECT_MGR->Remove(this);
+    }
+    _animator.Update();
+
+    if (_animator.GetCurrentAnimationName() == "hit")
+    {
+        if(_animator.GetCurrentAnimation()->HasEndedUp()
+            && !_sound.IsPlaying())
+            OBJECT_MGR->Remove(this);
+    }
 }
 
 
@@ -78,7 +126,9 @@ void ShottenObject::CheckHit()
 {
     auto objects = OBJECT_MGR->GetContainedObjects<TiledObject>(_position);
     auto opponentType = (_shooterType == Type::ENEMY) ? Type::MONSTER : Type::ENEMY;
-    bool hasHit = false;
+    Vector2D targetPos;
+    bool hitObstacle = false;
+    //bool hasHit = false;
     
     if (objects.size() == 0)
         return;
@@ -92,7 +142,8 @@ void ShottenObject::CheckHit()
         {
             auto chara = dynamic_cast<Character*>(obj);
             chara->Damaged(Battle::GetDamage(_power, _attack, _isPhysical, *chara));
-            hasHit = true;
+            targetPos = chara->GetPosition();
+            _hasHit = true;
             break;
         }
 
@@ -100,19 +151,34 @@ void ShottenObject::CheckHit()
         {
             auto battle = dynamic_cast<BattlingTile*>(obj);
             battle->AttackFromOutside(_power, _attack, _isPhysical, opponentType);
-            hasHit = true;
+            targetPos = battle->GetPosition();
+            _hasHit = true;
             break;
         }
 
         if (obj->GetType() == Type::BLOCK)
         {
-            hasHit = true;
+            _hasHit = true;
+            hitObstacle = true;
             break;
         }
     }
 
-    if (hasHit)
-        OBJECT_MGR->Remove(this);
+    if (_hasHit)
+    {
+        if (hitObstacle)
+        {
+            OBJECT_MGR->Remove(this);
+            return;
+        }
+
+        if (_shooterType == Type::ENEMY)
+            _animator.SwitchWithReset("hit");
+
+        _sound.Play();
+        _position = targetPos;
+    }
+    //    OBJECT_MGR->Remove(this);
 }
 
 

@@ -1,7 +1,10 @@
 #include "MagicBomb.h"
 #include "Enemy.h"
 #include "TileField.h"
-#include "BattleCaliculate.h"
+//#include "BattleCaliculate.h"
+#include "MagicExplosion.h"
+#include "TiledObjectMnager.h"
+
 #include "../InputManager/MouseInput.h"
 #include "../DebugDraw.h"
 #include "../Resources/ResourceManager.h"
@@ -13,12 +16,14 @@ MagicBomb::MagicBomb(TiledVector trapPos, int cost, int range, int power, int at
     , _power(power)
     , _attack(attack)
 {
-    _graph.Load("resourse/graph/trap/mine.png");
+    _graph.Load("resourse/graph/trap/mine_R.png");
     _graph.SetPriority(200);
     _graph.SetPosition(_position);
     _graphArray.Set(&_graph, 32, 32, 8, 32);
     _graphArray._isLoop = false;
     _graphArray._isPlaying = false;
+
+    _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/effect/explosion_B.png");
 }
 
 
@@ -31,25 +36,7 @@ MagicBomb::~MagicBomb()
 void MagicBomb::Activate()
 {
     Trap::Activate();
-
-    TiledVector tilePos = GetTilePos();
-    for (int i = -_range; i <= _range; ++i)
-    {
-        for (int k = -_range; k <= _range; ++k)
-        {
-            auto pos = tilePos + TiledVector(i, k);
-            auto targets = FIELD->GetTiledObjects<Enemy>(pos);
-
-            for (auto target : targets)
-            {
-                if (!target->IsEnable())
-                    continue;
-
-                auto param = target->GetAffectedParameter();
-                target->Damaged(Battle::GetPhysicalAttackDamage(_power, _attack, param._magicDefence));
-            }
-        }
-    }
+    OBJECT_MGR->Add(std::make_shared<MagicExplosion>(_power, _attack, _range, GetTilePos(), Type::MONSTER, _image));
 }
 
 
@@ -61,5 +48,5 @@ bool MagicBomb::IsActivatable() const
     if (!MOUSE->DoubleClicked())
         return false;
 
-    return (Contain(MOUSE->GetCursorPos()));
+    return (Trap::Contained(_graphArray, MOUSE->GetCursorPos()));
 }

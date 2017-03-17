@@ -244,7 +244,12 @@ void GraphArray::Update()
         else
         {
             _isPlaying = false;
-            SetIndex(0);
+            if (_handleArray.size() < 1)
+                _index = 0;
+            else
+                _index = _handleArray.size() - 1;
+
+            SetIndex(_index);
             return;
         }
     }

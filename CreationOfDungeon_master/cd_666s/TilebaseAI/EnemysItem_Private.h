@@ -31,6 +31,9 @@ EnemysItem<T>::EnemysItem(std::unique_ptr<T> contents, TiledVector tilePos)
     _contentsGraph.SetResource(_contents->_image);
     _contentsGraph.SetPriority(5);
     _contentsGraph.SetDisplayMode(false);
+
+    _openSound.Load("resourse/sound/openTreasure.wav");
+    _openSound.SetVolume(225);
 }
 
 
@@ -112,6 +115,7 @@ void EnemysItem<T>::GiveItem(Enemy& enemy)
     enemy.SetItem(std::move(_contents));
     _contentsGraph.SetDisplayMode(true);
     _graph.SetResource(_openedImage);
+    _openSound.Play();
 }
 
 

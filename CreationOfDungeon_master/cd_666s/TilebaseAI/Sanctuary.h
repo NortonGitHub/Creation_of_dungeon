@@ -20,5 +20,7 @@ private:
 
     //パラメータ変動値
     ParameterMultiplier _multiplier;
+
+    Sound _sound;
 };
 

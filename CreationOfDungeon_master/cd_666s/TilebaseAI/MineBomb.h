@@ -7,7 +7,7 @@ class Enemy;
 class MineBomb : public Trap
 {
 public:
-    MineBomb(TiledVector trap, int cost, int range, int power, int attack, int stuckTime);
+    MineBomb(TiledVector trap, int cost, int range, int power, int attack, int stuckTime, bool mine);
     ~MineBomb();
 
     void Draw() override;
@@ -17,6 +17,10 @@ public:
     static std::shared_ptr<MineBomb> Create(std::string data, TiledVector pos);
 
 private:
+
+    // TODO : ‚¿‚á‚ñ‚ÆbareTrap‚ÆƒNƒ‰ƒX•ª‚¯‚·‚é
+    bool _isMine;
+    Sound _explodeSounde;
 
     //”š•—”ÍˆÍ
     int _range;

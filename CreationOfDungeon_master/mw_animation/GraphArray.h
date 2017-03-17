@@ -81,7 +81,7 @@ public:
 
     Vector2D GetSingleSize() const { return _singleSize; }
 
-    Sprite* GetGraphPtr() { return _graphPtr; }
+    Sprite* GetGraphPtr() const { return _graphPtr; }
 
     //アニメーションをループさせるときはこれを呼ぶ
     void Update();

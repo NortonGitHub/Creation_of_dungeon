@@ -1,5 +1,8 @@
 #pragma once
 #include "TiledObject.h"
+#include "../Sound/Sound.h"
+
+class GraphArray;
 
 class Trap : public TiledObject
 {
@@ -33,6 +36,8 @@ public:
 
 protected:
 
+    static bool Contained(const GraphArray& animation, const Vector2D& pos);
+
     //‘Ï‹v—Í
     int _duravity;
 
@@ -41,5 +46,7 @@ protected:
 
     //”j‰ó‰Â”\‚©‚ðŽ¦‚·’l
     int _level;
+
+    Sound _activateSound;
 };
 

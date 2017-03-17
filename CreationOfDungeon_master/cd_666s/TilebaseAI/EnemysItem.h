@@ -2,6 +2,7 @@
 #define EnemysItem_h
 
 #include "TiledObject.h"
+#include "../Sound/Sound.h"
 
 class Enemy;
 
@@ -28,6 +29,8 @@ private:
     std::shared_ptr<ImageResource> _openedImage;
 
     std::unique_ptr<T> _contents;
+
+    Sound _openSound;
 
     int _countAfterEmpty;
 };

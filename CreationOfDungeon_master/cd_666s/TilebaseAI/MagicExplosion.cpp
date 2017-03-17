@@ -15,12 +15,14 @@ MagicExplosion::MagicExplosion(int power, int attack, int range, TiledVector pos
 {
     _graph.SetResource(image);
     _graph.SetPosition((pos - TiledVector(range, range)).GetWorldPos());
+    int divNum = _graph.GetSize()._x / 32;
 
     auto scale = (range * 2 + 1) * TILE_SCALE;
     _graph.SetScale(Vector2D(scale, scale));
-
-    _animation.Set(&_graph, 32, 32, 8, 32);
+    _animation.Set(&_graph, 32, 32, divNum, 32);
     _animation._isLoop = false;    
+
+    _sound.Load("resourse/sound/flame.wav");
 }
 
 
@@ -77,6 +79,7 @@ void MagicExplosion::CheckHit()
                     else
                         chara->Damaged(Battle::GetMagicalDefencedDamage(_power, _magicAttack, opponentParam._magicDefence));
 
+                    _sound.Play();
                     break;
                 }
 
@@ -88,6 +91,7 @@ void MagicExplosion::CheckHit()
                     else
                         battle->MagicalDamaged(_power, _magicAttack);
 
+                    _sound.Play();
                     break;
                 }
             }

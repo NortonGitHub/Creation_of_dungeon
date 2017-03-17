@@ -1,6 +1,9 @@
 #pragma once
 #include "TiledObject.h"
+#include "../../mw_animation/GraphArray.h"
+#include "../../mw_animation/Animator.h"
 #include "../Resources/ImageResource.h"
+#include "../Sound/Sound.h"
 
 class ShottenObject: public TiledObject
 {
@@ -29,5 +32,12 @@ private:
     Vector2D _moveVec;
 
     TiledObject::Type _shooterType;
+
+    //GraphArray _graphArray, _afterHitAnimation;
+    Animator _animator;
+
+    Sound _sound;
+
+    bool _hasHit;
 };
 

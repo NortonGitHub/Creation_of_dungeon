@@ -5,18 +5,32 @@
 #include "../DebugDraw.h"
 #include "TiledObjectMnager.h"
 
-MineBomb::MineBomb(TiledVector trapPos, int cost, int range, int power, int attack, int stuckedTime)
+MineBomb::MineBomb(TiledVector trapPos, int cost, int range, int power, int attack, int stuckedTime, bool mine)
     : Trap(trapPos, cost, 5)
     , _range(range)
     , _power(power)
     , _attack(attack)
     , _targetCache(nullptr)
     , _stuckedTime(stuckedTime)
+    , _isMine(mine)
 {
-    _graph.Load("resourse/graph/trap/mine.png");
+    if (_isMine)
+    {
+        _graph.Load("resourse/graph/trap/mine.png");
+        _explodeSounde.Load("resourse/sound/flame.wav");
+    }
+    else
+    {
+        _graph.Load("resourse/graph/trap/bareTrap.png");
+        _explodeSounde.Load("resourse/sound/enemy_fall2.wav");
+    }
+
     _graph.SetPriority(200);
     _graph.SetPosition(_position);
-    _graphArray.Set(&_graph, 32, 32, 8, 32);
+
+    int divNum = _graph.GetSize()._x / _graph.GetSize()._y;
+    _graphArray.Set(&_graph, 32, 32, divNum, divNum * 4);
+
     _graphArray._isLoop = false;
     _graphArray._isPlaying = false;
 }
@@ -44,6 +58,9 @@ void MineBomb::Draw()
         Debug::DrawRectWithSize(_position + Vector2D(-16, 0), Vector2D(64, 8), ColorPalette::BLACK4, false);
         Debug::DrawRectWithSize(_position + Vector2D(-16, 0), Vector2D(64 * ratio, 8), ColorPalette::BLUE4, true);
     }
+
+    if (IsEnable())
+        _graphArray.SetIndex(0);
 }
 
 
@@ -58,6 +75,8 @@ void MineBomb::Activate()
     auto param = _targetCache->GetAffectedParameter();
     _targetCache->Damaged(Battle::GetPhysicalAttackDamage(_power, _attack, param._defence));
     _targetCache->StuckOn(_stuckedTime);
+
+    _explodeSounde.Play();
 }
 
 

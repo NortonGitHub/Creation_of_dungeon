@@ -9,6 +9,8 @@ CurseArea::CurseArea(TiledVector pos, int cost, ParameterMultiplier multiplier)
     , _multiplier(std::move(multiplier))
 {
     _graph.Load("resourse/graph/trap/CurseArea.png");
+    _sound.Load("resourse/sound/curseArea.wav");
+    _sound.SetVolume(200);
 }
 
 
@@ -24,6 +26,7 @@ void CurseArea::Activate()
 
     Trap::Activate();
     _targetCache->AddParameterEffecter(std::make_unique<ParameterMultiplier>(_multiplier));
+    _sound.Play();
 }
 
 

@@ -1,6 +1,6 @@
 #include "Trap.h"
 #include "../DebugDraw.h"
-
+#include "../../mw_animation/GraphArray.h"
 
 Trap::Trap(TiledVector startPos, int duravity, int level)
     : TiledObject(startPos)
@@ -10,6 +10,7 @@ Trap::Trap(TiledVector startPos, int duravity, int level)
 {
     _type = TiledObject::Type::TRAP;
     _position = startPos.GetWorldPos();
+    _activateSound.Load("resourse/sound/activateTrap.wav");
 }
 
 
@@ -59,4 +60,23 @@ bool Trap::IsActivatable() const
 void Trap::Activate()
 {
     _duravity -= _cost;
+    _activateSound.Play();
+}
+
+
+bool Trap::Contained(const GraphArray& animation, const Vector2D& pos)
+{
+    auto size = animation.GetSingleSize();
+    auto position = animation.GetGraphPtr()->GetPosition();
+
+    if (pos._x < position._x)
+        return false;
+    if (pos._y < position._y)
+        return false;
+    if (position._x + size._x * TILE_SCALE < pos._x)
+        return false;
+    if (position._y + size._y * TILE_SCALE  < pos._y)
+        return false;
+
+    return true;
 }
