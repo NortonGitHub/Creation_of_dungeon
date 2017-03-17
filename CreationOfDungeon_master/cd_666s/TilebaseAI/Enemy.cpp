@@ -35,6 +35,10 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     _type = TiledObject::Type::ENEMY;
 
     _appearSE.Load("resourse/sound/blockSelect.wav");
+    _hasTreasureIcon.Load("resourse/graph/icon/treasure_attached.png");
+    _hasTreasureIcon.SetScale(Vector2D(2.0, 2.0));
+    _hasTreasureIcon.SetDisplayMode(false);
+    _hasTreasureIcon.SetPriority(Sprite::Priority::UI);
 
     _consumableItems.resize(3);
     _consumableItemGraphs.resize(3);
@@ -131,6 +135,9 @@ void Enemy::Update()
 
     auto vec = (GetTilePos() - _beforeTilePos).GetWorldPos() - Vector2D(FIELD_OFFSET_X,FIELD_OFFSET_Y);
     _position += vec * (1.0 / (GetActInterval() + 1));
+
+    auto graphSize = _hasTreasureIcon.GetSize();
+    _hasTreasureIcon.SetPosition(_position + Vector2D(TILE_SIZE - graphSize._x, 0));
 }
 
 
@@ -150,18 +157,7 @@ void Enemy::Act()
     //体力が半分以下でアイテムを所持しているなら回復
     auto param = GetAffectedParameter();
     if (param._hp <= param._maxHP / 2)
-    {
-        for (size_t i = 0; i < _consumableItems.size(); ++i)
-        {
-            if (_consumableItems[i] != nullptr)
-            {
-                _consumableItems[i] = nullptr;
-                _consumableItemGraphs[i].SetResource(nullptr);
-                Damaged(-param._maxHP / 2);
-                return;
-            }
-        }
-    }
+        UseItem(param);
 
     //移動が完了してるないなら
     if (0 < _pathToTarget.size())
@@ -341,6 +337,34 @@ void Enemy::MoveToNext()
     
     //目的の経路に移動
     FIELD->MoveObject(*this, pos);
+}
+
+
+void Enemy::UseItem(BattleParameter& param)
+{
+    for (size_t i = 0; i < _consumableItems.size(); ++i)
+    {
+        if (_consumableItems[i] != nullptr)
+        {
+            _consumableItems[i] = nullptr;
+            _consumableItemGraphs[i].SetResource(nullptr);
+            Damaged(-param._maxHP / 2);
+            break;
+        }
+    }
+
+    //以下、アイテムがあれば終了
+    if (_equipItem != nullptr)
+        return;
+
+    for (size_t i = 0; i < _consumableItems.size(); ++i)
+    {
+        if (_consumableItems[i] != nullptr)
+            return;
+    }
+
+    //ここまで抜けたらアイテムを所持していないのでアイコン消去
+    _hasTreasureIcon.SetDisplayMode(false);
 }
 
 

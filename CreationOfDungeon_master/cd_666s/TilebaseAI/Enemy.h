@@ -39,6 +39,7 @@ public:
     {
         _equipItem = std::move(itemContents); 
         _equipmentsGraph.SetResource(_equipItem->_image);
+        _hasTreasureIcon.SetDisplayMode(true);
     };
 
     void SetItem(std::unique_ptr<ConsumableItem> itemContents) 
@@ -49,6 +50,7 @@ public:
             {
                 _consumableItems[i] = (std::move(itemContents));
                 _consumableItemGraphs[i].SetResource(_consumableItems[i]->_image);
+                _hasTreasureIcon.SetDisplayMode(true);
                 return;
             }
         }
@@ -98,6 +100,8 @@ private:
     //ƒS[ƒ‹‚Ö‚Ì“’B
     void ArriveAtGoal(TiledObject* target);
 
+
+    void UseItem(BattleParameter& param);
     void MoveToNext();
     bool SearchTarget();
     
@@ -116,7 +120,7 @@ private:
     static int _defeatedNum;
     static int _enemysNum;
 
-    Sprite _equipmentsGraph;
+    Sprite _equipmentsGraph, _hasTreasureIcon;
     std::vector<Sprite> _consumableItemGraphs;
 };
 

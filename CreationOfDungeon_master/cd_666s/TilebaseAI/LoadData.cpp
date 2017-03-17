@@ -2,6 +2,7 @@
 #include "../Utility/CSVReader.h"
 #include "../Resources/AllResourceManager.h"
 
+#include "Dungeon.h"
 #include "StartPoint.h"
 #include "Goal.h"
 #include "Enemy.h"
@@ -92,6 +93,20 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
 }
 
 
+void Dungeon::LoadTileSize(std::string stageName, std::vector<std::string>& rawData)
+{
+    auto stageNum = std::stoi(stageName);
+    auto tileSize = rawData[stageNum * 2 - 1];
+
+    if (tileSize == "large")
+        TILE_SIZE = 48;
+    else if (tileSize == "midium")
+        TILE_SIZE = 40;
+    else
+        TILE_SIZE = 32;
+}
+
+
 void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName)
 {
     std::vector<std::string> dataArray;
@@ -168,7 +183,7 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
     if (name == "bone")
     {
         auto skill = ShootDamageObject::Create(skillData, *this, true);
-        skill->SetImage(IMAGE_RESOURCE_TABLE->Create("resourse/graph/tiledObject/magicBall_B.png"));
+        skill->SetImage(IMAGE_RESOURCE_TABLE->Create("resourse/graph/effect/throwing_bone.png"));
         return skill;
     }
 
@@ -267,7 +282,8 @@ void Trap::CreateTrap(std::string typeName, int countX, int countY, std::vector<
 {
     auto tilePos = TiledVector(countX, countY);
 
-    if (typeName.find("name:mine") != std::string::npos)
+    if (typeName.find("name:mine") != std::string::npos
+        || typeName.find("name:bare_trap") != std::string::npos)
     {
         objects.push_back(MineBomb::Create(typeName, tilePos));
         return;
@@ -297,6 +313,7 @@ void Trap::CreateTrap(std::string typeName, int countX, int countY, std::vector<
 
 std::shared_ptr<MineBomb> MineBomb::Create(std::string data, TiledVector pos)
 {
+    std::string name = LoadLabeledElem("name:", data);
     int cost = std::stoi(LoadLabeledElem("cost:", data));
     int range = std::stoi(LoadLabeledElem("range:", data));
     int power = std::stoi(LoadLabeledElem("power:", data));
@@ -304,7 +321,10 @@ std::shared_ptr<MineBomb> MineBomb::Create(std::string data, TiledVector pos)
     double stuckTimeSec = std::stod(LoadLabeledElem("stuck:", data)); // MEMO : ïbíPà Ç≈ê›íËÇ≥ÇπÇÈÇΩÇﬂ
     int stuckTime = static_cast<int>(stuckTimeSec * 60.0);
 
-    return std::make_shared<MineBomb>(pos, cost, range, power, attack, stuckTime);
+    if (name == "mine")
+        return std::make_shared<MineBomb>(pos, cost, range, power, attack, stuckTime, true);
+    else
+        return std::make_shared<MineBomb>(pos, cost, range, power, attack, stuckTime, false);
 }
 
 

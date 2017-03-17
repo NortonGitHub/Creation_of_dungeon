@@ -19,6 +19,7 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 , _target(nullptr)
 , _battle(nullptr)
 , _defeatSE("resourse/sound/enemy_fall2.wav")
+, _infoIcon(_position, _effecters)
 {
     _notifyer.AddColleague(*this);
     
@@ -47,9 +48,20 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
     _animator.Transform([&](GraphArray* animation)
     {
         animation->GetGraphPtr()->SetPosition(_position);
-        animation->GetGraphPtr()->SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+        animation->GetGraphPtr()->SetScale(Vector2D(TILE_SCALE, TILE_SCALE));
         animation->GetGraphPtr()->SetRenderType(Texture2D::RenderType::UI);
     });
+
+    _healGraph.Load("resourse/graph/effect/heal.png");
+    _healGraph.SetScale(Vector2D(TILE_SCALE, TILE_SCALE));
+    _healGraph.SetDisplayMode(false);
+    _healGraph.SetPriority(Sprite::Priority::UI);
+
+    auto size = _healGraph.GetSize();
+    int healdivNum = size._x / size._y;
+    _healAnimation.Set(&_healGraph, 32, 32, healdivNum, healdivNum * 6);
+    _healAnimation._isLoop = false;
+    _healAnimation._isPlaying = false;
 }
 
 
@@ -87,6 +99,18 @@ void Character::Update()
     //スキル更新
     if (_skill.get() != nullptr)
         _skill->Update();
+
+    //回復エフェクト
+    if (_healAnimation.HasEndedUp())
+    {
+        _healAnimation.SetIndex(0);
+        _healGraph.SetDisplayMode(false);
+    }
+    else
+    {
+        _healAnimation.Update();
+        _healAnimation.GetGraphPtr()->SetPosition(_position);
+    }
 }
 
 
@@ -125,6 +149,9 @@ void Character::Draw()
     //AIのデバッグ情報
     if (_ai != nullptr)
         _ai->Draw();
+
+    //パラメータ情報のデバッグ
+    _infoIcon.Update();
 }
 
 
@@ -257,6 +284,12 @@ void Character::Damaged(int damage)
     {
         _battleParameter._hp -= damage;
         _battleParameter._hp = min(_battleParameter._maxHP, max(_battleParameter._hp, 0));
+
+        if (damage < 0)
+        {
+            _healAnimation._isPlaying = true;
+            _healGraph.SetDisplayMode(true);
+        }
     }
 
     //戦闘で倒されたかを確認して

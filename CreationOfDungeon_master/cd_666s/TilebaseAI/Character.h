@@ -3,6 +3,7 @@
 #include "TiledVector.h"
 #include "BattleParameter.h"
 #include "ParameterEffecter.h"
+#include "CharacterInfomationDisplayer.h"
 #include "CharactersSkill.h"
 #include "AI/PathFindingAIBase.h"
 
@@ -131,5 +132,11 @@ private:
 
     //戦闘用パラメータ
     BattleParameter _battleParameter;
+
+    CharacterInfomationDisplayer _infoIcon;
+
+    //回復エフェクト用
+    Sprite _healGraph;
+    GraphArray _healAnimation;
 };
 
