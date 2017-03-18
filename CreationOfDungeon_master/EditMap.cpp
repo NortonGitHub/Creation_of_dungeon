@@ -27,8 +27,12 @@ SceneBase * EditMap::Update(UIManager _ui)
     //std function に変更する？
     _functions.resize(0);
 
+    //NOTE:
+    //各個別UIに種類別の情報を格納し、
+    //またほかのUIからの戻り値や情報の変化によってその値を返したり変更したりする
+    //仕組みを考案する必要がある
+#if 0
     std::string _ui_name;
-
     std::function<PanelBase()> a = [&] {
         return PanelBase();
     };
@@ -68,17 +72,18 @@ SceneBase * EditMap::Update(UIManager _ui)
     /*以上では目的は達せられない*/
 
     PanelBase ukemi;
-
+    
     std::function<PanelBase()> test2 = [&]{
 
     };
-
+    
 
     for (auto p : ps) {
         if(0){
             test2;
         }
     }
+#endif
 
     _ui.Update(_functions, _ui_name);
 
