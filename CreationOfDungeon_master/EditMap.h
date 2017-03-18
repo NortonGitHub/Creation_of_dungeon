@@ -1,6 +1,9 @@
 #pragma once
 #include "SceneBase.h"
 #include "MakeDungeon.h"
+
+#include "PanelContent.h"
+
 class EditMap :
     public SceneBase
 {
