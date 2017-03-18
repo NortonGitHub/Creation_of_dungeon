@@ -13,8 +13,5 @@ public:
     virtual void Draw() = 0;
 
     virtual std::string GetUIName() const = 0;
-    
-protected:
-    std::function<void()> GetUI(std::string data_name);
 };
 
