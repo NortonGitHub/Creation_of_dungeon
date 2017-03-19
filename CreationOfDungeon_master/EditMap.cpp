@@ -31,58 +31,28 @@ SceneBase * EditMap::Update(UIManager _ui)
     //各個別UIに種類別の情報を格納し、
     //またほかのUIからの戻り値や情報の変化によってその値を返したり変更したりする
     //仕組みを考案する必要がある
-#if 0
+
     std::string _ui_name;
-    std::function<PanelBase()> a = [&] {
-        return PanelBase();
-    };
 
-    a();
+#if 1
+    /*NOTE*/
+    /*
+        PanelBaseには、そのパネルの名前、座標、変数が格納されている
+        変数は子クラスごとに異なるので注意
+    */
+    std::vector<PanelBase> panels; //試験コード用
 
-    std::function<PanelBase()> as[4] = {
-       [&] {
-            return PanelAffectObjects();
-       },
-       [&] {
-           return PanelSettingObject();
-       },
-       [&] {
-           return PanelSceneTransition();
-       },
-       [&] {
-           return PanelDisplayer();
-       }
-    };
+    for(auto p : panels){
+        //
+        bool isClicked = p.IsClicked();
 
-    std::multimap<std::string, PanelBase> paneltypes;
-
-    paneltypes.emplace("CHANGE_LIST", as[0]);
-    paneltypes.emplace("SELECT_OBJ", as[1]);
-    paneltypes.emplace("MOVE", as[2]);
-    paneltypes.emplace("SHOW", as[3]);
-
-    std::vector<PanelBase> ps;  //test
-
-    for (auto p : ps) {
-        /*PanelBase以下のクラスに、カーソルとパネルが重なっているかを確かめるための関数を用意する*/
-        if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L)) {
-            paneltypes.find("");
+        if(isClicked){
+            p.Update();
         }
     }
-    /*以上では目的は達せられない*/
 
-    PanelBase ukemi;
-    
-    std::function<PanelBase()> test2 = [&]{
 
-    };
-    
 
-    for (auto p : ps) {
-        if(0){
-            test2;
-        }
-    }
 #endif
 
     _ui.Update(_functions, _ui_name);
