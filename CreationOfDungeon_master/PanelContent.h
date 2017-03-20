@@ -13,6 +13,6 @@ public:
 
     Graph _graph;
 
-
+    std::string _name;
 };
 
