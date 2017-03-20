@@ -3,9 +3,19 @@
 class PanelAffectObjects :
     public PanelBase
 {
-    //単純に値を都度受け取り表示するだけ
+    //カテゴリ選択
 public:
     PanelAffectObjects();
     ~PanelAffectObjects();
+
+    void Update();
+    void Draw();
+
+    std::string GetCategoryName();
+
+    void SetObject(PanelBase _other_panel);
+
+private:
+    PanelContent panel;
 };
 
