@@ -6,5 +6,10 @@ class PanelSettingObject :
 public:
     PanelSettingObject();
     ~PanelSettingObject();
+
+    void SettingObj(PanelContent pc);
+
+private:
+    PanelContent panel;
 };
 
