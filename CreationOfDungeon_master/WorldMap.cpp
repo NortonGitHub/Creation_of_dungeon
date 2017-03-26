@@ -11,9 +11,11 @@
 
 WorldMap::WorldMap()
     : class_name("world_map")
+    , _bgm("resourse/sound/world1.wav", true)
 {
 
     Init();
+    _bgm.Play();
 
 }
 

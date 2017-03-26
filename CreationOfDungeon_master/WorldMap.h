@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneBase.h"
+#include "cd_666s/Sound/Sound.h"
 #include <vector>
 
 //\‘¢‘Ì‚ÌéŒ¾@À‘Ô‚Í‰º‚É
@@ -46,6 +47,8 @@ private:
     int stageNum;
 
     std::string class_name;
+
+    Sound _bgm;
 
 public:
     WorldMap();
