@@ -199,6 +199,9 @@ std::unique_ptr<CharactersSkill> CharactersSkill::CreateSkill(std::string skillD
     if (skillData == "null")
         return nullptr;
 
+    if (skillData.find("shoot") != std::string::npos)
+        return ShootDamageObject::Create(skillData, chara, true);
+
     if (skillData.find("magic_shoot") != std::string::npos)
         return ShootDamageObject::Create(skillData, chara, false);
 

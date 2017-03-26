@@ -47,10 +47,11 @@ ShottenObject::ShottenObject(int power, int attack, int range, double speed, Til
     auto notmalAnimation = std::make_shared<GraphArray>();
     int divNum = _graph.GetSize()._x / _graph.GetSize()._y;
     notmalAnimation->Set(&_graph, 32, 32, divNum, 8);
-    _animator.AddAnimation("normal", notmalAnimation);
+    _animator.AddAnimation("normal", std::make_shared<GraphArray>(&_graph, 32, 32, divNum, 8));
 
     // TODO : 衝突後の炎用のオブジェクト作成
-    if (_shooterType == TiledObject::Type::ENEMY)
+    if (_shooterType == TiledObject::Type::ENEMY
+        && !_isPhysical)
     {
         _graph.SetPriority(Sprite::Priority::UI);
         _animator.AddAnimation("hit", std::make_shared<GraphArray>("resourse/graph/effect/fire.png", 32, 32, 5, 15));
@@ -95,7 +96,8 @@ void ShottenObject::Update()
     else
     {
         bool isErasable = (!_sound.IsPlaying());
-        if (_shooterType == Type::ENEMY)
+        if (_shooterType == TiledObject::Type::ENEMY
+            && !_isPhysical)
             isErasable &= _animator.GetCurrentAnimation()->HasEndedUp();
 
         if (isErasable)
@@ -128,7 +130,6 @@ void ShottenObject::CheckHit()
     auto opponentType = (_shooterType == Type::ENEMY) ? Type::MONSTER : Type::ENEMY;
     Vector2D targetPos;
     bool hitObstacle = false;
-    //bool hasHit = false;
     
     if (objects.size() == 0)
         return;
@@ -172,13 +173,13 @@ void ShottenObject::CheckHit()
             return;
         }
 
-        if (_shooterType == Type::ENEMY)
+        if (_shooterType == TiledObject::Type::ENEMY
+            && !_isPhysical)
             _animator.SwitchWithReset("hit");
 
         _sound.Play();
         _position = targetPos;
     }
-    //    OBJECT_MGR->Remove(this);
 }
 
 

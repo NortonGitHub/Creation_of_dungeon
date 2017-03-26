@@ -84,6 +84,28 @@ void ShootDamageObject::Activate()
     auto direction = _character.GetDirection();
     auto param = _character.GetAffectedParameter();
 
+    if (_isPhysical && type == TiledObject::Type::ENEMY)
+    {
+        switch (direction)
+        {
+        case TiledVector::Direction::FORWARD:
+            _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/trap/arrow_down.png");
+            break;
+
+        case TiledVector::Direction::BACK:
+            _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/trap/arrow_up.png");
+            break;
+
+        case TiledVector::Direction::LEFT:
+            _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/trap/arrow_left.png");
+            break;
+
+        case TiledVector::Direction::RIGHT:
+            _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/trap/arrow_right.png");
+            break;
+        }
+    }
+
     int attack = (_isPhysical) ? param._attack : param._magicAttack;
     OBJECT_MGR->Add(std::make_shared<ShottenObject>(_power, attack, _range, _speed, tilePos, direction, type, _image, _isPhysical));
 
