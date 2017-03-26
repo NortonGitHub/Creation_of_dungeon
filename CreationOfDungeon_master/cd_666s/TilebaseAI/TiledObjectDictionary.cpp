@@ -7,6 +7,8 @@ TiledObjectDictionary::TiledObjectDictionary()
     AddRecord("magician");
     AddRecord("blaver");
     AddRecord("fighter");
+    AddRecord("thief");
+    AddRecord("healer");
     AddRecord("minotaur");
     AddRecord("bone");
     AddRecord("ghost");
