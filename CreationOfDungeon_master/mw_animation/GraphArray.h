@@ -36,15 +36,22 @@ public:
         , const int sizeH, const int sizeV
         , const int allDivNum, const int endTime);
 
+    //縦と横の分割幅が同じで一列に並んでいる場合
+    GraphArray(std::string name
+        , const int size, const int endTime);
+
+    //1x1しかない場合
     GraphArray(std::string name);
 
     ~GraphArray();
 
+    //画像を設定してそれを分割してアニメーション生成
     void Set(Sprite *arg_graph
         , const int divNumH, const int divNumV
         , const int sizeH, const int sizeV
         , const int allDivNum, const int endTime);
 
+    //画像を設定してそれを分割してアニメーション生成
     void Set(Sprite *arg_graph, const int sizeH, const int sizeV
         , const int allDivNum, const int endTime);
 
@@ -60,6 +67,12 @@ public:
         , const int allDivNum, const int endTime);
 
     //画像を生成して、そこからアニメーションも生成
+    //縦と横の分割幅が同じで一列に並んでいる場合
+    Sprite* SetWithCreate(std::string name
+        , const int size, const int endTime);
+
+    //画像を生成して、そこからアニメーションも生成
+    //1x1しかない場合
     Sprite* SetWithCreate(std::string name);
 
 
@@ -98,7 +111,6 @@ private:
     void CreateArray(const int divNumH, const int divNumV
         , const int sizeH, const int sizeV, const int allDivNum);
 
-
     //画像を分割して保持する
     std::vector<Handle> _handleArray;
 
@@ -107,7 +119,6 @@ private:
 
     //画面に表示する画像本体
     Sprite *_graphPtr;
-
 
     //このクラス内で画像が生成されたかどうか
     bool _isCreatedInside;

@@ -74,6 +74,22 @@ GraphArray::GraphArray(std::string name
     SetWithCreate(name, sizeH, sizeV, allDivNum, endTime);
 }
 
+GraphArray::GraphArray(std::string name
+    , const int size, const int endTime)
+    : _graphPtr(nullptr)
+    , _speed(1)
+    , _index(0)
+    , _currentTime(0)
+    , _endTime(30)
+    , _isLoop(true)
+    , _isPlaying(true)
+    , _isCreatedInside(false)
+    , _hasEnd(false)
+{
+    SetWithCreate(name, size, endTime);
+}
+
+
 GraphArray::GraphArray(std::string name)
     : _graphPtr(nullptr)
     , _speed(1)
@@ -164,6 +180,27 @@ Sprite* GraphArray::SetWithCreate(std::string name
     int divNumV = graphSize._y / sizeV;
 
     CreateArray(divNumH, divNumV, sizeH, sizeV, allDivNum);
+
+    _isCreatedInside = true;
+
+    return _graphPtr;
+}
+
+//縦と横の分割幅が同じで一列に並んでいる場合
+//画像を生成して、そこからアニメーションも生成
+Sprite* GraphArray::SetWithCreate(std::string name
+    , const int size, const int endTime)
+{
+    _graphPtr = new Sprite(std::move(name));
+    _endTime = endTime;
+
+    Vector2D graphSize = _graphPtr->GetSize();
+
+    //元画像と指定分割サイズから分割数を算出
+    int divNumH = graphSize._x / size;
+    int divNumV = graphSize._y / size;
+
+    CreateArray(divNumH, divNumV, size, size, divNumH * divNumV);
 
     _isCreatedInside = true;
 
