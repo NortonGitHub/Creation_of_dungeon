@@ -40,7 +40,9 @@ ShottenObject::ShottenObject(int power, int attack, int range, double speed, Til
     }
 
     _moveVec *= _speed;
-    _position += Vector2D(8 * TILE_SCALE, 8 * TILE_SCALE);
+
+    //¶¬—×Úƒ}ƒX‚ÆÕ“Ë”»’è‚³‚ê‚é•s‹ï‡‚ğ‰ñ”ğ
+    _position += Vector2D(1, 1);
 
     _graph.SetResource(image);
 
