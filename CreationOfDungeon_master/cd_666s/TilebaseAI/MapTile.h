@@ -2,6 +2,7 @@
 #include "TiledObject.h"
 #include "TiledVector.h"
 #include "GraphicalObject.h"
+#include "FieldType.h"
 
 class TiledObject;
 class Breadcrumb;
@@ -12,6 +13,7 @@ class MapTile : public GraphicalObject
     friend class TileField;
 
 public:
+
     MapTile(int col, int row);
     MapTile(TiledVector pos);
     ~MapTile();
@@ -28,6 +30,7 @@ public:
     bool IsRegistable(TiledObject& obj) const;
     TiledVector GetTilePos() const { return _tilePos; }
     Breadcrumb* GetBreadcrumb() const { return _breadcrumb; }
+    FieldType GetFieldType() const { return _type; }
 
     template <class T>
     T* GetTiledObject() const
@@ -98,7 +101,12 @@ public:
     }
 
 private:
-    
+
+    void SetFieldType(std::string data, FieldType defaultType);
+
+    //タイルの地形タイプ
+    FieldType _type;
+
     //タイルの元番号
     int _rawNumber;
 
