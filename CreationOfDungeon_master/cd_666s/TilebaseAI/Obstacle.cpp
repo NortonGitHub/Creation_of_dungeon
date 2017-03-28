@@ -19,10 +19,9 @@ Obstacle::~Obstacle()
 void Obstacle::Init()
 {
     auto tilePos = GetTilePos();
-    std::string fileName = "resourse/graph/background/";
-
+    auto fieldType = GetTile().lock()->GetFieldType();
+    std::string fileName = GetMapChipGraphDirectory(fieldType);
     fileName += GetNameFromAroundInfo(tilePos);
-
 
     _graph.Load(fileName + ".png");
     _graph.SetPosition(tilePos.GetWorldPos());
@@ -36,7 +35,7 @@ std::string Obstacle::GetNameFromAroundInfo(TiledVector tilePos)
     if (!FIELD->IsInside(tilePos + TiledVector(0, -1)))
     {
         if (FIELD->GetRawNumber(tilePos + TiledVector(0, 1)) == 6)
-            return "wall_river";
+            return "wall_side_f_river";
     }
 
     //下がフィールド外なら

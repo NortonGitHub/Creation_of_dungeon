@@ -18,13 +18,13 @@ EnemysItem<T>::EnemysItem(std::unique_ptr<T> contents, TiledVector tilePos)
 
     if (typeid(T) == typeid(Equipment))
     {
-        _graph.Load("resourse/graph/background/treasure01.png");
+        _graph.Load("resourse/graph/item/treasure01.png");
         _openedImage = IMAGE_RESOURCE_TABLE->Create("resourse/graph/background/treasure05.png");
     }
     else if (typeid(T) == typeid(ConsumableItem))
     {
-        _graph.Load("resourse/graph/background/treasureB01.png");
-        _openedImage = IMAGE_RESOURCE_TABLE->Create("resourse/graph/background/treasure05.png");
+        _graph.Load("resourse/graph/item/treasureB01.png");
+        _openedImage = IMAGE_RESOURCE_TABLE->Create("resourse/graph/item/treasure05.png");
     }
 
     _contentsGraph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));

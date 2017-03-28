@@ -27,7 +27,8 @@ StartPoint::~StartPoint()
 void StartPoint::Init()
 {
     auto tilePos = GetTilePos();
-    std::string fileName = "resourse/graph/background/";
+    auto fieldType = GetTile().lock()->GetFieldType();
+    std::string fileName = GetMapChipGraphDirectory(fieldType);
 
     if (!FIELD->IsInside(tilePos + TiledVector(0, -1)))
     {
