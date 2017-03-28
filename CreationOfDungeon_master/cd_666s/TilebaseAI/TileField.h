@@ -1,7 +1,8 @@
 #pragma once
 #include "../Utility/Singleton.h"
-#include "MapTile.h"
 #include "AI/Breadcrumb.h"
+#include "MapTile.h"
+#include "FieldType.h"
 #include <vector>
 #include <memory>
 
@@ -59,6 +60,11 @@ public:
 
     int GetRawNumber(const TiledVector &pos) const;
     void SetRawNumber(const TiledVector &pos, int number);
+    FieldType GetFieldType(const TiledVector &pos) const;
+    void SetFieldType(const TiledVector &pos, std::string data);
+
+    FieldType GetDefaultFieldType() const { return _defaultFieldType; };
+    void SetDefaultFieldType(std::string data);
 
     const Field &GetFieldRef() const { return _field; }
     
@@ -92,13 +98,10 @@ private:
     void CalcMovableCell(const TiledVector &pos, StepTable& stepTable, int step, int degree, TiledVector::Direction);
     void CalcParabolicMovableCell(TiledVector pos, const TiledVector &basePos, StepTable& stepTable, int range, TiledVector::Direction dir, TiledVector::Direction baseDir);
     
-    
+    FieldType _defaultFieldType;
     TiledVector _fieldSize;
     Field _field;
     std::vector<std::shared_ptr<MapTile>> _gobjs;
-
-    //マップチップ番号
-    //std::vector<std::vector<int>> _rawData;
 };
 
 #define FIELD TileField::GetInstance()

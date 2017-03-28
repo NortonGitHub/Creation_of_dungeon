@@ -3,6 +3,7 @@
 
 
 TileField::TileField()
+    : _defaultFieldType(FieldType::Cave)
 {
 }
 
@@ -111,7 +112,6 @@ int TileField::GetRawNumber(const TiledVector &pos) const
     if (!IsInside(pos))
         return -1;
 
-//    return _rawData[pos._y][pos._x];
     return _field[pos._y][pos._x].lock()->_rawNumber;
 }
 
@@ -123,6 +123,31 @@ void TileField::SetRawNumber(const TiledVector &pos, int number)
         return;
 
     _field[pos._y][pos._x].lock()->_rawNumber = number;
+}
+
+
+FieldType TileField::GetFieldType(const TiledVector &pos) const
+{
+    //範囲外を参照しようとしたらNONEを返す
+    if (!IsInside(pos))
+        return FieldType::None;
+
+    return _field[pos._y][pos._x].lock()->_type;
+}
+
+void TileField::SetFieldType(const TiledVector &pos, std::string data)
+{
+    //範囲外を参照しようとしたら-1を返す
+    if (!IsInside(pos))
+        return;
+
+    _field[pos._y][pos._x].lock()->SetFieldType(data, FieldType::Cave);
+}
+
+
+void TileField::SetDefaultFieldType(std::string data)
+{
+
 }
 
 //タイルにおけるオブジェクトを指定のタイルに登録

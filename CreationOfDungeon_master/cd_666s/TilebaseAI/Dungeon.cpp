@@ -54,9 +54,6 @@ void Dungeon::Init()
     _messageReciever.Init();
     LoadMessage(_stageName);
 
-    //auto tbd = _messageReciever._processer.CreateTalkData("csv/talkData/secretary.csv", Talk_Type::dynamic);
-    //_messageReciever.Recieve(tbd);
-
     //ステージ生成
     std::vector<std::string> dataArray;
     CSVReader reader;
@@ -66,12 +63,11 @@ void Dungeon::Init()
     fileName += (_stageName + ".csv");
     std::vector<std::string> waveInfoArray;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, waveInfoArray, 1);
-
     auto waveInterval = std::stoi(waveInfoArray[0]);
     _timer.InitWithSetup(waveInterval);
     _permitivePassedNum = std::stoi(waveInfoArray[1]);
     
-
+    //タイルの大きさを読み込む
     fileName = "csv/StageData/tilesize.csv";
     std::vector<std::string> tileInfoArray;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, tileInfoArray);
@@ -139,6 +135,7 @@ void Dungeon::Init()
 void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 {
     FIELD->SetRawNumber(TiledVector(countX, countY), stoi(typeName));
+    FIELD->SetFieldType(TiledVector(countX, countY), typeName);
 
     auto& _objs = OBJECT_MGR->_objects;
 
@@ -154,22 +151,17 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
         return;
     }
 
-    if(typeName== "0")
-        return;
-            
-    if (typeName == "1")
+    if (typeName.find("200") != std::string::npos)
     {
-        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+        if (_start == nullptr)
+        {
+            _start = std::make_shared<StartPoint>(TiledVector(countX, countY), _messageReciever);
+            _objs.push_back(_start);
+        }
         return;
     }
 
-    if (typeName == "6")
-    {
-        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
-        return;
-    }
-
-    if (typeName == "100")
+    if (typeName.find("100") != std::string::npos)
     {
         if (_goal == nullptr)
         {
@@ -179,15 +171,20 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
         return;
     }
 
-    if (typeName == "200")
+    if (typeName.find("6") != std::string::npos)
     {
-        if (_start == nullptr)
-        {
-            _start = std::make_shared<StartPoint>(TiledVector(countX, countY), _messageReciever);
-            _objs.push_back(_start);
-        }
+        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
         return;
     }
+
+    if (typeName.find("1") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+        return;
+    }
+
+    if (typeName == "0")
+        return;
 }
 
 
