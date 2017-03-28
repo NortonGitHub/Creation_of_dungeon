@@ -93,13 +93,12 @@ private:
     void CalcParabolicMovableCell(TiledVector pos, const TiledVector &basePos, StepTable& stepTable, int range, TiledVector::Direction dir, TiledVector::Direction baseDir);
     
     
-    
     TiledVector _fieldSize;
     Field _field;
     std::vector<std::shared_ptr<MapTile>> _gobjs;
 
     //マップチップ番号
-    std::vector<std::vector<int>> _rawData;
+    //std::vector<std::vector<int>> _rawData;
 };
 
 #define FIELD TileField::GetInstance()

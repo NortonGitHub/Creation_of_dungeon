@@ -7,9 +7,10 @@ class TiledObject;
 class Breadcrumb;
 class AstarNode;
 
-//class MapTile : public TiledObject
 class MapTile : public GraphicalObject
 {
+    friend class TileField;
+
 public:
     MapTile(int col, int row);
     MapTile(TiledVector pos);
@@ -98,7 +99,10 @@ public:
 
 private:
     
-    //tile
+    //タイルの元番号
+    int _rawNumber;
+
+    //タイルの位置
     TiledVector _tilePos;
     
     //そのタイルにあるオブジェクト

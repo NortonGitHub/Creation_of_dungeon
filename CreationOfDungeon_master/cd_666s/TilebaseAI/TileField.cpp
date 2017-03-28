@@ -16,7 +16,6 @@ void TileField::Clear()
 {
     _gobjs.clear();
     _gobjs.resize(0);
-    _rawData.resize(0);
     _fieldSize.Set(0, 0);
 }
 
@@ -25,12 +24,10 @@ void TileField::Init(int width, int height)
 {
     _fieldSize.Set(width, height);
     _field.resize(height);
-    _rawData.resize(height);
     
     for (size_t i = 0; i < _field.size(); i++)
     {
         _field[i].resize(width);
-        _rawData[i].resize(width);
     }
     
     for (size_t i = 0; i < height; i++)
@@ -114,7 +111,8 @@ int TileField::GetRawNumber(const TiledVector &pos) const
     if (!IsInside(pos))
         return -1;
 
-    return _rawData[pos._y][pos._x];
+//    return _rawData[pos._y][pos._x];
+    return _field[pos._y][pos._x].lock()->_rawNumber;
 }
 
 
@@ -124,7 +122,7 @@ void TileField::SetRawNumber(const TiledVector &pos, int number)
     if (!IsInside(pos))
         return;
 
-    _rawData[pos._y][pos._x] = number;
+    _field[pos._y][pos._x].lock()->_rawNumber = number;
 }
 
 //タイルにおけるオブジェクトを指定のタイルに登録

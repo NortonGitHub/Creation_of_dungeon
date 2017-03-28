@@ -8,12 +8,14 @@
 MapTile::MapTile(int col, int row)
 : _tilePos(row, col)
 , _breadcrumb(nullptr)
+, _rawNumber(0)
 {
 }
 
 MapTile::MapTile(TiledVector pos)
 : _tilePos(pos)
 , _breadcrumb(nullptr)
+, _rawNumber(0) 
 {
 }
 
@@ -26,7 +28,7 @@ MapTile::~MapTile()
 void MapTile::Init()
 {
     //¶‚Æ‰E‚ªì‚È‚ç
-    std::string fileName = "resourse/graph/background/";
+    std::string fileName = "resourse/graph/background/cave/";
     if ((FIELD->GetRawNumber(_tilePos + TiledVector(-1, 0)) == 6)
         && (FIELD->GetRawNumber(_tilePos + TiledVector(1, 0)) == 6)
         && (FIELD->GetRawNumber(_tilePos + TiledVector(0, 1)) == 0)
