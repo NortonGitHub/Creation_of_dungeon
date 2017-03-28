@@ -5,14 +5,12 @@
 #include "BattlingTile.h"
 #include "../DebugDraw.h"
 
-Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer, std::string name)
+Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type)
 : TiledObject(startPos)
-, _actCounter(0)
-, _actInterval(30)
 , _direction(TiledVector::Direction::FORWARD)
 , _battleParameter(param)
 , _notifyer(notifyer)
-, _countAfetrBattle(0)
+, _afterBattleTimer(1, false, false)
 , _name(name)
 , _isBattling(false)
 , _hasAppeared(false)
@@ -20,23 +18,21 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 , _battle(nullptr)
 , _defeatSE("resourse/sound/enemy_fall2.wav")
 , _infoIcon(_position, _effecters)
+, _actCounter(1, true, true)
 {
+    _type = type;
     _notifyer.AddColleague(*this);
     
     _battleParameter._speed = fmin(100, fmax(_battleParameter._speed, 0));
     double speedRatio = static_cast<double>(100 - _battleParameter._speed + 15) / 100;
-    _actInterval *= speedRatio;
+    _actCounter.Reset(30 * speedRatio, true, true);
 
     std::string fileName = "resourse/graph/tiledObject/";
     fileName += _name;
-
     _animator.AddAnimation("front", std::make_shared<GraphArray>(fileName + "_front.png", 32, 24));
     _animator.AddAnimation("right", std::make_shared<GraphArray>(fileName + "_right.png", 32, 24));
     _animator.AddAnimation("left", std::make_shared<GraphArray>(fileName + "_left.png", 32, 24));
     _animator.AddAnimation("back", std::make_shared<GraphArray>(fileName + "_back.png", 32, 24));
-
-    _position = startPos.GetWorldPos();
-    _beforeTilePos = GetTilePos();
 
     auto currentGraph = _animator.GetCurrentGraph();
     currentGraph->SetDisplayMode(false);
@@ -57,6 +53,14 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
     _healAnimation.Set(&_healGraph, 32, 32, healdivNum, healdivNum * 6);
     _healAnimation._isLoop = false;
     _healAnimation._isPlaying = false;
+
+    if (_type == Type::ENEMY)
+        _afterBattleTimer.Reset(60, false, false);
+    else
+        _afterBattleTimer.Reset(0, false, false);
+
+    _position = startPos.GetWorldPos();
+    _beforeTilePos = GetTilePos();
 }
 
 
@@ -106,6 +110,34 @@ void Character::Update()
         _healAnimation.Update();
         _healAnimation.GetGraphPtr()->SetPosition(_position);
     }
+}
+
+
+//意思決定→行動の順序に基づいた操作
+void Character::Action()
+{
+    _actCounter.Update();
+    if (_actCounter.CountOnEnd())
+    {
+        //指示がなければ終了
+        if (_ai == nullptr)
+            return;
+
+        //視界
+        _sight = FIELD->GetParabolicMovableCell(GetTilePos(), 5, _direction);
+
+        //意思決定
+        Think();
+
+        //移動先との差分から向きを更新
+        UpdateAttitude();
+
+        //意思遂行
+        Act();
+    }
+
+    auto vec = (GetTilePos() - _beforeTilePos).GetWorldPos() - Vector2D(FIELD_OFFSET_X, FIELD_OFFSET_Y);
+    _position += vec * (1.0 / (_actCounter.GetInterval() + 1));
 }
 
 
@@ -213,17 +245,18 @@ void Character::OnFinishBattle(BattlingTile* battle)
         _battle = nullptr;
 
     _isBattling = false;
-    _countAfetrBattle = 1;
+    _afterBattleTimer.Play();
 }
 
 
-bool Character::IsOverwritable(TiledObject* overwriter)
+void Character::ResetTarget()
 {
-    return false;
+    _target = nullptr;
+    _pathToTarget.clear();
+    _pathToTarget.resize(0);
 }
 
-
-bool Character::CheckActable(const int recoverCountFromAfterBattle)
+bool Character::CheckActable()
 {
     //出現してなければ行動できない
     if (!_hasAppeared)
@@ -234,29 +267,8 @@ bool Character::CheckActable(const int recoverCountFromAfterBattle)
         return false;
 
     //バトル直後は動けない(連戦防止)
-    if (0 < _countAfetrBattle)
-    {
-        _countAfetrBattle++;
-
-        if (_countAfetrBattle < recoverCountFromAfterBattle)
-            return false;
-        else
-            _countAfetrBattle = 0;
-    }
-    
-    return true;
-}
-
-
-bool Character::CheckActCounter()
-{
-    bool result = (_actCounter == _actInterval);
-
-    _actCounter++;
-    if (_actInterval < _actCounter)
-        _actCounter = 0;
-
-    return result;
+    _afterBattleTimer.Update();
+    return !_afterBattleTimer.IsCounting();
 }
 
 
@@ -302,8 +314,9 @@ void Character::Damaged(int damage)
 
 void Character::OnDie()
 {    
-    //フィールドから除外
-    OBJECT_MGR->Remove(this);
+    _afterBattleTimer.ResetCount();
+    _actCounter.ResetCount();
+    _hasAppeared = false;
 }
 
 
@@ -318,16 +331,4 @@ void Character::Appear()
 {
     _hasAppeared = true;
     _appearSE.Play();
-}
-
-
-bool Character::IsAlive() const
-{
-    return (0 < _battleParameter._hp);
-}
-
-
-bool Character::IsEnable() const
-{
-    return _hasAppeared;
 }

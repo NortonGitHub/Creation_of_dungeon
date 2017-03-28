@@ -5,6 +5,7 @@
 #include "ParameterEffecter.h"
 #include "CharacterInfomationDisplayer.h"
 #include "CharactersSkill.h"
+#include "FinateTimer.h"
 #include "AI/PathFindingAIBase.h"
 
 #include "../Sound/Sound.h"
@@ -20,22 +21,20 @@ class Character : public TiledObject
     
 public:
 
-    Character(TiledVector startPos, BattleParameter param, ColleagueNotifyer& notifyer, std::string name);
+    Character(TiledVector startPos, BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type);
     virtual ~Character();
-    
+
+    //意思決定→行動の順序に基づいた操作
+    virtual void Action();
+
     virtual void Update() override;
     virtual void Draw() override;
     virtual void DrawParameter(Vector2D anchorPos);
+    virtual void ResetTarget();
 
-    virtual bool IsOverwritable(TiledObject* overwriter) override;
+    virtual bool IsOverwritable(TiledObject* overwriter) override { return false; }    
     virtual bool Contain(Vector2D pos) const override;
 
-    virtual void ResetTarget() 
-    {
-        _target = nullptr; 
-        _pathToTarget.clear();
-        _pathToTarget.resize(0);
-    }
     
     //バトルの入退場時のイベント
     void OnOccuredBattle(BattlingTile* battle);
@@ -43,24 +42,34 @@ public:
 
     void Appear();
     void Damaged(int damage);
-
     void AddParameterEffecter(std::unique_ptr<ParameterEffecter> effecter) { _effecters.push_back(std::move(effecter)); };
-    //void ClearPositiveEffecter();
-    //void ClearNegativeEffecter();
 
-    bool IsEnable() const override;
-    bool IsAlive() const;
+    bool IsEnable() const override { return _hasAppeared; };
+    bool IsAlive() const { return (0 < _battleParameter._hp); }
 
     std::string GetName() const { return _name; }
     TiledVector::Direction GetDirection() const { return _direction; }
 
+    BattleParameter GetAffectedParameter();
+    BattleParameter GetRawParameter() const { return _battleParameter; };
+    
     bool _isBattling;
 
-    
-    BattleParameter GetAffectedParameter();
-	BattleParameter GetRawParameter() const { return _battleParameter; };
-    
 protected:
+
+    void UpdateAttitude();
+
+    //意思決定
+    virtual void Think() = 0;
+    //意思遂行
+    virtual void Act() = 0;
+
+    //倒されたとき
+    virtual void OnDie();
+    //敵を倒した時
+    virtual void OnWin();
+
+    bool CheckActable();
 
     //キャラクター固有のスキル
     std::unique_ptr<CharactersSkill> _skill;
@@ -88,7 +97,7 @@ protected:
     //自分の参加しているバトル情報
     BattlingTile* _battle;
     
-    int _countAfetrBattle;
+    FinateTimer _afterBattleTimer;
 
     //自分が召喚済みかどうか
     bool _hasAppeared;
@@ -97,35 +106,12 @@ protected:
 
     Sound _appearSE, _defeatSE;
 
-    void UpdateAttitude();
-    
-    //意思決定
-    virtual void Think() = 0;
-    //意思遂行
-    virtual void Act() = 0;
-        
-    //倒されたとき
-    virtual void OnDie();
-    //敵を倒した時
-    virtual void OnWin();
-    
-    bool CheckActable(const int recoverCountFromAfterBattle);
-
-    //カウンタを更新して行動可能かどうかを返す
-    bool CheckActCounter();
-    void ResetCounter() { _actCounter = _actInterval; }
-
-    //カウンタの数値取得
-    int GetActCounter() const { return _actCounter; }
-    int GetActInterval() const { return _actInterval; }
+    //次の行動までのカウンタ
+    FinateTimer _actCounter;
     
     std::vector<std::unique_ptr<ParameterEffecter>> _effecters;
 
 private:
-
-    //次の行動までのカウンタ
-    int _actCounter;
-    int _actInterval;
 
     //キャラの名前
     std::string _name;

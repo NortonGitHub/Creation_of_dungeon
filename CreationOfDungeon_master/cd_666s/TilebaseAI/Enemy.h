@@ -2,6 +2,7 @@
 #include "Character.h"
 #include "Equipment.h"
 #include "ConsumableItem.h"
+#include "FinateTimer.h"
 #include <memory>
 #include <string>
 
@@ -57,35 +58,9 @@ public:
     };
 
 
-    void StuckOn(int interval) 
-    {
-        _stuckedTime = interval; 
-        _stuckedCount = 0; 
-        _startCount = true;
-    };
+    void StuckOn(int interval)  { _damageTimer.Reset(interval, true, false); };
 
 private:
-
-    int _stuckedCount;
-    int _stuckedTime;
-    bool _startCount;
-    bool IsStuckedDowned() 
-    {
-        if (!_startCount)
-            return false;
-
-        return (_stuckedCount < _stuckedTime);
-    };
-    void UpdateStuckCount() 
-    {
-        if (!_startCount)
-            return;
-
-        if (_stuckedCount < _stuckedTime)
-            _stuckedCount++;
-        else
-            _startCount = false;
-    }
 
     //意思決定
     virtual void Think() override;
@@ -107,7 +82,10 @@ private:
     
     virtual void OnDie() override;
     
-    //AI行動の基準となるキャラ
+    //ダメージ硬直用タイマー
+    FinateTimer _damageTimer;
+
+    //AI行動の基準となる対象
     TiledObject& _baseTarget;
 
     //装備品

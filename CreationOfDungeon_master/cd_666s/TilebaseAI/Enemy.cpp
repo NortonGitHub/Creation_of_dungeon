@@ -11,28 +11,14 @@ int Enemy::_defeatedNum = 0;
 int Enemy::_enemysNum = 0;
 
 Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName)
-: Character(startPos, params, notifyer, enemyName)
-, _baseTarget(baseTarget)
-
-, _startCount(false)
-, _stuckedCount(0)
-, _stuckedTime(30)
+    : Character(startPos, params, notifyer, enemyName, TiledObject::Type::ENEMY)
+    , _baseTarget(baseTarget)
+    , _damageTimer(30, false, false)
 {
     _target = &baseTarget;
     
     _astar = std::make_unique<AstarChaser>(_target, *this, _pathToTarget, 20, true);
-    //自分の味方が経路上にいたら回り込まず継続する
-    _astar->SetAdditionalFunc(std::move([&](TiledObject* obj)
-    {
-        if (obj->GetType() != _type)
-            return false;
-
-        auto enemy = dynamic_cast<Enemy*>(obj);
-        return !enemy->_isBattling;
-    }));
     _ai = _astar.get();
-
-    _type = TiledObject::Type::ENEMY;
 
     _appearSE.Load("resourse/sound/blockSelect.wav");
     _hasTreasureIcon.Load("resourse/graph/icon/treasure_attached.png");
@@ -86,11 +72,10 @@ void Enemy::Update()
 {
     Character::Update();
 
+    if (_damageTimer.IsCounting())
+        _damageTimer.Update();
 
-    if (IsStuckedDowned())
-        UpdateStuckCount();
-
-    if (!CheckActable(60))
+    if (!CheckActable())
         return;
 
     //状態確認フェイズ
@@ -102,7 +87,7 @@ void Enemy::Update()
     }
     
     //戦闘すべきか確認
-    if (_countAfetrBattle == 0)
+    if (!_afterBattleTimer.IsCounting())
     {
         auto offset = _target->GetPosition() - _position;
         
@@ -114,27 +99,11 @@ void Enemy::Update()
         }
     }
     
-    if (IsStuckedDowned())
+    if (_damageTimer.IsCounting())
         return;
 
-    //行動フェイズ
-    if (CheckActCounter())
-    {
-        //視界更新
-        _sight = FIELD->GetParabolicMovableCell(GetTilePos(), 5, _direction);
-    
-        //意思決定
-        Think();
 
-        //移動先との差分から向きを更新
-        UpdateAttitude();
-
-        //意思遂行
-        Act();
-    }
-
-    auto vec = (GetTilePos() - _beforeTilePos).GetWorldPos() - Vector2D(FIELD_OFFSET_X,FIELD_OFFSET_Y);
-    _position += vec * (1.0 / (GetActInterval() + 1));
+    Character::Action();
 
     auto graphSize = _hasTreasureIcon.GetSize();
     _hasTreasureIcon.SetPosition(_position + Vector2D(TILE_SIZE - graphSize._x, 0));
@@ -394,10 +363,11 @@ void Enemy::OnDie()
     Character::OnDie();
     
     //各パラメータをリセット
-    ResetCounter();
     _target = nullptr;
-    _hasAppeared = false;
     _defeatedNum++;
+
+    //フィールドから除外
+    OBJECT_MGR->Remove(this);
 }
 
 
