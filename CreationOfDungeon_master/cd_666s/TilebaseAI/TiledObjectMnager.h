@@ -121,6 +121,47 @@ public:
         return nullptr;
     }
 
+    //特定の型のオブジェクトを取得(重いので使用の際に注意)
+    template<class T>
+    std::shared_ptr<T> GetSharedObject()
+    {
+        for (size_t i = 0; i < _objects.size(); ++i)
+        {
+            if (_objects[i] == nullptr)
+                continue;
+
+            //該当タイプがなければ終了
+            if (typeid(T) != typeid(*_objects[i]))
+                continue;
+
+            return std::dynamic_pointer_cast<T>(_objects[i]);
+        }
+
+        return nullptr;
+    }
+
+    //特定の型のオブジェクトを取得(重いので使用の際に注意)
+    template<class T> 
+    std::vector<std::shared_ptr<T>> GetSharedObjects()
+    {
+        std::vector<std::shared_ptr<T>> results;
+        results.reserve(16);
+
+        for (size_t i = 0; i < _objects.size(); ++i)
+        {
+            if (_objects[i] == nullptr)
+                continue;
+
+            //該当タイプがなければ終了
+            if (typeid(T) != typeid(*_objects[i]))
+                continue;
+
+            results.push_back(std::dynamic_pointer_cast<T>(_objects[i]));
+        }
+
+        return results;
+    }
+
 private:
     
     std::vector<std::shared_ptr<TiledObject>> _objects;

@@ -3,6 +3,7 @@
 #include "Equipment.h"
 #include "ConsumableItem.h"
 #include "FinateTimer.h"
+#include "SearchingPriorityNode.h"
 #include <memory>
 #include <string>
 
@@ -78,7 +79,7 @@ private:
 
     void UseItem(BattleParameter& param);
     void MoveToNext();
-    bool SearchTarget();
+    //bool SearchTarget();
     
     virtual void OnDie() override;
     
@@ -100,5 +101,12 @@ private:
 
     Sprite _equipmentsGraph, _hasTreasureIcon;
     std::vector<Sprite> _consumableItemGraphs;
+
+    std::vector<SearchPriorityNode> _searchRuleList;
+    TiledObject* SearhTargetByRuleList();
+    void BuildSearchingRuleList();
+    void SearchMonster(std::vector<TiledObject*>& targets, const TiledVector& tilePos, SearchPriorityNode::SearchingRange rangeType);
+    void SearchItem(std::vector<TiledObject*>& targets, const TiledVector& tilePos, SearchPriorityNode::SearchingRange rangeType);
+    void SearchColleague(std::vector<TiledObject*>& targets, const TiledVector& tilePos, SearchPriorityNode::SearchingRange rangeType);
 };
 
