@@ -7,7 +7,7 @@ class Character;
 class MagicAttackAround : public CharactersSkill
 {
 public:
-    MagicAttackAround(double power, int cost, int range, Character& chara);
+    MagicAttackAround(double power, int cost, double startRatio, int range, Character& chara);
     ~MagicAttackAround();
 
     bool ShouldActivate() override;

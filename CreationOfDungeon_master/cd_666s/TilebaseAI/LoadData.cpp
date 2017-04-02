@@ -32,6 +32,18 @@ std::string LoadLabeledElem(const std::string& label, const std::string& rawData
     return cutData;
 }
 
+template<class T>
+std::string LoadLabeledElemIfFind(const std::string& label, const std::string& rawData, T fallback)
+{
+    size_t it = rawData.find(label);
+    std::string cutData = rawData.substr(it + label.length());
+    if (it == std::string::npos)
+        return std::to_string(fallback);
+
+    size_t dataEnd = cutData.find("&");
+    cutData = cutData.substr(0, dataEnd);
+    return cutData;
+}
 
 void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& start, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName)
 {
@@ -164,9 +176,14 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
         auto paramValue = std::stoi(LoadLabeledElem("param:", skillData));
         auto timeSec = std::stod(LoadLabeledElem("time:", skillData));
         auto time = static_cast<int>(timeSec * 60);
+
+        //•S•ª—¦‚É•ÏŠ·
+        double startMPRatio = std::stoi(LoadLabeledElemIfFind("mpRatio:", skillData, 0.0));
+        startMPRatio /= 100;
+
         BattleParameter percentParam(100, 100, paramValue, 100, paramValue, 100);
         ParameterMultiplier param(percentParam, time, true);
-        return std::make_unique<RiseParameter>(std::move(param), cost, *this);
+        return std::make_unique<RiseParameter>(std::move(param), cost, startMPRatio, *this);
     }
 
     if (name == "minotaur")
@@ -175,9 +192,14 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
         auto paramValue = std::stoi(LoadLabeledElem("param:", skillData));
         auto timeSec = std::stod(LoadLabeledElem("time:", skillData));
         auto time = static_cast<int>(timeSec * 60);
+
+        //•S•ª—¦‚É•ÏŠ·
+        double startMPRatio = std::stoi(LoadLabeledElemIfFind("mpRatio:", skillData, 0.0));
+        startMPRatio /= 100;
+
         BattleParameter percentParam(100, paramValue, 100, 100, 100, 100);
         ParameterMultiplier param(percentParam, time, true);
-        return std::make_unique<RiseParameter>(std::move(param), cost, *this);
+        return std::make_unique<RiseParameter>(std::move(param), cost, startMPRatio, *this);
     }
     
     if (name == "bone")
@@ -227,8 +249,12 @@ std::unique_ptr<ShootDamageObject> ShootDamageObject::Create(std::string data, C
     int range = std::stoi(LoadLabeledElem("range:", data));
     double power = std::stod(LoadLabeledElem("power:", data));
     double speed = std::stod(LoadLabeledElem("speed:", data));
-    
-    return std::make_unique<ShootDamageObject>(power, cost, speed, range, chara, true);
+
+    //•S•ª—¦‚É•ÏŠ·
+    double startMPRatio = std::stoi(LoadLabeledElemIfFind("mpRatio:", data, 0.0));
+    startMPRatio /= 100;
+
+    return std::make_unique<ShootDamageObject>(power, cost, startMPRatio, speed, range, chara, true);
 }
 
 
@@ -238,7 +264,11 @@ std::unique_ptr<MagicAttackAround> MagicAttackAround::Create(std::string data, C
     int range = std::stoi(LoadLabeledElem("range:", data));
     double power = std::stod(LoadLabeledElem("power:", data));
 
-    return std::make_unique<MagicAttackAround>(power, cost, range, chara);
+    //•S•ª—¦‚É•ÏŠ·
+    double startMPRatio = std::stoi(LoadLabeledElemIfFind("mpRatio:", data, 0.0));
+    startMPRatio /= 100;
+
+    return std::make_unique<MagicAttackAround>(power, cost, startMPRatio, range, chara);
 }
 
 
@@ -248,7 +278,11 @@ std::unique_ptr<MagicHeal> MagicHeal::Create(std::string data, Character& chara)
     int range = std::stoi(LoadLabeledElem("range:", data));
     double power = std::stod(LoadLabeledElem("power:", data));
 
-    return std::make_unique<MagicHeal>(power, cost, range, chara);
+    //•S•ª—¦‚É•ÏŠ·
+    double startMPRatio = std::stoi(LoadLabeledElemIfFind("mpRatio:", data, 0.0));
+    startMPRatio /= 100;
+
+    return std::make_unique<MagicHeal>(power, cost, startMPRatio, range, chara);
 }
 
 
@@ -258,7 +292,11 @@ std::unique_ptr<MagicHealAround> MagicHealAround::Create(std::string data, Chara
     int range = std::stoi(LoadLabeledElem("range:", data));
     double power = std::stod(LoadLabeledElem("power:", data));
 
-    return std::make_unique<MagicHealAround>(power, cost, range, chara);
+    //•S•ª—¦‚É•ÏŠ·
+    double startMPRatio = std::stoi(LoadLabeledElemIfFind("mpRatio:", data, 0.0));
+    startMPRatio /= 100;
+
+    return std::make_unique<MagicHealAround>(power, cost, startMPRatio, range, chara);
 }
 
 
@@ -276,8 +314,12 @@ std::unique_ptr<RiseParameter> RiseParameter::Create(std::string data, Character
     int spd = std::stoi(LoadLabeledElem("spd:", data));
     BattleParameter percentParam(hp, atk, def, matk, mdef, spd);
 
+    //•S•ª—¦‚É•ÏŠ·
+    double startMPRatio = std::stoi(LoadLabeledElemIfFind("mpRatio:", data, 0.0));
+    startMPRatio /= 100;
+
     ParameterMultiplier param(percentParam, time, true);
-    return std::make_unique<RiseParameter>(std::move(param), cost, chara);
+    return std::make_unique<RiseParameter>(std::move(param), cost, startMPRatio, chara);
 }
 
 

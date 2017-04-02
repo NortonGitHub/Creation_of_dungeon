@@ -1,8 +1,8 @@
 #include "RiseParameter.h"
 #include "Character.h"
 
-RiseParameter::RiseParameter(ParameterMultiplier multiplier, int cost, Character& chara)
-    : CharactersSkill(cost)
+RiseParameter::RiseParameter(ParameterMultiplier multiplier, int cost, double startRatio, Character& chara)
+    : CharactersSkill(cost, startRatio)
     , _chara(chara)
     , _multiplier(std::move(multiplier))
 {

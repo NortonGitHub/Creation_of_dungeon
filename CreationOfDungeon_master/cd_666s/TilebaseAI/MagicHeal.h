@@ -7,7 +7,7 @@ class Character;
 class MagicHeal : public CharactersSkill
 {
 public:
-    MagicHeal(double power, int cost, int range, Character& chara);
+    MagicHeal(double power, int cost, double startRatio, int range, Character& chara);
     ~MagicHeal();
 
     bool ShouldActivate() override;

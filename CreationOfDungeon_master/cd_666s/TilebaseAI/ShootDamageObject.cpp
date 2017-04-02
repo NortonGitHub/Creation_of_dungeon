@@ -6,8 +6,8 @@
 #include "TileField.h"
 
 
-ShootDamageObject::ShootDamageObject(double power, int cost, double speed, int range, Character& chara, bool isPhysical)
-    : CharactersSkill(cost)
+ShootDamageObject::ShootDamageObject(double power, int cost, double startRatio, double speed, int range, Character& chara, bool isPhysical)
+    : CharactersSkill(cost, startRatio)
     , _character(chara)
     , _power(power)
     , _range(range)

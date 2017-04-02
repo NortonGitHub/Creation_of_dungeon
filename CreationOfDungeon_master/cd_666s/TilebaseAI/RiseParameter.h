@@ -7,7 +7,7 @@ class Character;
 class RiseParameter : public CharactersSkill
 {
 public:
-    RiseParameter(ParameterMultiplier multiplier, int cost, Character& chara);
+    RiseParameter(ParameterMultiplier multiplier, int cost, double startRatio, Character& chara);
     ~RiseParameter();
 
     bool ShouldActivate() override;

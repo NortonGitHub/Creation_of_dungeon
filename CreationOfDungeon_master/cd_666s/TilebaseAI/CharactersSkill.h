@@ -8,7 +8,7 @@ class Character;
 class CharactersSkill
 {
 public:
-    CharactersSkill(int cost);
+    CharactersSkill(int cost, double startRatio = 0.0);
     virtual ~CharactersSkill();
 
     static std::unique_ptr<CharactersSkill> CreateSkill(std::string skillData, Character& charam);

@@ -7,7 +7,7 @@ class Character;
 class ShootDamageObject : public CharactersSkill
 {
 public:
-    ShootDamageObject(double power, int cost, double speed, int range, Character& chara, bool isPhysical);
+    ShootDamageObject(double power, int cost, double startRatio, double speed, int range, Character& chara, bool isPhysical);
     ~ShootDamageObject();
 
     bool ShouldActivate() override;

@@ -7,8 +7,8 @@
 #include "Enemy.h"
 #include "BattlingTile.h"
 
-MagicHeal::MagicHeal(double power, int cost, int range, Character& chara)
-    : CharactersSkill(cost)
+MagicHeal::MagicHeal(double power, int cost, double startRatio, int range, Character& chara)
+    : CharactersSkill(cost, startRatio)
     , _character(chara)
     , _range(range)
     , _power(power)

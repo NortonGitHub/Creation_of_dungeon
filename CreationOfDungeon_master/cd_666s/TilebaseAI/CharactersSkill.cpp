@@ -2,8 +2,8 @@
 #include "DxLib.h"
 
 
-CharactersSkill::CharactersSkill(int cost)
-    : _mp(0)
+CharactersSkill::CharactersSkill(int cost, double startRatio)
+    : _mp(cost * startRatio)
     , _mpCost(cost)
 {
 }
