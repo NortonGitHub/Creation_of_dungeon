@@ -4,14 +4,6 @@
 #include "EnemysSearch.h"
 #include "ColleagueNotifyer.h"
 
-SearchPriorityNode CreateSearcingRuleNode(int priority, SearchPriorityNode::SearchingRange range)
-{
-    SearchPriorityNode node;
-    node._priority = 1;
-    node._rangeType = SearchPriorityNode::SearchingRange::Sight;
-    return std::move(node);
-}
-
 
 TiledObject* Enemy::SearhTargetByRuleList()
 {
