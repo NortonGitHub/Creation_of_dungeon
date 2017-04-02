@@ -2,6 +2,8 @@
 #include "EnemysSearch.h"
 #include "TiledObject.h"
 
+class Enemy;
+
 struct SearchPriorityNode
 {
     enum class SearchingRange
@@ -16,5 +18,5 @@ struct SearchPriorityNode
     //’Tõ”ÍˆÍ
     SearchingRange _rangeType;
 
-    std::function<void(std::vector<TiledObject*>& targets, const TiledVector& tilePos, const SearchingRange& type)> _searchFunc;
+    std::function<void(Enemy&, std::vector<TiledObject*>& targets, const TiledVector& tilePos, const SearchingRange& type)> _searchFunc;
 };

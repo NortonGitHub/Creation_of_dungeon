@@ -5,19 +5,17 @@
 #include "TiledObjectMnager.h"
 
 template<typename T>
-struct SearchExpression
-{
-public:
-    using Expression = std::function<bool(const T* target, const TiledVector& pos)>;
-    using Expressions = std::vector<std::function<bool(const T* target, const TiledVector& pos)>>;
-};
+using SearchExpression = std::function<bool(const T* target, const TiledVector& pos)>;
+
+template<typename T>
+using SearchExpressions = std::vector<std::function<bool(const T* target, const TiledVector& pos)>>;
 
 
 template<typename T>
 static T* SearchTargetInSight(
     const TiledVector& searcherPos,
     const std::vector<TiledVector>& sight,
-    std::vector<std::function<bool(const T* target, const TiledVector& pos)>>& expressions,
+    SearchExpressions<T>& expressions,
     bool findNearest)
 {
     std::vector<T*> objects;
@@ -100,7 +98,7 @@ static T* SearchTargetInSight(
 template<typename T>
 static T* SearchTargetInField(
     const TiledVector& searcherPos,
-    std::vector<std::function<bool(const T* target, const TiledVector& pos)>>& expressions,
+    SearchExpressions<T>& expressions,
     bool findNearest)
 {
     std::vector<T*> objects;

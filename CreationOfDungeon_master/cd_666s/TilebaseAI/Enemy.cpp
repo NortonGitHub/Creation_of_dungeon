@@ -37,8 +37,6 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     }
     _equipmentsGraph.SetPriority(1090);
     BuildSearchingRuleList();
-
-    //_searchNodeTable.push_back(std::move(SearchPriorityNode::Create<Monster>(1, SearchPriorityNode::SearchingRange::Sight)));
 }
 
 

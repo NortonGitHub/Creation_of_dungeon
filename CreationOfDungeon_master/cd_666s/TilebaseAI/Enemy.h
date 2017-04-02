@@ -1,7 +1,10 @@
 #pragma once
 #include "Character.h"
 #include "Equipment.h"
-#include "ConsumableItem.h"
+#include "EnemysItem.h"
+#include "Monster.h"
+#include "EnemysSearch.h"
+#include "ColleagueNotifyer.h"
 #include "FinateTimer.h"
 #include "SearchingPriorityNode.h"
 #include <memory>
@@ -69,6 +72,8 @@ private:
     //意思遂行
     virtual void Act() override;
 
+    virtual void OnDie() override;
+
     //敵対種族と戦闘
     void Battle(TiledObject* target);
     //アイテムの取得
@@ -76,12 +81,8 @@ private:
     //ゴールへの到達
     void ArriveAtGoal(TiledObject* target);
 
-
     void UseItem(BattleParameter& param);
     void MoveToNext();
-    //bool SearchTarget();
-    
-    virtual void OnDie() override;
     
     //ダメージ硬直用タイマー
     FinateTimer _damageTimer;
@@ -105,8 +106,7 @@ private:
     std::vector<SearchPriorityNode> _searchRuleList;
     TiledObject* SearhTargetByRuleList();
     void BuildSearchingRuleList();
-    void SearchMonster(std::vector<TiledObject*>& targets, const TiledVector& tilePos, SearchPriorityNode::SearchingRange rangeType);
-    void SearchItem(std::vector<TiledObject*>& targets, const TiledVector& tilePos, SearchPriorityNode::SearchingRange rangeType);
-    void SearchColleague(std::vector<TiledObject*>& targets, const TiledVector& tilePos, SearchPriorityNode::SearchingRange rangeType);
-};
 
+    template <typename T>
+    void SearchTarget(std::vector<TiledObject*>& targets, const TiledVector& tilePos, const SearchPriorityNode::SearchingRange& rangeType) {};
+};
