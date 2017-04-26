@@ -7,15 +7,21 @@
 #include "PanelSceneTransition.h"
 #include "PanelSettingObject.h"
 
+#include "cd_666s/Utility/CSVReader.h"
+#include "cd_666s/Resources/AllResourceManager.h"
 
 #include <typeinfo>
+#include <sstream>
 
+#include <assert.h>
 
 EditMap::EditMap(std::string _stage_num)
-    : stage_num(_stage_num)
+    : stage_num(_stage_num), NPOS(std::string::npos)
 {
     _functions.reserve(20);
+    panels.reserve(30);
     class_name = "editmap";
+
     Init();
 }
 
@@ -23,6 +29,13 @@ EditMap::EditMap(std::string _stage_num)
 EditMap::~EditMap()
 {
     _functions.clear();
+
+#if 0
+    std::string pass = RESOURCE_TABLE->GetFolderPath();
+    std::string str = "csv/Stagedata/template.csv";
+    pass += str;
+    std::remove(pass.c_str());
+#endif
 }
 
 SceneBase * EditMap::Update(UIManager _ui)
@@ -37,14 +50,14 @@ SceneBase * EditMap::Update(UIManager _ui)
 
     std::string _ui_name;
 
-#if 0
+#if 1
     /*試しコード*/
     /*NOTE*/
     /*
         PanelBaseには、そのパネルの名前、座標、変数が格納されている
         変数は子クラスごとに異なるので注意
     */
-    std::vector<PanelBase> panels; //試験コード用
+    //std::vector<PanelBase> panels; //試験コード用
 
     /*
         別のオブジェクトへのアクセスが必要になった際に
@@ -53,64 +66,17 @@ SceneBase * EditMap::Update(UIManager _ui)
     */
     /*multimap キー:カテゴリ名, 値:対象のクラス型オブジェクト*/
     std::multimap<std::string, PanelBase> _targets;
-    auto SetClassType = [&](std::string _category) {
+    auto SetClassType = [&] {
         _targets.clear();
-        for (auto ps : panels) {
-            if (ps.GetCategoryName() == _category) {
-                _targets.emplace(_category, ps);
-            }
-        }
     };
-    /*↑の処理
-    無意味じゃない？
-     -> 大本の配列panelsの中の、型がクラスPanelSettingObject
-     の要素のPanelContentを書き換えるのだから、
-     ただ消すだけでいい
-    */
 
-    for (auto p : panels) {
-        //
-        bool isClicked = p.IsClicked();
-
-        //何かのオブジェクトがクリック
-        //そのオブジェクトの種類(クラス)によって
-        //処理内容が変化する。
-        //また、別のサブクラスのオブジェクトに
-        //干渉する
+    auto scene = PanelFunction();
 
 
-        //オブジェクトがクリックされたら
-        if (isClicked) {
-            auto str = std::string(typeid(p).name());
 
-            if (str.find("AffectObjects") != std::string::npos) {
+#endif
+
 #if 0
-                std::map<std::string, PanelBase> panel_temps;//消すかも
-                std::string _category = p.GetCategoryName();
-
-                for (auto sp : panels) {
-                    std::string str_s = sp.GetCategoryName();
-                    if (str_s.find(_category) == std::string::npos) {
-                        panel_temps.insert(_category, sp);
-                    }
-                }
-#endif
-                SetClassType(p.GetCategoryName());
-
-                for (auto _obj : _targets) {
-
-                    p.SetObject(_obj.second);
-                }
-            }
-
-            p.Update();
-        }
-    }
-
-
-
-#endif
-
     _ui.Update(_functions, _ui_name);
 
     for (auto f : _functions) {
@@ -130,19 +96,163 @@ SceneBase * EditMap::Update(UIManager _ui)
         }
 
     }
+#endif
 
     _dungeon->Update();
 
-    return this;
+    return scene;
 }
 
 void EditMap::Draw()
 {
     _dungeon->Draw();
+
+    for (auto p : panels) {
+        p.Draw();
+    }
+
 }
 
 void EditMap::Init()
 {
+    //パネルの読み込み
+    CSVReader reader;
+    std::vector<std::string> panels_str;
+    std::string filename = "csv/Panel/";
+    filename += class_name + ".csv";
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, panels_str, 1);
+
+    /*stringを各要素ごとに代入*/
+    std::map<std::string, PanelBase> panelTypes;
+    panelTypes.insert(std::make_pair("CHANGE_LIST", PanelAffectObjects()));
+    panelTypes.insert(std::make_pair("MOVE", PanelSceneTransition()));
+    panelTypes.insert(std::make_pair("SELECT_OBJ", PanelSettingObject()));
+    panelTypes.insert(std::make_pair("SHOW", PanelDisplayer()));
+
+
+    int elem_count = 0;
+    std::vector<std::string> panel_temp;
+    for (std::string p : panels_str) {
+        if (p != "") {
+            panel_temp.push_back(p);
+            if (elem_count >= 4) {
+
+                try {
+                    auto temp = panelTypes.at(panel_temp[3]);
+                    panels.push_back(temp);
+                }
+                catch (std::out_of_range&) {
+                    assert("Cannot push_back panel elem");
+                }
+
+                panels.back().Init(PanelContent(
+                    Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4])); //要素を仮想関数の引数で追加
+
+                panel_temp.clear();
+                elem_count = 0;
+            }
+            else {
+                elem_count++;
+            }
+        }
+    }
+    auto b = panels[1].GetCategoryName();
+    auto s = panels.size();
+    std::string file_name = (IsFirstWave() ? "template" : "map" + stage_num);
+
     _dungeon = std::make_shared<MakeDungeon>(stage_num);
-    _dungeon->Init();
+    _dungeon->Init(file_name);
+}
+
+bool EditMap::IsFirstWave()
+{
+    CSVReader reader;
+
+    std::string filePass = "csv/StageData/";
+    std::string fileName = filePass + "template.csv";
+    std::vector<std::string> stage_data;
+
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, stage_data, 0);
+    auto b = stage_data.size();
+    //ステージデータが無い(=第1ウェーブ)の場合
+    if (stage_data.empty()) {
+        //templateファイルの生成
+        //std::ofstream(RESOURCE_TABLE->GetFolderPath() + fileName);
+        return false;
+    }
+    return true;
+}
+
+SceneBase * EditMap::PanelFunction()
+{
+
+    for (auto p : panels) {
+        //
+        bool isClicked = p.IsClicked();
+
+        //何かのパネルがクリックされる。
+        //そのパネルの種類(クラス)によって
+        //処理内容が変化する。
+        //また、別のサブクラスのパネルの変数に
+        //干渉する
+
+        //パネルがクリックされたら
+        if (isClicked) {
+            auto str = std::string(typeid(p).name());
+
+            //クリックされたパネルの名前が"AffectObjects"だった場合
+            if (str.find("AffectObjects") != NPOS) {
+                PanelAffectObjectsFunction(p);
+            }
+            else if (str.find("Displayer") != NPOS) {
+                PanelDisplayerFunction(p);
+            }
+            else if (str.find("SceneTrans") != NPOS) {
+                PanelSceneTransFunction(p);
+            }
+            else if (str.find("SettingObject") != NPOS) {
+                PanelSettingObjectFunction(p);
+            }
+
+            p.Update();
+        }
+    }
+
+    return this;
+}
+
+void EditMap::PanelAffectObjectsFunction(PanelBase panel)
+{
+    std::vector<PanelBase> temp_p;
+
+    /*値を変化させる他パネルを検索する*/
+    for (auto ps : panels) {
+        auto aff_str = std::string(typeid(ps).name());
+        if (aff_str.find("SettingObject") != NPOS) {
+            temp_p.push_back(ps);
+        }
+    }
+
+    panel.SetSettingObject(temp_p);
+    int j = 0;
+
+    for (int i = 0; i < panels.size(); i++) {
+        auto aff_str = std::string(typeid(panels[i]).name());
+        if (aff_str.find("SettingObject") != NPOS) {
+            panels[i] = temp_p[j];
+            j++;
+        }
+    }
+}
+
+void EditMap::PanelDisplayerFunction(PanelBase panel)
+{
+}
+
+void EditMap::PanelSceneTransFunction(PanelBase panel)
+{
+}
+
+void EditMap::PanelSettingObjectFunction(PanelBase panel)
+{
 }

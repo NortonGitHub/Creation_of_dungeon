@@ -56,18 +56,19 @@ void MakeDungeon::Update()
 
 void MakeDungeon::Draw()
 {
+    FIELD->Draw();
     for (auto obj : OBJECT_MGR->_objects) {
         if (obj != nullptr)
             obj->Draw();
     }
 }
 
-void MakeDungeon::Init()
+void MakeDungeon::Init(std::string file_name)
 {
     std::vector<std::string> _stageArray;
     //フィールドの大本となるデータを読み込む
-    std::string filename = "csv/StageData/map";
-    filename += (_stage_num + ".csv");
+    std::string filename = "csv/StageData/";
+    filename += (file_name + ".csv");
     CSVReader reader;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, _stageArray);
     auto fieldSizeH = reader.GetLineSize(filename, 0);
@@ -106,14 +107,11 @@ void MakeDungeon::Init()
 
     OBJECT_MGR->Refresh();
 
-    int t = _objs.size();
-
     for (auto obj : _objs)
     {
         if (obj.get() != nullptr)
             obj->Init();
     }
-
     _selectingObj = "NONE";
 }
 

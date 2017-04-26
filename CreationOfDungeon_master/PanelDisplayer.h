@@ -7,5 +7,12 @@ class PanelDisplayer :
 public:
     PanelDisplayer();
     ~PanelDisplayer();
+
+    void Init(PanelContent _panelContent);
+
+    bool IsClicked();
+
+private:
+    PanelContent panel;
 };
 

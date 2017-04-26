@@ -19,7 +19,7 @@ public:
 
     void Draw();
 
-    void Init();
+    void Init(std::string file_name);
 
     void PickupObject();
 

@@ -1,18 +1,19 @@
 #pragma once
 #include "cd_666s/Resources/ResourceManager.h"
+#include "cd_666s/TilebaseAI/Character.h"
 #include "Graph.h"
 
-class PanelContent
+class PanelContent : public GraphicalObject
 {
 public:
     PanelContent();
+    PanelContent(Vector2D _p, std::string name, std::string func_var);
     ~PanelContent();
-
 
     Vector2D _position;
 
-    Graph _graph;
-
     std::string _name;
+
+    std::string _func_var;   //ä÷êîÇé¶Ç∑ÉLÅ[
 };
 

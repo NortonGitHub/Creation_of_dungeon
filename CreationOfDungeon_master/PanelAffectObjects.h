@@ -1,5 +1,6 @@
 #pragma once
 #include "PanelBase.h"
+
 class PanelAffectObjects :
     public PanelBase
 {
@@ -11,9 +12,13 @@ public:
     void Update();
     void Draw();
 
+    void Init(PanelContent _panelContent);
+
     std::string GetCategoryName();
 
-    void SetObject(PanelBase _other_panel);
+    void SetSettingObject(std::vector<PanelBase>& _tps);
+
+    bool IsClicked();
 
 private:
     PanelContent panel;

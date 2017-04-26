@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 #include "MakeDungeon.h"
 
+#include "PanelBase.h"
 #include "PanelContent.h"
 
 class EditMap :
@@ -21,6 +22,8 @@ public:
     void Init();
 
 private:
+    const size_t NPOS;
+
     std::string class_name;
 
     UIManager _uiManager;
@@ -30,6 +33,16 @@ private:
     std::shared_ptr<MakeDungeon> _dungeon;
 
     std::vector<std::string> _functions;
+
+    std::vector<PanelBase> panels;  //UI
+
+    bool IsFirstWave();
+
+    SceneBase* PanelFunction();
+    void PanelAffectObjectsFunction(PanelBase panel);
+    void PanelDisplayerFunction(PanelBase panel);
+    void PanelSceneTransFunction(PanelBase panel);
+    void PanelSettingObjectFunction(PanelBase panel);
 
 };
 
