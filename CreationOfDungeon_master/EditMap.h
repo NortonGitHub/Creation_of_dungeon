@@ -34,7 +34,7 @@ private:
 
     std::vector<std::string> _functions;
 
-    std::vector<PanelBase> panels;  //UI
+    std::vector<std::shared_ptr<PanelBase>> panels;  //UI
 
     bool IsFirstWave();
 
