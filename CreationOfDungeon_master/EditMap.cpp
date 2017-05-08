@@ -10,6 +10,8 @@
 #include "cd_666s/Utility/CSVReader.h"
 #include "cd_666s/Resources/AllResourceManager.h"
 
+#include "PanelObjectManager.h"
+
 #include <typeinfo>
 #include <sstream>
 
@@ -30,7 +32,11 @@ EditMap::~EditMap()
 {
     _functions.clear();
 
-#if 0
+    PANEL_MGR->Clear();
+
+    PANEL_MGR->Refresh();
+
+#if 1
     std::string pass = RESOURCE_TABLE->GetFolderPath();
     std::string str = "csv/Stagedata/template.csv";
     pass += str;
@@ -98,6 +104,11 @@ SceneBase * EditMap::Update(UIManager _ui)
     }
 #endif
 
+    for(auto p : PANEL_MGR->_objects){
+        if (p != nullptr)
+            p->Update();
+    }
+
     _dungeon->Update();
 
     return scene;
@@ -107,8 +118,9 @@ void EditMap::Draw()
 {
     _dungeon->Draw();
 
-    for (auto p : panels) {
-        p->Draw();
+    for (auto p : PANEL_MGR->_objects) {
+        if(p != nullptr)
+            p->Draw();
     }
 
 }
@@ -123,13 +135,15 @@ void EditMap::Init()
     reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, panels_str, 1);
 
     /*stringを各要素ごとに代入*/
+    /*
     std::map<std::string, std::shared_ptr<PanelBase>> panelTypes;
     panelTypes.insert(std::make_pair("CHANGE_LIST",new PanelAffectObjects()));
     panelTypes.insert(std::make_pair("MOVE", new PanelSceneTransition()));
     panelTypes.insert(std::make_pair("SELECT_OBJ", new PanelSettingObject()));
     panelTypes.insert(std::make_pair("SHOW", new PanelDisplayer()));
     auto b = panelTypes.begin();
-
+    */
+    //ここにPANEL_MGR追加処理を
     int elem_count = 0;
     std::vector<std::string> panel_temp;
     for (std::string p : panels_str) {
@@ -139,12 +153,16 @@ void EditMap::Init()
 
                 try {
                     auto s = panel_temp[3];
-                    auto temp = std::move(panelTypes.at(panel_temp[3]));
+                    //auto temp(std::move(panelTypes.at(panel_temp[3])));
+                    std::shared_ptr<PanelBase> temp;
+                    SetPanelInstance(panel_temp[3], temp);
                     panels.push_back(temp);
                 }
                 catch (std::out_of_range&) {
                     assert("Cannot push_back panel elem");
                 }
+                auto a = panels.back();
+                assert(panels.back() != nullptr );
 
                 panels.back()->Init(PanelContent(
                     Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4])); //要素を仮想関数の引数で追加
@@ -159,6 +177,12 @@ void EditMap::Init()
     }
 
     std::string file_name = (IsFirstWave() ? "template" : "map" + stage_num);
+
+    auto& panel_obj = PANEL_MGR->_objects;
+    
+    for(auto p : panels){
+        panel_obj.push_back(p);
+    }
 
     _dungeon = std::make_shared<MakeDungeon>(stage_num);
     _dungeon->Init(file_name);
@@ -255,4 +279,18 @@ void EditMap::PanelSceneTransFunction(PanelBase panel)
 
 void EditMap::PanelSettingObjectFunction(PanelBase panel)
 {
+}
+
+void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>& panel)
+{
+    if(key_name == "CHANGE_LIST"){
+        panel = std::make_shared<PanelBase>(PanelAffectObjects());
+    }else if(key_name == "MOVE"){
+        panel = std::make_shared<PanelBase>(PanelSceneTransition());
+    }
+    else if(key_name == "SELECT_OBJ"){
+        panel = std::make_shared<PanelBase>(PanelSettingObject());
+    }else if(key_name == "SHOW"){
+        panel = std::make_shared<PanelBase>(PanelDisplayer());
+    }
 }

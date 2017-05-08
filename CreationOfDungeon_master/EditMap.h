@@ -37,12 +37,14 @@ private:
     std::vector<std::shared_ptr<PanelBase>> panels;  //UI
 
     bool IsFirstWave();
-
+    
     SceneBase* PanelFunction();
     void PanelAffectObjectsFunction(PanelBase panel);
     void PanelDisplayerFunction(PanelBase panel);
     void PanelSceneTransFunction(PanelBase panel);
     void PanelSettingObjectFunction(PanelBase panel);
+
+    void SetPanelInstance(std::string key_name, ::shared_ptr<PanelBase>& panel);
 
 };
 
