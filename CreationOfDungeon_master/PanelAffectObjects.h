@@ -18,6 +18,8 @@ public:
 
     void SetSettingObject(std::vector<PanelBase>& _tps);
 
+    void DrawDebugPrint() override;
+
     bool IsClicked();
 
 private:

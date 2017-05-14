@@ -11,6 +11,8 @@ public:
 
     bool IsClicked();
 
+    void DrawDebugPrint() override;
+
 private:
     PanelContent panel;
 };

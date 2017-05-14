@@ -19,6 +19,8 @@ public:
 
     virtual bool IsClicked();
 
+    virtual void DrawDebugPrint();
+
     bool GetIsClicked(PanelContent panel);
 
    // virtual void SetPanel
