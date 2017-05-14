@@ -46,5 +46,7 @@ private:
 
     void SetPanelInstance(std::string key_name, ::shared_ptr<PanelBase>& panel);
 
+    void DebugOutputFile();
+
 };
 

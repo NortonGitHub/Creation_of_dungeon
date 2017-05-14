@@ -8,6 +8,8 @@
 
 #include "UIManager.h"
 
+class GraphicalObject;
+
 class MakeDungeon
 {
 public:

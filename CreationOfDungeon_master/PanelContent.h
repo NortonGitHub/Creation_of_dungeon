@@ -10,8 +10,6 @@ public:
     PanelContent(Vector2D _p, std::string name, std::string func_var);
     ~PanelContent();
 
-    Vector2D _position;
-
     std::string _name;
 
     std::string _func_var;   //ŠÖ”‚ğ¦‚·ƒL[

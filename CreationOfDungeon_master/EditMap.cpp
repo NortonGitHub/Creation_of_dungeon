@@ -119,7 +119,7 @@ void EditMap::Draw()
     _dungeon->Draw();
 
     for (auto p : PANEL_MGR->_objects) {
-        if(p != nullptr)
+        if (p != nullptr)
             p->Draw();
     }
 
@@ -143,6 +143,9 @@ void EditMap::Init()
     panelTypes.insert(std::make_pair("SHOW", new PanelDisplayer()));
     auto b = panelTypes.begin();
     */
+
+    DebugOutputFile();
+
     //Ç±Ç±Ç…PANEL_MGRí«â¡èàóùÇ
     int elem_count = 0;
     std::vector<std::string> panel_temp;
@@ -166,6 +169,11 @@ void EditMap::Init()
 
                 panels.back()->Init(PanelContent(
                     Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4])); //óvëfÇâºëzä÷êîÇÃà¯êîÇ≈í«â¡
+                
+                /*
+                printfDx("%d:", panels.size());
+                panels.back()->DrawDebugPrint();
+                */
 
                 panel_temp.clear();
                 elem_count = 0;
@@ -182,6 +190,7 @@ void EditMap::Init()
     
     for(auto p : panels){
         panel_obj.push_back(p);
+        panel_obj.back()->DrawDebugPrint();
     }
 
     _dungeon = std::make_shared<MakeDungeon>(stage_num);
@@ -284,13 +293,20 @@ void EditMap::PanelSettingObjectFunction(PanelBase panel)
 void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>& panel)
 {
     if(key_name == "CHANGE_LIST"){
-        panel = std::make_shared<PanelBase>(PanelAffectObjects());
+        panel.reset(new PanelAffectObjects());
     }else if(key_name == "MOVE"){
-        panel = std::make_shared<PanelBase>(PanelSceneTransition());
+        panel = std::make_shared<PanelSceneTransition>(PanelSceneTransition());
     }
     else if(key_name == "SELECT_OBJ"){
-        panel = std::make_shared<PanelBase>(PanelSettingObject());
+        panel = std::make_shared<PanelSettingObject>(PanelSettingObject());
     }else if(key_name == "SHOW"){
-        panel = std::make_shared<PanelBase>(PanelDisplayer());
+        panel = std::make_shared<PanelDisplayer>(PanelDisplayer());
     }
+}
+
+void EditMap::DebugOutputFile()
+{
+    std::ofstream writing_file;
+    writing_file.open(RESOURCE_TABLE->GetFolderPath() + "test.csv", std::ios::out);
+    writing_file.close();
 }
