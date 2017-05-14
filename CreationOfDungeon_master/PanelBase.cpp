@@ -37,6 +37,11 @@ bool PanelBase::IsClicked()
     return false;
 }
 
+void PanelBase::DrawDebugPrint()
+{
+    printfDx("PanelBase:\n");
+}
+
 bool PanelBase::GetIsClicked(PanelContent panel)
 {
     if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
