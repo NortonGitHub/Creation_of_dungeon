@@ -13,6 +13,16 @@ PanelDisplayer::~PanelDisplayer()
 {
 }
 
+void PanelDisplayer::Update()
+{
+    panel.Update();
+}
+
+void PanelDisplayer::Draw()
+{
+    panel.Draw();
+}
+
 void PanelDisplayer::Init(PanelContent _panelContent)
 {
     panel = _panelContent;

@@ -20,10 +20,12 @@ void PanelAffectObjects::Init(PanelContent _panelContent)
 
 void PanelAffectObjects::Update()
 {
+    panel.Update();
 }
 
 void PanelAffectObjects::Draw()
 {
+    panel.Draw();
 }
 
 std::string PanelAffectObjects::GetCategoryName()

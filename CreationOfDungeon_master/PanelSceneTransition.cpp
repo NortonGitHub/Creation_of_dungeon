@@ -14,6 +14,16 @@ PanelSceneTransition::~PanelSceneTransition()
 {
 }
 
+void PanelSceneTransition::Update()
+{
+    panel.Update();
+}
+
+void PanelSceneTransition::Draw()
+{
+    panel.Draw();
+}
+
 void PanelSceneTransition::Init(PanelContent _panelContent)
 {
     panel = _panelContent;

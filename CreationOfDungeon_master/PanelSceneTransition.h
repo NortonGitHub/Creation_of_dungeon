@@ -7,6 +7,9 @@ public:
     PanelSceneTransition();
     ~PanelSceneTransition();
 
+    void Update() override;
+    void Draw() override;
+
     void Init(PanelContent _panelContent);
 
     bool IsClicked();

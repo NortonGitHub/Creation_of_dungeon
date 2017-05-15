@@ -23,6 +23,16 @@ void PanelSettingObject::SettingObj(PanelContent pc)
     panel = pc;
 }
 
+void PanelSettingObject::Update()
+{
+    panel.Update();
+}
+
+void PanelSettingObject::Draw()
+{
+    panel.Draw();
+}
+
 void PanelSettingObject::Init(PanelContent _panelContent)
 {
     panel = _panelContent;
