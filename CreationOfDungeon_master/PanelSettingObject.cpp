@@ -31,6 +31,7 @@ void PanelSettingObject::Update()
 void PanelSettingObject::Draw()
 {
     panel.Draw();
+    //DrawCircle(panel.GetPosition()._x, panel.GetPosition()._y, 5, GetColor(255, 0, 0));
 }
 
 void PanelSettingObject::Init(PanelContent _panelContent)

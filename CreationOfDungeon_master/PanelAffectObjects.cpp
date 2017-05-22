@@ -25,7 +25,8 @@ void PanelAffectObjects::Update()
 
 void PanelAffectObjects::Draw()
 {
-    panel.Draw();
+    //panel.Draw();
+    DrawCircle(panel.GetPosition()._x, panel.GetPosition()._y, 5, GetColor(255, 0, 0));
 }
 
 std::string PanelAffectObjects::GetCategoryName()

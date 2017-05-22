@@ -21,7 +21,7 @@ EditMap::EditMap(std::string _stage_num)
     : stage_num(_stage_num), NPOS(std::string::npos)
 {
     _functions.reserve(20);
-    panels.reserve(30);
+    //panels.reserve(30);
     class_name = "editmap";
 
     Init();
@@ -116,12 +116,14 @@ SceneBase * EditMap::Update(UIManager _ui)
 
 void EditMap::Draw()
 {
-    _dungeon->Draw();
+    //_dungeon->Draw();
 
     for (auto p : PANEL_MGR->_objects) {
         if (p != nullptr)
             p->Draw();
     }
+
+    PANEL_MGR->Refresh();
 
 }
 
@@ -149,32 +151,27 @@ void EditMap::Init()
     //ここにPANEL_MGR追加処理を
     int elem_count = 0;
     std::vector<std::string> panel_temp;
+    std::vector<PanelContent> panel_cont_temp(1);
+    panel_cont_temp.reserve(30);
+
+    auto& panel_obj = PANEL_MGR->_objects;
+
     for (std::string p : panels_str) {
         if (p != "") {
             panel_temp.push_back(p);
             if (elem_count >= 4) {
 
                 try {
-                    auto s = panel_temp[3];
-                    //auto temp(std::move(panelTypes.at(panel_temp[3])));
                     std::shared_ptr<PanelBase> temp;
                     SetPanelInstance(panel_temp[3], temp);
-                    panels.push_back(temp);
+
+                    panel_obj.push_back(temp);
+                    panel_cont_temp.push_back(PanelContent(
+                        Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]));
                 }
                 catch (std::out_of_range&) {
                     assert("Cannot push_back panel elem");
                 }
-                auto a = panels.back();
-                assert(panels.back() != nullptr );
-
-                panels.back()->Init(PanelContent(
-                    Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4])); //要素を仮想関数の引数で追加
-                
-                /*
-                printfDx("%d:", panels.size());
-                panels.back()->DrawDebugPrint();
-                */
-
                 panel_temp.clear();
                 elem_count = 0;
             }
@@ -185,16 +182,22 @@ void EditMap::Init()
     }
 
     std::string file_name = (IsFirstWave() ? "template" : "map" + stage_num);
-
-    auto& panel_obj = PANEL_MGR->_objects;
     
-    for(auto p : panels){
-        panel_obj.push_back(p);
-        panel_obj.back()->DrawDebugPrint();
+    PANEL_MGR->Refresh();
+ 
+    int elem = 0;
+    for (auto obj : panel_obj) {
+        if (obj.get() != nullptr) {
+            obj->Init(panel_cont_temp[elem]);
+            obj->DrawDebugPrint();
+        }
+        elem++;
     }
 
     _dungeon = std::make_shared<MakeDungeon>(stage_num);
     _dungeon->Init(file_name);
+
+    panel_cont_temp.clear();
 }
 
 bool EditMap::IsFirstWave()
@@ -219,7 +222,11 @@ bool EditMap::IsFirstWave()
 SceneBase * EditMap::PanelFunction()
 {
 
-    for (auto p : panels) {
+    for (auto p : PANEL_MGR->_objects) {
+
+        if (p == nullptr)
+            continue;
+
         //
         bool isClicked = p->IsClicked();
 
@@ -259,7 +266,7 @@ void EditMap::PanelAffectObjectsFunction(PanelBase panel)
     std::vector<std::shared_ptr<PanelBase>> temp_p;
 
     /*値を変化させる他パネルを検索する*/
-    for (auto ps : panels) {
+    for (auto ps : PANEL_MGR->_objects) {
         auto aff_str = std::string(typeid(ps).name());
         if (aff_str.find("SettingObject") != NPOS) {
             temp_p.push_back(ps);
@@ -269,10 +276,12 @@ void EditMap::PanelAffectObjectsFunction(PanelBase panel)
     //panel.SetSettingObject(*temp_p);
     int j = 0;
 
-    for (int i = 0; i < panels.size(); i++) {
-        auto aff_str = std::string(typeid(panels[i]).name());
+    auto& obj = PANEL_MGR->_objects;
+
+    for (int i = 0; i < obj.size(); i++) {
+        auto aff_str = std::string(typeid(obj).name());
         if (aff_str.find("SettingObject") != NPOS) {
-            panels[i] = temp_p[j];
+            obj[i] = temp_p[j];
             j++;
         }
     }
