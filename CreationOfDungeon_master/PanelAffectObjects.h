@@ -7,6 +7,7 @@ class PanelAffectObjects :
     //ƒJƒeƒSƒŠ‘I‘ð
 public:
     PanelAffectObjects();
+    PanelAffectObjects(PanelContent _panelContent);
     ~PanelAffectObjects();
 
     void Update();

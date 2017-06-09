@@ -44,7 +44,7 @@ private:
     void PanelSceneTransFunction(PanelBase panel);
     void PanelSettingObjectFunction(PanelBase panel);
 
-    void SetPanelInstance(std::string key_name, ::shared_ptr<PanelBase>& panel);
+    void SetPanelInstance(std::string key_name, ::shared_ptr<PanelBase>& panel, PanelContent temp);
 
     void DebugOutputFile();
 

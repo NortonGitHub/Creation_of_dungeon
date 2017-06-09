@@ -57,5 +57,5 @@ bool PanelBase::GetIsClicked(PanelContent panel)
     return(cursorPos._x >= panel._position._x && cursorPos._x <= _w
         && cursorPos._y >= panel._position._y && cursorPos._y <= _h);
     */
-    return panel.Contain(cursorPos);
+    return Contain(cursorPos); //panel.Contain(cursorPos);
 }

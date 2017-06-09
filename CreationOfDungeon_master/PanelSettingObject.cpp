@@ -25,13 +25,14 @@ void PanelSettingObject::SettingObj(PanelContent pc)
 
 void PanelSettingObject::Update()
 {
-    panel.Update();
+    GraphicalObject::Update();
 }
 
 void PanelSettingObject::Draw()
 {
-    panel.Draw();
+    //panel.Draw();
     //DrawCircle(panel.GetPosition()._x, panel.GetPosition()._y, 5, GetColor(255, 0, 0));
+    GraphicalObject::Draw();
 }
 
 void PanelSettingObject::Init(PanelContent _panelContent)
@@ -48,12 +49,12 @@ void PanelSettingObject::DrawDebugPrint()
 {
     printfDx("PanelSettingObject:\n");
     printfDx("name:(%s)  ", panel._name.c_str());
-    printfDx("(X:%7.1f, Y:%7.1f)\n", panel.GetPosition()._x, panel.GetPosition()._y);
+    printfDx("(X:%7.1f, Y:%7.1f)\n", panel._pos._x, panel._pos._y);
     printfDx("-------------------------------\n");
 
     std::ofstream writing_file;
     writing_file.open(RESOURCE_TABLE->GetFolderPath() + "test.csv", std::ios::app);
 
-    writing_file << "name:" << panel._name << " (X,Y):" << panel.GetPosition()._x << "," << panel.GetPosition()._y << std::endl;
+    writing_file << "name:" << panel._name << " (X,Y):" << panel._pos._x << "," << panel._pos._y << std::endl;
     writing_file.close();
 }

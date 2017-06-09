@@ -6,7 +6,25 @@
 #include "cd_666s/Resources/AllResourceManager.h"
 
 PanelAffectObjects::PanelAffectObjects()
+    : panel(PanelContent())
 {
+}
+
+PanelAffectObjects::PanelAffectObjects(PanelContent _panelContent)
+    : panel(std::move(_panelContent))
+{
+    std::string filename = "graph/ui/" + panel._name + ".png";
+
+    auto pos = panel._pos;
+
+    _position.Set(pos._x, pos._y);
+
+    _graph.Load(filename);
+
+     _graph.SetPosition(_position);
+    _graph.SetPriority(Sprite::Priority::UI);
+    //_graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+
 }
 
 PanelAffectObjects::~PanelAffectObjects()
@@ -20,13 +38,13 @@ void PanelAffectObjects::Init(PanelContent _panelContent)
 
 void PanelAffectObjects::Update()
 {
-    panel.Update();
+    GraphicalObject::Update();
 }
 
 void PanelAffectObjects::Draw()
 {
-    //panel.Draw();
-    DrawCircle(panel.GetPosition()._x, panel.GetPosition()._y, 5, GetColor(255, 0, 0));
+    GraphicalObject::Draw();
+    DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
 }
 
 std::string PanelAffectObjects::GetCategoryName()
@@ -69,13 +87,13 @@ void PanelAffectObjects::DrawDebugPrint()
 {
     printfDx("PanelAffectObjects:\n");
     printfDx("name:(%s)  ", panel._name.c_str());
-    printfDx("(X:%7.1f, Y:%7.1f)\n", panel.GetPosition()._x, panel.GetPosition()._y);
+    printfDx("(X:%7.1f, Y:%7.1f)\n", panel._pos._x, panel._pos._y);
     printfDx("-------------------------------\n");
 
     std::ofstream writing_file;
     writing_file.open(RESOURCE_TABLE->GetFolderPath() + "test.csv", std::ios::app);
 
-    writing_file << "name:" << panel._name << " (X,Y):" << panel.GetPosition()._x << "," << panel.GetPosition()._y << std::endl;
+    writing_file << "name:" << panel._name << " (X,Y):" << panel._pos._x << "," << panel._pos._y << std::endl;
     writing_file.close();
 }
 

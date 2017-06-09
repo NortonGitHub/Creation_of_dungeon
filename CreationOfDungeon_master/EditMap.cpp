@@ -163,11 +163,15 @@ void EditMap::Init()
 
                 try {
                     std::shared_ptr<PanelBase> temp;
-                    SetPanelInstance(panel_temp[3], temp);
+
+                    auto temp2 = std::make_shared<PanelContent>(Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]);
+
+                    SetPanelInstance(panel_temp[3], temp, *temp2);
 
                     panel_obj.push_back(temp);
-                    panel_cont_temp.push_back(PanelContent(
-                        Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]));
+                    
+                    //panel_cont_temp.push_back(PanelContent(
+                        //Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]));
                 }
                 catch (std::out_of_range&) {
                     assert("Cannot push_back panel elem");
@@ -185,6 +189,7 @@ void EditMap::Init()
     
     PANEL_MGR->Refresh();
  
+    /*
     int elem = 0;
     for (auto obj : panel_obj) {
         if (obj.get() != nullptr) {
@@ -193,6 +198,7 @@ void EditMap::Init()
         }
         elem++;
     }
+    */
 
     _dungeon = std::make_shared<MakeDungeon>(stage_num);
     _dungeon->Init(file_name);
@@ -299,10 +305,10 @@ void EditMap::PanelSettingObjectFunction(PanelBase panel)
 {
 }
 
-void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>& panel)
+void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>& panel, PanelContent temp)
 {
     if(key_name == "CHANGE_LIST"){
-        panel.reset(new PanelAffectObjects());
+        panel = std::make_shared<PanelAffectObjects>(temp);
     }else if(key_name == "MOVE"){
         panel = std::make_shared<PanelSceneTransition>(PanelSceneTransition());
     }

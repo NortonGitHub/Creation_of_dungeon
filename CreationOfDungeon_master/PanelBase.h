@@ -2,7 +2,11 @@
 #include "PanelContent.h"
 #include "cd_666s/InputManager/InputManager.h"
 
-class PanelBase
+#include "cd_666s/Resources/ResourceManager.h"
+#include "cd_666s/TilebaseAI/Character.h"
+#include "Graph.h"
+
+class PanelBase : public GraphicalObject
 {
 public:
     PanelBase();
@@ -23,6 +27,7 @@ public:
 
     bool GetIsClicked(PanelContent panel);
 
+    std::shared_ptr<PanelContent> _pobj;
    // virtual void SetPanel
 };
 
