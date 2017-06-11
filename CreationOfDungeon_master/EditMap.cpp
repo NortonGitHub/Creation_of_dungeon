@@ -305,17 +305,17 @@ void EditMap::PanelSettingObjectFunction(PanelBase panel)
 {
 }
 
-void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>& panel, PanelContent temp)
+void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>& panel, PanelContent& temp)
 {
     if(key_name == "CHANGE_LIST"){
         panel = std::make_shared<PanelAffectObjects>(temp);
     }else if(key_name == "MOVE"){
-        panel = std::make_shared<PanelSceneTransition>(PanelSceneTransition());
+        panel = std::make_shared<PanelSceneTransition>();
     }
     else if(key_name == "SELECT_OBJ"){
-        panel = std::make_shared<PanelSettingObject>(PanelSettingObject());
+        panel = std::make_shared<PanelSettingObject>();
     }else if(key_name == "SHOW"){
-        panel = std::make_shared<PanelDisplayer>(PanelDisplayer());
+        panel = std::make_shared<PanelDisplayer>();
     }
 }
 

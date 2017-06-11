@@ -24,7 +24,7 @@ void PanelSceneTransition::Draw()
     GraphicalObject::Draw();
 }
 
-void PanelSceneTransition::Init(PanelContent _panelContent)
+void PanelSceneTransition::Init(PanelContent& _panelContent)
 {
     panel = _panelContent;
 }

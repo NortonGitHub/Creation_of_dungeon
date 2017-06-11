@@ -3,12 +3,10 @@
 /*for test including*/
 #include "EditMap.h"
 
-SceneManager::SceneManager() : now_scene(new EditMap("1")/*Title()*/), test(Graph("resourse/test_666/omote.png"))
+SceneManager::SceneManager() : now_scene(new EditMap("1"))
 {
     auto class_name = now_scene->GetClassNameData();
     now_scene->Init(class_name);
-
-    test.SetPosition(Vector2D(0, 64));
 }
 
 

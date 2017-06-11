@@ -15,7 +15,7 @@ public:
     virtual void Update();
     virtual void Draw();
 
-    virtual void Init(PanelContent _panelContent);
+    virtual void Init(PanelContent& _panelContent);
 
     virtual std::string GetCategoryName();
 
@@ -25,7 +25,7 @@ public:
 
     virtual void DrawDebugPrint();
 
-    bool GetIsClicked(PanelContent panel);
+    bool GetIsClicked(PanelContent& panel);
 
     std::shared_ptr<PanelContent> _pobj;
    // virtual void SetPanel

@@ -8,12 +8,12 @@ public:
     PanelSettingObject(std::string _panel_name);
     ~PanelSettingObject();
 
-    void SettingObj(PanelContent pc);
+    void SettingObj(PanelContent& pc);
 
     void Update() override;
     void Draw() override;
 
-    void Init(PanelContent _panelContent);
+    void Init(PanelContent& _panelContent);
 
     bool IsClicked();
 

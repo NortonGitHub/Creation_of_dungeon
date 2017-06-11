@@ -19,7 +19,7 @@ void PanelBase::Draw()
 {
 }
 
-void PanelBase::Init(PanelContent _panelContent)
+void PanelBase::Init(PanelContent& _panelContent)
 {
 }
 
@@ -42,7 +42,7 @@ void PanelBase::DrawDebugPrint()
     printfDx("PanelBase:\n");
 }
 
-bool PanelBase::GetIsClicked(PanelContent panel)
+bool PanelBase::GetIsClicked(PanelContent& panel)
 {
     if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
         return false;

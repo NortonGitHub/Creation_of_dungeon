@@ -18,7 +18,7 @@ PanelSettingObject::~PanelSettingObject()
 {
 }
 
-void PanelSettingObject::SettingObj(PanelContent pc)
+void PanelSettingObject::SettingObj(PanelContent& pc)
 {
     panel = pc;
 }
@@ -35,7 +35,7 @@ void PanelSettingObject::Draw()
     GraphicalObject::Draw();
 }
 
-void PanelSettingObject::Init(PanelContent _panelContent)
+void PanelSettingObject::Init(PanelContent& _panelContent)
 {
     panel = _panelContent;
 }
