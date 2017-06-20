@@ -30,17 +30,9 @@ SceneBase* WorldMap::Update(UIManager _ui)
     return Update();
 }
 
+
 SceneBase * WorldMap::Update()
 {
-
-    /*
-    if (isMyMove == true) {
-        Moving();
-    }
-    else {
-        KeyJudge();
-    }
-    */
 
     char Buf[256];
 
@@ -63,6 +55,7 @@ SceneBase * WorldMap::Update()
     GetMousePoint(&mx, &my);
 
     if (isPause == false) {
+        /*
         if (blendFlag == 0) {
             blend += 10;
         }
@@ -78,64 +71,54 @@ SceneBase * WorldMap::Update()
             blend = 0;
             blendFlag = 0;
         }
+        */
 
-        //ここからステージ1のクリック判定
+        charaAnimeCnt++;
 
-        int hit = 0;
-
-        hit += ClickCheckCircle(836, 538, 9);
-        hit += ClickCheckCircle(836 - 5, 538, 8);
-        hit += ClickCheckCircle(836 - 5 - 4, 538, 7);
-        hit += ClickCheckCircle(836 - 5 - 4 - 3, 538, 6);
-        hit += ClickCheckCircle(836 + 5, 538, 8);
-        hit += ClickCheckCircle(836 + 5 + 4, 538, 7);
-        hit += ClickCheckCircle(836 + 5 + 4 + 3, 538, 6);
-
-        if (hit >= 1) {
-            stageNum = 1;
-            return new Game(stageNum);
+        if (charaAnimeCnt >= charaAnimeFrameTime * 4) {
+            charaAnimeCnt = 0;
         }
 
-        //ここまで
-        
+        if (movePointList.empty() == true) {
 
-        //ここからステージ2のクリック判定
+            for (int i = 0; i < nowAreaPointList.size(); i++) {
 
-        hit = 0;
+                if (nowAreaPointList[i]->isPoint == 1 && nowAreaPointList[i]->isStayPoint == 1) {
 
-        hit += ClickCheckCircle(560, 418, 9);
-        hit += ClickCheckCircle(560 - 5, 418, 8);
-        hit += ClickCheckCircle(560 - 5 - 4, 418, 7);
-        hit += ClickCheckCircle(560 - 5 - 4 - 3, 418, 6);
-        hit += ClickCheckCircle(560 + 5, 418, 8);
-        hit += ClickCheckCircle(560 + 5 + 4, 418, 7);
-        hit += ClickCheckCircle(560 + 5 + 4 + 3, 418, 6);
+                    int hit = 0;
 
-        if (hit >= 1) {
-            stageNum = 2;
-            return new Game(stageNum);
+                    if (nowAreaPointList[i]->hitType == 0) {
+
+                        hit += ClickCheckCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR);
+                        hit += ClickCheckCircle(nowAreaPointList[i]->x - 5, nowAreaPointList[i]->y, pointR - 1);
+                        hit += ClickCheckCircle(nowAreaPointList[i]->x - 5 - 4, nowAreaPointList[i]->y, pointR - 2);
+                        hit += ClickCheckCircle(nowAreaPointList[i]->x - 5 - 4 - 3, nowAreaPointList[i]->y, pointR - 3);
+                        hit += ClickCheckCircle(nowAreaPointList[i]->x + 5, nowAreaPointList[i]->y, pointR - 1);
+                        hit += ClickCheckCircle(nowAreaPointList[i]->x + 5 + 4, nowAreaPointList[i]->y, pointR - 2);
+                        hit += ClickCheckCircle(nowAreaPointList[i]->x + 5 + 4 + 3, nowAreaPointList[i]->y, pointR - 3);
+
+                    }
+
+
+                    if (hit >= 1) {
+
+                        if (nowMyPointNum == nowAreaPointList[i]->pointNum) {
+                            stageNum = nowAreaPointList[i]->stageNum;
+                            return new Game(stageNum);
+                        }
+                        else {
+                            searchPath(nowAreaPointList[i]->pointNum);
+                            //nowMyPointNum = nowAreaPointList[i]->pointNum;
+                        }
+                    }
+
+                }
+            }
+
         }
-
-        //ここまで
-
-
-        //ここからステージ3のクリック判定
-
-        hit = 0;
-
-        hit += ClickCheckCircle(601, 182, 9);
-        hit += ClickCheckCircle(601 - 5, 182, 8);
-        hit += ClickCheckCircle(601 - 5 - 4, 182, 7);
-        hit += ClickCheckCircle(601 - 5 - 4 - 3, 182, 6);
-        hit += ClickCheckCircle(601 + 5, 182, 8);
-        hit += ClickCheckCircle(601 + 5 + 4, 182, 7);
-        hit += ClickCheckCircle(601 + 5 + 4 + 3, 182, 6);
-
-        if (hit >= 1) {
-            stageNum = 3;
-            return new Game(stageNum);
+        else {
+            movePoint();
         }
-
 
     }
     else {
@@ -178,90 +161,25 @@ SceneBase * WorldMap::Update()
         clickFlag = false;
     }
     
-    //printfDx("x:%d y:%d", mx, my);
+    printfDx("x:%d y:%d", mx, my);
     
     return this;
 }
 
 void WorldMap::Draw()
 {
-    /*
+    
     clsDx();
 
-    for (auto itr = nowMapRoadList.begin(); itr != nowMapRoadList.end(); itr++) {
-
-        printfDx("%d,", itr->mapNum);
-        printfDx("%d,", itr->roadNum);
-        printfDx("%d,", itr->startPointNum);
-        printfDx("%d,", itr->endPointNum);
-        printfDx("\n");
-        for (auto itr2 = itr->roadTurnPoint.begin(); itr2 != itr->roadTurnPoint.end(); itr2++){
-
-            printfDx("%f,", itr2->x);
-            printfDx("%f,", itr2->y);
-            printfDx("\n");
-            
-        }
-
-        printfDx("\n");
-
-    }
-    */
-
-    /*
-    for (auto itr = nowMapPointList.begin(); itr != nowMapPointList.end(); itr++) {
-
-        DrawCircle(itr->x, itr->y, pointR, GetColor(255, 0, 0), TRUE);
-
-    }
-
-
-    for (auto itr = nowMapRoadList.begin(); itr != nowMapRoadList.end(); itr++) {
-
-        int num = PointSearch(itr->startPointNum);
-
-        double LinkX = -1;
-        double LinkY = -1;
-
-        if (num != -1) {
-            LinkX = nowMapPointList[num].x;
-            LinkY = nowMapPointList[num].y;
-        }
-        
-        for (auto itr3 = itr->roadTurnPoint.begin(); itr3 != itr->roadTurnPoint.end(); itr3++) {
-
-            DrawCircle(itr3->x, itr3->y, 10, GetColor(255, 255, 0), TRUE);
-            DrawLine(LinkX, LinkY, itr3->x, itr3->y, GetColor(255, 255, 255), 5);
-
-            LinkX = itr3->x;
-            LinkY = itr3->y;
-
-        }
-
-        num = PointSearch(itr->endPointNum);
-
-        if (num != -1) {
-            
-            DrawLine(LinkX, LinkY, nowMapPointList[num].x, nowMapPointList[num].y, GetColor(255, 255, 255), 5);
-
-        }
-
-    }
-    
-
-    SetFontSize(20);
-    DrawFormatString(myX-10, myY-10, GetColor(255, 255, 255),"MY");
-
-    */
 
     if (isPause == false) {
 
-        DrawGraph(0, 0, Area1Gr, TRUE);
+        DrawMap();
 
     }
     else {
 
-        DrawGraph(0, 0, Area1Gr, TRUE);
+        DrawMap();
 
         SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
         DrawBox(0, 0, 1280, 720, GetColor(0, 0, 0), TRUE);
@@ -291,9 +209,6 @@ void WorldMap::Init() {
 
 
     /*
-    nowMyMapNum = 1;
-
-    nowMyPointNum = 0;
 
     finishPointNum = -1;
 
@@ -304,11 +219,6 @@ void WorldMap::Init() {
     myVx = 0;
 
     myVy = 0;
-
-    
-    setNowMapPointList();
-
-    setNowMapRoadList();
     
 
     myPointSet(1);
@@ -319,6 +229,27 @@ void WorldMap::Init() {
 
     Area1Gr = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
 
+    charaGr_f[0] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlFront1.png");
+    charaGr_f[1] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlFront2.png");
+    charaGr_f[2] = charaGr_f[0];
+    charaGr_f[3] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlFront3.png");
+
+    charaGr_b[0] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlBack1.png");
+    charaGr_b[1] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlBack2.png");
+    charaGr_b[2] = charaGr_b[0];
+    charaGr_b[3] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlBack3.png");
+
+    charaGr_l[0] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlLeft1.png");
+    charaGr_l[1] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlLeft2.png");
+    charaGr_l[2] = charaGr_l[0];
+    charaGr_l[3] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlLeft3.png");
+
+    charaGr_r[0] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlRight1.png");
+    charaGr_r[1] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlRight2.png");
+    charaGr_r[2] = charaGr_r[0];
+    charaGr_r[3] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlRight3.png");
+
+
     blend = 0;
     blendFlag = 0;
 
@@ -327,7 +258,96 @@ void WorldMap::Init() {
 
     clickFlag = false;
 
+    nowMyAreaNum = 1;
+    nowMyPointNum = 1;
+
+    
+
+    mySpeed = 0.0;
+
+    myVx = 0.0;
+    myVy = 0.0;
+
+    charaAnimeCnt = 0;
+
+    charaAnimeFrameTime = 15;
+
+    debugFlag = false;
+
+    setNowAreaPointList();
+
+    setNowRoadConnect();
+
+    movePointList.clear();
+    
+
 }
+
+
+void WorldMap::DrawMap() {
+
+    DrawGraph(0, 0, Area1Gr, TRUE);
+    
+
+    for (int i = 0; i < nowRoadConnect.size(); i++) {
+        int road1 = PointSearch(nowRoadConnect[i]->road[0]);
+        int road2 = PointSearch(nowRoadConnect[i]->road[1]);
+
+        DrawLine(nowAreaPointList[road1]->x, nowAreaPointList[road1]->y, nowAreaPointList[road2]->x, nowAreaPointList[road2]->y, GetColor(255, 255, 255), 10);
+
+    }
+
+
+    for (int i = 0; i < nowAreaPointList.size(); i++) {
+
+        if (nowAreaPointList[i]->isPoint == 1) {
+
+            if (nowAreaPointList[i]->isStayPoint == 1) {
+                DrawCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR, GetColor(255, 0, 0), TRUE);
+                DrawCircle(nowAreaPointList[i]->x - 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
+                DrawCircle(nowAreaPointList[i]->x - 5 - 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
+                DrawCircle(nowAreaPointList[i]->x - 5 - 4 - 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
+                DrawCircle(nowAreaPointList[i]->x + 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
+                DrawCircle(nowAreaPointList[i]->x + 5 + 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
+                DrawCircle(nowAreaPointList[i]->x + 5 + 4 + 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
+            }
+            else {
+                DrawCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR, GetColor(255, 0, 0), TRUE);
+            }
+
+        }
+
+        if (nowAreaPointList[i]->pointNum == nowMyPointNum) {
+            myX = nowAreaPointList[i]->x;
+            myY = nowAreaPointList[i]->y;
+        }
+
+    }
+
+
+    if (nowMyPointNum != -1 || (myVx ==0 && myVy == 0)) {
+        DrawRotaGraph(myX, myY - 12, 1.0, 0, charaGr_f[charaAnimeCnt / charaAnimeFrameTime], TRUE);
+    }
+    else if (fabs(myVx) > fabs(myVy)) {
+        if (myVx > 0) {
+            DrawRotaGraph(myX, myY - 12, 1.0, 0, charaGr_r[charaAnimeCnt / charaAnimeFrameTime], TRUE);
+        }else{
+            DrawRotaGraph(myX, myY - 12, 1.0, 0, charaGr_l[charaAnimeCnt / charaAnimeFrameTime], TRUE);
+        }
+    }
+    else {
+        if (myVy > 0) {
+            DrawRotaGraph(myX, myY - 12, 1.0, 0, charaGr_f[charaAnimeCnt / charaAnimeFrameTime], TRUE);
+        }
+        else {
+            DrawRotaGraph(myX, myY - 12, 1.0, 0, charaGr_b[charaAnimeCnt / charaAnimeFrameTime], TRUE);
+        }
+    }
+
+    
+    
+}
+
 
 bool WorldMap::myPointSet(int PointNum) {
 
@@ -356,16 +376,16 @@ bool WorldMap::myPointSet(int PointNum) {
 
 int WorldMap::PointSearch(int pointNum) {
 
-    /*
-    for (int vec = 0; vec < nowMapPointList.size(); vec++) {
+    
+    for (int vec = 0; vec < nowAreaPointList.size(); vec++) {
 
-        if (nowMapPointList[vec].pointNum == pointNum) {
+        if (nowAreaPointList[vec]->pointNum == pointNum) {
             return vec;
         }
 
     }
 
-    */
+    
 
     return -1;
 
@@ -373,269 +393,26 @@ int WorldMap::PointSearch(int pointNum) {
 
 }
 
-int WorldMap::RoadSearch(int startPointNum, int endPointNum) {
-
-    /*
-
-    for (int vec = 0; vec < nowMapRoadList.size(); vec++) {
-
-        if (nowMapRoadList[vec].startPointNum == startPointNum && nowMapRoadList[vec].endPointNum == endPointNum) {
-            return vec;
-        }
-        if (nowMapRoadList[vec].startPointNum == endPointNum && nowMapRoadList[vec].endPointNum == startPointNum) {
-            return vec;
-        }
-
-    }
 
 
-    */
 
-    return -1;
+
+
+bool WorldMap::checkMoveReach(Point* point) {
 
     
-
-}
-
-void WorldMap::Moving() {
-
-    /*
-    double radian = atan2(targetTurnPointList[0].y - myY, targetTurnPointList[0].x - myX);
-
-    double tempX = cos(radian);
-    double tempY = sin(radian);
-
-    myVx = tempX * mySpeed;
-    myVy = tempY * mySpeed;
-
-    myX += myVx;
-    myY += myVy;
-
-    if (checkMoveReach() == true) {
-
-        targetTurnPointList.erase(targetTurnPointList.begin());
-        
-        if (targetTurnPointList.size() <= 0) {
-            
-            myPointSet(finishPointNum);
-            isMyMove = false;
-            finishPointNum = -1;
-            myMoveDirection = -1;
-            targetTurnPointList.erase(targetTurnPointList.begin(), targetTurnPointList.end());
-
-            int myPointInfoIndex = PointSearch(nowMyPointNum);
-            
-            if (nowMapPointList[myPointInfoIndex].mapMove_mapNum != -1) {
-
-                nowMyMapNum = nowMapPointList[myPointInfoIndex].mapMove_mapNum;
-
-                int moveMyPoint = nowMapPointList[myPointInfoIndex].mapMove_pointNum;
-
-                nowMapPointList.erase(nowMapPointList.begin(), nowMapPointList.end());
-                nowMapRoadList.erase(nowMapRoadList.begin(), nowMapRoadList.end());
-
-                setNowMapPointList();
-                setNowMapRoadList();
-
-                myPointSet(moveMyPoint);
-
-                myPointInfoIndex = PointSearch(nowMyPointNum);
-
-                if (nowMapPointList[myPointInfoIndex].mapMove_movePointNum != -1) {
-                    int roadNum = RoadSearch(nowMyPointNum, nowMapPointList[myPointInfoIndex].mapMove_movePointNum);
-                    myMoveDirection = MoveDirection(nowMyPointNum, nowMapPointList[myPointInfoIndex].mapMove_movePointNum);
-                    if (myMoveDirection == 1) {
-                        for (int i = 0; i < nowMapRoadList[roadNum].roadTurnPoint.size(); i++) {
-                            targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                        }
-                        int finishPointIndex = PointSearch(nowMapPointList[myPointInfoIndex].mapMove_movePointNum);
-                        RoadTurnPoint rtp;
-                        rtp.x = nowMapPointList[finishPointIndex].x;
-                        rtp.y = nowMapPointList[finishPointIndex].y;
-                        finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                        targetTurnPointList.push_back(rtp);
-                    }
-                    else if (myMoveDirection == 2) {
-                        for (int i = nowMapRoadList[roadNum].roadTurnPoint.size() - 1; i >= 0; i--) {
-                            targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                        }
-                        int finishPointIndex = PointSearch(nowMapPointList[myPointInfoIndex].mapMove_movePointNum);
-                        RoadTurnPoint rtp;
-                        rtp.x = nowMapPointList[finishPointIndex].x;
-                        rtp.y = nowMapPointList[finishPointIndex].y;
-                        finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                        targetTurnPointList.push_back(rtp);
-                    }
-                    isMyMove = true;
-                }
-                
-
-            }
-
-
-        }
-
-    }
-
-    */
-
-}
-
-void WorldMap::KeyJudge() {
-
-    /*
-
-    char KeyBuf[256];
-
-    GetHitKeyStateAll(KeyBuf);
-
-    int pointIndex = PointSearch(nowMyPointNum);
-
-    if (KeyBuf[KEY_INPUT_UP] == 1) {
-        if (pointIndex != -1) {
-            if (nowMapPointList[pointIndex].upMovePoint != -1) {
-                int roadNum = RoadSearch(nowMyPointNum, nowMapPointList[pointIndex].upMovePoint);
-                myMoveDirection = MoveDirection(nowMyPointNum, nowMapPointList[pointIndex].upMovePoint);
-                if (myMoveDirection == 1) {
-                    for (int i = 0; i < nowMapRoadList[roadNum].roadTurnPoint.size(); i++) {
-                        targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                    }
-                    int finishPointIndex = PointSearch(nowMapPointList[pointIndex].upMovePoint);
-                    RoadTurnPoint rtp;
-                    rtp.x = nowMapPointList[finishPointIndex].x;
-                    rtp.y = nowMapPointList[finishPointIndex].y;
-                    finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                    targetTurnPointList.push_back(rtp);
-                }
-                else if (myMoveDirection == 2) {
-                    for (int i = nowMapRoadList[roadNum].roadTurnPoint.size() - 1; i >= 0; i--) {
-                        targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                    }
-                    int finishPointIndex = PointSearch(nowMapPointList[pointIndex].upMovePoint);
-                    RoadTurnPoint rtp;
-                    rtp.x = nowMapPointList[finishPointIndex].x;
-                    rtp.y = nowMapPointList[finishPointIndex].y;
-                    finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                    targetTurnPointList.push_back(rtp);
-                }
-                isMyMove = true;
-            }
-        }
-    }
-    else if (KeyBuf[KEY_INPUT_DOWN] == 1) {
-        if (pointIndex != -1) {
-            if (nowMapPointList[pointIndex].downMovePoint != -1) {
-                int roadNum = RoadSearch(nowMyPointNum, nowMapPointList[pointIndex].downMovePoint);
-                myMoveDirection = MoveDirection(nowMyPointNum, nowMapPointList[pointIndex].downMovePoint);
-                if (myMoveDirection == 1) {
-                    for (int i = 0; i < nowMapRoadList[roadNum].roadTurnPoint.size(); i++) {
-                        targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                    }
-                    int finishPointIndex = PointSearch(nowMapPointList[pointIndex].downMovePoint);
-                    RoadTurnPoint rtp;
-                    rtp.x = nowMapPointList[finishPointIndex].x;
-                    rtp.y = nowMapPointList[finishPointIndex].y;
-                    finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                    targetTurnPointList.push_back(rtp);
-                }
-                else if (myMoveDirection == 2) {
-                    for (int i = nowMapRoadList[roadNum].roadTurnPoint.size() - 1; i >= 0; i--) {
-                        targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                    }
-                    int finishPointIndex = PointSearch(nowMapPointList[pointIndex].downMovePoint);
-                    RoadTurnPoint rtp;
-                    rtp.x = nowMapPointList[finishPointIndex].x;
-                    rtp.y = nowMapPointList[finishPointIndex].y;
-                    finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                    targetTurnPointList.push_back(rtp);
-                }
-                isMyMove = true;
-            }
-        }
-    }
-    else if (KeyBuf[KEY_INPUT_LEFT] == 1) {
-        if (pointIndex != -1) {
-            if (nowMapPointList[pointIndex].leftMovePoint != -1) {
-                int roadNum = RoadSearch(nowMyPointNum, nowMapPointList[pointIndex].leftMovePoint);
-                myMoveDirection = MoveDirection(nowMyPointNum, nowMapPointList[pointIndex].leftMovePoint);
-                if (myMoveDirection == 1) {
-                    for (int i = 0; i < nowMapRoadList[roadNum].roadTurnPoint.size(); i++) {
-                        targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                    }
-                    int finishPointIndex = PointSearch(nowMapPointList[pointIndex].leftMovePoint);
-                    RoadTurnPoint rtp;
-                    rtp.x = nowMapPointList[finishPointIndex].x;
-                    rtp.y = nowMapPointList[finishPointIndex].y;
-                    finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                    targetTurnPointList.push_back(rtp);
-                }
-                else if (myMoveDirection == 2) {
-                    for (int i = nowMapRoadList[roadNum].roadTurnPoint.size() - 1; i >= 0; i--) {
-                        targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                    }
-                    int finishPointIndex = PointSearch(nowMapPointList[pointIndex].leftMovePoint);
-                    RoadTurnPoint rtp;
-                    rtp.x = nowMapPointList[finishPointIndex].x;
-                    rtp.y = nowMapPointList[finishPointIndex].y;
-                    finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                    targetTurnPointList.push_back(rtp);
-                }
-                isMyMove = true;
-            }
-        }
-    }
-    else if (KeyBuf[KEY_INPUT_RIGHT] == 1) {
-        if (pointIndex != -1) {
-            if (nowMapPointList[pointIndex].rightMovePoint != -1) {
-                int roadNum = RoadSearch(nowMyPointNum, nowMapPointList[pointIndex].rightMovePoint);
-                myMoveDirection = MoveDirection(nowMyPointNum, nowMapPointList[pointIndex].rightMovePoint);
-                if (myMoveDirection == 1) {
-                    for (int i = 0; i < nowMapRoadList[roadNum].roadTurnPoint.size(); i++) {
-                        targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                    }
-                    int finishPointIndex = PointSearch(nowMapPointList[pointIndex].rightMovePoint);
-                    RoadTurnPoint rtp;
-                    rtp.x = nowMapPointList[finishPointIndex].x;
-                    rtp.y = nowMapPointList[finishPointIndex].y;
-                    finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                    targetTurnPointList.push_back(rtp);
-                }
-                else if (myMoveDirection == 2) {
-                    for (int i = nowMapRoadList[roadNum].roadTurnPoint.size() - 1; i >= 0; i--) {
-                        targetTurnPointList.push_back(nowMapRoadList[roadNum].roadTurnPoint[i]);
-                    }
-                    int finishPointIndex = PointSearch(nowMapPointList[pointIndex].rightMovePoint);
-                    RoadTurnPoint rtp;
-                    rtp.x = nowMapPointList[finishPointIndex].x;
-                    rtp.y = nowMapPointList[finishPointIndex].y;
-                    finishPointNum = nowMapPointList[finishPointIndex].pointNum;
-                    targetTurnPointList.push_back(rtp);
-                }
-                isMyMove = true;
-            }
-        }
-    }
-
-    */
-
-}
-
-
-bool WorldMap::checkMoveReach() {
-
-    /*
 
     double margin = 5.0;
 
-    if (targetTurnPointList[0].x - margin <= myX && targetTurnPointList[0].x + margin >= myX && targetTurnPointList[0].y - margin <= myY && targetTurnPointList[0].y + margin >= myY) {
+    if (point->x - margin <= myX && point->x + margin >= myX && point->y - margin <= myY && point->y + margin >= myY) {
         
-        myX = targetTurnPointList[0].x;
-        myY = targetTurnPointList[0].y;
+        myX = point->x;
+        myY = point->y;
 
         return true;
     }
 
-    */
+    
 
     return false;
 
@@ -643,13 +420,20 @@ bool WorldMap::checkMoveReach() {
 
 }
 
-void WorldMap::setNowMapPointList() {
+void WorldMap::setNowAreaPointList() {
 
-    /*
+    //nowAreaPointList.reserve(100);
 
     //ここからポイント情報の読み込み
     //ファイルの読み込み
-    std::ifstream ifs("CreationOfDungeon_master\\csv\\WorldMap\\Point\\Point.csv");
+
+    std::string path = "csv/WorldMap/Area" + std::to_string(nowMyAreaNum) + ".csv";
+
+    if (debugFlag == true) {
+        path = "csv/WorldMap/Area_debug.csv";
+    }
+
+    std::ifstream ifs(path);
     if (ifs.fail()) {
         printfDx("fail\n");
         return;
@@ -668,52 +452,40 @@ void WorldMap::setNowMapPointList() {
         std::string token;
         std::istringstream stream(str);
 
-        Point point;
+        Point* point = new Point();
+
         int num = 0;
         //1行のうち、文字列とコンマを分割する
         while (getline(stream, token, ',')) {
-            if (num == 0 && stoi(token) != nowMyMapNum) {
-                num = -1;
-                break;
-            }
             switch (num) {
             case 0:
-                point.mapNum = stoi(token);
+                point->pointNum = stoi(token);
                 break;
             case 1:
-                point.pointNum = stoi(token);
+                point->stageNum = stoi(token);
                 break;
             case 2:
-                point.stageNum = stoi(token);
+                point->x = stoi(token);
                 break;
             case 3:
-                point.mapMove_mapNum = stoi(token);
+                point->y = stoi(token);
                 break;
             case 4:
-                point.mapMove_pointNum = stoi(token);
+                point->hitType = stoi(token);
                 break;
             case 5:
-                point.mapMove_movePointNum = stoi(token);
+                point->isStayPoint = stoi(token);
                 break;
-            case 6:
-                point.x = stod(token);
-                break;
-            case 7:
-                point.y = stod(token);
-                break;
-            case 8:
-                point.upMovePoint = stoi(token);
-                break;
-            case 9:
-                point.downMovePoint = stoi(token);
-                break;
-            case 10:
-                point.leftMovePoint = stoi(token);
-                break;
-            case 11:
-                point.rightMovePoint = stoi(token);
-                break;
+
             default:
+
+                if (num > 5) {
+                    PointConnect* pc = new PointConnect();
+                    pc->connectPointNum = stoi(token);
+                    pc->PointCost = -1;
+                    point->pointConect.push_back(pc);
+                }
+
                 break;
             }
 
@@ -722,150 +494,80 @@ void WorldMap::setNowMapPointList() {
         }
 
         if (num != -1) {
-            nowMapPointList.push_back(point);
+            point->isPoint = 1;
+            point->AreaNum = nowMyAreaNum;
+            nowAreaPointList.push_back(point);
         }
 
     }
 
-    */
+
+    setPointCost();
+    
 
 }
 
-void WorldMap::setNowMapRoadList() {
+void WorldMap::setNowRoadConnect() {
 
+    for (int i = 0; i < nowAreaPointList.size(); i++) {
 
-    /*
-    //ここから道の情報の読み込み
-    //ファイルの読み込み
-    std::ifstream ifs2("CreationOfDungeon_master\\csv\\WorldMap\\Road\\Road.csv");
-    if (ifs2.fail()) {
-        printfDx("fail\n");
-        return;
-    }
+        if (nowAreaPointList[i]->isPoint == 1) {
 
-    //csvファイルを1行ずつ読み込む
-    std::string str;
-    while (getline(ifs2, str)) {
-        std::string::size_type index = str.find("#");  // "#"を検索
-                                                       //"#"が入っていた行は飛ばす
-        if (index != std::string::npos) {
-            continue;
-        }
+            for (int j = 0; j < nowAreaPointList[i]->pointConect.size(); j++) {
 
+                bool isConnect = true;
 
-        std::string token;
-        std::istringstream stream(str);
+                for (int n = 0; n < nowRoadConnect.size(); n++) {
 
-        Road road;
-        int num = 0;
-        //1行のうち、文字列とコンマを分割する
-        while (getline(stream, token, ',')) {
-            if (num == 0 && stoi(token) != nowMyMapNum) {
-                num = -1;
-                break;
-            }
-            switch (num) {
-            case 0:
-                road.mapNum = stoi(token);
-                break;
-            case 1:
-                road.roadNum = stoi(token);
-                break;
-            case 2:
-                road.startPointNum = stoi(token);
-                break;
-            case 3:
-                road.endPointNum = stoi(token);
-                break;
-            default:
-                break;
-            }
-
-            num++;
-
-        }
-
-        if (num != -1) {
-
-            //ここから道の曲がる場所の情報の読み込み
-            //ファイルの読み込み
-            std::ostringstream outstr;
-            outstr << "CreationOfDungeon_master\\csv\\WorldMap\\Road\\RoadTurnPoint\\RoadTurnPoint_RoadNum" << road.roadNum << ".csv";
-            std::string strPath = outstr.str();
-            std::ifstream ifs2(strPath);
-            if (ifs2.fail()) {
-                //printfDx("fail\n");
-                //return;
-                //csvがない場合はそのまま続ける
-            }
-
-            //csvファイルを1行ずつ読み込む
-            std::string str2;
-            while (getline(ifs2, str2)) {
-                std::string::size_type index = str2.find("#");  // "#"を検索
-                                                                //"#"が入っていた行は飛ばす
-                if (index != std::string::npos) {
-                    continue;
-                }
-
-
-                std::string token;
-                std::istringstream stream(str2);
-
-                RoadTurnPoint roadTurnPoint;
-                int num = 0;
-                //1行のうち、文字列とコンマを分割する
-                while (getline(stream, token, ',')) {
-                    switch (num) {
-                    case 0:
-                        roadTurnPoint.x = stod(token);
-                        break;
-                    case 1:
-                        roadTurnPoint.y = stod(token);
-                        break;
-                    default:
+                    for (int b = 0; b < 2; b++) {
+                        if (nowRoadConnect[n]->road[(b + 2) % 2] == nowAreaPointList[i]->pointNum && nowRoadConnect[n]->road[(b + 1 + 2) % 2] == nowAreaPointList[i]->pointConect[j]->connectPointNum) {
+                            isConnect = false;
+                            break;
+                        }
+                    }
+                    if (isConnect == false) {
                         break;
                     }
 
-                    num++;
-
                 }
 
-                road.roadTurnPoint.push_back(roadTurnPoint);
+                if (isConnect == true) {
+                    RoadConnect* rc = new RoadConnect();
+                    rc->road[0] = nowAreaPointList[i]->pointNum;
+                    rc->road[1] = nowAreaPointList[i]->pointConect[j]->connectPointNum;
+                    nowRoadConnect.push_back(rc);
+                }
+
             }
 
-            nowMapRoadList.push_back(road);
+
+
         }
 
+
     }
-
-    */
-
-
 }
 
+void WorldMap::setPointCost() {
 
-int WorldMap::MoveDirection(int startPointNum, int endPointNum) {
+    for (int i = 0; i < nowAreaPointList.size(); i++) {
+        for (int j = 0; j < nowAreaPointList[i]->pointConect.size(); j++) {
 
-    /*
+            if (nowAreaPointList[i]->pointConect[j]->PointCost == -1) {
 
-    for (int vec = 0; vec < nowMapRoadList.size(); vec++) {
+                Point* tempPoint = getPoint(nowAreaPointList[i]->pointConect[j]->connectPointNum);
+                nowAreaPointList[i]->pointConect[j]->PointCost = std::hypot(nowAreaPointList[i]->x - tempPoint->x, nowAreaPointList[i]->y - tempPoint->y);
 
-        if (nowMapRoadList[vec].startPointNum == startPointNum && nowMapRoadList[vec].endPointNum == endPointNum) {
-            return 1;
+                for (int n = 0; n < tempPoint->pointConect.size(); n++) {
+                    if (tempPoint->pointConect[n]->connectPointNum == nowAreaPointList[i]->pointNum) {
+                        tempPoint->pointConect[n]->PointCost = nowAreaPointList[i]->pointConect[j]->PointCost;
+                    }
+                }
+
+            }
+
         }
-        if (nowMapRoadList[vec].startPointNum == endPointNum && nowMapRoadList[vec].endPointNum == startPointNum) {
-            return 2;
-        }
-
     }
-
-
-    */
-
-    return -1;
-
-    
 
 }
 
@@ -914,6 +616,201 @@ int WorldMap::ClickCheckCircle(int x, int y, int r) {
 
 }
 
+
+
+
+Point* WorldMap::getPoint(int pointNum) {
+
+    for (int i = 0; i < nowAreaPointList.size(); i++) {
+        if (nowAreaPointList[i]->pointNum == pointNum) {
+            return nowAreaPointList[i];
+        }
+    }
+
+    return nullptr;
+
+}
+
+
+
+void WorldMap::movePoint() {
+
+    Point* point;
+
+    point = getPoint(movePointList[0]);
+
+    bool isArrive = false;
+
+    isArrive = checkMoveReach(point);
+
+    if (isArrive == true) {
+
+        movePointList.erase(movePointList.begin());
+
+        if (movePointList.empty()) {
+            nowMyPointNum = point->pointNum;
+            mySpeed = 0.0;
+            myVx = 0.0;
+            myVy = 0.0;
+            charaAnimeCnt = 0;
+        }
+
+    }
+    else {
+
+        mySpeed = 3.0;
+
+        double radian = 0.0;
+
+        radian = atan2(point->y - myY, point->x - myX);
+
+        myVx = cos(radian) * mySpeed;
+        myVy = sin(radian) * mySpeed;
+
+        myX += myVx;
+        myY += myVy;
+
+    }
+
+
+}
+
+
+void WorldMap::searchPath(int pointNum) {
+
+    movePointList.clear();
+
+    std::vector<SearchPointConnect*> spc;
+
+    SearchPointConnect* sss = new SearchPointConnect();
+    sss->connectPointNum = -1;
+    sss->isSearch = false;
+    sss->PointCost = 0;
+    sss->pointNum = pointNum;
+
+    spc.push_back(sss);
+
+    setSearchPointConnect(pointNum, &spc);
+
+
+    setMovePath(nowMyPointNum, &spc);
+
+
+    /*
+    Point* point;
+
+    point = getPoint(nowMyPointNum);
+
+    for (PointConnect* connectPoint : point->pointConect) {
+        if (pointNum == connectPoint->connectPointNum) {
+            movePointList.push_back(connectPoint->connectPointNum);
+        }
+    }
+    */
+
+
+    if (movePointList.empty()) {
+
+    }else{
+        nowMyPointNum = -1;
+        charaAnimeCnt = 0;
+    }
+    
+
+
+
+}
+
+
+
+
+void WorldMap::setSearchPointConnect(int pointNum, std::vector<SearchPointConnect*>* spc) {
+
+    double cost = 0;
+
+    for (SearchPointConnect* ss : *spc) {
+        if (ss->pointNum == pointNum && ss->isSearch == true) {
+            return;
+        }else if(ss->pointNum == pointNum && ss->isSearch == false){
+            ss->isSearch = true;
+            cost = ss->PointCost;
+        }
+    }
+
+
+
+    Point* point;
+
+    point = getPoint(pointNum);
+
+    for (PointConnect* connectPoint : point->pointConect) {
+
+        bool is = false;
+
+        for (SearchPointConnect* ss : *spc) {
+            if (connectPoint->connectPointNum == ss->pointNum) {
+                is = true;
+                if (cost + connectPoint->PointCost < ss->PointCost) {
+                    ss->connectPointNum = pointNum;
+                    ss->PointCost = cost + connectPoint->PointCost;
+                }
+            }
+        }
+
+        if (is == false) {
+            SearchPointConnect* ssq = new SearchPointConnect();
+            ssq->connectPointNum = pointNum;
+            ssq->isSearch = false;
+            ssq->PointCost = cost + connectPoint->PointCost;
+            ssq->pointNum = connectPoint->connectPointNum;
+            spc->push_back(ssq);
+        }
+
+    }
+
+    int pn = -1;
+    int minCost = -1;
+
+    for (SearchPointConnect* ss : *spc) {
+
+        if (minCost == -1 && ss->isSearch == false) {
+            pn = ss->pointNum;
+            minCost = ss->PointCost;
+        }else if (minCost > ss->PointCost && ss->isSearch == false) {
+            pn = ss->pointNum;
+            minCost = ss->PointCost;
+        }
+
+    }
+
+    if (minCost == -1 && pn == -1) {
+        return;
+    }
+    else {
+        setSearchPointConnect(pn, spc);
+    }
+
+
+}
+
+
+
+void WorldMap::setMovePath(int pointNum, std::vector<SearchPointConnect*>* spc) {
+
+    for (SearchPointConnect* ss : *spc) {
+        if (ss->pointNum == pointNum) {
+            if (ss->connectPointNum == -1) {
+                return;
+            }
+            else {
+                movePointList.push_back(ss->connectPointNum);
+                setMovePath(ss->connectPointNum, spc);
+            }
+        }
+    }
+
+
+}
 
 
 
