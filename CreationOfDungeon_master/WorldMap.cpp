@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <math.h>
+#include <typeinfo>
 #include "DxLib.h"
 #include "Game.h"
 #include "Title.h"
@@ -44,7 +45,7 @@ SceneBase * WorldMap::Update()
             isPause = !isPause;
             keyFlag = true;
         }
-        
+
     }
     else {
         keyFlag = false;
@@ -98,6 +99,11 @@ SceneBase * WorldMap::Update()
                         hit += ClickCheckCircle(nowAreaPointList[i]->x + 5 + 4 + 3, nowAreaPointList[i]->y, pointR - 3);
 
                     }
+                    else if (nowAreaPointList[i]->hitType == 100) {
+                        if (typeid(*nowAreaPointList[i]) == typeid(AreaConnectPoint)) {
+                            hit += ClickCheckCircle(dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonX, dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonY, 15);
+                        }
+                    }
 
 
                     if (hit >= 1) {
@@ -146,7 +152,7 @@ SceneBase * WorldMap::Update()
         }
 
         //ここまで
-        
+
     }
 
     if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
@@ -160,15 +166,15 @@ SceneBase * WorldMap::Update()
     else {
         clickFlag = false;
     }
-    
+
     printfDx("x:%d y:%d", mx, my);
-    
+
     return this;
 }
 
 void WorldMap::Draw()
 {
-    
+
     clsDx();
 
 
@@ -195,11 +201,11 @@ void WorldMap::Draw()
         DrawFormatString(530, 400, GetColor(255, 255, 255), "ゲームを再開する");
         DrawBox(530, 400, 530 + 30 * 8 + 15, 400 + 30, GetColor(255, 255, 255), FALSE);
 
-        
+
 
     }
 
-    
+
 
 }
 
@@ -219,7 +225,7 @@ void WorldMap::Init() {
     myVx = 0;
 
     myVy = 0;
-    
+
 
     myPointSet(1);
 
@@ -227,7 +233,18 @@ void WorldMap::Init() {
 
     */
 
-    Area1Gr = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+
+    AreaGrBuffer[0] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    /*
+    AreaGrBuffer[1] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[2] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[3] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[4] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[5] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[6] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[7] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    */
+    AreaGr = &AreaGrBuffer[0];
 
     charaGr_f[0] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlFront1.png");
     charaGr_f[1] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlFront2.png");
@@ -261,7 +278,7 @@ void WorldMap::Init() {
     nowMyAreaNum = 1;
     nowMyPointNum = 1;
 
-    
+
 
     mySpeed = 0.0;
 
@@ -279,17 +296,19 @@ void WorldMap::Init() {
     setNowRoadConnect();
 
     movePointList.clear();
-    
+
+    AreaGr = &AreaGrBuffer[nowMyAreaNum - 1];
 
 }
 
 
 void WorldMap::DrawMap() {
 
-    DrawGraph(0, 0, Area1Gr, TRUE);
-    
+    DrawGraph(0, 0, *AreaGr, TRUE);
+
 
     for (int i = 0; i < nowRoadConnect.size(); i++) {
+
         int road1 = PointSearch(nowRoadConnect[i]->road[0]);
         int road2 = PointSearch(nowRoadConnect[i]->road[1]);
 
@@ -303,13 +322,18 @@ void WorldMap::DrawMap() {
         if (nowAreaPointList[i]->isPoint == 1) {
 
             if (nowAreaPointList[i]->isStayPoint == 1) {
-                DrawCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR, GetColor(255, 0, 0), TRUE);
-                DrawCircle(nowAreaPointList[i]->x - 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
-                DrawCircle(nowAreaPointList[i]->x - 5 - 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
-                DrawCircle(nowAreaPointList[i]->x - 5 - 4 - 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
-                DrawCircle(nowAreaPointList[i]->x + 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
-                DrawCircle(nowAreaPointList[i]->x + 5 + 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
-                DrawCircle(nowAreaPointList[i]->x + 5 + 4 + 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
+                if (typeid(*nowAreaPointList[i]) == typeid(AreaConnectPoint)) {
+                    DrawCircle(dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonX, dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonY, 15, GetColor(255, 0, 0), TRUE);
+                }
+                else {
+                    DrawCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x - 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x - 5 - 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x - 5 - 4 - 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x + 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x + 5 + 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x + 5 + 4 + 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
+                }
             }
             else {
                 DrawCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR, GetColor(255, 0, 0), TRUE);
@@ -325,13 +349,14 @@ void WorldMap::DrawMap() {
     }
 
 
-    if (nowMyPointNum != -1 || (myVx ==0 && myVy == 0)) {
+    if (nowMyPointNum != -1 || (myVx == 0 && myVy == 0)) {
         DrawRotaGraph(myX, myY - 12, 1.0, 0, charaGr_f[charaAnimeCnt / charaAnimeFrameTime], TRUE);
     }
     else if (fabs(myVx) > fabs(myVy)) {
         if (myVx > 0) {
             DrawRotaGraph(myX, myY - 12, 1.0, 0, charaGr_r[charaAnimeCnt / charaAnimeFrameTime], TRUE);
-        }else{
+        }
+        else {
             DrawRotaGraph(myX, myY - 12, 1.0, 0, charaGr_l[charaAnimeCnt / charaAnimeFrameTime], TRUE);
         }
     }
@@ -344,8 +369,8 @@ void WorldMap::DrawMap() {
         }
     }
 
-    
-    
+
+
 }
 
 
@@ -370,13 +395,13 @@ bool WorldMap::myPointSet(int PointNum) {
 
 
     return false;
-    
+
 
 }
 
 int WorldMap::PointSearch(int pointNum) {
 
-    
+
     for (int vec = 0; vec < nowAreaPointList.size(); vec++) {
 
         if (nowAreaPointList[vec]->pointNum == pointNum) {
@@ -385,11 +410,11 @@ int WorldMap::PointSearch(int pointNum) {
 
     }
 
-    
+
 
     return -1;
 
-    
+
 
 }
 
@@ -400,23 +425,23 @@ int WorldMap::PointSearch(int pointNum) {
 
 bool WorldMap::checkMoveReach(Point* point) {
 
-    
+
 
     double margin = 5.0;
 
     if (point->x - margin <= myX && point->x + margin >= myX && point->y - margin <= myY && point->y + margin >= myY) {
-        
+
         myX = point->x;
         myY = point->y;
 
         return true;
     }
 
-    
+
 
     return false;
 
-    
+
 
 }
 
@@ -426,6 +451,8 @@ void WorldMap::setNowAreaPointList() {
 
     //ここからポイント情報の読み込み
     //ファイルの読み込み
+
+    nowAreaPointList.clear();
 
     std::string path = "csv/WorldMap/Area" + std::to_string(nowMyAreaNum) + ".csv";
 
@@ -439,6 +466,8 @@ void WorldMap::setNowAreaPointList() {
         return;
     }
 
+    int dataType = 0;   //読み込むデータ　ポイント情報か、エリア移動か
+
     //csvファイルを1行ずつ読み込む
     std::string str;
     while (getline(ifs, str)) {
@@ -448,66 +477,130 @@ void WorldMap::setNowAreaPointList() {
             continue;
         }
 
+        index = str.find("end");  // "end"を検索
+
+        if (index != std::string::npos) {
+            dataType++;
+            continue;
+        }
 
         std::string token;
         std::istringstream stream(str);
 
         Point* point = new Point();
 
+        AreaConnectPoint* areaConnectPoint = new AreaConnectPoint();
+
         int num = 0;
         //1行のうち、文字列とコンマを分割する
         while (getline(stream, token, ',')) {
-            switch (num) {
-            case 0:
-                point->pointNum = stoi(token);
-                break;
-            case 1:
-                point->stageNum = stoi(token);
-                break;
-            case 2:
-                point->x = stoi(token);
-                break;
-            case 3:
-                point->y = stoi(token);
-                break;
-            case 4:
-                point->hitType = stoi(token);
-                break;
-            case 5:
-                point->isStayPoint = stoi(token);
-                break;
 
-            default:
+            if (dataType == 0) {
 
-                if (num > 5) {
-                    PointConnect* pc = new PointConnect();
-                    pc->connectPointNum = stoi(token);
-                    pc->PointCost = -1;
-                    point->pointConect.push_back(pc);
+                switch (num) {
+                case 0:
+                    point->pointNum = stoi(token);
+                    break;
+                case 1:
+                    point->stageNum = stoi(token);
+                    break;
+                case 2:
+                    point->x = stoi(token);
+                    break;
+                case 3:
+                    point->y = stoi(token);
+                    break;
+                case 4:
+                    point->hitType = stoi(token);
+                    break;
+                case 5:
+                    point->isStayPoint = stoi(token);
+                    break;
+
+                default:
+
+                    if (num > 5) {
+                        PointConnect* pc = new PointConnect();
+                        pc->connectPointNum = stoi(token);
+                        pc->PointCost = -1;
+                        point->pointConect.push_back(pc);
+                    }
+
+                    break;
                 }
-
-                break;
             }
+            else {
 
+                switch (num) {
+                case 0:
+                    areaConnectPoint->pointNum = stoi(token);
+                    break;
+                case 1:
+                    areaConnectPoint->moveArea = stoi(token);
+                    break;
+                case 2:
+                    areaConnectPoint->buttonX = stoi(token);
+                    break;
+                case 3:
+                    areaConnectPoint->buttonY = stoi(token);
+                    break;
+                case 4:
+                    areaConnectPoint->x = stoi(token);
+                    break;
+                case 5:
+                    areaConnectPoint->y = stoi(token);
+                    break;
+                case 6:
+                    areaConnectPoint->firstMovePoint = stoi(token);
+                    break;
+                case 7:
+                    areaConnectPoint->firstX = stoi(token);
+                    break;
+                case 8:
+                    areaConnectPoint->firstY = stoi(token);
+                    break;
+
+                default:
+
+                    if (num > 8) {
+                        PointConnect* pc = new PointConnect();
+                        pc->connectPointNum = stoi(token);
+                        pc->PointCost = -1;
+                        areaConnectPoint->pointConect.push_back(pc);
+                    }
+
+                    break;
+
+                }
+            }
             num++;
-
         }
 
-        if (num != -1) {
+        if (num != -1 && dataType == 0) {
             point->isPoint = 1;
             point->AreaNum = nowMyAreaNum;
             nowAreaPointList.push_back(point);
+        }
+        else if (num != -1 && dataType == 1) {
+            areaConnectPoint->AreaNum = nowMyAreaNum;
+            areaConnectPoint->hitType = 100;
+            areaConnectPoint->isPoint = 1;
+            areaConnectPoint->isStayPoint = 1;
+            areaConnectPoint->stageNum = -1;
+            nowAreaPointList.push_back(areaConnectPoint);
         }
 
     }
 
 
     setPointCost();
-    
+
 
 }
 
 void WorldMap::setNowRoadConnect() {
+
+    nowRoadConnect.clear();
 
     for (int i = 0; i < nowAreaPointList.size(); i++) {
 
@@ -587,7 +680,7 @@ int WorldMap::ClickCheckBox(int x, int y, int rx, int ry) {
                 return 1;
             }
         }
-        
+
     }
 
     return 0;
@@ -609,7 +702,7 @@ int WorldMap::ClickCheckCircle(int x, int y, int r) {
                 return 1;
             }
         }
-        
+
     }
 
     return 0;
@@ -619,7 +712,7 @@ int WorldMap::ClickCheckCircle(int x, int y, int r) {
 
 
 
-Point* WorldMap::getPoint(int pointNum) {
+WorldMap::Point* WorldMap::getPoint(int pointNum) {
 
     for (int i = 0; i < nowAreaPointList.size(); i++) {
         if (nowAreaPointList[i]->pointNum == pointNum) {
@@ -645,15 +738,30 @@ void WorldMap::movePoint() {
 
     if (isArrive == true) {
 
-        movePointList.erase(movePointList.begin());
+        if (typeid(*point) == typeid(AreaConnectPoint)) {
 
-        if (movePointList.empty()) {
-            nowMyPointNum = point->pointNum;
-            mySpeed = 0.0;
-            myVx = 0.0;
-            myVy = 0.0;
-            charaAnimeCnt = 0;
+            AreaConnectPoint* areaPoint = dynamic_cast<AreaConnectPoint*>(point);
+
+            setAreaNum(areaPoint->moveArea);
+
+            myX = areaPoint->firstX;
+            myY = areaPoint->firstY;
+            
+            movePointList.push_back(areaPoint->firstMovePoint);
+
+
+        }else{
+            movePointList.erase(movePointList.begin());
+
+            if (movePointList.empty()) {
+                nowMyPointNum = point->pointNum;
+                mySpeed = 0.0;
+                myVx = 0.0;
+                myVy = 0.0;
+                charaAnimeCnt = 0;
+            }
         }
+        
 
     }
     else {
@@ -711,11 +819,12 @@ void WorldMap::searchPath(int pointNum) {
 
     if (movePointList.empty()) {
 
-    }else{
+    }
+    else {
         nowMyPointNum = -1;
         charaAnimeCnt = 0;
     }
-    
+
 
 
 
@@ -731,7 +840,8 @@ void WorldMap::setSearchPointConnect(int pointNum, std::vector<SearchPointConnec
     for (SearchPointConnect* ss : *spc) {
         if (ss->pointNum == pointNum && ss->isSearch == true) {
             return;
-        }else if(ss->pointNum == pointNum && ss->isSearch == false){
+        }
+        else if (ss->pointNum == pointNum && ss->isSearch == false) {
             ss->isSearch = true;
             cost = ss->PointCost;
         }
@@ -776,7 +886,8 @@ void WorldMap::setSearchPointConnect(int pointNum, std::vector<SearchPointConnec
         if (minCost == -1 && ss->isSearch == false) {
             pn = ss->pointNum;
             minCost = ss->PointCost;
-        }else if (minCost > ss->PointCost && ss->isSearch == false) {
+        }
+        else if (minCost > ss->PointCost && ss->isSearch == false) {
             pn = ss->pointNum;
             minCost = ss->PointCost;
         }
@@ -811,6 +922,38 @@ void WorldMap::setMovePath(int pointNum, std::vector<SearchPointConnect*>* spc) 
 
 
 }
+
+
+
+void WorldMap::setAreaNum(int areaNum) {
+
+    nowMyAreaNum = areaNum;
+    nowMyPointNum = -1;
+
+
+
+    mySpeed = 0.0;
+
+    myVx = 0.0;
+    myVy = 0.0;
+
+    charaAnimeCnt = 0;
+
+    setNowAreaPointList();
+
+    setNowRoadConnect();
+
+    movePointList.clear();
+
+    AreaGr = &AreaGrBuffer[areaNum - 1];
+
+}
+
+
+
+
+
+
 
 
 

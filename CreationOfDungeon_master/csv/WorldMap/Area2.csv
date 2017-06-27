@@ -1,7 +1,7 @@
 #pointNum,#stageNum,#x,#y,#hitType,#isStayPoint,#pointConectÅc,
-1,1,836,538,0,1,2
-2,2,560,418,0,1,1,3
-3,3,601,182,0,1,2,101
+4,1,836,638,0,1,5,102
+5,2,560,418,0,1,4,6
+6,3,301,382,0,1,5
 end
 #pointNum,#moveArea,#buttonX,#buttonY,#moveX,#moveY,#firstMovePoint,#firstX,#firstY,#pointConectÅc,
-101,2,100,100,150,150,4,1000,700,3
+102,1,950,650,1000,700,3,150,150,4
