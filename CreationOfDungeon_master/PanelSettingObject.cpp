@@ -5,22 +5,33 @@
 
 
 PanelSettingObject::PanelSettingObject()
+    : panel()
 {
 }
 
-PanelSettingObject::PanelSettingObject(std::string _panel_name)
+PanelSettingObject::PanelSettingObject(PanelContent& _panelContent)
+    : panel(std::move(_panelContent))
+    , _isEnable(true)
 {
-    panel._name = _panel_name;
+ //   panel = std::move(_panelContent);
+    auto graph_name(panel._name.substr(std::string("SettingObject_").length(), panel._name.length()));
+    std::string filename = "graph/ui/" + graph_name + ".png";
+
+    auto pos = panel._pos;
+
+    _position.Set(pos._x, pos._y);
+
+    _graph.Load(filename);
+
+    _graph.SetPosition(_position);
+    _graph.SetDisplayMode(_isEnable);
+    _graph.SetPriority(Sprite::Priority::UI);
+
 }
 
 
 PanelSettingObject::~PanelSettingObject()
 {
-}
-
-void PanelSettingObject::SettingObj(PanelContent& pc)
-{
-    panel = pc;
 }
 
 void PanelSettingObject::Update()
@@ -32,6 +43,7 @@ void PanelSettingObject::Draw()
 {
     //panel.Draw();
     //DrawCircle(panel.GetPosition()._x, panel.GetPosition()._y, 5, GetColor(255, 0, 0));
+    _graph.SetDisplayMode(_isEnable);
     GraphicalObject::Draw();
 }
 
@@ -40,9 +52,19 @@ void PanelSettingObject::Init(PanelContent& _panelContent)
     panel = _panelContent;
 }
 
+std::string PanelSettingObject::GetTypeName()
+{
+    return panel._name;
+}
+
 bool PanelSettingObject::IsClicked()
 {
     return GetIsClicked(panel);
+}
+
+bool PanelSettingObject::IsEnable()
+{
+    return _isEnable;
 }
 
 void PanelSettingObject::DrawDebugPrint()

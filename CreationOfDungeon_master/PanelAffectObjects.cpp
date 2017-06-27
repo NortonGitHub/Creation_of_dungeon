@@ -6,13 +6,14 @@
 #include "cd_666s/Resources/AllResourceManager.h"
 
 PanelAffectObjects::PanelAffectObjects()
-    : panel(PanelContent())
+    : panel()
 {
 }
 
-PanelAffectObjects::PanelAffectObjects(PanelContent _panelContent)
+PanelAffectObjects::PanelAffectObjects(PanelContent& _panelContent)
     : panel(std::move(_panelContent))
 {
+//    panel = std::move(_panelContent);
     std::string filename = "graph/ui/" + panel._name + ".png";
 
     auto pos = panel._pos;
@@ -31,7 +32,7 @@ PanelAffectObjects::~PanelAffectObjects()
 {
 }
 
-void PanelAffectObjects::Init(PanelContent _panelContent)
+void PanelAffectObjects::Init(PanelContent& _panelContent)
 {
     panel = _panelContent;
 }
@@ -44,18 +45,18 @@ void PanelAffectObjects::Update()
 void PanelAffectObjects::Draw()
 {
     GraphicalObject::Draw();
-    DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
+//    DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
 }
 
 std::string PanelAffectObjects::GetCategoryName()
 {
-    if (panel._name.find("MONSTER") != std::string::npos) {
+    if (panel._name.find("Monster") != std::string::npos) {
         return "MONSTER";
     }
-    else if (panel._name.find("TRAP") != std::string::npos) {
+    else if (panel._name.find("Trap") != std::string::npos) {
         return "TRAP";
     }
-    else if (panel._name.find("BLOCK") != std::string::npos) {
+    else if (panel._name.find("Block") != std::string::npos) {
         return "BLOCK";
     }
     else {
@@ -63,22 +64,29 @@ std::string PanelAffectObjects::GetCategoryName()
     }
 }
 
+std::string PanelAffectObjects::GetTypeName()
+{
+    return panel._name;
+}
+
 void PanelAffectObjects::SetSettingObject(std::vector<PanelBase>& _tps)
 {
     CSVReader reader;
 
     std::string fileName = "csv/Edit/";
-    fileName += panel._name + ".csv";
+    fileName += GetCategoryName() + ".csv";
     std::vector<std::string> _array;
 
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, _array);
-
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, _array, 1);
+    auto a = _tps.size();
     for (int i = 0; i < _tps.size(); i++) {
         if (i < _array.size()) {
-            _tps[i] = PanelSettingObject(_array[i]);
+            auto pc = PanelContent(this->panel._pos, _array[i], this->panel._func_var);
+            _tps[i].Init(pc); // = PanelSettingObject(pc);//_array[i]);
         }
         else {
-            _tps[i] = PanelDisplayer();
+            auto pc = PanelContent(this->panel._pos, "none", this->panel._func_var);
+            _tps[i].Init(pc);
         }
     }
 }

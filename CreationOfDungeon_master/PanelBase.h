@@ -18,16 +18,22 @@ public:
     virtual void Init(PanelContent& _panelContent);
 
     virtual std::string GetCategoryName();
+    virtual std::string GetTypeName();
 
     virtual void SetSettingObject(std::vector<PanelBase>& _tps);
 
     virtual bool IsClicked();
 
+    virtual bool IsEnable();    //•\Ž¦‚·‚é‚©”Û‚©‚ð•Ô‚·
+
     virtual void DrawDebugPrint();
 
     bool GetIsClicked(PanelContent& panel);
 
-    std::shared_ptr<PanelContent> _pobj;
+    //std::shared_ptr<PanelContent> _pobj;
    // virtual void SetPanel
+
+protected:
+//    PanelContent panel;
 };
 

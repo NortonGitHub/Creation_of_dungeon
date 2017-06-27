@@ -5,21 +5,25 @@ class PanelSettingObject :
 {
 public:
     PanelSettingObject();
-    PanelSettingObject(std::string _panel_name);
+    PanelSettingObject(PanelContent& _panelContent);
     ~PanelSettingObject();
-
-    void SettingObj(PanelContent& pc);
 
     void Update() override;
     void Draw() override;
 
-    void Init(PanelContent& _panelContent);
+    void Init(PanelContent& _panelContent) override;
 
-    bool IsClicked();
+    std::string GetTypeName() override;
+
+    bool IsClicked() override;
+
+    bool IsEnable() override;
 
     void DrawDebugPrint() override;
 
 private:
     PanelContent panel;
+
+    bool _isEnable;
 };
 

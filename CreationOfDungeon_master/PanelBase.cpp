@@ -28,11 +28,21 @@ std::string PanelBase::GetCategoryName()
     return std::string();
 }
 
+std::string PanelBase::GetTypeName()
+{
+    return std::string();
+}
+
 void PanelBase::SetSettingObject(std::vector<PanelBase>& _tps)
 {
 }
 
 bool PanelBase::IsClicked()
+{
+    return false;
+}
+
+bool PanelBase::IsEnable()
 {
     return false;
 }
