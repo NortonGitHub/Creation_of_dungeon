@@ -19,6 +19,8 @@
 #include <assert.h>
 
 
+#include "../../MoneyManager.h"
+
 Dungeon::Dungeon(std::string stageName)
     : _permitivePassedNum(2)
     , _stageName(stageName)
@@ -32,6 +34,11 @@ Dungeon::Dungeon(std::string stageName)
     , _intruderInformation(_dictionary)
     , _intrudeLastCharacter(false)
 {
+
+    _windowBackground.Load("resourse/graph/ui/main_window_background" + _stageName + ".png");
+    _windowBackground.SetPosition(Vector2D(28, 28));
+
+
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
     _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
@@ -250,6 +257,10 @@ void Dungeon::Update()
         if (obj != nullptr)
             obj->Update();
     }
+
+    clsDx();
+    printfDx("%d", MoneyManager::getInstance()->getMoney());
+
 }
 
 

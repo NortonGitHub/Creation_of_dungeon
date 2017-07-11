@@ -9,6 +9,8 @@
 
 #include "EnemysSearch.h"
 
+#include "../../MoneyManager.h"
+
 int Enemy::_defeatedNum = 0;
 int Enemy::_enemysNum = 0;
 
@@ -299,6 +301,10 @@ void Enemy::OnDie()
 
     //©•ª‚ğ’ÇÕ‚µ‚Ä‚¢‚½’‡ŠÔ‚Í‚ ‚«‚ç‚ß‚é‚æ‚¤‚É‚·‚é
     _notifyer.NotifyRemoveTarget(*this);
+
+    //’Ç‰Á@by negative
+    MoneyManager::getInstance()->increaseMoney(100);
+
 }
 
 
