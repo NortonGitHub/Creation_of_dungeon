@@ -14,15 +14,21 @@ PanelSettingObject::PanelSettingObject(PanelContent& _panelContent)
     , _isEnable(true)
 {
  //   panel = std::move(_panelContent);
-    auto graph_name(panel._name.substr(std::string("SettingObject_").length(), panel._name.length()));
-    std::string filename = "graph/ui/" + graph_name + ".png";
+    std::string graph_name;
+    if (panel._name.find("SettingObject_") != std::string::npos) {
+        graph_name = panel._name.substr(std::string("SettingObject_").length(), panel._name.length());
+    }else{
+        graph_name = panel._name;
+    }
 
+    std::string filename = "graph/ui/" + graph_name + ".png";
+    
     auto pos = panel._pos;
 
     _position.Set(pos._x, pos._y);
 
     _graph.Load(filename);
-
+    
     _graph.SetPosition(_position);
     _graph.SetDisplayMode(_isEnable);
     _graph.SetPriority(Sprite::Priority::UI);
