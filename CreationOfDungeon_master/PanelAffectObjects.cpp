@@ -70,7 +70,7 @@ std::string PanelAffectObjects::GetTypeName()
 }
 
 void PanelAffectObjects::SetSettingObject(std::vector<PanelBase>& _tps)
-{
+{/*
     CSVReader reader;
 
     std::string fileName = "csv/Edit/";
@@ -78,6 +78,7 @@ void PanelAffectObjects::SetSettingObject(std::vector<PanelBase>& _tps)
     std::vector<std::string> _array;
 
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, _array, 1);
+    }
     auto a = _tps.size();
     for (int i = 0; i < _tps.size(); i++) {
         if (i < _array.size()) {
@@ -88,7 +89,7 @@ void PanelAffectObjects::SetSettingObject(std::vector<PanelBase>& _tps)
             auto pc = PanelContent(this->panel._pos, "none", this->panel._func_var);
             _tps[i].Init(pc);
         }
-    }
+    }*/
 }
 
 void PanelAffectObjects::DrawDebugPrint()
