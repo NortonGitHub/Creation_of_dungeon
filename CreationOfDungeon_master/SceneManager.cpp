@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "Title.h"
+#include "EditMap.h"
 
 
 SceneManager::SceneManager() : now_scene(new Title()), test(Graph("resourse/test_666/omote.png"))

@@ -11,6 +11,7 @@ class Goal : public TiledObject
 {
 public:
     Goal(TiledVector tilePos, ColleagueNotifyer& notifyer, MessageReciever& reciever, int permitivePassedNum);
+    Goal(TiledVector tilePos, ColleagueNotifyer& notifyer);
     ~Goal();
     
     bool IsOverwritable(TiledObject* overwriter) override;

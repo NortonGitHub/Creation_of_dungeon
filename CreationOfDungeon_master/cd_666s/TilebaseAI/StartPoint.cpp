@@ -17,6 +17,17 @@ StartPoint::StartPoint(TiledVector tilePos, MessageReciever& reciever)
     _intrudeMessage = _reciever._processer.CreateTalkData("csv/talkData/blaver_intruding.csv", Talk_Type::dynamic);
 }
 
+StartPoint::StartPoint(TiledVector tilePos)
+    : TiledObject(tilePos)
+    , _frameFromStart(0)
+    , _currentIndex(0)
+    ,_reciever(MessageReciever())
+{
+    _type = TiledObject::Type::START;
+
+}
+
+
 
 StartPoint::~StartPoint()
 {

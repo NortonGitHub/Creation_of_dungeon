@@ -17,6 +17,16 @@ Goal::Goal(TiledVector tilePos, ColleagueNotifyer& notifyer, MessageReciever& re
     _tdb = _reciever._processer.CreateTalkData("csv/talkData/missed.csv", Talk_Type::nomal);
 }
 
+Goal::Goal(TiledVector tilePos, ColleagueNotifyer& notifyer)
+    : TiledObject(tilePos)
+    , _passedNum(0)
+    , _permitivePassedNum(99)
+    , _notifyer(notifyer)
+    , _reciever(MessageReciever())
+{
+    _type = TiledObject::Type::GOAL;
+}
+
 
 Goal::~Goal()
 {

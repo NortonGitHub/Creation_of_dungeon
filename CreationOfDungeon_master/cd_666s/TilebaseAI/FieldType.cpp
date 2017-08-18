@@ -1,6 +1,6 @@
 #include "FieldType.h"
 #include "../Resources/AllResourceManager.h"
-
+/*
 std::string GetMapChipGraphDirectory(FieldType type)
 {
     std::string directory = IMAGE_RESOURCE_TABLE->GetFolderPath();
@@ -29,3 +29,4 @@ FieldType GetFieldTypeFromData(std::string data)
 
     return FieldType::None;
 }
+*/

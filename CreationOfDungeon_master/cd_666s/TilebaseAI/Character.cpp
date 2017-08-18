@@ -28,7 +28,7 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
     _actCounter.Reset(30 * speedRatio, true, true);
 
     std::string fileName = "resourse/graph/tiledObject/";
-    fileName += _name;
+    fileName += _name;  //ÉGÉâÅ[ÇÃå¥àˆ _animatorÅ@
     _animator.AddAnimation("front", std::make_shared<GraphArray>(fileName + "_front.png", 32, 24));
     _animator.AddAnimation("right", std::make_shared<GraphArray>(fileName + "_right.png", 32, 24));
     _animator.AddAnimation("left", std::make_shared<GraphArray>(fileName + "_left.png", 32, 24));

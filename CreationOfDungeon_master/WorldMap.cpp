@@ -7,6 +7,7 @@
 #include "DxLib.h"
 #include "Game.h"
 #include "Title.h"
+#include "EditMap.h"
 
 //　03/15にて　書き直すのが間に合いそうにないので、最低限の機能のみで動くようにします　従来のものはコメントアウトで
 
@@ -110,7 +111,8 @@ SceneBase * WorldMap::Update()
 
                         if (nowMyPointNum == nowAreaPointList[i]->pointNum) {
                             stageNum = nowAreaPointList[i]->stageNum;
-                            return new Game(stageNum);
+                            //return new Game(stageNum);
+                            return new EditMap(std::to_string(stageNum));
                         }
                         else {
                             searchPath(nowAreaPointList[i]->pointNum);

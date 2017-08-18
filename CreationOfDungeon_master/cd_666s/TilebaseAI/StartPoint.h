@@ -13,6 +13,7 @@ class StartPoint : public TiledObject
     typedef std::pair<std::weak_ptr<Enemy>, long> AppearData;
 public:
     StartPoint(TiledVector tilePos, MessageReciever& reciever);
+    StartPoint(TiledVector tilePos);
     ~StartPoint();
     
     bool IsOverwritable(TiledObject* overwriter) override;

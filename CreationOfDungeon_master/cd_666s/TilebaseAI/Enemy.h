@@ -10,6 +10,8 @@
 #include <memory>
 #include <string>
 
+#include "ConsumableItem.h"
+
 class AstarChaser;
 class ColleagueNotifyer;
 class StartPoint;
