@@ -2,9 +2,9 @@
 
 
 SceneBase::SceneBase()
-    : _before_pos(0, 0), test(Graph("resource/test_666/omote.png"))
+    : _before_pos(0, 0)//, test(Graph("resource/test_666/omote.png"))
 {
-    test.SetPosition(Vector2D(64, 64));
+ //   test.SetPosition(Vector2D(64, 64));
 }
 
 
