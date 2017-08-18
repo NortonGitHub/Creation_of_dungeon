@@ -2,6 +2,7 @@
 #define Dungeon_h
 
 #include <string>
+#include <unordered_map>
 #include "MonsterController.h"
 #include "TiledVector.h"
 #include "ColleagueNotifyer.h"
@@ -9,15 +10,13 @@
 #include "IntruderInfomation.h"
 #include "TiledObjectDictionary.h"
 #include "DungeonTimer.h"
-#include "../../Vector2D.h"
+#include "MessageReciever.h"
+
 #include "../Render/Sprite.h"
 #include "../Sound/Sound.h"
 
-class GraphicalObject;
-class TiledObject;
-class Sprite;
-class Sound;
-class Action;
+
+
 class Goal;
 class StartPoint;
 
@@ -38,6 +37,8 @@ public:
     
 private:
     
+    void LoadTileSize(std::string stageName, std::vector<std::string>& rawData);
+
     //ゲーム時間と時間通知モジュール群
     DungeonTimer _timer;
 
@@ -67,8 +68,17 @@ private:
     //次に侵入してくるモンスターの情報
     IntruderInfomation _intruderInformation;
 
+    //メッセージウィンドウ
+    MessageReciever _messageReciever;
+
     // MEMO : debug用
-    Sprite _face, _messageUI, _mainsFrame, _background, _windowBackground, _waveInfomartionBoard;
+    Sprite _mainsFrame, _background, _windowBackground, _waveInfomartionBoard;
+
+    // MEMO : 突貫工事用
+    void LoadMessage(std::string stageName);
+    void UpdateSecretary();
+    std::unordered_map<std::string, TalkDatabase> _dungeonMessage;
+    bool _intrudeLastCharacter;
 };
 
 #endif /* Dungeon_h */

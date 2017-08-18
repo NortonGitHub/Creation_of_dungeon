@@ -5,25 +5,28 @@ class PanelSettingObject :
 {
 public:
     PanelSettingObject();
-    PanelSettingObject(PanelContent& _panelContent);
+    PanelSettingObject(std::string _panel_name);
+    PanelSettingObject(PanelContent _panelContent);
     ~PanelSettingObject();
+
+    void SettingObj(PanelContent& pc);
 
     void Update() override;
     void Draw() override;
 
-    void Init(PanelContent& _panelContent) override;
+    void Init(PanelContent& _panelContent);
 
-    std::string GetTypeName() override;
-
-    bool IsClicked() override;
-
-    bool IsEnable() override;
+    bool IsClicked();
 
     void DrawDebugPrint() override;
+
+    void PanelSettingObject_SettingPanel(std::string panelName, std::string CategoryName);
 
 private:
     PanelContent panel;
 
-    bool _isEnable;
+    //現在表示されているオブジェクトの名前
+    //LvがわからないのでとりあえずLvにしておく
+    std::string objectName;
 };
 

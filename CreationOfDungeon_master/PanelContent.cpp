@@ -30,12 +30,6 @@ PanelContent::PanelContent(Vector2D _p, std::string name, std::string func_var)
 
 }
 
-PanelContent::PanelContent(std::string name)
-    : _name(name)
-{
-}
-
-
 PanelContent::~PanelContent()
 {
 }

@@ -6,7 +6,7 @@
 class Game : public SceneBase
 {
 public:
-    Game();
+    Game(int stageNumber);
     ~Game();
 
     SceneBase* Update(UIManager _ui);
@@ -33,11 +33,19 @@ private:
         GAMING,
         GAME_OVER,
         WAVE_CLEAR,
-        GAME_CLEAR
+        //GAME_CLEAR,
+        PAUSE
     };
     GameState _state;
+
+    //‰‰o—p‚ÌˆÃ“]ŠÔ
+    const int _fadeinInterval;  //ˆÃ“]‚©‚ç“r’†‚Ü‚Å
+    const int _fadingInterval; //’Êí‚©‚ç“r’†‚Ü‚Å
+    const int _fadeoutInterval; //“r’†‚©‚çˆÃ“]‚Ü‚Å
+
     //‰‰o—p‚ÌˆÃ“]ƒJƒEƒ“ƒg
     int _fadeoutCount;
+    bool _fadingout;
 
     //‚±‚±‚©‚ç‰º‚ª’Ç‰Á‚µ‚½•”•ª(negative)
     bool GameOverUpdate();
@@ -45,8 +53,8 @@ private:
 
     bool StageClearUpdate();
     void StageClearDraw();
-    bool GameClearUpdate();
-    void GameClearDraw();
+    //bool GameClearUpdate();
+    //void GameClearDraw();
 
 
     //666=======================================
@@ -58,6 +66,9 @@ private:
 
     void GamingUpdate();
     void GamingDraw();
+
+    bool PauseUpdate();
+    void PauseDraw();
 
     // TODO : ‚ ‚Æ‚Åpointer‚É‚¹‚¸‚Æ‚àÏ‚Ş‚æ‚¤‚É‚·‚é
     Dungeon* _dungeon;

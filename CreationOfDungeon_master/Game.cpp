@@ -5,11 +5,15 @@
 #include "cd_666s/DebugDraw.h"
 #include "cd_666s/Resources/AllResourceManager.h"
 #include "Main.h"
-#include "Title.h"
+#include "WorldMap.h"
 
-Game::Game()
-    :_stageNumber(1)
+Game::Game(int stageNumber)
+    :_stageNumber(stageNumber)
     , _fadeoutCount(0)
+    , _fadeinInterval(100)
+    , _fadingInterval(200)
+    , _fadeoutInterval(255)
+    , _fadingout(true)
     , _state(GameState::READY)
     , _bgm("resourse/sound/Stage_N_Noon.ogg")
 {
@@ -52,24 +56,29 @@ SceneBase * Game::Update(UIManager _ui)
         GamingUpdate();
         break;
 
+    case Game::GameState::PAUSE:
+        goTitle = PauseUpdate();
+        break;
+
     case Game::GameState::GAME_OVER:
         goTitle = GameOverUpdate();
         break;
 
     case Game::GameState::WAVE_CLEAR:
-        StageClearUpdate();
+        goTitle = StageClearUpdate();
         break;
-
+        /*
     case Game::GameState::GAME_CLEAR:
         goTitle = GameClearUpdate();
         break;
+        */
     default:
         break;
     }
 
     if (goTitle)
     {
-        return new Title();
+        return new WorldMap();
     }
 
     return this;
@@ -87,6 +96,11 @@ void Game::Draw()
         GamingDraw();
         break;
 
+    case Game::GameState::PAUSE:
+        //GamingDraw();
+        PauseDraw();
+        break;
+
     case Game::GameState::GAME_OVER:
         GameOverDraw();
         break;
@@ -94,10 +108,11 @@ void Game::Draw()
     case Game::GameState::WAVE_CLEAR:
         StageClearDraw();
         break;
-
+        /*
     case Game::GameState::GAME_CLEAR:
         GameClearDraw();
         break;
+        */
     default:
         break;
     }
@@ -121,6 +136,7 @@ void Game::Init()
 
     _state = GameState::READY;
     _fadeoutCount = 0;
+    _fadingout = true;
     _bgm.Stop();
 
 
@@ -177,11 +193,24 @@ void Game::GameOverDraw()
 
 bool Game::StageClearUpdate() {
 
-    _fadeoutCount++;
-    if (_fadeoutCount > 200 && MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L)) 
+    if (_fadeoutCount < _fadingInterval)
     {
-        Clear();
-        Init();
+        _fadeoutCount++;
+        return false;
+    }
+
+    if (_fadeoutCount == _fadingInterval)
+        _fadingout = MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L);
+
+    if (!_fadingout)
+        return false;
+
+    _fadeoutCount++;
+    if (_fadeoutCount == _fadeoutInterval)
+    {
+        //TODO : game^3が終わったらコメントアウトを外す
+        //Clear();
+        //Init();
         return true;
     }
 
@@ -192,22 +221,28 @@ void Game::StageClearDraw() {
 
     double blend = double(_fadeoutCount) * 17 / 10;
 
-    if (blend > 150) {
-        blend = 150;
+    if (!_fadingout) {
+        if (blend > 150) {
+            blend = 150;
+        }
+    }
+    else {
+        blend = 150 + 105 * (static_cast<double>(_fadeoutCount - _fadingInterval) / static_cast<double>(_fadeoutInterval - _fadingInterval));
     }
 
     auto color = Color4(0, 0, 0, 1.0 * blend / 255);
     Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
 
-    if (_fadeoutCount > 150) {
+    if (_fadeoutCount >= 150
+        && _fadeoutCount <= _fadingInterval) {
         Debug::DrawString(Vector2D(200, 200), "ステージクリア", ColorPalette::WHITE4);
     }
-    if (_fadeoutCount > 200) {
-        Debug::DrawString(Vector2D(200, 400), "左クリックで次へ進む", ColorPalette::WHITE4);
+    if (_fadeoutCount == _fadingInterval) {
+        Debug::DrawString(Vector2D(200, 400), "左クリックで戻る", ColorPalette::WHITE4);
     }
-
 }
 
+/*
 bool Game::GameClearUpdate() {
 
     _fadeoutCount++;
@@ -235,16 +270,28 @@ void Game::GameClearDraw() {
     if (_fadeoutCount > 150) {
         Debug::DrawString(Vector2D(200, 200), "ゲームクリア", ColorPalette::WHITE4);
     }
-    if (_fadeoutCount > 200) {
+    if (_fadeoutCount > _fadingInterval) {
         Debug::DrawString(Vector2D(200, 400), "左クリックで戻る", ColorPalette::WHITE4);
     }
 }
+*/
 
 bool Game::GameReadyUpdate()
 {
+    if (_fadingout)
+    {
+        if (_fadeoutCount < _fadeinInterval)
+            _fadeoutCount++;
+        else
+            _fadingout = false;
+
+        return false;
+    }
+
     if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L)) 
     {
         _state = GameState::GAMING;
+        _fadeoutCount = 0;
         _bgm.Play();
         return true;
     }
@@ -255,27 +302,30 @@ bool Game::GameReadyUpdate()
 
 void Game::GameReadyDraw(){
 
-    auto color = Color4(0, 0, 0, 0.7);
+    double blend = 0.3 * (_fadeinInterval - _fadeoutCount) / _fadeinInterval + 0.7;
+    auto color = Color4(0, 0, 0, blend);
     Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
-    Debug::DrawString(Vector2D(200, 200), "左クリックで開始", ColorPalette::WHITE4);
+
+    if (_fadeinInterval <= _fadeoutCount)
+        Debug::DrawString(Vector2D(200, 200), "左クリックで開始", ColorPalette::WHITE4);
 }
 
 void Game::GamingUpdate()
 {
     if (_dungeon->HasClear())
     {
-        if (_stageNumber < 3)
-        {
-            _stageNumber++;
+        //if (_stageNumber < 3)
+        //{
+        //    _stageNumber++;
             _state = GameState::WAVE_CLEAR;
             return;
-        }
-        else
-        {
-            _state = GameState::GAME_CLEAR;
-            _bgm.Stop();
-            return;
-        }
+        //}
+        //else
+        //{
+        //    _state = GameState::GAME_CLEAR;
+        //    _bgm.Stop();
+        //    return;
+        //}
     }
 
     if (!_bgm.IsPlaying())
@@ -287,9 +337,70 @@ void Game::GamingUpdate()
         _bgm.Stop();
     }
     _dungeon->Update();
+
+    if (KEYBOARD->ButtonDown(KeyInput::KeyType::KEY_ESCAPE))
+        _state = GameState::PAUSE;
 }
 
 void Game::GamingDraw()
 {
     _dungeon->Draw();
+}
+
+bool Game::PauseUpdate()
+{
+    if (KEYBOARD->ButtonDown(KeyInput::KeyType::KEY_ESCAPE))
+        _state = GameState::GAMING;
+
+    auto backColor = Color4(0, 0, 0, 0.9f);
+    Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), backColor, true);
+
+    Vector2D center(WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0);
+    Vector2D frameSize(WINDOW_WIDTH / 4.0, WINDOW_HEIGHT / 8.0);
+
+    auto frameColor = ColorPalette::WHITE4;
+    Vector2D upperPannelPos(center._x - frameSize._x / 2.0, center._y - frameSize._y / 1.5);
+    Vector2D lowerPannelPos(center._x - frameSize._x / 2.0, center._y + frameSize._y / 1.5);
+
+    int fontSize = 32;
+    Debug::DrawString(upperPannelPos + frameSize * 0.5 - Vector2D(fontSize * 2.5, fontSize / 2), "ゲームに戻る", ColorPalette::WHITE4, 24);
+    Debug::DrawString(lowerPannelPos + frameSize * 0.5 - Vector2D(fontSize * 3.5, fontSize / 2), "ステージ選択に戻る", ColorPalette::WHITE4, 24);
+
+    Debug::DrawRectWithSize(upperPannelPos, frameSize, frameColor, false);
+    Debug::DrawRectWithSize(lowerPannelPos, frameSize, frameColor, false);
+
+    auto mousePos = MOUSE->GetCursorPos();
+    bool mouseOnUpperPannel =
+        (upperPannelPos._x < mousePos._x
+            &&  upperPannelPos._y < mousePos._y
+            &&  mousePos._x < upperPannelPos._x + frameSize._x
+            &&  mousePos._y < upperPannelPos._y + frameSize._y);
+
+    bool mouseOnLowerPannel =
+        (lowerPannelPos._x < mousePos._x
+            &&  lowerPannelPos._y < mousePos._y
+            &&  mousePos._x < lowerPannelPos._x + frameSize._x
+            &&  mousePos._y < lowerPannelPos._y + frameSize._y);
+
+    auto fillColor = Color4(1.0f, 1.0f, 1.0f, 0.5f);
+    Debug::DrawRectWithSize(upperPannelPos, frameSize, fillColor, mouseOnUpperPannel);
+    Debug::DrawRectWithSize(lowerPannelPos, frameSize, fillColor, mouseOnLowerPannel);
+
+    if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
+    {
+        if (mouseOnUpperPannel)
+        {
+            _state = GameState::GAMING;
+        }
+        else if (mouseOnLowerPannel)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void Game::PauseDraw()
+{
 }

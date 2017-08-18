@@ -49,7 +49,7 @@ void ColleagueNotifyer::NotifyRemoveTarget(TiledObject& obj)
 }
 
 
-bool ColleagueNotifyer::IsChasable(TiledObject& target)
+bool ColleagueNotifyer::IsChasable(const TiledObject& target) const
 {
     //削除予定のオブジェクトなら
     for (auto obj : _removes)

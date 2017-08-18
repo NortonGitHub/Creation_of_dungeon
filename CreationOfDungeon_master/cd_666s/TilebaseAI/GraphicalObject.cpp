@@ -22,7 +22,7 @@ void GraphicalObject::Draw()
 }
 
 
-bool GraphicalObject::Contain(Vector2D pos)
+bool GraphicalObject::Contain(Vector2D pos) const
 {
     auto texturePtr = _graph.GetTexturePtr();
     if (texturePtr.expired())
@@ -30,13 +30,13 @@ bool GraphicalObject::Contain(Vector2D pos)
     
     auto texture = texturePtr.lock();
     auto size = texture->GetBaseSize();
-    if (pos._x <= _position._x)
+    if (pos._x < _position._x)
         return false;
-    if (pos._y <= _position._y)
+    if (pos._y < _position._y)
         return false;
-    if (_position._x + size._x <= pos._x)
+    if (_position._x + size._x < pos._x)
         return false;
-    if (_position._y + size._y <= pos._y)
+    if (_position._y + size._y < pos._y)
         return false;
     
     return true;

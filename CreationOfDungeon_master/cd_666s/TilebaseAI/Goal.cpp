@@ -6,10 +6,23 @@
 #include "../DebugDraw.h"
 #include "../Resources/ResourceManager.h"
 
-Goal::Goal(TiledVector tilePos, ColleagueNotifyer& notifyer)
+Goal::Goal(TiledVector tilePos, ColleagueNotifyer& notifyer, MessageReciever& reciever, int permitivePassedNum)
 : TiledObject(tilePos)
 , _passedNum(0)
+, _permitivePassedNum(permitivePassedNum)
 , _notifyer(notifyer)
+, _reciever(reciever)
+{
+    _type = TiledObject::Type::GOAL;
+    _tdb = _reciever._processer.CreateTalkData("csv/talkData/missed.csv", Talk_Type::nomal);
+}
+
+Goal::Goal(TiledVector tilePos, ColleagueNotifyer& notifyer)
+    : TiledObject(tilePos)
+    , _passedNum(0)
+    , _permitivePassedNum(99)
+    , _notifyer(notifyer)
+    , _reciever(MessageReciever())
 {
     _type = TiledObject::Type::GOAL;
 }
@@ -24,7 +37,8 @@ Goal::~Goal()
 void Goal::Init()
 {
     auto tilePos = GetTilePos();
-    std::string fileName = "resourse/graph/background/";
+    auto fieldType = GetTile().lock()->GetFieldType();
+    std::string fileName = GetMapChipGraphDirectory(fieldType);
 
     if (!FIELD->IsInside(tilePos + TiledVector(0, -1)))
     {
@@ -63,6 +77,9 @@ void Goal::Interact(Character &chara)
         //’Ê‰ß‚µ‚½ƒLƒƒƒ‰‚Í’ú‚ß‚é‚æ‚¤‚É’Ê’m‚·‚é
         _notifyer.NotifyRemoveTarget(chara);
         _passedNum++;
+
+        if (_passedNum == _permitivePassedNum)
+            _reciever.Recieve(_tdb);
     }
 }
 

@@ -142,13 +142,14 @@ namespace Debug
 
 
 
-    void DrawString(Vector2D pos, std::string str, Color4 color)
+    void DrawString(Vector2D pos, std::string str, Color4 color, int size)
     {
-        RENDER_MGR->AddDebugCall(std::make_unique<String>(pos, str, color));
+        RENDER_MGR->AddDebugCall(std::make_unique<String>(pos, str, color, size));
     }
 
-    void DrawStringDirectly(Vector2D pos, std::string str, Color4 color)
+    void DrawStringDirectly(Vector2D pos, std::string str, Color4 color, int size)
     {
+        SetFontSize(size);
         DrawFormatString(
             static_cast<int>(pos._x), 
             static_cast<int>(pos._y), 
@@ -207,11 +208,11 @@ namespace Debug
     }
 
 
-    String::String(Vector2D pos, std::string str, Color4 color)
-        : _pos(pos), _str(str), _color(color) {}
+    String::String(Vector2D pos, std::string str, Color4 color, int size)
+        : _pos(pos), _str(str), _color(color), _fontSize(size) {}
 
     void String::Draw()
     {
-        DrawStringDirectly(_pos, _str, _color);
+        DrawStringDirectly(_pos, _str, _color, _fontSize);
     }
 }

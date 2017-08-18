@@ -8,8 +8,6 @@
 
 #include "UIManager.h"
 
-class GraphicalObject;
-
 class MakeDungeon
 {
 public:
@@ -25,6 +23,8 @@ public:
 
     void PickupObject();
 
+    void LoadTileSize(std::string stageName, std::vector<std::string>& rawData);
+
 private:
 
     std::string _stage_num;
@@ -36,10 +36,12 @@ private:
     std::shared_ptr<StartPoint> _start;
 
     //同盟間の情報共有網
-    ColleagueNotifyer _monsters;
+
+    ColleagueNotifyer _monsters,_enemys;
 
     //現在選ばれているオブジェクト
     std::string _selectingObj;
 
+    Sprite _mainsFrame, _background, _windowBackground;
 };
 

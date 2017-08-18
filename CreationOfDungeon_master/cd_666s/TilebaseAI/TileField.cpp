@@ -3,6 +3,7 @@
 
 
 TileField::TileField()
+    : _defaultFieldType(FieldType::Cave)
 {
 }
 
@@ -16,7 +17,6 @@ void TileField::Clear()
 {
     _gobjs.clear();
     _gobjs.resize(0);
-    _rawData.resize(0);
     _fieldSize.Set(0, 0);
 }
 
@@ -25,12 +25,10 @@ void TileField::Init(int width, int height)
 {
     _fieldSize.Set(width, height);
     _field.resize(height);
-    _rawData.resize(height);
     
     for (size_t i = 0; i < _field.size(); i++)
     {
         _field[i].resize(width);
-        _rawData[i].resize(width);
     }
     
     for (size_t i = 0; i < height; i++)
@@ -108,36 +106,13 @@ void TileField::MoveObject(TiledObject &obj, TiledVector pos)
 }
 
 
-TiledObject* TileField::GetTiledObject(const TiledVector &pos)
-{
-    //範囲外を参照しようとしたらnullを返す
-    if (!IsInside(pos))
-        return nullptr;
-    
-    return _field[pos._y][pos._x].lock()->GetTiledObject();
-}
-
-
-std::vector<TiledObject*> TileField::GetTiledObjects(const TiledVector &pos)
-{
-    //範囲外を参照しようとしたらnullを返す
-    if (!IsInside(pos))
-    {
-        std::vector<TiledObject*> empty;
-        return std::move(empty);
-    }
-    
-    return _field[pos._y][pos._x].lock()->GetTiledObjects();
-}
-
-
 int TileField::GetRawNumber(const TiledVector &pos) const
 {
     //範囲外を参照しようとしたら-1を返す
     if (!IsInside(pos))
         return -1;
 
-    return _rawData[pos._y][pos._x];
+    return _field[pos._y][pos._x].lock()->_rawNumber;
 }
 
 
@@ -147,7 +122,32 @@ void TileField::SetRawNumber(const TiledVector &pos, int number)
     if (!IsInside(pos))
         return;
 
-    _rawData[pos._y][pos._x] = number;
+    _field[pos._y][pos._x].lock()->_rawNumber = number;
+}
+
+
+FieldType TileField::GetFieldType(const TiledVector &pos) const
+{
+    //範囲外を参照しようとしたらNONEを返す
+    if (!IsInside(pos))
+        return FieldType::None;
+
+    return _field[pos._y][pos._x].lock()->_type;
+}
+
+void TileField::SetFieldType(const TiledVector &pos, std::string data)
+{
+    //範囲外を参照しようとしたら-1を返す
+    if (!IsInside(pos))
+        return;
+
+    _field[pos._y][pos._x].lock()->SetFieldType(data, FieldType::Cave);
+}
+
+
+void TileField::SetDefaultFieldType(std::string data)
+{
+
 }
 
 //タイルにおけるオブジェクトを指定のタイルに登録
@@ -223,7 +223,7 @@ void TileField::CalcMovableCell(const TiledVector &pos, StepTable& stepTable, in
     
     //指定位置のCellが移動可能か調べる
     std::weak_ptr<MapTile> cell = _field[y][x];
-    TiledObject *obj = cell.lock()->GetTiledObject();
+    TiledObject *obj = cell.lock()->GetTiledObject<TiledObject>();
     bool isMovable = (obj == nullptr) || (obj != nullptr && obj->GetType() != TiledObject::Type::BLOCK);
     
     //指定位置のマスが移動可能なら
@@ -376,7 +376,7 @@ void TileField::CalcParabolicMovableCell(TiledVector pos, const TiledVector &bas
     
     //指定位置のCellが移動可能か調べる
     std::weak_ptr<MapTile> cell = _field[y][x];
-    TiledObject *obj = cell.lock()->GetTiledObject();
+    TiledObject *obj = cell.lock()->GetTiledObject<TiledObject>();
     bool isMovable = (obj == nullptr) || (obj != nullptr && obj->GetType() != TiledObject::Type::BLOCK);
     
     //指定位置のマスが移動可能なら

@@ -44,7 +44,7 @@ SceneBase * Title::Update(UIManager _ui)
     for (auto f : _functions) {
         if (f.find("MOVE") != std::string::npos){
             _se.Play();
-            return FunctionTransScene::GetSceneBase("game");
+            return FunctionTransScene::GetSceneBase("world_map");
         } else if(f.find("QUIT") != std::string::npos){
             _se.Play();
             return nullptr;

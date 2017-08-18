@@ -11,6 +11,7 @@ GraphArray::GraphArray()
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
@@ -33,6 +34,7 @@ GraphArray::GraphArray(Sprite *arg_graph
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
@@ -49,6 +51,7 @@ GraphArray::GraphArray(std::string name
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
@@ -64,11 +67,28 @@ GraphArray::GraphArray(std::string name
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
     SetWithCreate(name, sizeH, sizeV, allDivNum, endTime);
 }
+
+GraphArray::GraphArray(std::string name
+    , const int size, const int endTime)
+    : _graphPtr(nullptr)
+    , _speed(1)
+    , _index(0)
+    , _currentTime(0)
+    , _endTime(30)
+    , _isLoop(true)
+    , _isPlaying(true)
+    , _isCreatedInside(false)
+    , _hasEnd(false)
+{
+    SetWithCreate(name, size, endTime);
+}
+
 
 GraphArray::GraphArray(std::string name)
     : _graphPtr(nullptr)
@@ -77,6 +97,7 @@ GraphArray::GraphArray(std::string name)
     , _currentTime(0)
     , _endTime(30)
     , _isLoop(true)
+    , _isPlaying(true)
     , _isCreatedInside(false)
     , _hasEnd(false)
 {
@@ -165,6 +186,27 @@ Sprite* GraphArray::SetWithCreate(std::string name
     return _graphPtr;
 }
 
+//縦と横の分割幅が同じで一列に並んでいる場合
+//画像を生成して、そこからアニメーションも生成
+Sprite* GraphArray::SetWithCreate(std::string name
+    , const int size, const int endTime)
+{
+    _graphPtr = new Sprite(std::move(name));
+    _endTime = endTime;
+
+    Vector2D graphSize = _graphPtr->GetSize();
+
+    //元画像と指定分割サイズから分割数を算出
+    int divNumH = graphSize._x / size;
+    int divNumV = graphSize._y / size;
+
+    CreateArray(divNumH, divNumV, size, size, divNumH * divNumV);
+
+    _isCreatedInside = true;
+
+    return _graphPtr;
+}
+
 Sprite* GraphArray::SetWithCreate(std::string name)
 {
     _graphPtr = new Sprite(std::move(name));
@@ -222,19 +264,29 @@ void GraphArray::Update()
     assert(_handleArray.size() != 0
         && "画像配列に指定された画像が無効です");
 
+    if (!_isPlaying)
+        return;
+
     _hasEnd = false;
 
     _currentTime += _speed;
 
     if (_endTime <= _currentTime)
     {
+        _hasEnd = true;
         if (_isLoop)
         {
             _currentTime = 0;
-            _hasEnd = true;
         }
         else
         {
+            _isPlaying = false;
+            if (_handleArray.size() < 1)
+                _index = 0;
+            else
+                _index = _handleArray.size() - 1;
+
+            SetIndex(_index);
             return;
         }
     }

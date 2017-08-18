@@ -78,26 +78,17 @@ void MonsterController::SelectMonster(const Vector2D cursorPos)
     auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
     
     //対象がクリックされているかチェック
-    auto targets = FIELD->GetTiledObjects(tiledCursorPos);
+    auto target = FIELD->GetTiledObject<Monster>(tiledCursorPos);
     
     //タイル区切りで何も見つからないなら画像区切りで探す
-    if (targets.size() == 0)
-        targets = std::move(OBJECT_MGR->GetContainedObjects(cursorPos));
+    if (target == nullptr)
+        target = std::move(OBJECT_MGR->GetContainedObject<Monster>(cursorPos));
     
     //本当に何もないところなら終了
-    if (targets.size() == 0)
+    if (target == nullptr)
         return;
     
-    for (auto target : targets)
-    {
-        //魔物をクリックしたら
-        if (target->GetType() == TiledObject::Type::MONSTER)
-        {
-            auto monster = dynamic_cast<Monster*>(target);
-            SetControlingMonster(monster);
-            return;
-        }
-    }
+    SetControlingMonster(target);
 }
 
 //魔物の操作
@@ -110,7 +101,7 @@ void MonsterController::ControlMonster(const Vector2D cursorPos)
 
     //タイル区切りで何も見つからないなら画像区切りで探す
     if (targets.size() == 0)
-        targets = std::move(OBJECT_MGR->GetContainedObjects(cursorPos));
+        targets = std::move(OBJECT_MGR->GetContainedObjects<TiledObject>(cursorPos));
     
     //本当に何もないところなら終了
     if (targets.size() == 0)

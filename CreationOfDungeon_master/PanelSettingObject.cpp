@@ -5,39 +5,47 @@
 
 
 PanelSettingObject::PanelSettingObject()
-    : panel()
 {
 }
 
-PanelSettingObject::PanelSettingObject(PanelContent& _panelContent)
-    : panel(std::move(_panelContent))
-    , _isEnable(true)
+PanelSettingObject::PanelSettingObject(std::string _panel_name)
 {
- //   panel = std::move(_panelContent);
-    std::string graph_name;
-    if (panel._name.find("SettingObject_") != std::string::npos) {
-        graph_name = panel._name.substr(std::string("SettingObject_").length(), panel._name.length());
-    }else{
-        graph_name = panel._name;
+    panel._name = _panel_name;
+}
+
+PanelSettingObject::PanelSettingObject(PanelContent _panelContent)
+    : panel(std::move(_panelContent))
+{
+
+    if (panel._name.find("Lv") == std::string::npos) {
+
+        std::string filename = "resource/graph/ui/SettingObject_Block.png";
+
+        auto pos = panel._pos;
+
+        _position.Set(pos._x, pos._y);
+
+        _graph.Load(filename);
+
+        _graph.SetPosition(_position);
+        //なぜかSprite::Priority::UI(100)では描画されず　なぜ？
+        _graph.SetPriority(101);
+        Vector2D s = _graph.GetSize();
+        _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
+
+        //_graph.SetDisplayMode(true);
+
     }
 
-    std::string filename = "graph/ui/" + graph_name + ".png";
-    
-    auto pos = panel._pos;
-
-    _position.Set(pos._x, pos._y);
-
-    _graph.Load(filename);
-    
-    _graph.SetPosition(_position);
-    _graph.SetDisplayMode(_isEnable);
-    _graph.SetPriority(Sprite::Priority::UI);
-
 }
-
 
 PanelSettingObject::~PanelSettingObject()
 {
+}
+
+void PanelSettingObject::SettingObj(PanelContent& pc)
+{
+    panel = pc;
 }
 
 void PanelSettingObject::Update()
@@ -48,8 +56,8 @@ void PanelSettingObject::Update()
 void PanelSettingObject::Draw()
 {
     //panel.Draw();
-    //DrawCircle(panel.GetPosition()._x, panel.GetPosition()._y, 5, GetColor(255, 0, 0));
-    _graph.SetDisplayMode(_isEnable);
+    //DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
+
     GraphicalObject::Draw();
 }
 
@@ -58,19 +66,9 @@ void PanelSettingObject::Init(PanelContent& _panelContent)
     panel = _panelContent;
 }
 
-std::string PanelSettingObject::GetTypeName()
-{
-    return panel._name;
-}
-
 bool PanelSettingObject::IsClicked()
 {
     return GetIsClicked(panel);
-}
-
-bool PanelSettingObject::IsEnable()
-{
-    return _isEnable;
 }
 
 void PanelSettingObject::DrawDebugPrint()
@@ -85,4 +83,70 @@ void PanelSettingObject::DrawDebugPrint()
 
     writing_file << "name:" << panel._name << " (X,Y):" << panel._pos._x << "," << panel._pos._y << std::endl;
     writing_file.close();
+}
+
+
+void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, std::string CategoryName) {
+
+
+
+    if (panel._name.find("Lv") == std::string::npos) {
+
+        if (!panelName.empty()) {
+
+            objectName = panelName;
+
+            std::string filename;
+
+            if (CategoryName == "MONSTER") {
+                filename = "resource/graph/tiledObject/" + objectName + ".png";
+            }
+            else if (CategoryName == "TRAP") {
+                filename = "resource/graph/trap/" + objectName + ".png";
+            }
+            else if (CategoryName == "BLOCK") {
+                //BLOCKってアイテムか？csv見る限りアイテムにしか見えない
+                filename = "resource/graph/item/" + objectName + ".png";
+            }
+
+
+
+            auto pos = panel._pos;
+
+            _position.Set(pos._x, pos._y);
+
+            _graph.Load(filename);
+
+            _graph.SetPosition(_position);
+            _graph.SetPriority(101);
+
+            Vector2D s = _graph.GetSize();
+            _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
+
+            //_graph.SetDisplayMode(true);
+
+        }
+        else {
+
+            std::string filename = "resource/graph/ui/SettingObject_Block.png";
+
+            auto pos = panel._pos;
+
+            _position.Set(pos._x, pos._y);
+
+            _graph.Load(filename);
+
+            _graph.SetPosition(_position);
+            //なぜかSprite::Priority::UI(100)では描画されず　なぜ？
+            _graph.SetPriority(101);
+            Vector2D s = _graph.GetSize();
+            _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
+
+            //_graph.SetDisplayMode(true);
+
+        }
+
+    }
+
+
 }

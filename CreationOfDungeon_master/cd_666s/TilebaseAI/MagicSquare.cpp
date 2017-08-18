@@ -107,11 +107,18 @@ bool MagicSquare::IsOverwritable(TiledObject* overwriter)
 
 void MagicSquare::Interact(Character& character)
 {
-    auto hp = character._battleParameter._hp;
-    if (hp < character._maxHP)
+    //フィールドに出現中は回復できない
+    if (character.IsEnable())
+        return;
+
+    auto param = character.GetAffectedParameter();
+    auto hp = param._hp;
+    auto maxHP = param._maxHP;
+    if (hp < maxHP)
     {
-        hp += 1;
-        hp = max(0, min(hp, character._maxHP));
+        //character.Damaged(-1);
+        hp += maxHP / 300 + 1;
+        hp = max(0, min(hp, maxHP));
         character._battleParameter._hp = hp;
     }
 }

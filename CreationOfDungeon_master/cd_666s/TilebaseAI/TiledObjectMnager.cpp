@@ -104,22 +104,3 @@ void TiledObjectManager::Refresh()
         _needRefresh = false;
     }
 }
-
-
-//タイルが点を含んでいるオブジェクトを取得
-std::vector<TiledObject*> TiledObjectManager::GetContainedObjects(Vector2D vec)
-{
-    std::vector<TiledObject*> results;
-    results.reserve(16);
-    
-    for (size_t i=0; i<_objects.size(); ++i)
-    {
-        if (_objects[i] == nullptr)
-            continue;
-
-        if (_objects[i]->Contain(vec))
-            results.push_back(_objects[i].get());
-    }
-    
-    return results;
-}

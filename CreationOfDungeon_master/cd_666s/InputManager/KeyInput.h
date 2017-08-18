@@ -25,6 +25,7 @@ public:
         KEY_ARROW_RIGHT,
         KEY_ARROW_UP,
         KEY_ARROW_DOWN,
+        KEY_ESCAPE,
 
         NONE
     };

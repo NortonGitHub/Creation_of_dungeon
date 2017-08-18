@@ -90,7 +90,7 @@ void ObjectInformationDrawer::SelectObject()
     
     //タイル区切りで何も見つからないなら画像区切りで探す
     if (targets.size() == 0)
-        targets = std::move(OBJECT_MGR->GetContainedObjects(cursorPos));
+        targets = std::move(OBJECT_MGR->GetContainedObjects<TiledObject>(cursorPos));
     
     //本当に何もないところなら終了
     if (targets.size() == 0)
@@ -104,7 +104,11 @@ void ObjectInformationDrawer::SelectObject()
         {
             _selectSE.Play();
             auto battle = dynamic_cast<BattlingTile*>(target);
-            SetCharacter(&battle->_monster, &battle->_enemy);
+            auto enemy = battle->GetEmemy();
+            auto monster = battle->GetMonster();
+            if (enemy != nullptr && monster != nullptr)
+                SetCharacter(monster, enemy);
+
             return;
         }
     }

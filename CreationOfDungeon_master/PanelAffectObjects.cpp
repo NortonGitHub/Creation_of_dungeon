@@ -6,15 +6,15 @@
 #include "cd_666s/Resources/AllResourceManager.h"
 
 PanelAffectObjects::PanelAffectObjects()
-    : panel()
+    : panel(PanelContent())
 {
 }
 
-PanelAffectObjects::PanelAffectObjects(PanelContent& _panelContent)
+PanelAffectObjects::PanelAffectObjects(PanelContent _panelContent)
     : panel(std::move(_panelContent))
 {
-//    panel = std::move(_panelContent);
-    std::string filename = "graph/ui/" + panel._name + ".png";
+    std::string filename = "resource/graph/ui/" + panel._name + ".png";
+
 
     auto pos = panel._pos;
 
@@ -23,8 +23,12 @@ PanelAffectObjects::PanelAffectObjects(PanelContent& _panelContent)
     _graph.Load(filename);
 
      _graph.SetPosition(_position);
-    _graph.SetPriority(Sprite::Priority::UI);
+
+     //Ç»Ç∫Ç©Sprite::Priority::UI(100)Ç≈ÇÕï`âÊÇ≥ÇÍÇ∏Å@Ç»Ç∫ÅH
+    _graph.SetPriority(101);
     //_graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+
+    //_graph.SetDisplayMode(true);
 
 }
 
@@ -32,7 +36,8 @@ PanelAffectObjects::~PanelAffectObjects()
 {
 }
 
-void PanelAffectObjects::Init(PanelContent& _panelContent)
+
+void PanelAffectObjects::Init(PanelContent _panelContent)
 {
     panel = _panelContent;
 }
@@ -45,7 +50,9 @@ void PanelAffectObjects::Update()
 void PanelAffectObjects::Draw()
 {
     GraphicalObject::Draw();
-//    DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
+
+    //DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
+
 }
 
 std::string PanelAffectObjects::GetCategoryName()
@@ -64,32 +71,41 @@ std::string PanelAffectObjects::GetCategoryName()
     }
 }
 
-std::string PanelAffectObjects::GetTypeName()
-{
-    return panel._name;
-}
 
-void PanelAffectObjects::SetSettingObject(std::vector<PanelBase>& _tps)
-{/*
+void PanelAffectObjects::SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps)
+{
+
     CSVReader reader;
 
     std::string fileName = "csv/Edit/";
     fileName += GetCategoryName() + ".csv";
     std::vector<std::string> _array;
 
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, _array, 1);
-    }
-    auto a = _tps.size();
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, _array);
+
     for (int i = 0; i < _tps.size(); i++) {
-        if (i < _array.size()) {
-            auto pc = PanelContent(this->panel._pos, _array[i], this->panel._func_var);
-            _tps[i].Init(pc); // = PanelSettingObject(pc);//_array[i]);
+
+        if (!_array.empty()) {
+            while (_array[0].empty())
+            {
+                _array.erase(_array.begin());
+                if (_array.empty()) {
+                    break;
+                }
+            }
+            if (!_array.empty()) {
+                _tps[i]->PanelSettingObject_SettingPanel(_array[0], GetCategoryName());
+                //_tps[i] = PanelSettingObject(_array[i]);
+                _array.erase(_array.begin());
+            }else{
+                _tps[i]->PanelSettingObject_SettingPanel("", GetCategoryName());
+            }
         }
         else {
-            auto pc = PanelContent(this->panel._pos, "none", this->panel._func_var);
-            _tps[i].Init(pc);
+            _tps[i]->PanelSettingObject_SettingPanel("", GetCategoryName());
+            //_tps[i] = std::make_shared<PanelSettingObject>(nullptr);
         }
-    }*/
+    }
 }
 
 void PanelAffectObjects::DrawDebugPrint()

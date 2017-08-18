@@ -5,31 +5,38 @@
 #include "ColleagueNotifyer.h"
 #include "TiledObjectMnager.h"
 #include "BattlingTile.h"
+#include "EnemysItem.h"
+
+#include "EnemysSearch.h"
 
 int Enemy::_defeatedNum = 0;
 int Enemy::_enemysNum = 0;
 
 Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName)
-: Character(startPos, params, notifyer, enemyName)
-, _baseTarget(baseTarget)
+    : Character(startPos, params, notifyer, enemyName, TiledObject::Type::ENEMY)
+    , _baseTarget(baseTarget)
+    , _damageTimer(30, false, false)
 {
     _target = &baseTarget;
     
     _astar = std::make_unique<AstarChaser>(_target, *this, _pathToTarget, 20, true);
-    //自分の味方が経路上にいたら回り込まず継続する
-    _astar->SetAdditionalFunc(std::move([&](TiledObject* obj)
-    {
-        if (obj->GetType() != _type)
-            return false;
-
-        auto enemy = dynamic_cast<Enemy*>(obj);
-        return !enemy->_isBattling;
-    }));
     _ai = _astar.get();
 
-    _type = TiledObject::Type::ENEMY;
-
     _appearSE.Load("resourse/sound/blockSelect.wav");
+    _hasTreasureIcon.Load("resourse/graph/icon/treasure_attached.png");
+    _hasTreasureIcon.SetScale(Vector2D(2.0, 2.0));
+    _hasTreasureIcon.SetDisplayMode(false);
+    _hasTreasureIcon.SetPriority(Sprite::Priority::UI);
+
+    _consumableItems.resize(3);
+    _consumableItemGraphs.resize(3);
+
+    for (size_t i = 0; i<_consumableItemGraphs.size(); ++i)
+    {
+        _consumableItemGraphs[i].SetPriority(1090);
+    }
+    _equipmentsGraph.SetPriority(1090);
+    BuildSearchingRuleList();
 }
 
 
@@ -40,10 +47,12 @@ Enemy::~Enemy()
 
 void Enemy::Think()
 {
-    bool hasFound = SearchTarget();
-    
+    _target = SearhTargetByRuleList();
+    if (_target == nullptr)
+        _target = &_baseTarget;
+
     //範囲内に入ったら追跡へ
-    if (hasFound)
+    if (_target != &_baseTarget)
     {
         _astar->SetTarget(_target);
         _astar->SetSearchRange(6);
@@ -59,7 +68,6 @@ void Enemy::Think()
             _astar->SetSearchRange(20);
         }
     }
-    
     _ai->Update();
 }
 
@@ -68,7 +76,27 @@ void Enemy::Update()
 {
     Character::Update();
 
-    if (!CheckActable(60))
+    if (_damageTimer.IsCounting())
+        _damageTimer.Update();
+
+    //戦闘すべきか確認
+    if (!_afterBattleTimer.IsCounting()
+        && !_isBattling)
+    {
+        auto monster = OBJECT_MGR->GetContainedObject<Monster>(_position + Vector2D(TILE_SIZE / 2, TILE_SIZE / 2));
+        if (monster != nullptr
+            && monster->IsEnable())
+        {
+            auto offset = monster->GetPosition() - _position;
+            if (offset.GetLength() < TILE_SIZE / 4)
+            {
+                Battle(monster);
+                return;
+            }
+        }
+    }
+
+    if (!CheckActable())
         return;
 
     //状態確認フェイズ
@@ -79,47 +107,45 @@ void Enemy::Update()
         _astar->SetTarget(_target);
     }
     
-    //戦闘すべきか確認
-    if (_countAfetrBattle == 0)
-    {
-        auto offset = _target->GetPosition() - _position;
-        
-        if (_target->GetType() == TiledObject::Type::MONSTER
-            && offset.GetLength() < TILE_SIZE / 2)
-        {
-            Battle(_target);
-            return;
-        }
-    }
-    
-    //行動フェイズ
-    if (CheckActCounter())
-    {
-        //視界更新
-        _sight = FIELD->GetParabolicMovableCell(GetTilePos(), 5, _direction);
-    
-        //意思決定
-        Think();
-    
-        //意思遂行
-        Act();
-    }
+    if (_damageTimer.IsCounting())
+        return;
 
-    auto vec = (GetTilePos() - _beforeTilePos).GetWorldPos() - Vector2D(FIELD_OFFSET_X,FIELD_OFFSET_Y);
-    _position += vec * (1.0 / (GetActInterval() + 1));
+    Character::Action();
+
+    auto graphSize = _hasTreasureIcon.GetSize();
+    _hasTreasureIcon.SetPosition(_position + Vector2D(TILE_SIZE - graphSize._x, 0));
 }
 
 
 void Enemy::Act()
 {
-    //移動先との差分から向きを更新
-    UpdateAttitude();
-    
-    //移動が完了してるないなら
+    if (_skill.get() != nullptr
+        && _skill->ShouldActivate())
+    {
+        _skill->Activate();
+        return;
+    }
+
+    //体力が半分以下でアイテムを所持しているなら回復
+    auto param = GetAffectedParameter();
+    if (param._hp <= param._maxHP / 2)
+        UseItem(param);
+
+    //移動が完了してないなら目標へ移動
     if (0 < _pathToTarget.size())
     {
-        //目標へ移動
-        MoveToNext();
+        //味方が味方を追跡してたとき(ヒーラ―等)は
+        //一歩前で止まる
+        if (_target->GetType() == _type)
+        {
+            if (1 < _pathToTarget.size())
+                MoveToNext();
+        }
+        else
+        {
+            MoveToNext();
+        }
+
         return;
     }
     
@@ -140,66 +166,35 @@ void Enemy::Act()
 }
 
 
-bool Enemy::SearchTarget()
-{
-    //対象が決まってないなら視界に入ったものを対象に
-    int minOffset = 999;
-    bool hasFound = false;
-    
-    //視界に入ったものを対象にする
-    for (size_t i=0; i<_sight.size(); ++i)
-    {
-        auto objects = FIELD->GetTiledObjects(_sight[i]);
-        for (auto obj : objects)
-        {
-            if (obj == nullptr)
-                continue;
-            
-            if (obj == &_baseTarget)
-                continue;
-            
-            if (obj->GetType() != TiledObject::Type::MONSTER
-                && obj->GetType() != TiledObject::Type::ITEM)
-                continue;
-            
-            if (!obj->IsEnable())
-                continue;
-            
-            if (!_notifyer.IsChasable(*obj))
-                continue;
-            
-            int offset = (_sight[i] - GetTilePos()).GetBresenhamLength(false);
-            if (minOffset <= offset)
-                continue;
-            
-            if (obj->GetType() == TiledObject::Type::MONSTER)
-            {
-                auto monster = dynamic_cast<Monster*>(obj);
-                if (monster->_isBattling)
-                    continue;
-            }
-
-            minOffset = offset;
-            _target = obj;
-            hasFound = true;
-        }
-    }
-    
-    return hasFound;
-}
-
-
 void Enemy::ObtainItem(TiledObject* target)
 {
     //アイテムが隣になければ終了
     auto offset = _target->GetTilePos() - GetTilePos();
     if (offset.GetBresenhamLength(false) > 1)
         return;
-    
-    //あればアイテム取得
-    _target->Interact(*this);
+
+    auto equipment = dynamic_cast<EnemysItem<Equipment>*>(target);
+    if (equipment != nullptr)
+    {
+        //あればアイテム取得
+        equipment->GiveItem(*this);
+    }
+    else
+    {
+        auto item = dynamic_cast<EnemysItem<ConsumableItem>*>(target);
+        if (item != nullptr)
+        {
+            //あればアイテム取得
+            item->GiveItem(*this);
+        }
+        else
+        {
+            return;
+        }
+    }
+
     _notifyer.NotifyRemoveTarget(*_target);
-    
+
     //元の目標へ
     _target = &_baseTarget;
     _astar->SetTarget(&_baseTarget);
@@ -222,8 +217,9 @@ void Enemy::ArriveAtGoal(TiledObject* target)
 void Enemy::Battle(TiledObject* target)
 {
     // TODO : 応急処置として。
-    auto chara = dynamic_cast<Monster*>(target);
-    OBJECT_MGR->Add(std::make_shared<BattlingTile>(*this, *chara, GetTilePos()));
+    auto enemy = OBJECT_MGR->GetSharedObject<Enemy>(this);
+    auto monster = OBJECT_MGR->GetSharedObject<Monster>(target);
+    OBJECT_MGR->Add(std::make_shared<BattlingTile>(enemy, monster, GetTilePos()));
 }
 
 
@@ -241,6 +237,47 @@ void Enemy::MoveToNext()
 }
 
 
+void Enemy::UseItem(BattleParameter& param)
+{
+    for (size_t i = 0; i < _consumableItems.size(); ++i)
+    {
+        if (_consumableItems[i] != nullptr)
+        {
+            _consumableItems[i] = nullptr;
+            _consumableItemGraphs[i].SetResource(nullptr);
+            Damaged(-param._maxHP / 2);
+            break;
+        }
+    }
+
+    //以下、アイテムがあれば終了
+    if (_equipItem != nullptr)
+        return;
+
+    for (size_t i = 0; i < _consumableItems.size(); ++i)
+    {
+        if (_consumableItems[i] != nullptr)
+            return;
+    }
+
+    //ここまで抜けたらアイテムを所持していないのでアイコン消去
+    _hasTreasureIcon.SetDisplayMode(false);
+}
+
+
+void Enemy::SetTarget(Character *target) 
+{
+    if (!IsEnable() || !IsAlive())
+        return;
+
+    //目標の初期化
+    ResetTarget();
+
+    _target = target; 
+    _astar->SetTarget(target); 
+}
+
+
 void Enemy::ResetTarget()
 {
     Character::ResetTarget();
@@ -249,23 +286,19 @@ void Enemy::ResetTarget()
 }
 
 
-void Enemy::OnAttacked(Character& attacker)
-{
-    //攻撃されたら標的を攻撃してきたやつに変更
-    Character::OnAttacked(attacker);
-    _astar->SetTarget(&attacker);
-}
-
-
 void Enemy::OnDie()
 {
     Character::OnDie();
     
     //各パラメータをリセット
-    ResetCounter();
     _target = nullptr;
-    _hasAppeared = false;
     _defeatedNum++;
+
+    //フィールドから除外
+    OBJECT_MGR->Remove(this);
+
+    //自分を追跡していた仲間はあきらめるようにする
+    _notifyer.NotifyRemoveTarget(*this);
 }
 
 
@@ -273,9 +306,6 @@ bool Enemy::IsOverwritable(TiledObject* overwriter)
 {
     if (overwriter == this)
         return true;
-    
-    if (overwriter->GetType() == Type::ENEMY)
-        return (!_hasAppeared) && (!_isBattling);
     
     return true;
 }

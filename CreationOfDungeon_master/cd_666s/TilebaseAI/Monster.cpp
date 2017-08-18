@@ -1,17 +1,20 @@
 #include "Monster.h"
 #include "TileField.h"
 #include "AI/AstarChaser.h"
-#include "../DebugDraw.h"
 #include "ColleagueNotifyer.h"
 #include "BattlingTile.h"
 #include "TiledObjectMnager.h"
+#include "../DebugDraw.h"
+#include "../InputManager/InputManager.h"
 
-Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName)
-: Character(startPos, param, notifyer, monsterName)
+Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName, std::string skillData)
+: Character(startPos, param, notifyer, monsterName, TiledObject::Type::MONSTER)
 , _hasChoosed(false)
+, _countAfterUsingSkill(30)
 {
     _target = target;
     _astar = std::make_unique<AstarChaser>(_target, *this, _pathToTarget, 100, true);
+    /*
     _astar->SetAdditionalFunc(std::move([&](TiledObject* obj)
     {
         if (obj->GetType() != Type::ENEMY)
@@ -20,10 +23,11 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
         auto enemy = dynamic_cast<Enemy*>(obj);
         return (!enemy->_isBattling); 
     }));
+    */
 
+    _skill = CreateSkillFromName(monsterName, skillData);
     _ai = _astar.get();
 
-    _type = TiledObject::Type::MONSTER;
     _appearSE.Load("resourse/sound/flame.wav");
     _appearSE.SetVolume(200);
 }
@@ -46,60 +50,37 @@ void Monster::Update()
     Character::Update();
 
     //魔法陣の上にいるならさらに回復
-    auto objs = FIELD->GetTiledObjects(GetTilePos());
-    for (auto obj : objs)
-    {
-        if (obj->GetType() == TiledObject::Type::MAGIC_SQUARE
-            && _home == obj)
-        {
-            obj->Interact(*this);
-            break;
-        }
-    }
+    auto magicSquare = FIELD->GetTiledObject<MagicSquare>(GetTilePos());
+    if (magicSquare != nullptr)
+         magicSquare->Interact(*this);
     
-    //出現してなければ行動できない
-    if (!_hasAppeared)
+    //行動可能かチェック
+    if (!CheckActable())
         return;
 
-    //バトル中なら行動できない
-    if (_isBattling)
+    if (_skill.get() != nullptr
+        && _skill->IsReadyToUse()
+        && MOUSE->DoubleClicked()
+        && Contain(MOUSE->GetCursorPos()))
+    {
+        _skill->Activate();
+    }
+
+    if (_skill.get() != nullptr
+        && _countAfterUsingSkill < 30)
+    {
+        _countAfterUsingSkill++;
         return;
-
-    //バトル直後は動けない(連戦防止)
-    if (0 < _countAfetrBattle)
-    {
-        _countAfetrBattle++;
-
-        if (30 < _countAfetrBattle)
-            _countAfetrBattle = 0;
     }
 
-
-    if (CheckActCounter())
-    {
-        //指示がなければ終了
-        if (_ai == nullptr)
-            return;
-    
-        //視界
-        _sight = FIELD->GetParabolicMovableCell(GetTilePos(), 5, _direction);
-    
-        //意思決定
-        Think();
-    
-        //意思遂行
-        Act();
-    }
-    
-    auto vec = (GetTilePos() - _beforeTilePos).GetWorldPos() - Vector2D(FIELD_OFFSET_X, FIELD_OFFSET_Y);
-    _position += vec * (1.0 / (GetActInterval() + 1));
+    Character::Action();
 }
 
 
 void Monster::Act()
 {
     //移動先との差分から向きを更新
-    UpdateAttitude();
+    //UpdateAttitude();
    
     //次のタイルへ移動
     MoveToNext();
@@ -111,22 +92,18 @@ void Monster::MoveToNext()
     if (_pathToTarget.size() == 0)
         return;
 
-    if (_countAfetrBattle == 0 )
+    /*
+    if (!_afterBattleTimer.IsCounting())
     {
-        auto objects = FIELD->GetTiledObjects(GetTilePos());
-
         //敵が正面から来るなら待ち構える
-        for (auto obj : objects)
-        {
-            if (obj->GetType() == Type::ENEMY)
-                return;
-        }
+        auto obj = FIELD->GetTiledObject<Enemy>(GetTilePos());
+        if (obj != nullptr)
+            return;
     }
+    */
     
     //移動先を取り出して
-    TiledVector pos = GetTilePos();
-    pos = _pathToTarget[0];
-    
+    TiledVector pos = _pathToTarget[0];
     //キューから削除
     _pathToTarget.erase(_pathToTarget.begin());
     FIELD->MoveObject(*this, pos);
@@ -145,9 +122,7 @@ void Monster::DrawTargetMarker()
     if (_target != nullptr)
     {
         auto worldPos = _target->GetPosition() + Vector2D(TILE_SIZE / 2, TILE_SIZE / 2);
-        Debug::DrawCircle(worldPos,
-            TILE_SIZE, ColorPalette::BLACK4, false);
-
+        Debug::DrawCircle(worldPos, TILE_SIZE, ColorPalette::BLACK4, false);
         Debug::DrawLine(worldPos + Vector2D(-TILE_SIZE / 2, 0), worldPos + Vector2D(TILE_SIZE / 2, 0), ColorPalette::BLACK4);
         Debug::DrawLine(worldPos + Vector2D(0, -TILE_SIZE / 2), worldPos + Vector2D(0, TILE_SIZE / 2), ColorPalette::BLACK4);
     }
@@ -158,10 +133,8 @@ void Monster::WarpToHome(const MagicSquare& square)
 {
     //バトル中ならバトルから離脱
     if (_isBattling)
-    {
         _battle->RunAway();
-        ResetCounter();
-    }
+//        ResetCounter();
 
     OnDie();
 }
@@ -169,7 +142,7 @@ void Monster::WarpToHome(const MagicSquare& square)
 
 void Monster::SetTarget(TiledObject *target)
 {
-    if (!IsEnable() || !IsAlive())
+    if (!IsEnable() || !IsAlive() || _isBattling)
         return;
         
     //目標の初期化
@@ -178,45 +151,25 @@ void Monster::SetTarget(TiledObject *target)
     //目標設定
     _target = target;
     _astar->SetTarget(target);
-    
-    //バトル中ならバトル終了
-    if (_isBattling)
-    {
-        _battle->RunAway();
-        ResetCounter();
-    }
 }
 
 
 void Monster::SetTarget(TiledVector pos)
 {
-    if (!IsEnable() || !IsAlive())
+    if (!IsEnable() || !IsAlive() || _isBattling)
         return;
     
     //そこへ移動
     _target = nullptr;
     _astar->SetTarget(pos);
     _astar->FindPath();
-    
-    //バトル中ならバトル終了
-    if (_isBattling)
-    {
-        _battle->RunAway();
-        ResetCounter();
-    }
-}
-
-
-void Monster::OnAttacked(Character& attacker)
-{
-    //攻撃されたら標的を攻撃してきたやつに変更
-    Character::OnAttacked(attacker);
-    _astar->SetTarget(&attacker);
 }
 
 
 void Monster::OnDie()
 {
+    Character::OnDie();
+
     //陣に戻る
     auto homePos = _home->GetTilePos();
     _beforeTilePos = homePos;
@@ -224,13 +177,8 @@ void Monster::OnDie()
     FIELD->MoveObject(*this, homePos);
 
     //各パラメータをリセット
-    _hasChoosed = false;
-    
-    //各パラメータをリセット
-    ResetCounter();
     ResetTarget();
-    _pathToTarget.resize(0);
-    _hasAppeared = false;
+    _hasChoosed = false;
 }
 
 
@@ -254,10 +202,11 @@ bool Monster::IsRunnable()
 }
 
 //召喚可能かどうか
-bool Monster::IsReadyToProduce() const
+bool Monster::IsReadyToProduce()
 {
+    auto param = GetAffectedParameter();
     //体力が最大 & 召喚されてないなら召喚可能
-    return (_maxHP == _battleParameter._hp)
+    return (param._maxHP == param._hp)
             && (!_hasAppeared);
 }
 

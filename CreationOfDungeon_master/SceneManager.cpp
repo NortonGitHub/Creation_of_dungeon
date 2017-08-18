@@ -1,6 +1,5 @@
 #include "SceneManager.h"
 #include "Title.h"
-/*for test including*/
 #include "EditMap.h"
 
 SceneManager::SceneManager() : now_scene(new EditMap("1"))

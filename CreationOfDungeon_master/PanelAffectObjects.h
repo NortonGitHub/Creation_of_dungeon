@@ -7,22 +7,21 @@ class PanelAffectObjects :
     //ƒJƒeƒSƒŠ‘I‘ð
 public:
     PanelAffectObjects();
-    PanelAffectObjects(PanelContent& _panelContent);
+    PanelAffectObjects(PanelContent _panelContent);
     ~PanelAffectObjects();
 
-    void Update() override;
-    void Draw() override;
+    void Update();
+    void Draw();
 
-    void Init(PanelContent& _panelContent) override;
+    void Init(PanelContent _panelContent);
 
-    std::string GetCategoryName() override;
-    std::string GetTypeName() override;
+    std::string GetCategoryName();
 
-    void SetSettingObject(std::vector<PanelBase>& _tps) override;
+    void SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps);
 
     void DrawDebugPrint() override;
 
-    bool IsClicked() override;
+    bool IsClicked();
 
 private:
     PanelContent panel;

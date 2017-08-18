@@ -19,7 +19,7 @@ public:
     void Update();
     
     //‚»‚Ì‘ÎÛ‚ğ’Ç‚¤•K—v‚ª‚ ‚é‚©‚Ç‚¤‚©
-    bool IsChasable(TiledObject& target);
+    bool IsChasable(const TiledObject& target) const;
 
     int GetColleagues() const { return _colleagues.size(); }
     

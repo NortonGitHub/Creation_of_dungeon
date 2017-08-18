@@ -17,7 +17,8 @@ River::~River()
 void River::Init()
 {
     auto tilePos = GetTilePos();
-    std::string fileName = "resourse/graph/background/";
+    auto fieldType = GetTile().lock()->GetFieldType();
+    std::string fileName = GetMapChipGraphDirectory(fieldType);
 
     //¶‚ªì‚È‚ç
     if (FIELD->GetRawNumber(tilePos + TiledVector(-1, 0)) == 6)

@@ -3,38 +3,13 @@
 #include<fstream>
 
 #include "cd_666s/Resources/AllResourceManager.h"
-#include "cd_666s/Utility/CSVReader.h"
 
 PanelDisplayer::PanelDisplayer()
-    : panel()
 {
 }
-
-PanelDisplayer::PanelDisplayer(PanelContent & _panelContent)
-    : panel(std::move(_panelContent))
-{
-//    panel = std::move(_panelContent);
-    std::string filename = "graph/ui/" + panel._name + ".png";
-
-    auto pos = panel._pos;
-
-    _position.Set(pos._x, pos._y);
-
-    _graph.Load(filename);
-
-    _graph.SetPosition(_position);
-    _graph.SetPriority(Sprite::Priority::UI);
-    //_graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
-}
-
 
 PanelDisplayer::~PanelDisplayer()
 {
-}
-
-void PanelDisplayer::Init(PanelContent & _panelContent)
-{
-    panel = _panelContent;
 }
 
 void PanelDisplayer::Update()
@@ -49,18 +24,14 @@ void PanelDisplayer::Draw()
     GraphicalObject::Draw();
 }
 
-void PanelDisplayer::SetSettingObject(std::vector<PanelBase>& _tps)
+void PanelDisplayer::Init(PanelContent _panelContent)
 {
+    panel = _panelContent;
 }
 
 bool PanelDisplayer::IsClicked()
 {
     return GetIsClicked(panel);
-}
-
-std::string PanelDisplayer::GetTypeName()
-{
-    return panel._name;
 }
 
 void PanelDisplayer::DrawDebugPrint()

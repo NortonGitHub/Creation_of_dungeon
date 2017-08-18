@@ -2,14 +2,17 @@
 #define StartPoint_h
 
 #include "TiledObject.h"
+#include "MessageManager.h"
 #include <vector>
 
+class MessageReciever;
 class Enemy;
 
 class StartPoint : public TiledObject
 {
     typedef std::pair<std::weak_ptr<Enemy>, long> AppearData;
 public:
+    StartPoint(TiledVector tilePos, MessageReciever& reciever);
     StartPoint(TiledVector tilePos);
     ~StartPoint();
     
@@ -35,6 +38,9 @@ private:
     long _frameFromStart;
 
     size_t _currentIndex;
+
+    MessageReciever& _reciever;
+    TalkDatabase _intrudeMessage;
 };
 
 #endif /* StartPoint_h */

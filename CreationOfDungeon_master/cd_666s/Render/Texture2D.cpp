@@ -76,13 +76,24 @@ void Texture2D::Render(const Camera& camera)
 
     Vector2D pos = _pos + camera.GetPosition();
 
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(_baseColor._a * 255));
+    
+    Vector2D pivot(_pos);
+    Vector2D center(_pos);
+    if (_anchorType == AnchorType::CENTER)
+    {
+        center = _baseSize * 0.5;
+        pivot.Set(  _pos._x + _baseSize._x / 2 * _scale._x,
+                    _pos._y + _baseSize._y / 2 * _scale._y);
+    }
+
     DrawRotaGraph3F(
-        static_cast<float>(_pos._x + _baseSize._x / 2 * _scale._x), 
-        static_cast<float>(_pos._y + _baseSize._y / 2 * _scale._y),
-        static_cast<float>(_baseSize._x / 2),
-        static_cast<float>(_baseSize._y / 2),
+        static_cast<float>(pivot._x),
+        static_cast<float>(pivot._y),
+        static_cast<float>(center._x),
+        static_cast<float>(center._y),
         _scale._x, 
         _scale._y, 
-        _angle * DX_PI,
+        _angle / 180 * DX_PI,
         _handle, true, false);
 }

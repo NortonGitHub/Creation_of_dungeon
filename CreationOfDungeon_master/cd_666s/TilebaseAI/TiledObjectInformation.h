@@ -19,7 +19,6 @@ public:
 
 private:
 
-    void DrawInformation(Character* chara);
 
     const TiledObjectDictionary& _iconDictionary;
 

@@ -1,7 +1,8 @@
 #pragma once
 #include "../Utility/Singleton.h"
-#include "MapTile.h"
 #include "AI/Breadcrumb.h"
+#include "MapTile.h"
+#include "FieldType.h"
 #include <vector>
 #include <memory>
 
@@ -34,11 +35,36 @@ public:
     //除外して登録する処理を一気に行う
     void MoveObject(TiledObject &obj, TiledVector pos);
     
-    TiledObject* GetTiledObject(const TiledVector &pos);
-    std::vector<TiledObject*> GetTiledObjects(const TiledVector &pos);
+    template<class T = TiledObject>
+    T* GetTiledObject(const TiledVector &pos)
+    {
+        //範囲外を参照しようとしたらnullを返す
+        if (!IsInside(pos))
+            return nullptr;
+
+        return _field[pos._y][pos._x].lock()->GetTiledObject<T>();
+    }
+
+    template<class T = TiledObject>
+    std::vector<T*> GetTiledObjects(const TiledVector &pos)
+    {
+        //範囲外を参照しようとしたらnullを返す
+        if (!IsInside(pos))
+        {
+            std::vector<T*> empty;
+            return std::move(empty);
+        }
+
+        return std::move(_field[pos._y][pos._x].lock()->GetTiledObjects<T>());
+    }
 
     int GetRawNumber(const TiledVector &pos) const;
     void SetRawNumber(const TiledVector &pos, int number);
+    FieldType GetFieldType(const TiledVector &pos) const;
+    void SetFieldType(const TiledVector &pos, std::string data);
+
+    FieldType GetDefaultFieldType() const { return _defaultFieldType; };
+    void SetDefaultFieldType(std::string data);
 
     const Field &GetFieldRef() const { return _field; }
     
@@ -72,14 +98,10 @@ private:
     void CalcMovableCell(const TiledVector &pos, StepTable& stepTable, int step, int degree, TiledVector::Direction);
     void CalcParabolicMovableCell(TiledVector pos, const TiledVector &basePos, StepTable& stepTable, int range, TiledVector::Direction dir, TiledVector::Direction baseDir);
     
-    
-    
+    FieldType _defaultFieldType;
     TiledVector _fieldSize;
     Field _field;
     std::vector<std::shared_ptr<MapTile>> _gobjs;
-
-    //マップチップ番号
-    std::vector<std::vector<int>> _rawData;
 };
 
 #define FIELD TileField::GetInstance()

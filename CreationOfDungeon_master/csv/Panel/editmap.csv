@@ -2,9 +2,9 @@
 970,180,AffectObject_Monster,CHANGE_LIST,SELECT_OBJ-*
 1065,180,AffectObject_Trap,CHANGE_LIST,SELECT_OBJ-*
 1160,180,AffectObject_Block,CHANGE_LIST,SELECT_OBJ-*
-960,290,SettingObject_bone,SELECT_OBJ,0
-1060,290,SettingObject_ghost,SELECT_OBJ,0
-1160,290,SettingObject_minotaur,SELECT_OBJ,0
+960,290,SettingObject_1,SELECT_OBJ,0
+1060,290,SettingObject_2,SELECT_OBJ,0
+1160,290,SettingObject_3,SELECT_OBJ,0
 960,390,SettingObject_4,SELECT_OBJ,0
 1060,390,SettingObject_5,SELECT_OBJ,0
 1160,390,SettingObject_6,SELECT_OBJ,0

@@ -8,12 +8,16 @@
 MapTile::MapTile(int col, int row)
 : _tilePos(row, col)
 , _breadcrumb(nullptr)
+, _rawNumber(0)
+, _type(FieldType::None)
 {
 }
 
 MapTile::MapTile(TiledVector pos)
 : _tilePos(pos)
 , _breadcrumb(nullptr)
+, _rawNumber(0) 
+, _type(FieldType::None) 
 {
 }
 
@@ -26,7 +30,8 @@ MapTile::~MapTile()
 void MapTile::Init()
 {
     //左と右が川なら
-    std::string fileName = "resourse/graph/background/";
+    std::string fileName = GetMapChipGraphDirectory(_type);
+
     if ((FIELD->GetRawNumber(_tilePos + TiledVector(-1, 0)) == 6)
         && (FIELD->GetRawNumber(_tilePos + TiledVector(1, 0)) == 6)
         && (FIELD->GetRawNumber(_tilePos + TiledVector(0, 1)) == 0)
@@ -55,12 +60,14 @@ void MapTile::Init()
 }
 
 
-TiledObject* MapTile::GetTiledObject() const
+void MapTile::SetFieldType(std::string data, FieldType defaultType)
 {
-    if (_objects.size() == 0)
-        return nullptr;
-    
-    return _objects[_objects.size() - 1];
+    //文字列からタイプに変換
+    _type = GetFieldTypeFromData(data);
+
+    //変換できなかったらデフォルト
+    if (_type == FieldType::None)
+        _type = defaultType;
 }
 
 
@@ -111,13 +118,6 @@ void MapTile::Remove(Breadcrumb* crumb)
 void MapTile::Draw()
 {
     _position = GetTilePos().GetWorldPos() + Vector2D(FIELD_OFFSET_X, FIELD_OFFSET_Y);
-
-    /*
-    Debug::DrawRectWithSize(_position
-                     , Vector2D(TILE_SIZE, TILE_SIZE)
-                     , Color4(0.0, 0.0, 0.0, 1.0)
-                     , false);
-    */
 
     if (_breadcrumb != nullptr)
         _breadcrumb->Update();

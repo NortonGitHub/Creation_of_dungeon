@@ -26,6 +26,7 @@ void KeyInput::RegistRecords()
     AddRecord(KeyType::KEY_ARROW_RIGHT, KEY_INPUT_RIGHT);
     AddRecord(KeyType::KEY_ARROW_UP, KEY_INPUT_UP);
     AddRecord(KeyType::KEY_ARROW_DOWN, KEY_INPUT_DOWN);
+    AddRecord(KeyType::KEY_ESCAPE, KEY_INPUT_ESCAPE);
 }
 
 

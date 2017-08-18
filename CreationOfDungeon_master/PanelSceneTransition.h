@@ -5,18 +5,14 @@ class PanelSceneTransition :
 {
 public:
     PanelSceneTransition();
-    PanelSceneTransition(PanelContent& _panelContent);
     ~PanelSceneTransition();
 
     void Update() override;
     void Draw() override;
 
-    void Init(PanelContent& _panelContent) override;
+    void Init(PanelContent& _panelContent);
 
-    std::string GetCategoryName() override;
-    std::string GetTypeName() override;
-
-    bool IsClicked() override;
+    bool IsClicked();
 
     void DrawDebugPrint() override;
 

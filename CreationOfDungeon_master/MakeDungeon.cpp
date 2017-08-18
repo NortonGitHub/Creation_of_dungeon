@@ -14,7 +14,9 @@
 //#include "cd_666s/TilebaseAI/Goal.h"
 //#include "cd_666s/TilebaseAI/StartPoint.h"
 
-#include "SettingBowgun.h"
+#include "cd_666s/TilebaseAI/Trap.h"
+
+//#include "SettingBowgun.h"
 
 #include <assert.h>
 
@@ -24,7 +26,14 @@ MakeDungeon::MakeDungeon()
 
 MakeDungeon::MakeDungeon(std::string stage_num)
     : _stage_num(stage_num)
+    , _mainsFrame("resourse/graph/ui/main_window.png", Vector2D(20, 20))
+    , _background("resourse/graph/background/background.png", Vector2D(0, 7600))
+    , _windowBackground("resourse/graph/ui/main_window_background1.png", Vector2D(28, 28))
 {
+    //なぜかSprite::Priority::UI(100)では描画されず　なぜ？
+    _mainsFrame.SetPriority(101);
+    _background.SetPriority(Sprite::Priority::BACKGROUND);
+    _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
 }
 
 
@@ -42,13 +51,13 @@ MakeDungeon::~MakeDungeon()
 
 void MakeDungeon::Update()
 {
-
-    _monsters.Update();
+    //_monsters.Update();
 
     for (auto obj : OBJECT_MGR->_objects) {
         if (obj != nullptr) {
             //if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L)) {
-            obj->Update();
+
+            //obj->Update();
             //}
         }
     }
@@ -65,14 +74,26 @@ void MakeDungeon::Draw()
 
 void MakeDungeon::Init(std::string file_name)
 {
+    
+    //タイルの大きさを読み込む
+    std::string fileName = "csv/StageData/tilesize.csv";
+    std::vector<std::string> tileInfoArray;
+    CSVReader reader;
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, tileInfoArray);
+    LoadTileSize(_stage_num, tileInfoArray);
+
     std::vector<std::string> _stageArray;
     //フィールドの大本となるデータを読み込む
     std::string filename = "csv/StageData/";
     filename += (file_name + ".csv");
-    CSVReader reader;
+    
     reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, _stageArray);
+    
+    
+    
     auto fieldSizeH = reader.GetLineSize(filename, 0);
     auto fieldSizeV = reader.GetLineNum(filename);
+
     FIELD->Init(fieldSizeH, fieldSizeV);
 
     int countX = 0;
@@ -83,7 +104,7 @@ void MakeDungeon::Init(std::string file_name)
     filename += (_stage_num + ".csv");
     Monster::LoadMonsters(_objs, _monsters, filename);
 
-    FIELD->Init(fieldSizeH, fieldSizeV);
+    //FIELD->Init(fieldSizeH, fieldSizeV);
 
     for (auto data : _stageArray) {
         GenerateObject(data, countX, countY);
@@ -100,7 +121,7 @@ void MakeDungeon::Init(std::string file_name)
     }
 
     /*設置オブジェクトをロードする処理が必要*/
-
+    
     _monsters.Update();
 
     FIELD->Setup();
@@ -124,42 +145,73 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
 {
     FIELD->SetRawNumber(TiledVector(countX, countY), stoi(typeName));
 
+    FIELD->SetFieldType(TiledVector(countX, countY), typeName);
+
+
     auto& _objs = OBJECT_MGR->_objects;
-    switch (stoi(typeName))
+    
+    if (typeName.find("9#") != std::string::npos)
     {
-    case 0:
+        Trap::CreateTrap(typeName, countX, countY, _objs);
         return;
+    }
 
-    case 1:
-        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+    if (typeName.find("2&") != std::string::npos)
+    {
+        LoadItem(typeName, countX, countY, _objs);
         return;
+    }
 
-    case 2:
-        _objs.push_back(std::make_shared<EnemysItem>(TiledVector(countX, countY)));
-        return;
-
-    case 6:
-        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
-        return;
-
-    case 100:
-        if (_goal == nullptr)
-        {
-            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
-            _objs.push_back(_goal);
-        }
-        return;
-
-    case 200:
+    if (typeName.find("200") != std::string::npos)
+    {
         if (_start == nullptr)
         {
             _start = std::make_shared<StartPoint>(TiledVector(countX, countY));
             _objs.push_back(_start);
         }
         return;
+    }
 
-    case 301:
-        _objs.push_back(std::make_shared<SettingBowgun>(TiledVector(countX, countY)));
+    if (typeName.find("100") != std::string::npos)
+    {
+        if (_goal == nullptr)
+        {
+            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
+            _objs.push_back(_goal);
+        }
         return;
     }
+
+    if (typeName.find("6") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
+        return;
+    }
+
+    if (typeName.find("1") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+        return;
+    }
+
+    if (typeName == "0")
+        return;
+
+
 }
+
+
+
+void MakeDungeon::LoadTileSize(std::string stageName, std::vector<std::string>& rawData)
+{
+    auto stageNum = std::stoi(stageName);
+    auto tileSize = rawData[stageNum * 2 - 1];
+
+    if (tileSize == "large")
+        TILE_SIZE = 48;
+    else if (tileSize == "midium")
+        TILE_SIZE = 40;
+    else
+        TILE_SIZE = 32;
+}
+
