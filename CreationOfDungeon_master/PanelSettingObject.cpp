@@ -3,6 +3,7 @@
 #include "cd_666s/Resources/AllResourceManager.h"
 #include "cd_666s/Utility/CSVReader.h"
 
+#include "cd_666s/DebugDraw.h"
 
 PanelSettingObject::PanelSettingObject()
 {
@@ -28,12 +29,23 @@ PanelSettingObject::PanelSettingObject(PanelContent _panelContent)
         _graph.Load(filename);
 
         _graph.SetPosition(_position);
-        //Ç»Ç∫Ç©Sprite::Priority::UI(100)Ç≈ÇÕï`âÊÇ≥ÇÍÇ∏Å@Ç»Ç∫ÅH
-        _graph.SetPriority(101);
+
+        _graph.SetPriority(Sprite::Priority::UI);
         Vector2D s = _graph.GetSize();
         _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
 
         //_graph.SetDisplayMode(true);
+
+        objectName = "";
+
+        isSelected = false;
+
+    }
+    else {
+
+        objectName = "Lv";
+
+        isSelected = false;
 
     }
 
@@ -58,6 +70,11 @@ void PanelSettingObject::Draw()
     //panel.Draw();
     //DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
     GraphicalObject::Draw();
+
+    if (isSelected) {
+        Debug::DrawRectWithPoint(_graph.GetPosition(), _graph.GetPosition() + _graph.GetScale() * _graph.GetSize(), Color4(1, 0, 0, 1), false);
+    }
+
 }
 
 void PanelSettingObject::Init(PanelContent& _panelContent)
@@ -117,7 +134,7 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
             _graph.Load(filename);
 
             _graph.SetPosition(_position);
-            _graph.SetPriority(101);
+            _graph.SetPriority(Sprite::Priority::UI);
 
             Vector2D s = _graph.GetSize();
             _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
@@ -136,8 +153,8 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
             _graph.Load(filename);
 
             _graph.SetPosition(_position);
-            //Ç»Ç∫Ç©Sprite::Priority::UI(100)Ç≈ÇÕï`âÊÇ≥ÇÍÇ∏Å@Ç»Ç∫ÅH
-            _graph.SetPriority(101);
+
+            _graph.SetPriority(Sprite::Priority::UI);
             Vector2D s = _graph.GetSize();
             _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
 
@@ -149,6 +166,21 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
 
 
 }
+
+
+void PanelSettingObject::setIsSelected(bool flag) {
+
+    isSelected = flag;
+
+}
+
+
+bool PanelSettingObject::getIsSelected() {
+    return isSelected;
+}
+
+
+
 
 
 

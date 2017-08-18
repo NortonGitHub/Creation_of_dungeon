@@ -22,8 +22,8 @@ PanelAffectObjects::PanelAffectObjects(PanelContent _panelContent)
     _graph.Load(filename);
 
      _graph.SetPosition(_position);
-     //Ç»Ç∫Ç©Sprite::Priority::UI(100)Ç≈ÇÕï`âÊÇ≥ÇÍÇ∏Å@Ç»Ç∫ÅH
-    _graph.SetPriority(101);
+
+    _graph.SetPriority(Sprite::Priority::UI);
     //_graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
 
     //_graph.SetDisplayMode(true);

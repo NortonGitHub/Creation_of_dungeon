@@ -21,6 +21,6 @@ public:
     Vector2D _pos;
 
 private:
-    Sprite panel_graph;
+    //Sprite panel_graph;
 };
 

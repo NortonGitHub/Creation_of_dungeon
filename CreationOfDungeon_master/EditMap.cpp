@@ -205,6 +205,7 @@ void EditMap::Init()
 
     panel_cont_temp.clear();
     
+    selectedObject.reset();
 
 }
 
@@ -301,6 +302,28 @@ void EditMap::PanelAffectObjectsFunction(std::shared_ptr<PanelBase> panel)
             j++;
         }
     }
+
+
+    /*値を変化させる他パネルを検索する*/
+    //SettingObjectは未選択に
+    for (auto& p : PANEL_MGR->_objects) {
+
+        if (p == nullptr)
+            continue;
+
+        auto aff_str = std::string(typeid(*p).name());
+        if (aff_str.find("SettingObject") != NPOS) {
+
+            std::shared_ptr<PanelSettingObject> psTemp = dynamic_pointer_cast<PanelSettingObject>(p);
+
+            if (psTemp) {
+                psTemp->setIsSelected(false);
+            }
+
+        }
+    }
+
+
 }
 
 void EditMap::PanelDisplayerFunction(std::shared_ptr<PanelBase> panel)
@@ -313,6 +336,50 @@ void EditMap::PanelSceneTransFunction(std::shared_ptr<PanelBase> panel)
 
 void EditMap::PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel)
 {
+
+    //試験的にダウンキャストを使用
+    //まずかったら変えます
+
+    std::shared_ptr<PanelSettingObject> ps = dynamic_pointer_cast<PanelSettingObject>(panel);
+
+    if (ps) {
+        if (ps->getIsSelected()) {
+            ps->setIsSelected(false);
+            selectedObject.reset();
+        }
+        else {
+            ps->setIsSelected(true);
+            selectedObject = ps;
+        }
+        
+    }
+    else {
+        return;
+    }
+
+
+    /*値を変化させる他パネルを検索する*/
+    //他のSettingObjectは未選択に
+    for (auto& p : PANEL_MGR->_objects) {
+
+        if (p == nullptr)
+            continue;
+
+        if (p == ps)
+            continue;
+
+        auto aff_str = std::string(typeid(*p).name());
+        if (aff_str.find("SettingObject") != NPOS) {
+            
+            std::shared_ptr<PanelSettingObject> psTemp = dynamic_pointer_cast<PanelSettingObject>(p);
+
+            if (psTemp) {
+                psTemp->setIsSelected(false);
+            }
+
+        }
+    }
+
 }
 
 void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>& panel, PanelContent& temp)
