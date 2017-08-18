@@ -195,8 +195,14 @@ void EditMap::Init()
 
                     panel_obj.push_back(temp);
 
+                    panel_obj.back()->Init(PanelContent(Vector2D(std::stoi(panel_temp[0]),
+                        std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]));
+
+
+                    panel_obj.back()->DrawDebugPrint();
+
                     //panel_cont_temp.push_back(PanelContent(
-                        //Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]));
+                    //    Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]));
                 }
                 catch (std::out_of_range&) {
                     assert("Cannot push_back panel elem");
@@ -215,8 +221,9 @@ void EditMap::Init()
     PANEL_MGR->Refresh();
 
     /*
+    auto _s = panel_cont_temp.size();
     int elem = 0;
-    for (auto obj : panel_obj) {
+    for (auto& obj : panel_obj) {
         if (obj.get() != nullptr) {
             obj->Init(panel_cont_temp[elem]);
             obj->DrawDebugPrint();
@@ -368,9 +375,6 @@ void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>&
     }
     else if (key_name == "SELECT_OBJ") {
         panel = std::make_shared<PanelSettingObject>(temp);
-        /*NOTE:ここにBlock,Monster,Trapのいずれかの要素を入れる処理を差し込む*/
-        /*NOTE:現在コンストラクタにある画像読み込み処理を上記の処理後に入れる*/
-        //_allSettingPanel.push_back(std::make_shared<PanelSettingObject>(temp));
     }
     else if (key_name == "SHOW") {
         panel = std::make_shared<PanelDisplayer>(temp);
