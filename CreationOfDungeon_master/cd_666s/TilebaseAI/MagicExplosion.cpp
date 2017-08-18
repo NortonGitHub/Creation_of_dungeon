@@ -22,7 +22,7 @@ MagicExplosion::MagicExplosion(int power, int attack, int range, TiledVector pos
     _animation.Set(&_graph, 32, 32, divNum, 32);
     _animation._isLoop = false;    
 
-    _sound.Load("resourse/sound/flame.wav");
+    _sound.Load("sound/flame.wav");
 }
 
 

@@ -48,7 +48,7 @@ TiledObjectDictionary::ImageResourcePtr TiledObjectDictionary::GetImageFromName(
 
 void TiledObjectDictionary::AddRecord(std::string name)
 {
-    std::string folderPath = "resourse/graph/tiledObject/";
+    std::string folderPath = "graph/tiledObject/";
     std::string format = ".png";
 
     auto record = std::make_pair(name, std::make_shared<ImageResource>(folderPath + name + format));

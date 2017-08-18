@@ -8,8 +8,8 @@ CurseArea::CurseArea(TiledVector pos, int cost, ParameterMultiplier multiplier)
     : Trap(pos, cost, 5)
     , _multiplier(std::move(multiplier))
 {
-    _graph.Load("resourse/graph/trap/CurseArea.png");
-    _sound.Load("resourse/sound/curseArea.wav");
+    _graph.Load("graph/trap/CurseArea.png");
+    _sound.Load("sound/curseArea.wav");
     _sound.SetVolume(200);
 }
 

@@ -12,7 +12,7 @@ ObjectInformationDrawer::ObjectInformationDrawer(const TiledObjectDictionary& ic
 , _character2(nullptr)
 , _thumbnail1(iconDictionary, { 920, 140 })
 , _thumbnail2(iconDictionary, { 920, 430 })
-, _selectSE("resourse/sound/decide.wav")
+, _selectSE("sound/decide.wav")
 {
     Init();
 }

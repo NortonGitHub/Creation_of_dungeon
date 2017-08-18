@@ -26,9 +26,9 @@ MakeDungeon::MakeDungeon()
 
 MakeDungeon::MakeDungeon(std::string stage_num)
     : _stage_num(stage_num)
-    , _mainsFrame("resourse/graph/ui/main_window.png", Vector2D(20, 20))
-    , _background("resourse/graph/background/background.png", Vector2D(0, 7600))
-    , _windowBackground("resourse/graph/ui/main_window_background1.png", Vector2D(28, 28))
+    , _mainsFrame("graph/ui/main_window.png", Vector2D(20, 20))
+    , _background("graph/background/background.png", Vector2D(0, 7600))
+    , _windowBackground("graph/ui/main_window_background1.png", Vector2D(28, 28))
 {
     //Ç»Ç∫Ç©Sprite::Priority::UI(100)Ç≈ÇÕï`âÊÇ≥ÇÍÇ∏Å@Ç»Ç∫ÅH
     _mainsFrame.SetPriority(101);

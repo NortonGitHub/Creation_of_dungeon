@@ -16,14 +16,14 @@ MagicBomb::MagicBomb(TiledVector trapPos, int cost, int range, int power, int at
     , _power(power)
     , _attack(attack)
 {
-    _graph.Load("resourse/graph/trap/mine_R.png");
+    _graph.Load("graph/trap/mine_R.png");
     _graph.SetPriority(200);
     _graph.SetPosition(_position);
     _graphArray.Set(&_graph, 32, 32, 8, 32);
     _graphArray._isLoop = false;
     _graphArray._isPlaying = false;
 
-    _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/effect/explosion_B.png");
+    _image = IMAGE_RESOURCE_TABLE->Create("graph/effect/explosion_B.png");
 }
 
 
