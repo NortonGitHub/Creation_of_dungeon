@@ -442,3 +442,67 @@ std::shared_ptr<Emplacement> Emplacement::Create(std::string data, TiledVector p
 
     return std::make_shared<Emplacement>(pos, cost, power, attack, direction);
 }
+
+
+
+
+std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos)
+{
+
+    std::vector<TiledObject*> monsterObjects;
+
+    std::vector<std::string> dataArray;
+    CSVReader reader;
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
+
+    const int parameterNum = 10;
+    std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
+    int idx = 0;
+    int count = 0;
+    std::string name;
+    std::string skill;
+    for (auto data : dataArray)
+    {
+        // MEMO : 最後だけはファイル名をそのまま使う
+        if (count < parameterNum - 2)
+            params[count] = std::stoi(data);
+        else if (count == parameterNum - 2)
+            name = data;
+        else if (count == parameterNum - 1)
+            skill = data;
+
+        count++;
+
+        if (count == parameterNum)
+        {
+            BattleParameter param = { params[0], params[1], params[2], params[3], params[4], params[5] };
+            TiledVector startPos(params[6], params[7]);
+
+            auto monster = std::make_shared<Monster>(startPos, param, nullptr, notifyer, name, skill);
+            objects.push_back(monster);
+
+            auto magicSquare = std::make_shared<MagicSquare>(startPos, *monster);
+            monster->_home = magicSquare.get();
+            objects.push_back(magicSquare);
+
+            //次のキャラへ
+            count = 0;
+            idx++;
+        }
+    }
+
+    return monsterObjects;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+

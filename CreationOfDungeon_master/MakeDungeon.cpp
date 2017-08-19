@@ -73,6 +73,8 @@ void MakeDungeon::Draw()
 void MakeDungeon::Init(std::string file_name)
 {
     
+    _messageReciever.Init();
+
     //タイルの大きさを読み込む
     std::string fileName = "csv/StageData/tilesize.csv";
     std::vector<std::string> tileInfoArray;
@@ -168,7 +170,7 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
     {
         if (_start == nullptr)
         {
-            _start = std::make_shared<StartPoint>(TiledVector(countX, countY));
+            _start = std::make_shared<StartPoint>(TiledVector(countX, countY), _messageReciever);
             _objs.push_back(_start);
         }
         return;
@@ -178,7 +180,7 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
     {
         if (_goal == nullptr)
         {
-            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
+            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters, _messageReciever, 99);
             _objs.push_back(_goal);
         }
         return;
@@ -204,6 +206,102 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
 
 
 
+TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, int countY, Vector2D mousePos)
+{
+    FIELD->SetRawNumber(TiledVector(countX, countY), stoi(typeName));
+    FIELD->SetFieldType(TiledVector(countX, countY), typeName);
+
+
+    auto& _objs = OBJECT_MGR->_objects;
+
+    if (typeName.find("9#") != std::string::npos)
+    {
+        Trap::CreateTrap(typeName, countX, countY, _objs);
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }else{
+            to = nullptr;
+        }
+        return to;
+    }
+
+    if (typeName.find("2&") != std::string::npos)
+    {
+        LoadItem(typeName, countX, countY, _objs);
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }
+        else {
+            to = nullptr;
+        }
+        return to;
+    }
+    /*
+    if (typeName.find("200") != std::string::npos)
+    {
+        if (_start == nullptr)
+        {
+            _start = std::make_shared<StartPoint>(TiledVector(countX, countY));
+            _objs.push_back(_start);
+        }
+        return;
+    }
+
+    if (typeName.find("100") != std::string::npos)
+    {
+        if (_goal == nullptr)
+        {
+            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
+            _objs.push_back(_goal);
+        }
+        return;
+    }
+    */
+    if (typeName.find("6") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }
+        else {
+            to = nullptr;
+        }
+        return to;
+    }
+
+    if (typeName.find("1") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }
+        else {
+            to = nullptr;
+        }
+        return to;
+    }
+
+    if (typeName == "0")
+        return nullptr;
+
+    return nullptr;
+
+}
+
+
+
 void MakeDungeon::LoadTileSize(std::string stageName, std::vector<std::string>& rawData)
 {
     auto stageNum = std::stoi(stageName);
@@ -216,6 +314,11 @@ void MakeDungeon::LoadTileSize(std::string stageName, std::vector<std::string>& 
     else
         TILE_SIZE = 32;
 }
+
+
+
+
+
 
 
 

@@ -74,8 +74,9 @@ void Dungeon::Init()
     LoadTileSize(_stageName, tileInfoArray);
 
     //フィールドのサイズを読み込む
-    fileName = "csv/StageData/map";
-    fileName += (_stageName + ".csv");
+    //fileName = "csv/StageData/map";
+    //fileName += (_stageName + ".csv");
+    fileName = "csv/StageData/EditMapData.csv";
     auto fieldSizeH = reader.GetLineSize(fileName, 0);
     auto fieldSizeV = reader.GetLineNum(fileName);
     

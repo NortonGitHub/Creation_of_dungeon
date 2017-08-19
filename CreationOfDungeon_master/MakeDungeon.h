@@ -26,11 +26,17 @@ public:
 
     void LoadTileSize(std::string stageName, std::vector<std::string>& rawData);
 
+    
+
+    TiledObject* GenerateAddObject(std::string typeName, int countX, int countY, Vector2D mousePos);
+
 private:
 
     std::string _stage_num;
 
+    
     void GenerateObject(std::string typeName, int countX, int countY);
+
 
     //開始点と終了地点はグローバルなレベルでインスタンス生成しておく
     std::shared_ptr<Goal> _goal;
@@ -41,6 +47,9 @@ private:
 
     //現在選ばれているオブジェクト
     std::string _selectingObj;
+
+    //メッセージウィンドウ
+    MessageReciever _messageReciever;
 
     Sprite _mainsFrame, _background, _windowBackground;
 

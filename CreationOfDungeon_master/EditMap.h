@@ -50,8 +50,45 @@ private:
     void DebugOutputFile();
 
 
+
+
+    void SetObject();
+
+    bool SetObjectCheck(TiledVector tiledCursorPos);
+
+    void DeleteAddedObject();
+
+
+    void GenerateObject(std::string typeName, int countX, int countY);
+
+
+
     std::shared_ptr<PanelSettingObject> selectedObject;
 
 
+    std::string selectPanelCategory;
+
+
+    struct addTileObject {
+
+        TiledObject* tiledObject;
+        std::string GenerateText;
+
+    };
+
+
+
+    std::vector<addTileObject> addTiledObjectList;
+
+
 };
+
+
+
+
+
+
+
+
+
 

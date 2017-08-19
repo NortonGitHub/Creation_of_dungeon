@@ -12,8 +12,17 @@
 
 #include "PanelObjectManager.h"
 
+#include "cd_666s/TilebaseAI/TileField.h"
+#include "cd_666s/TilebaseAI/TiledObjectMnager.h"
+
+#include "Game.h"
+
+#include "cd_666s/TilebaseAI/MineBomb.h"
+
 #include <typeinfo>
 #include <sstream>
+
+#include <iostream>
 
 #include <assert.h>
 
@@ -35,6 +44,9 @@ EditMap::~EditMap()
     PANEL_MGR->Clear();
 
     PANEL_MGR->Refresh();
+
+    
+
 
 #if 1
     std::string pass = RESOURCE_TABLE->GetFolderPath();
@@ -110,6 +122,10 @@ SceneBase * EditMap::Update(UIManager _ui)
     }
 
     _dungeon->Update();
+
+    SetObject();
+
+    DeleteAddedObject();
 
     return scene;
 }
@@ -207,6 +223,10 @@ void EditMap::Init()
     
     selectedObject.reset();
 
+    selectPanelCategory = "";
+
+    addTiledObjectList.clear();
+
 }
 
 bool EditMap::IsFirstWave()
@@ -258,6 +278,16 @@ SceneBase * EditMap::PanelFunction()
             }
             else if (str.find("SceneTrans") != NPOS) {
                 PanelSceneTransFunction(p);
+
+                if (_dungeon != nullptr)
+                {
+                    _dungeon.reset();
+                    _dungeon = nullptr;
+                }
+                INPUT_MGR->Clear();
+                RESOURCE_TABLE->Refresh();
+
+                return new Game(stoi(stage_num));
             }
             else if (str.find("SettingObject") != NPOS) {
                 PanelSettingObjectFunction(p);
@@ -323,6 +353,7 @@ void EditMap::PanelAffectObjectsFunction(std::shared_ptr<PanelBase> panel)
         }
     }
 
+    selectPanelCategory = panel->GetCategoryName();
 
 }
 
@@ -332,6 +363,64 @@ void EditMap::PanelDisplayerFunction(std::shared_ptr<PanelBase> panel)
 
 void EditMap::PanelSceneTransFunction(std::shared_ptr<PanelBase> panel)
 {
+
+    std::string filePass = "csv/StageData/";
+    std::string fileName = filePass + "EditMapData.csv";
+
+    std::ofstream writing_file;
+    writing_file.open(fileName, std::ios::out);
+
+
+    std::vector<std::string> _stageArray;
+    //フィールドの大本となるデータを読み込む
+    std::string filename = "csv/StageData/";
+    filename += ("map" + stage_num + ".csv");
+    CSVReader reader;
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, _stageArray);
+
+
+
+    TiledVector temp = FIELD->GetFieldSize();
+
+    int countX = 0;
+    int countY = 0;
+
+    for (auto data : _stageArray) {
+        
+        for (int i = 0; i < addTiledObjectList.size(); i++) {
+
+            if (addTiledObjectList[i].tiledObject->GetTilePos() == TiledVector(countX, countY)) {
+
+                data = addTiledObjectList[i].GenerateText;
+
+            }
+
+        }
+
+
+        writing_file << data << std::flush;
+
+
+        countX++;
+
+        if (countX == temp._x) {
+            countX = 0;
+            countY++;
+
+            writing_file << std::endl;
+
+            if (countY == temp._y) {
+                break;
+            }
+        }
+
+        if (countX != 0) {
+            writing_file << "," << std::flush;
+        }
+
+    }
+
+
 }
 
 void EditMap::PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel)
@@ -343,6 +432,13 @@ void EditMap::PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel)
     std::shared_ptr<PanelSettingObject> ps = dynamic_pointer_cast<PanelSettingObject>(panel);
 
     if (ps) {
+
+        if (ps->getPanelObjectName().find("Lv") != NPOS)
+            return;
+
+        if (ps->getPanelObjectName().empty())
+            return;
+
         if (ps->getIsSelected()) {
             ps->setIsSelected(false);
             selectedObject.reset();
@@ -387,7 +483,7 @@ void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>&
     if(key_name == "CHANGE_LIST"){
         panel = std::make_shared<PanelAffectObjects>(temp);
     }else if(key_name == "MOVE"){
-        panel = std::make_shared<PanelSceneTransition>();
+        panel = std::make_shared<PanelSceneTransition>(temp);
     }
     else if(key_name == "SELECT_OBJ"){
         panel = std::make_shared<PanelSettingObject>(temp);
@@ -402,3 +498,115 @@ void EditMap::DebugOutputFile()
     writing_file.open(RESOURCE_TABLE->GetFolderPath() + "test.csv", std::ios::out);
     writing_file.close();
 }
+
+
+
+
+
+void EditMap::SetObject() {
+
+    if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
+        return;
+
+    //パネルが選択されているか
+    if (!selectedObject)
+        return;
+
+    //クリック位置がフィールド内かチェック
+    auto cursorPos = MOUSE->GetCursorPos();
+    auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
+    if (!FIELD->IsInside(tiledCursorPos))
+        return;
+
+
+    bool isSetting = SetObjectCheck(tiledCursorPos);
+
+
+    if (isSetting) {
+
+        if (selectPanelCategory == "MONSTER") {
+
+        }
+        else if (selectPanelCategory == "TRAP") {
+            TiledObject* temp = _dungeon->GenerateAddObject(selectedObject->GenerateText, tiledCursorPos._x, tiledCursorPos._y, cursorPos);
+            temp->Init();
+
+            addTileObject atemp;
+            atemp.tiledObject = temp;
+            atemp.GenerateText = selectedObject->GenerateText;
+
+            addTiledObjectList.push_back(atemp);
+            FIELD->Setup();
+            OBJECT_MGR->Refresh();
+        }
+        else if (selectPanelCategory == "BLOCK") {
+            TiledObject* temp = _dungeon->GenerateAddObject(selectedObject->GenerateText, tiledCursorPos._x, tiledCursorPos._y, cursorPos);
+            temp->Init();
+
+            addTileObject atemp;
+            atemp.tiledObject = temp;
+            atemp.GenerateText = selectedObject->GenerateText;
+
+            addTiledObjectList.push_back(atemp);
+            FIELD->Setup();
+            OBJECT_MGR->Refresh();
+        }
+
+    }
+
+
+}
+
+
+
+
+bool EditMap::SetObjectCheck(TiledVector tiledCursorPos) {
+
+    auto objects = FIELD->GetTiledObjects(tiledCursorPos);
+
+    if (objects.empty()) {
+        return true;
+    }
+
+    return false;
+
+}
+
+
+
+void EditMap::DeleteAddedObject() {
+
+    if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_R))
+        return;
+
+    //クリック位置がフィールド内かチェック
+    auto cursorPos = MOUSE->GetCursorPos();
+    auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
+    if (!FIELD->IsInside(tiledCursorPos))
+        return;
+
+    for (int i = 0; i < addTiledObjectList.size(); i++) {
+
+        if (addTiledObjectList[i].tiledObject->GetTilePos() == tiledCursorPos) {
+
+            FIELD->SetRawNumber(addTiledObjectList[i].tiledObject->GetTilePos(), 0);
+            OBJECT_MGR->Remove(addTiledObjectList[i].tiledObject);
+            addTiledObjectList.erase(addTiledObjectList.begin() + i);
+            OBJECT_MGR->Refresh();
+            
+        }
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
