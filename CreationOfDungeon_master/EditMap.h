@@ -77,8 +77,11 @@ private:
     };
 
 
-
-    std::vector<addTileObject> addTiledObjectList;
+    //エディットで追加したオブジェクトの参照先を表す
+    //罠
+    std::vector<addTileObject> addTiledObjectList_Trap;
+    //ブロック
+    std::vector<addTileObject> addTiledObjectList_Block;
 
 
 };

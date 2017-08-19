@@ -225,8 +225,8 @@ void EditMap::Init()
 
     selectPanelCategory = "";
 
-    addTiledObjectList.clear();
-
+    addTiledObjectList_Trap.clear();
+    addTiledObjectList_Block.clear();
 }
 
 bool EditMap::IsFirstWave()
@@ -387,11 +387,21 @@ void EditMap::PanelSceneTransFunction(std::shared_ptr<PanelBase> panel)
 
     for (auto data : _stageArray) {
         
-        for (int i = 0; i < addTiledObjectList.size(); i++) {
+        for (int i = 0; i < addTiledObjectList_Trap.size(); i++) {
 
-            if (addTiledObjectList[i].tiledObject->GetTilePos() == TiledVector(countX, countY)) {
+            if (addTiledObjectList_Trap[i].tiledObject->GetTilePos() == TiledVector(countX, countY)) {
 
-                data = addTiledObjectList[i].GenerateText;
+                data = addTiledObjectList_Trap[i].GenerateText;
+
+            }
+
+        }
+
+        for (int i = 0; i < addTiledObjectList_Block.size(); i++) {
+
+            if (addTiledObjectList_Block[i].tiledObject->GetTilePos() == TiledVector(countX, countY)) {
+
+                data = addTiledObjectList_Block[i].GenerateText;
 
             }
 
@@ -535,7 +545,7 @@ void EditMap::SetObject() {
             atemp.tiledObject = temp;
             atemp.GenerateText = selectedObject->GenerateText;
 
-            addTiledObjectList.push_back(atemp);
+            addTiledObjectList_Trap.push_back(atemp);
             FIELD->Setup();
             OBJECT_MGR->Refresh();
         }
@@ -547,7 +557,7 @@ void EditMap::SetObject() {
             atemp.tiledObject = temp;
             atemp.GenerateText = selectedObject->GenerateText;
 
-            addTiledObjectList.push_back(atemp);
+            addTiledObjectList_Block.push_back(atemp);
             FIELD->Setup();
             OBJECT_MGR->Refresh();
         }
@@ -585,19 +595,31 @@ void EditMap::DeleteAddedObject() {
     if (!FIELD->IsInside(tiledCursorPos))
         return;
 
-    for (int i = 0; i < addTiledObjectList.size(); i++) {
+    for (int i = 0; i < addTiledObjectList_Trap.size(); i++) {
 
-        if (addTiledObjectList[i].tiledObject->GetTilePos() == tiledCursorPos) {
+        if (addTiledObjectList_Trap[i].tiledObject->GetTilePos() == tiledCursorPos) {
 
-            FIELD->SetRawNumber(addTiledObjectList[i].tiledObject->GetTilePos(), 0);
-            OBJECT_MGR->Remove(addTiledObjectList[i].tiledObject);
-            addTiledObjectList.erase(addTiledObjectList.begin() + i);
+            FIELD->SetRawNumber(addTiledObjectList_Trap[i].tiledObject->GetTilePos(), 0);
+            OBJECT_MGR->Remove(addTiledObjectList_Trap[i].tiledObject);
+            addTiledObjectList_Trap.erase(addTiledObjectList_Trap.begin() + i);
             OBJECT_MGR->Refresh();
             
         }
 
     }
 
+    for (int i = 0; i < addTiledObjectList_Block.size(); i++) {
+
+        if (addTiledObjectList_Block[i].tiledObject->GetTilePos() == tiledCursorPos) {
+
+            FIELD->SetRawNumber(addTiledObjectList_Block[i].tiledObject->GetTilePos(), 0);
+            OBJECT_MGR->Remove(addTiledObjectList_Block[i].tiledObject);
+            addTiledObjectList_Block.erase(addTiledObjectList_Block.begin() + i);
+            OBJECT_MGR->Refresh();
+
+        }
+
+    }
 
 
 }
