@@ -11,6 +11,7 @@ class PanelContent// : public GraphicalObject
 {
 public:
     PanelContent();
+    PanelContent(std::string name);
     PanelContent(Vector2D _p, std::string name, std::string func_var);
 
 
