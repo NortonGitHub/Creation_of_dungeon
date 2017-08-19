@@ -60,15 +60,15 @@ SceneBase * EditMap::Update(UIManager _ui)
     /*試しコード*/
     /*NOTE*/
     /*
-        PanelBaseには、そのパネルの名前、座標、変数が格納されている
-        変数は子クラスごとに異なるので注意
+    PanelBaseには、そのパネルの名前、座標、変数が格納されている
+    変数は子クラスごとに異なるので注意
     */
     //std::vector<PanelBase> panels; //試験コード用
 
     /*
-        別のオブジェクトへのアクセスが必要になった際に
-        対象となるオブジェクトを格納する
-        配列 ならびに 簡易関数
+    別のオブジェクトへのアクセスが必要になった際に
+    対象となるオブジェクトを格納する
+    配列 ならびに 簡易関数
     */
     /*multimap キー:カテゴリ名, 値:対象のクラス型オブジェクト*/
     std::multimap<std::string, PanelBase> _targets;
@@ -84,10 +84,8 @@ SceneBase * EditMap::Update(UIManager _ui)
 
 #if 0
     _ui.Update(_functions, _ui_name);
-
     for (auto f : _functions) {
         if (f.find("CHANGE_LIST") != std::string::npos) {
-
             //_se.Play();
         }
         else if (f.find("SHOW") != std::string::npos) {
@@ -100,25 +98,24 @@ SceneBase * EditMap::Update(UIManager _ui)
             _dungeon->PickupObject();
             //_se.Play();
         }
-
     }
 #endif
 
-    for(auto p : PANEL_MGR->_objects){
+    for (auto p : PANEL_MGR->_objects) {
         if (p != nullptr)
             p->Update();
     }
 
-    _dungeon->Update();
+    //_dungeon->Update();
 
     return scene;
 }
 
 void EditMap::Draw()
 {
-    _dungeon->Draw();
+    //_dungeon->Draw();
 
-    for (auto& p : PANEL_MGR->_objects) {
+    for (auto p : PANEL_MGR->_objects) {
         if (p != nullptr)
             p->Draw();
     }
@@ -136,23 +133,37 @@ void EditMap::Init()
     filename += class_name + ".csv";
     reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, panels_str, 1);
 
-    /*stringを各要素ごとに代入*/
-    /*
-    std::map<std::string, std::shared_ptr<PanelBase>> panelTypes;
-    panelTypes.insert(std::make_pair("CHANGE_LIST",new PanelAffectObjects()));
-    panelTypes.insert(std::make_pair("MOVE", new PanelSceneTransition()));
-    panelTypes.insert(std::make_pair("SELECT_OBJ", new PanelSettingObject()));
-    panelTypes.insert(std::make_pair("SHOW", new PanelDisplayer()));
-    auto b = panelTypes.begin();
-    */
-
     DebugOutputFile();
 
     //ここにPANEL_MGR追加処理を
     int elem_count = 0;
     std::vector<std::string> panel_temp;
-    std::vector<PanelContent> panel_cont_temp(1);
-    panel_cont_temp.reserve(30);
+
+
+    /******オブジェクト設置パネル ファイル読み込み　開始*******/
+    const std::string panel_category[3] = { "BLOCK","MONSTER","TRAP" };
+
+    for (auto panel_c : panel_category) {
+        std::string fileName = "csv/Edit/";
+        fileName += panel_c + ".csv";
+        std::vector<std::string> _array;
+
+        reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, _array, 0);
+
+        int i = 0;
+        for (auto f : _array) {
+            std::string filename = panel_c + "/" + f;
+
+            Vector2D _pos = Vector2D(std::stoi(panels_str[i]), std::stoi(panels_str[i + 1]));
+            //選択用のパネルの情報を初期化代入
+            auto panelTemp = std::make_shared<PanelSettingObject>(PanelContent(_pos, filename, ""));
+
+            //オブジェクト設置パネルのすべてのカテゴリ分をmap配列に挿入
+            _allSettingPanel.insert(std::make_pair(panel_c, panelTemp));
+            i += 5;
+        }
+    }
+    /******オブジェクト設置パネル ファイル読み込み　終了*******/
 
     auto& panel_obj = PANEL_MGR->_objects;
 
@@ -164,14 +175,15 @@ void EditMap::Init()
                 try {
                     std::shared_ptr<PanelBase> temp;
 
-                    auto temp2 = std::make_shared<PanelContent>(Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]);
+                    auto temp2 = PanelContent(Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]);
 
-                    SetPanelInstance(panel_temp[3], temp, *temp2);
+                    SetPanelInstance(panel_temp[3], temp, temp2);
 
                     panel_obj.push_back(temp);
-                    
+                    panel_obj.back()->Init(temp2);
+
                     //panel_cont_temp.push_back(PanelContent(
-                        //Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]));
+                    //Vector2D(std::stoi(panel_temp[0]), std::stoi(panel_temp[1])), panel_temp[2], panel_temp[4]));
                 }
                 catch (std::out_of_range&) {
                     assert("Cannot push_back panel elem");
@@ -185,27 +197,20 @@ void EditMap::Init()
         }
     }
 
+    PanelAffectObjectsFunction("MONSTER");
+
     std::string file_name = (IsFirstWave() ? "template" : "map" + stage_num);
 
-    
-    PANEL_MGR->Refresh();
- 
-    /*
-    int elem = 0;
-    for (auto obj : panel_obj) {
-        if (obj.get() != nullptr) {
-            obj->Init(panel_cont_temp[elem]);
-            obj->DrawDebugPrint();
-        }
-        elem++;
+    for (auto p : PANEL_MGR->_objects) {
+        if (p == nullptr)
+            continue;
+        p->DrawDebugPrint();
     }
-    */
-    
+
+    PANEL_MGR->Refresh();
+
     _dungeon = std::make_shared<MakeDungeon>(stage_num);
     _dungeon->Init(file_name);
-
-    panel_cont_temp.clear();
-    
 }
 
 bool EditMap::IsFirstWave()
@@ -227,7 +232,7 @@ bool EditMap::IsFirstWave()
     return true;
 }
 
-SceneBase* EditMap::PanelFunction()
+SceneBase * EditMap::PanelFunction()
 {
 
     for (auto p : PANEL_MGR->_objects) {
@@ -246,20 +251,20 @@ SceneBase* EditMap::PanelFunction()
 
         //パネルがクリックされたら
         if (isClicked) {
-            auto str = std::string(typeid(*p).name());
+            auto str = p->GetTypeName();
 
             //クリックされたパネルの名前が"AffectObjects"だった場合
-            if (str.find("AffectObjects") != NPOS) {
-                PanelAffectObjectsFunction(p);
+            if (str.find("AffectObject") != NPOS) {
+                PanelAffectObjectsFunction(p->GetCategoryName());
             }
             else if (str.find("Displayer") != NPOS) {
-                PanelDisplayerFunction(p);
+                PanelDisplayerFunction(*p);
             }
             else if (str.find("SceneTrans") != NPOS) {
-                PanelSceneTransFunction(p);
+                PanelSceneTransFunction(*p);
             }
             else if (str.find("SettingObject") != NPOS) {
-                PanelSettingObjectFunction(p);
+                PanelSettingObjectFunction(*p);
             }
 
             p->Update();
@@ -269,63 +274,108 @@ SceneBase* EditMap::PanelFunction()
     return this;
 }
 
-void EditMap::PanelAffectObjectsFunction(std::shared_ptr<PanelBase> panel)
+void EditMap::PanelAffectObjectsFunction(std::string category_name)
 {
     std::vector<std::shared_ptr<PanelBase>> temp_p;
 
+    using iterator = decltype(_allSettingPanel)::iterator;
+
+    std::pair<iterator, iterator> obj = _allSettingPanel.equal_range(category_name);
+
+    //auto obj = _allSettingPanel.find(category_name)->second;
+
     /*値を変化させる他パネルを検索する*/
-    for (auto& ps : PANEL_MGR->_objects) {
 
-        if (ps == nullptr)
+#if 0
+    for (auto p : ps) {
+        if (p == nullptr)
             continue;
 
-        auto aff_str = std::string(typeid(*ps).name());
-        if (aff_str.find("SettingObject") != NPOS) {
-            temp_p.push_back(ps);
+        auto class_name = p->GetTypeName();
+
+        //カテゴリー名が一致したものをpに上書きする
+        if (class_name.find("SettingObject") != NPOS) {
+            //temp_p.push_back(*ps);
+            //auto b = temp_p.back(); //テスト用
+            /*
+            if (obj != _allSettingPanel.end()) {
+                p = std::move(obj);
+                auto afetr = p;
+            }
+            */
+            temp_p.push_back(p);
+        }
+    }
+#endif
+
+    int elem_num = 0;
+    for (iterator it = obj.first; it != obj.second; ++it) {
+        //temp_p[elem_num] = std::move(it->second);
+        temp_p.push_back(it->second);
+        auto t = temp_p.back();
+        ++elem_num;
+    }
+
+    auto s = temp_p.size();
+    auto temp_itr = temp_p.begin();
+
+    auto& ps = PANEL_MGR->_objects;
+
+    for (auto& p : ps) {
+        if (p == nullptr)
+            continue;
+
+        size_t dis1 = std::distance(temp_p.begin(), temp_itr);
+
+
+        if (dis1 >= temp_p.size())
+            break;
+            
+        auto class_name = p->GetPanelClassName();
+
+        //クラス名が一致したものをpに上書きする
+        if (class_name.find("SettingObject") != NPOS) {
+            //auto te = std::move(temp_itr);
+            p = *temp_itr;
+           // p = std::make_shared<PanelBase>(temp_itr);
+//            p = std::move(std::make_shared<PanelBase>(temp_itr));
+            ++temp_itr;
         }
     }
 
-    panel->SetSettingObject(temp_p);
-    int j = 0;
+    PANEL_MGR->Refresh();
 
-    auto& obj = PANEL_MGR->_objects;
-
-    for (int i = 0; i < obj.size(); i++) {
-
-        if (obj[i] == nullptr)
-            continue;
-
-        auto aff_str = std::string(typeid(*obj[i]).name());
-        if (aff_str.find("SettingObject") != NPOS) {
-            obj[i] = temp_p[j];
-            j++;
-        }
-    }
+    temp_p.shrink_to_fit();
 }
 
-void EditMap::PanelDisplayerFunction(std::shared_ptr<PanelBase> panel)
+void EditMap::PanelDisplayerFunction(PanelBase& panel)
 {
 }
 
-void EditMap::PanelSceneTransFunction(std::shared_ptr<PanelBase> panel)
+void EditMap::PanelSceneTransFunction(PanelBase& panel)
 {
 }
 
-void EditMap::PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel)
+void EditMap::PanelSettingObjectFunction(PanelBase& panel)
 {
 }
 
 void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>& panel, PanelContent& temp)
 {
-    if(key_name == "CHANGE_LIST"){
+    if (key_name == "CHANGE_LIST") {
         panel = std::make_shared<PanelAffectObjects>(temp);
-    }else if(key_name == "MOVE"){
-        panel = std::make_shared<PanelSceneTransition>();
     }
-    else if(key_name == "SELECT_OBJ"){
+    else if (key_name == "MOVE") {
+        panel = std::make_shared<PanelSceneTransition>(temp);
+    }
+    else if (key_name == "SELECT_OBJ") {
         panel = std::make_shared<PanelSettingObject>(temp);
-    }else if(key_name == "SHOW"){
-        panel = std::make_shared<PanelDisplayer>();
+        /*NOTE:ここにBlock,Monster,Trapのいずれかの要素を入れる処理を差し込む*/
+        /*NOTE:現在コンストラクタにある画像読み込み処理を上記の処理後に入れる*/
+        //_allSettingPanel.push_back(std::make_shared<PanelSettingObject>(temp));
+    }
+    else if (key_name == "SHOW") {
+        panel = std::make_shared<PanelDisplayer>(temp);
     }
 }
 

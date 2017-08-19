@@ -5,6 +5,8 @@
 #include "PanelBase.h"
 #include "PanelContent.h"
 
+#include "PanelSettingObject.h"
+
 class EditMap :
     public SceneBase
 {
@@ -34,19 +36,20 @@ private:
 
     std::vector<std::string> _functions;
 
+    std::multimap<std::string, std::shared_ptr<PanelSettingObject>> _allSettingPanel;
+
     //std::vector<std::shared_ptr<PanelBase>> panels;  //UI
 
     bool IsFirstWave();
-    
+
     SceneBase* PanelFunction();
-    void PanelAffectObjectsFunction(std::shared_ptr<PanelBase> panel);
-    void PanelDisplayerFunction(std::shared_ptr<PanelBase> panel);
-    void PanelSceneTransFunction(std::shared_ptr<PanelBase> panel);
-    void PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel);
+    void PanelAffectObjectsFunction(std::string category_name);
+    void PanelDisplayerFunction(PanelBase& panel);
+    void PanelSceneTransFunction(PanelBase& panel);
+    void PanelSettingObjectFunction(PanelBase& panel);
 
     void SetPanelInstance(std::string key_name, ::shared_ptr<PanelBase>& panel, PanelContent& temp);
 
     void DebugOutputFile();
 
 };
-
