@@ -2,11 +2,31 @@
 
 #include<fstream>
 
+#include "cd_666s/Utility/CSVReader.h"
 #include "cd_666s/Resources/AllResourceManager.h"
 
 
 PanelSceneTransition::PanelSceneTransition()
+    : panel()
 {
+}
+
+PanelSceneTransition::PanelSceneTransition(PanelContent & _panelContent)
+    : panel(std::move(_panelContent))
+{
+    //    panel = std::move(_panelContent);
+    std::string filename = "graph/ui/" + panel._name + ".png";
+
+    auto pos = panel._pos;
+
+    _position.Set(pos._x, pos._y);
+
+    _graph.Load(filename);
+
+    _graph.SetPosition(_position);
+    _graph.SetPriority(Sprite::Priority::UI);
+    //_graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+
 }
 
 PanelSceneTransition::~PanelSceneTransition()
@@ -26,6 +46,16 @@ void PanelSceneTransition::Draw()
 void PanelSceneTransition::Init(PanelContent& _panelContent)
 {
     panel = _panelContent;
+}
+
+std::string PanelSceneTransition::GetCategoryName()
+{
+    return panel._name;
+}
+
+std::string PanelSceneTransition::GetTypeName()
+{
+    return panel._name;
 }
 
 bool PanelSceneTransition::IsClicked()

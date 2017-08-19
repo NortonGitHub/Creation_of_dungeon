@@ -5,47 +5,23 @@
 
 
 PanelSettingObject::PanelSettingObject()
+    : panel()
 {
 }
 
-PanelSettingObject::PanelSettingObject(std::string _panel_name)
+PanelSettingObject::PanelSettingObject(PanelContent& _panelContent)
+    : panel((_panelContent))
+    , _isEnable(true)
 {
-    panel._name = _panel_name;
+    _class_name = "SettingObject";
+    auto pos = panel._pos;
+    _position.Set(pos._x, pos._y);
+    Load();
 }
 
-PanelSettingObject::PanelSettingObject(PanelContent _panelContent)
-    : panel(std::move(_panelContent))
-{
-
-    if (panel._name.find("Lv") == std::string::npos) {
-
-        std::string filename = "resource/graph/ui/SettingObject_Block.png";
-
-        auto pos = panel._pos;
-
-        _position.Set(pos._x, pos._y);
-
-        _graph.Load(filename);
-
-        _graph.SetPosition(_position);
-        //なぜかSprite::Priority::UI(100)では描画されず　なぜ？
-        _graph.SetPriority(101);
-        Vector2D s = _graph.GetSize();
-        _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
-
-        //_graph.SetDisplayMode(true);
-
-    }
-
-}
 
 PanelSettingObject::~PanelSettingObject()
 {
-}
-
-void PanelSettingObject::SettingObj(PanelContent& pc)
-{
-    panel = pc;
 }
 
 void PanelSettingObject::Update()
@@ -56,8 +32,8 @@ void PanelSettingObject::Update()
 void PanelSettingObject::Draw()
 {
     //panel.Draw();
-    //DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
-
+    //DrawCircle(panel.GetPosition()._x, panel.GetPosition()._y, 5, GetColor(255, 0, 0));
+    _graph.SetDisplayMode(_isEnable);
     GraphicalObject::Draw();
 }
 
@@ -66,9 +42,59 @@ void PanelSettingObject::Init(PanelContent& _panelContent)
     panel = _panelContent;
 }
 
+void PanelSettingObject::Load()
+{
+    std::string graph_name;
+
+    //PanelSettingObjectの名前には"BLOCK","MONSTER","TRAP"のいずれかの文字列が入っている
+    if (panel._name.find("SettingObject_") != std::string::npos) {
+        graph_name = panel._name.substr(std::string("SettingObject_").length(), panel._name.length());
+    }
+    else {
+        graph_name = panel._name;
+    }
+
+    std::string filename = "graph/ui/" + graph_name + ".png";
+
+    _graph.Load(filename);
+
+    _graph.SetPosition(_position);
+    _graph.SetDisplayMode(_isEnable);
+    _graph.SetPriority(Sprite::Priority::UI);
+}
+
+std::string PanelSettingObject::GetCategoryName()
+{
+    /*
+    if (panel._name.find("Monster") != std::string::npos) {
+        return "MONSTER";
+    }
+    else if (panel._name.find("Trap") != std::string::npos) {
+        return "TRAP";
+    }
+    else if (panel._name.find("Block") != std::string::npos) {
+        return "BLOCK";
+    }
+    else {
+        return "";
+    }
+    */
+    return _category_name;
+}
+
+std::string PanelSettingObject::GetTypeName()
+{
+    return panel._name;
+}
+
 bool PanelSettingObject::IsClicked()
 {
     return GetIsClicked(panel);
+}
+
+bool PanelSettingObject::IsEnable()
+{
+    return _isEnable;
 }
 
 void PanelSettingObject::DrawDebugPrint()
@@ -81,72 +107,6 @@ void PanelSettingObject::DrawDebugPrint()
     std::ofstream writing_file;
     writing_file.open(RESOURCE_TABLE->GetFolderPath() + "test.csv", std::ios::app);
 
-    writing_file << "name:" << panel._name << " (X,Y):" << panel._pos._x << "," << panel._pos._y << std::endl;
+    writing_file << "name:" << panel._name << " (X,Y):" << panel._pos._x << "," << panel._pos._y << "graph_handle" << _graph.GetResourceHandle() << std::endl;
     writing_file.close();
-}
-
-
-void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, std::string CategoryName) {
-
-
-
-    if (panel._name.find("Lv") == std::string::npos) {
-
-        if (!panelName.empty()) {
-
-            objectName = panelName;
-
-            std::string filename;
-
-            if (CategoryName == "MONSTER") {
-                filename = "resource/graph/tiledObject/" + objectName + ".png";
-            }
-            else if (CategoryName == "TRAP") {
-                filename = "resource/graph/trap/" + objectName + ".png";
-            }
-            else if (CategoryName == "BLOCK") {
-                //BLOCKってアイテムか？csv見る限りアイテムにしか見えない
-                filename = "resource/graph/item/" + objectName + ".png";
-            }
-
-
-
-            auto pos = panel._pos;
-
-            _position.Set(pos._x, pos._y);
-
-            _graph.Load(filename);
-
-            _graph.SetPosition(_position);
-            _graph.SetPriority(101);
-
-            Vector2D s = _graph.GetSize();
-            _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
-
-            //_graph.SetDisplayMode(true);
-
-        }
-        else {
-
-            std::string filename = "resource/graph/ui/SettingObject_Block.png";
-
-            auto pos = panel._pos;
-
-            _position.Set(pos._x, pos._y);
-
-            _graph.Load(filename);
-
-            _graph.SetPosition(_position);
-            //なぜかSprite::Priority::UI(100)では描画されず　なぜ？
-            _graph.SetPriority(101);
-            Vector2D s = _graph.GetSize();
-            _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
-
-            //_graph.SetDisplayMode(true);
-
-        }
-
-    }
-
-
 }
