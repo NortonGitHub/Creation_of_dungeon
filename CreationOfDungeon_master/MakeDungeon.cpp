@@ -30,8 +30,7 @@ MakeDungeon::MakeDungeon(std::string stage_num)
     , _background("graph/background/background.png", Vector2D(0, 7600))
     , _windowBackground("graph/ui/main_window_background1.png", Vector2D(28, 28))
 {
-    //Ç»Ç∫Ç©Sprite::Priority::UI(100)Ç≈ÇÕï`âÊÇ≥ÇÍÇ∏Å@Ç»Ç∫ÅH
-    _mainsFrame.SetPriority(101);
+    _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
     _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
 }

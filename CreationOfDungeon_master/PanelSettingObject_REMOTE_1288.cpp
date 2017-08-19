@@ -69,7 +69,6 @@ void PanelSettingObject::Draw()
 {
     //panel.Draw();
     //DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
-
     GraphicalObject::Draw();
 
     if (isSelected) {
@@ -179,5 +178,9 @@ void PanelSettingObject::setIsSelected(bool flag) {
 bool PanelSettingObject::getIsSelected() {
     return isSelected;
 }
+
+
+
+
 
 

@@ -167,6 +167,8 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
 
 
 }
+<<<<<<< HEAD
+=======
 
 
 void PanelSettingObject::setIsSelected(bool flag) {
@@ -181,3 +183,8 @@ bool PanelSettingObject::getIsSelected() {
 }
 
 
+
+
+
+
+>>>>>>> origin/Setting_Object

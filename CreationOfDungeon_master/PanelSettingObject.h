@@ -22,11 +22,17 @@ public:
 
     void PanelSettingObject_SettingPanel(std::string panelName, std::string CategoryName);
 
+    void setIsSelected(bool flag);
+    bool getIsSelected();
+
 private:
     PanelContent panel;
 
     //現在表示されているオブジェクトの名前
     //LvがわからないのでとりあえずLvにしておく
     std::string objectName;
+
+    bool isSelected;
+
 };
 

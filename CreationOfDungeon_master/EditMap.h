@@ -4,6 +4,7 @@
 
 #include "PanelBase.h"
 #include "PanelContent.h"
+#include "PanelSettingObject.h"
 
 class EditMap :
     public SceneBase
@@ -47,6 +48,10 @@ private:
     void SetPanelInstance(std::string key_name, ::shared_ptr<PanelBase>& panel, PanelContent& temp);
 
     void DebugOutputFile();
+
+
+    std::shared_ptr<PanelSettingObject> selectedObject;
+
 
 };
 
