@@ -300,6 +300,18 @@ TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, in
 
 }
 
+std::vector<TiledObject*> MakeDungeon::GenerateMonster(std::string fileName, TiledVector startPos, std::string* GenerateText) {
+
+    auto& _objs = OBJECT_MGR->_objects;
+
+    std::vector<TiledObject*> temp = Monster::GenerateMonster(_objs, _monsters, fileName, startPos, GenerateText);
+
+    _monsters.Update();
+
+    return temp;
+
+}
+
 
 
 void MakeDungeon::LoadTileSize(std::string stageName, std::vector<std::string>& rawData)

@@ -445,9 +445,11 @@ std::shared_ptr<Emplacement> Emplacement::Create(std::string data, TiledVector p
 
 
 
-
-std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos)
+//敵を後から追加で生成する
+std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos,std::string* GenerateText)
 {
+
+    *GenerateText = "";
 
     std::vector<TiledObject*> monsterObjects;
 
@@ -455,7 +457,7 @@ std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<T
     CSVReader reader;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
 
-    const int parameterNum = 10;
+    const int parameterNum = 8;
     std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
     int idx = 0;
     int count = 0;
@@ -466,17 +468,21 @@ std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<T
         // MEMO : 最後だけはファイル名をそのまま使う
         if (count < parameterNum - 2)
             params[count] = std::stoi(data);
-        else if (count == parameterNum - 2)
+        else if (count == parameterNum - 2) {
+            *GenerateText += std::to_string(startPos._x) + "," + std::to_string(startPos._y) + ",";
             name = data;
+        }
         else if (count == parameterNum - 1)
             skill = data;
 
         count++;
 
+        *GenerateText += data;
+
         if (count == parameterNum)
         {
             BattleParameter param = { params[0], params[1], params[2], params[3], params[4], params[5] };
-            TiledVector startPos(params[6], params[7]);
+            //TiledVector startPos(params[6], params[7]);
 
             auto monster = std::make_shared<Monster>(startPos, param, nullptr, notifyer, name, skill);
             objects.push_back(monster);
@@ -485,9 +491,14 @@ std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<T
             monster->_home = magicSquare.get();
             objects.push_back(magicSquare);
 
+            monsterObjects.push_back(monster.get());
+            monsterObjects.push_back(magicSquare.get());
+
             //次のキャラへ
             count = 0;
             idx++;
+        }else{
+            *GenerateText += ",";
         }
     }
 

@@ -30,6 +30,8 @@ public:
 
     TiledObject* GenerateAddObject(std::string typeName, int countX, int countY, Vector2D mousePos);
 
+    std::vector<TiledObject*> GenerateMonster(std::string fileName, TiledVector startPos, std::string* GenerateText);
+
 private:
 
     std::string _stage_num;

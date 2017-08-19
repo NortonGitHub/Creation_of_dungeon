@@ -115,8 +115,9 @@ void Dungeon::Init()
     fileName += (_stageName + ".csv");
     Enemy::LoadEnemys(_objs, *_start, *_goal, _enemys, fileName);
 
-    fileName = "csv/StageData/monsters";
-    fileName += (_stageName + ".csv");
+    //fileName = "csv/StageData/monsters";
+    //fileName += (_stageName + ".csv");
+    fileName = "csv/StageData/EditMap_MonsterData.csv";
     Monster::LoadMonsters(_objs, _monsters, fileName);
     
     FIELD->Setup();

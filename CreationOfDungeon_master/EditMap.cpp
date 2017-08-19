@@ -15,9 +15,9 @@
 #include "cd_666s/TilebaseAI/TileField.h"
 #include "cd_666s/TilebaseAI/TiledObjectMnager.h"
 
-#include "Game.h"
+#include "cd_666s/DebugDraw.h"
 
-#include "cd_666s/TilebaseAI/MineBomb.h"
+#include "Game.h"
 
 #include <typeinfo>
 #include <sstream>
@@ -25,6 +25,9 @@
 #include <iostream>
 
 #include <assert.h>
+
+#define STR(var) #var
+
 
 EditMap::EditMap(std::string _stage_num)
     : stage_num(_stage_num), NPOS(std::string::npos)
@@ -141,6 +144,13 @@ void EditMap::Draw()
 
     PANEL_MGR->Refresh();
 
+    std::string debugStr = "設置上限\n";
+    debugStr += "モンスター:" + std::to_string(set_count["MONSTER"]) + "/" + std::to_string(LIMIT_MONSTER)+ "\n";
+    debugStr += "トラップ" + std::to_string(set_count["TRAP"]) + "/" + std::to_string(LIMIT_TRAP) + "\n";
+    debugStr += "ブロック" + std::to_string(set_count["BLOCK"]) + "/" + std::to_string(LIMIT_BLOCK) + "\n";
+
+    Debug::DrawStringDirectly(Vector2D(1010, 70), debugStr,Color4(1,1,1,1));
+
 }
 
 void EditMap::Init()
@@ -227,6 +237,27 @@ void EditMap::Init()
 
     addTiledObjectList_Trap.clear();
     addTiledObjectList_Block.clear();
+
+    /***各オブジェクト設置数カウンタ初期化***/
+    set_count.insert({ "BLOCK", 0 });
+    set_count.insert({ "MONSTER", 0 });
+    set_count.insert({ "TRAP", 0 });
+    //set_count[0] = 0;
+    //set_count[1] = 0;
+    //set_count[2] = 0;
+    /***各オブジェクト設置数カウンタ初期化 ここまで***/
+
+    if (stage_num != "3") {
+        LIMIT_TRAP = 3;
+        LIMIT_MONSTER = 3;
+        LIMIT_BLOCK = 6;
+    }
+    else {
+        LIMIT_TRAP = 4;
+        LIMIT_MONSTER = 4;
+        LIMIT_BLOCK = 8;
+    }
+
 }
 
 bool EditMap::IsFirstWave()
@@ -430,6 +461,44 @@ void EditMap::PanelSceneTransFunction(std::shared_ptr<PanelBase> panel)
 
     }
 
+    filePass = "csv/StageData/";
+    fileName = filePass + "EditMap_MonsterData.csv";
+
+    std::ofstream writing_file_monster;
+    writing_file_monster.open(fileName, std::ios::out);
+
+    writing_file_monster << "hp, attack, defence, magic_attack, magic_defence, speed, startX, startY, name, skill" << std::endl;
+
+    filename = "csv/StageData/monsters";
+    filename += (stage_num + ".csv");
+    
+    std::vector<std::string> dataArray;
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, dataArray, 1);
+
+    const int parameterNum = 10;
+    countX = 0;
+
+    for (auto data : dataArray) {
+
+        writing_file_monster << data << std::flush;
+
+        countX++;
+        
+        if (countX == parameterNum) {
+            writing_file_monster << std::endl;
+        }
+        else {
+            writing_file_monster << "," << std::flush;
+        }
+
+    }
+
+    for (int i = 0; i < addTiledObjectList_Monster.size(); i++) {
+
+        writing_file_monster << addTiledObjectList_Monster[i].GenerateText <<std::endl;
+
+    }
+
 
 }
 
@@ -534,10 +603,38 @@ void EditMap::SetObject() {
 
     if (isSetting) {
 
-        if (selectPanelCategory == "MONSTER") {
+        if (selectPanelCategory == "MONSTER" && set_count[selectPanelCategory] < LIMIT_MONSTER) {
 
+            std::string fileName = "csv/Edit/MONSTER_DATA/"+selectedObject->getPanelObjectName() + "/Lv1.csv";
+
+            std::string GenerateText = "";
+
+            std::vector<TiledObject*> temp = _dungeon->GenerateMonster(fileName, tiledCursorPos, &GenerateText);
+
+            addTileObject_Monster temp_m;
+
+            for (auto to : temp) {
+
+                to->Init();
+
+                auto aff_str = std::string(typeid(*to).name());
+                if (aff_str.find("Monster") != NPOS) {
+                    temp_m.MonsterObject = to;
+                }else{
+                    temp_m.MagicSquareObject = to;
+                }
+            }
+
+            temp_m.GenerateText = GenerateText;
+
+            addTiledObjectList_Monster.push_back(temp_m);
+
+            FIELD->Setup();
+            OBJECT_MGR->Refresh();
+
+            set_count[selectPanelCategory]++;
         }
-        else if (selectPanelCategory == "TRAP") {
+        else if (selectPanelCategory == "TRAP" && set_count[selectPanelCategory] < LIMIT_TRAP) {
             TiledObject* temp = _dungeon->GenerateAddObject(selectedObject->GenerateText, tiledCursorPos._x, tiledCursorPos._y, cursorPos);
             temp->Init();
 
@@ -548,8 +645,11 @@ void EditMap::SetObject() {
             addTiledObjectList_Trap.push_back(atemp);
             FIELD->Setup();
             OBJECT_MGR->Refresh();
+
+            set_count[selectPanelCategory]++;
+
         }
-        else if (selectPanelCategory == "BLOCK") {
+        else if (selectPanelCategory == "BLOCK" && set_count[selectPanelCategory] < LIMIT_BLOCK) {
             TiledObject* temp = _dungeon->GenerateAddObject(selectedObject->GenerateText, tiledCursorPos._x, tiledCursorPos._y, cursorPos);
             temp->Init();
 
@@ -560,6 +660,9 @@ void EditMap::SetObject() {
             addTiledObjectList_Block.push_back(atemp);
             FIELD->Setup();
             OBJECT_MGR->Refresh();
+
+            set_count[selectPanelCategory]++;
+
         }
 
     }
@@ -603,6 +706,11 @@ void EditMap::DeleteAddedObject() {
             OBJECT_MGR->Remove(addTiledObjectList_Trap[i].tiledObject);
             addTiledObjectList_Trap.erase(addTiledObjectList_Trap.begin() + i);
             OBJECT_MGR->Refresh();
+
+            /****オブジェクト設置数の減算処理ここから****/
+            set_count["TRAP"]--;
+            /****オブジェクト設置数の減算処理ここまで****/
+
             
         }
 
@@ -617,9 +725,32 @@ void EditMap::DeleteAddedObject() {
             addTiledObjectList_Block.erase(addTiledObjectList_Block.begin() + i);
             OBJECT_MGR->Refresh();
 
+
+            /****オブジェクト設置数の減算処理ここから****/
+            set_count["BLOCK"]--;
+            /****オブジェクト設置数の減算処理ここまで****/
         }
 
     }
+
+    for (int i = 0; i < addTiledObjectList_Monster.size(); i++) {
+
+        if (addTiledObjectList_Monster[i].MagicSquareObject->GetTilePos() == tiledCursorPos) {
+
+            OBJECT_MGR->Remove(addTiledObjectList_Monster[i].MonsterObject);
+            OBJECT_MGR->Remove(addTiledObjectList_Monster[i].MagicSquareObject);
+            addTiledObjectList_Monster.erase(addTiledObjectList_Monster.begin() + i);
+            OBJECT_MGR->Refresh();
+
+
+            /****オブジェクト設置数の減算処理ここから****/
+            set_count["MONSTER"]--;
+            /****オブジェクト設置数の減算処理ここまで****/
+        }
+
+    }
+
+
 
 
 }
