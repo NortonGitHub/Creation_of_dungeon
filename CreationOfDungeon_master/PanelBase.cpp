@@ -28,11 +28,21 @@ std::string PanelBase::GetCategoryName()
     return std::string();
 }
 
+std::string PanelBase::GetTypeName()
+{
+    return std::string();
+}
+
 void PanelBase::SetSettingObject(std::vector<PanelBase>& _tps)
 {
 }
 
 bool PanelBase::IsClicked()
+{
+    return false;
+}
+
+bool PanelBase::IsEnable()
 {
     return false;
 }
@@ -49,13 +59,12 @@ bool PanelBase::GetIsClicked(PanelContent& panel)
 
     //クリック位置を取得
     auto cursorPos = MOUSE->GetCursorPos();
-/*
+    /*
     /*パネルの縦横サイズを取得、下記if式で判別*/
-/*    auto _w = static_cast<int>(panel._position._x + panel._graph.GetSize()._x);
+    /*    auto _w = static_cast<int>(panel._position._x + panel._graph.GetSize()._x);
     auto _h = static_cast<int>(panel._position._y + panel._graph.GetSize()._y);
-
     return(cursorPos._x >= panel._position._x && cursorPos._x <= _w
-        && cursorPos._y >= panel._position._y && cursorPos._y <= _h);
+    && cursorPos._y >= panel._position._y && cursorPos._y <= _h);
     */
     return Contain(cursorPos); //panel.Contain(cursorPos);
 }

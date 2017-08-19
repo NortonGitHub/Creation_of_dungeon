@@ -6,8 +6,6 @@
 #include "cd_666s/TilebaseAI/Character.h"
 #include "Graph.h"
 
-#include "cd_666s\TilebaseAI\GraphicalObject.h"
-
 class PanelBase : public GraphicalObject
 {
 public:
@@ -20,22 +18,24 @@ public:
     virtual void Init(PanelContent& _panelContent);
 
     virtual std::string GetCategoryName();
+    virtual std::string GetTypeName();
 
     virtual void SetSettingObject(std::vector<PanelBase>& _tps);
-    virtual void SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps) {};
 
     virtual bool IsClicked();
+
+    virtual bool IsEnable();    //
 
     virtual void DrawDebugPrint();
 
     bool GetIsClicked(PanelContent& panel);
 
-    std::shared_ptr<PanelContent> _pobj;
-   // virtual void SetPanel
+    //std::shared_ptr<PanelContent> _pobj;
+    // virtual void SetPanel
 
-    //PanelSettingObjectがPanelAffectObjectsによって切り替えられるときのみ呼び出される
-    //設計的に問題がありそうだからテストで　ダウンキャストすれば回避できるが危険か
-    virtual void PanelSettingObject_SettingPanel(std::string panelName, std::string CategoryName) {};
+    std::string GetPanelClassName() const { return _class_name; };
 
+protected:
+    //    PanelContent panel;
+    std::string _class_name;
 };
-
