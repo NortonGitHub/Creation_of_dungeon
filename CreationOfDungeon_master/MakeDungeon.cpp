@@ -72,7 +72,7 @@ void MakeDungeon::Draw()
 
 void MakeDungeon::Init(std::string file_name)
 {
-    
+
     _messageReciever.Init();
 
     //タイルの大きさを読み込む
@@ -86,11 +86,11 @@ void MakeDungeon::Init(std::string file_name)
     //フィールドの大本となるデータを読み込む
     std::string filename = "csv/StageData/";
     filename += (file_name + ".csv");
-    
+
     reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, _stageArray);
-    
-    
-    
+
+
+
     auto fieldSizeH = reader.GetLineSize(filename, 0);
     auto fieldSizeV = reader.GetLineNum(filename);
 
@@ -108,8 +108,27 @@ void MakeDungeon::Init(std::string file_name)
 
     //FIELD->Init(fieldSizeH, fieldSizeV);
 
+    std::string ft;
+
+    switch (stoi(_stage_num)) {
+    case 1:
+        ft = "#CAV";
+        break;
+    case 2:
+        ft = "#FST";
+        break;
+    case 3:
+        ft = "#CAV";
+        break;
+    default:
+        ft = "#CAV";
+        break;
+    }
+
     for (auto data : _stageArray) {
         GenerateObject(data, countX, countY);
+
+        FIELD->SetFieldType(TiledVector(countX, countY), ft);
 
         countX++;
 
@@ -123,7 +142,7 @@ void MakeDungeon::Init(std::string file_name)
     }
 
     /*設置オブジェクトをロードする処理が必要*/
-    
+
     _monsters.Update();
 
     FIELD->Setup();
@@ -137,8 +156,8 @@ void MakeDungeon::Init(std::string file_name)
     }
     _selectingObj = "NONE";
 
-    
-    
+
+
 }
 
 void MakeDungeon::PickupObject()
@@ -153,7 +172,7 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
 
 
     auto& _objs = OBJECT_MGR->_objects;
-    
+
     if (typeName.find("9#") != std::string::npos)
     {
         Trap::CreateTrap(typeName, countX, countY, _objs);
@@ -222,7 +241,8 @@ TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, in
         TiledObject* to;
         if (!toTemp.empty()) {
             to = toTemp[0];
-        }else{
+        }
+        else {
             to = nullptr;
         }
         return to;

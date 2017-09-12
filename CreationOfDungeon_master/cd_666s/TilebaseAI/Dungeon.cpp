@@ -32,6 +32,10 @@ Dungeon::Dungeon(std::string stageName)
     , _intruderInformation(_dictionary)
     , _intrudeLastCharacter(false)
 {
+
+    _windowBackground.Load("resourse/graph/ui/main_window_background" + _stageName + ".png");
+    _windowBackground.SetPosition(Vector2D(28, 28));
+
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
     _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
@@ -86,12 +90,31 @@ void Dungeon::Init()
     int countY = 0;
     FIELD->Init(fieldSizeH, fieldSizeV);
 
+    std::string ft;
+
+    switch (stoi(_stageName)) {
+    case 1:
+        ft = "#CAV";
+        break;
+    case 2:
+        ft = "#FST";
+        break;
+    case 3:
+        ft = "#CAV";
+        break;
+    default:
+        ft = "#CAV";
+        break;
+    }
+
     //オブジェクトを読み込む
     auto& _objs = OBJECT_MGR->_objects;
     for (auto data : dataArray)
     {
         //受け取ったデータを変換表をもとに変換
         GenerateObject(data, countX, countY);
+
+        FIELD->SetFieldType(TiledVector(countX, countY), ft);
         
         //次のマップ番号まで
         countX++;

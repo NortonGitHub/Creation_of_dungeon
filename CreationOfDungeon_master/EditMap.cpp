@@ -486,6 +486,7 @@ void EditMap::PanelSceneTransFunction(std::shared_ptr<PanelBase> panel)
         
         if (countX == parameterNum) {
             writing_file_monster << std::endl;
+            countX = 0;
         }
         else {
             writing_file_monster << "," << std::flush;
@@ -643,6 +644,26 @@ void EditMap::SetObject() {
             atemp.GenerateText = selectedObject->GenerateText;
 
             addTiledObjectList_Trap.push_back(atemp);
+            
+            std::string ft;
+
+            switch (stoi(stage_num)) {
+            case 1:
+                ft = "#CAV";
+                break;
+            case 2:
+                ft = "#FST";
+                break;
+            case 3:
+                ft = "#CAV";
+                break;
+            default:
+                ft = "#CAV";
+                break;
+            }
+
+            FIELD->SetFieldType(tiledCursorPos, ft);
+
             FIELD->Setup();
             OBJECT_MGR->Refresh();
 
@@ -658,6 +679,26 @@ void EditMap::SetObject() {
             atemp.GenerateText = selectedObject->GenerateText;
 
             addTiledObjectList_Block.push_back(atemp);
+
+            std::string ft;
+
+            switch (stoi(stage_num)) {
+            case 1:
+                ft = "#CAV";
+                break;
+            case 2:
+                ft = "#FST";
+                break;
+            case 3:
+                ft = "#CAV";
+                break;
+            default:
+                ft = "#CAV";
+                break;
+            }
+
+            FIELD->SetFieldType(tiledCursorPos, ft);
+
             FIELD->Setup();
             OBJECT_MGR->Refresh();
 

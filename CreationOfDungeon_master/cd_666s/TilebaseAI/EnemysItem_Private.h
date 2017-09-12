@@ -48,14 +48,14 @@ static void LoadItem(std::string itemData, int countX, int countY, std::vector<s
     if (itemData.find("&book") != std::string::npos)
     {
         std::string fileName = "book.png";
-        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 0, 10, 10, 0), 100, fileName);
+        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 0, 20, 0, 0), 100, fileName);
         objects.push_back(std::make_shared<EnemysItem<Equipment>>(std::move(contents), TiledVector(countX, countY)));
         return;
     }
     else if (itemData.find("&block") != std::string::npos)
     {
         std::string fileName = "block.png";
-        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 10, 0, 10, 0), 100, fileName);
+        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 20, 0, 0, 0), 100, fileName);
         objects.push_back(std::make_shared<EnemysItem<Equipment>>(std::move(contents), TiledVector(countX, countY)));
         return;
     }
@@ -64,6 +64,20 @@ static void LoadItem(std::string itemData, int countX, int countY, std::vector<s
         std::string fileName = "herb.png";
         auto contents = std::make_unique<ConsumableItem>(100, fileName);
         objects.push_back(std::make_shared<EnemysItem<ConsumableItem>>(std::move(contents), TiledVector(countX, countY)));
+        return;
+    }
+    else if (itemData.find("&blade") != std::string::npos)
+    {
+        std::string fileName = "blade.png";
+        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 20, 0, 0, 0, 0), 100, fileName);
+        objects.push_back(std::make_shared<EnemysItem<Equipment>>(std::move(contents), TiledVector(countX, countY)));
+        return;
+    }
+    else if (itemData.find("&robe") != std::string::npos)
+    {
+        std::string fileName = "robe.png";
+        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 0, 0, 20, 0), 100, fileName);
+        objects.push_back(std::make_shared<EnemysItem<Equipment>>(std::move(contents), TiledVector(countX, countY)));
         return;
     }
 }
