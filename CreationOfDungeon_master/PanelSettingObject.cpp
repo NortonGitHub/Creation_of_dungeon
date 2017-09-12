@@ -103,7 +103,7 @@ void PanelSettingObject::DrawDebugPrint()
 }
 
 
-void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, std::string CategoryName) {
+void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName) {
 
 
 
@@ -112,6 +112,8 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
         if (!panelName.empty()) {
 
             objectName = panelName;
+
+            this->GenerateText = GenerateText;
 
             std::string filename;
 
@@ -147,6 +149,10 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
 
             std::string filename = "resource/graph/ui/SettingObject_Block.png";
 
+            objectName = panelName;
+
+            this->GenerateText = GenerateText;
+
             auto pos = panel._pos;
 
             _position.Set(pos._x, pos._y);
@@ -181,3 +187,17 @@ bool PanelSettingObject::getIsSelected() {
 }
 
 
+<<<<<<< HEAD
+=======
+
+std::string PanelSettingObject::getPanelObjectName() {
+
+    return objectName;
+
+}
+
+
+
+
+
+>>>>>>> f6a2c610bb8f3e143a6ba19480a4d441825312a4

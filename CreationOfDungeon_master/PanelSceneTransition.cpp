@@ -9,6 +9,32 @@ PanelSceneTransition::PanelSceneTransition()
 {
 }
 
+<<<<<<< HEAD
+=======
+PanelSceneTransition::PanelSceneTransition(PanelContent _panelContent)
+    : panel(std::move(_panelContent))
+{
+
+    std::string filename = "resource/graph/ui/" + panel._name + ".png";
+
+    auto pos = panel._pos;
+
+    _position.Set(pos._x, pos._y);
+
+    _graph.Load(filename);
+
+    _graph.SetPosition(_position);
+
+    _graph.SetPriority(Sprite::Priority::UI);
+    //_graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
+
+    //_graph.SetDisplayMode(true);
+
+
+}
+
+
+>>>>>>> f6a2c610bb8f3e143a6ba19480a4d441825312a4
 PanelSceneTransition::~PanelSceneTransition()
 {
 }

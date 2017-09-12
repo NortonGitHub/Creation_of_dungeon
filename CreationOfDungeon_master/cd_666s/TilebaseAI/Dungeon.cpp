@@ -32,6 +32,10 @@ Dungeon::Dungeon(std::string stageName)
     , _intruderInformation(_dictionary)
     , _intrudeLastCharacter(false)
 {
+
+    _windowBackground.Load("resourse/graph/ui/main_window_background" + _stageName + ".png");
+    _windowBackground.SetPosition(Vector2D(28, 28));
+
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
     _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
@@ -74,8 +78,9 @@ void Dungeon::Init()
     LoadTileSize(_stageName, tileInfoArray);
 
     //フィールドのサイズを読み込む
-    fileName = "csv/StageData/map";
-    fileName += (_stageName + ".csv");
+    //fileName = "csv/StageData/map";
+    //fileName += (_stageName + ".csv");
+    fileName = "csv/StageData/EditMapData.csv";
     auto fieldSizeH = reader.GetLineSize(fileName, 0);
     auto fieldSizeV = reader.GetLineNum(fileName);
     
@@ -85,12 +90,31 @@ void Dungeon::Init()
     int countY = 0;
     FIELD->Init(fieldSizeH, fieldSizeV);
 
+    std::string ft;
+
+    switch (stoi(_stageName)) {
+    case 1:
+        ft = "#CAV";
+        break;
+    case 2:
+        ft = "#FST";
+        break;
+    case 3:
+        ft = "#CAV";
+        break;
+    default:
+        ft = "#CAV";
+        break;
+    }
+
     //オブジェクトを読み込む
     auto& _objs = OBJECT_MGR->_objects;
     for (auto data : dataArray)
     {
         //受け取ったデータを変換表をもとに変換
         GenerateObject(data, countX, countY);
+
+        FIELD->SetFieldType(TiledVector(countX, countY), ft);
         
         //次のマップ番号まで
         countX++;
@@ -114,8 +138,9 @@ void Dungeon::Init()
     fileName += (_stageName + ".csv");
     Enemy::LoadEnemys(_objs, *_start, *_goal, _enemys, fileName);
 
-    fileName = "csv/StageData/monsters";
-    fileName += (_stageName + ".csv");
+    //fileName = "csv/StageData/monsters";
+    //fileName += (_stageName + ".csv");
+    fileName = "csv/StageData/EditMap_MonsterData.csv";
     Monster::LoadMonsters(_objs, _monsters, fileName);
     
     FIELD->Setup();

@@ -25,6 +25,17 @@ public:
 private:
     const size_t NPOS;
 
+    /****上限カウント用****/
+    std::map<std::string, int> set_count;
+    //int set_count[3];
+    /****上限カウント用****/
+
+    //上限設定
+    //仮の定数(あとでconstで宣言し直そう)
+    int LIMIT_TRAP;
+    int LIMIT_MONSTER;
+    int LIMIT_BLOCK;
+
     std::string class_name;
 
     UIManager _uiManager;
@@ -50,8 +61,59 @@ private:
     void DebugOutputFile();
 
 
+
+
+    void SetObject();
+
+    bool SetObjectCheck(TiledVector tiledCursorPos);
+
+    void DeleteAddedObject();
+
+
+    void GenerateObject(std::string typeName, int countX, int countY);
+
+
+
     std::shared_ptr<PanelSettingObject> selectedObject;
 
 
+    std::string selectPanelCategory;
+
+
+    struct addTileObject {
+
+        TiledObject* tiledObject;
+        std::string GenerateText;
+
+    };
+
+    struct addTileObject_Monster {
+
+        TiledObject* MonsterObject;
+        TiledObject* MagicSquareObject;
+        std::string GenerateText;
+
+    };
+
+
+
+    //エディットで追加したオブジェクトの参照先を表す
+    //罠
+    std::vector<addTileObject> addTiledObjectList_Trap;
+    //ブロック
+    std::vector<addTileObject> addTiledObjectList_Block;
+    //モンスター
+    std::vector<addTileObject_Monster> addTiledObjectList_Monster;
+
+
 };
+
+
+
+
+
+
+
+
+
 

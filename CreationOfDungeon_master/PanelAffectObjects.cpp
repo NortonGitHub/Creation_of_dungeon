@@ -22,7 +22,7 @@ PanelAffectObjects::PanelAffectObjects(PanelContent _panelContent)
 
     _graph.Load(filename);
 
-     _graph.SetPosition(_position);
+    _graph.SetPosition(_position);
 
     _graph.SetPriority(Sprite::Priority::UI);
     //_graph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
@@ -85,23 +85,21 @@ void PanelAffectObjects::SetSettingObject(std::vector<std::shared_ptr<PanelBase>
     for (int i = 0; i < _tps.size(); i++) {
 
         if (!_array.empty()) {
-            while (_array[0].empty())
-            {
-                _array.erase(_array.begin());
-                if (_array.empty()) {
-                    break;
-                }
-            }
-            if (!_array.empty()) {
-                _tps[i]->PanelSettingObject_SettingPanel(_array[0], GetCategoryName());
+            if (_array.size() >= 2) {
+                _tps[i]->PanelSettingObject_SettingPanel(_array[0], _array[1], GetCategoryName());
                 //_tps[i] = PanelSettingObject(_array[i]);
                 _array.erase(_array.begin());
-            }else{
-                _tps[i]->PanelSettingObject_SettingPanel("", GetCategoryName());
+                _array.erase(_array.begin());
             }
+            else {
+                _array.erase(_array.begin());
+                _tps[i]->PanelSettingObject_SettingPanel("", "", GetCategoryName());
+                //_tps[i] = std::make_shared<PanelSettingObject>(nullptr);
+            }
+            
         }
         else {
-            _tps[i]->PanelSettingObject_SettingPanel("", GetCategoryName());
+            _tps[i]->PanelSettingObject_SettingPanel("", "",GetCategoryName());
             //_tps[i] = std::make_shared<PanelSettingObject>(nullptr);
         }
     }

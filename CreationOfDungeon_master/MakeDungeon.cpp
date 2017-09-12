@@ -73,7 +73,9 @@ void MakeDungeon::Draw()
 
 void MakeDungeon::Init(std::string file_name)
 {
-    
+
+    _messageReciever.Init();
+
     //タイルの大きさを読み込む
     std::string fileName = "csv/StageData/tilesize.csv";
     std::vector<std::string> tileInfoArray;
@@ -85,11 +87,11 @@ void MakeDungeon::Init(std::string file_name)
     //フィールドの大本となるデータを読み込む
     std::string filename = "csv/StageData/";
     filename += (file_name + ".csv");
-    
+
     reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, _stageArray);
-    
-    
-    
+
+
+
     auto fieldSizeH = reader.GetLineSize(filename, 0);
     auto fieldSizeV = reader.GetLineNum(filename);
 
@@ -105,8 +107,27 @@ void MakeDungeon::Init(std::string file_name)
 
     //FIELD->Init(fieldSizeH, fieldSizeV);
 
+    std::string ft;
+
+    switch (stoi(_stage_num)) {
+    case 1:
+        ft = "#CAV";
+        break;
+    case 2:
+        ft = "#FST";
+        break;
+    case 3:
+        ft = "#CAV";
+        break;
+    default:
+        ft = "#CAV";
+        break;
+    }
+
     for (auto data : _stageArray) {
         GenerateObject(data, countX, countY);
+
+        FIELD->SetFieldType(TiledVector(countX, countY), ft);
 
         countX++;
 
@@ -120,7 +141,7 @@ void MakeDungeon::Init(std::string file_name)
     }
 
     /*設置オブジェクトをロードする処理が必要*/
-    
+
     _monsters.Update();
 
     FIELD->Setup();
@@ -133,6 +154,12 @@ void MakeDungeon::Init(std::string file_name)
             obj->Init();
     }
     _selectingObj = "NONE";
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> f6a2c610bb8f3e143a6ba19480a4d441825312a4
 }
 
 void MakeDungeon::PickupObject()
@@ -148,7 +175,7 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
 
 
     auto& _objs = OBJECT_MGR->_objects;
-    
+
     if (typeName.find("9#") != std::string::npos)
     {
         Trap::CreateTrap(typeName, countX, countY, _objs);
@@ -165,7 +192,7 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
     {
         if (_start == nullptr)
         {
-            _start = std::make_shared<StartPoint>(TiledVector(countX, countY));
+            _start = std::make_shared<StartPoint>(TiledVector(countX, countY), _messageReciever);
             _objs.push_back(_start);
         }
         return;
@@ -175,7 +202,7 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
     {
         if (_goal == nullptr)
         {
-            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
+            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters, _messageReciever, 99);
             _objs.push_back(_goal);
         }
         return;
@@ -201,6 +228,115 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
 
 
 
+TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, int countY, Vector2D mousePos)
+{
+    FIELD->SetRawNumber(TiledVector(countX, countY), stoi(typeName));
+    FIELD->SetFieldType(TiledVector(countX, countY), typeName);
+
+
+    auto& _objs = OBJECT_MGR->_objects;
+
+    if (typeName.find("9#") != std::string::npos)
+    {
+        Trap::CreateTrap(typeName, countX, countY, _objs);
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }
+        else {
+            to = nullptr;
+        }
+        return to;
+    }
+
+    if (typeName.find("2&") != std::string::npos)
+    {
+        LoadItem(typeName, countX, countY, _objs);
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }
+        else {
+            to = nullptr;
+        }
+        return to;
+    }
+    /*
+    if (typeName.find("200") != std::string::npos)
+    {
+        if (_start == nullptr)
+        {
+            _start = std::make_shared<StartPoint>(TiledVector(countX, countY));
+            _objs.push_back(_start);
+        }
+        return;
+    }
+
+    if (typeName.find("100") != std::string::npos)
+    {
+        if (_goal == nullptr)
+        {
+            _goal = std::make_shared<Goal>(TiledVector(countX, countY), _monsters);
+            _objs.push_back(_goal);
+        }
+        return;
+    }
+    */
+    if (typeName.find("6") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }
+        else {
+            to = nullptr;
+        }
+        return to;
+    }
+
+    if (typeName.find("1") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }
+        else {
+            to = nullptr;
+        }
+        return to;
+    }
+
+    if (typeName == "0")
+        return nullptr;
+
+    return nullptr;
+
+}
+
+std::vector<TiledObject*> MakeDungeon::GenerateMonster(std::string fileName, TiledVector startPos, std::string* GenerateText) {
+
+    auto& _objs = OBJECT_MGR->_objects;
+
+    std::vector<TiledObject*> temp = Monster::GenerateMonster(_objs, _monsters, fileName, startPos, GenerateText);
+
+    _monsters.Update();
+
+    return temp;
+
+}
+
+
+
 void MakeDungeon::LoadTileSize(std::string stageName, std::vector<std::string>& rawData)
 {
     auto stageNum = std::stoi(stageName);
@@ -214,3 +350,13 @@ void MakeDungeon::LoadTileSize(std::string stageName, std::vector<std::string>& 
         TILE_SIZE = 32;
 }
 
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+>>>>>>> f6a2c610bb8f3e143a6ba19480a4d441825312a4
