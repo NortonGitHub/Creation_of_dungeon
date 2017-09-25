@@ -10,7 +10,7 @@ MagicAttackAround::MagicAttackAround(double power, int cost, double startRatio, 
     , _power(power)
     , _range(range)
 {
-    _image = IMAGE_RESOURCE_TABLE->Create("graph/effect/explosion.png");
+    _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/effect/explosion.png");
 }
 
 

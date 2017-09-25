@@ -12,7 +12,7 @@ enum class FieldType
 
 static std::string GetMapChipGraphDirectory(FieldType type) 
 {
-    std::string directory = "graph/background/";
+    std::string directory = "resourse/graph/background/";
     switch (type)
     {
     case FieldType::Cave:

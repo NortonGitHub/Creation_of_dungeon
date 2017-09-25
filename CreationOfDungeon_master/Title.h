@@ -33,6 +33,5 @@ private:
     Graph title;
 
     Sound _bgm, _se;
-
 };
 

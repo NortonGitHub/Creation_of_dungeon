@@ -12,8 +12,6 @@ class PanelContent// : public GraphicalObject
 public:
     PanelContent();
     PanelContent(Vector2D _p, std::string name, std::string func_var);
-
-
     ~PanelContent();
 
     std::string _name;

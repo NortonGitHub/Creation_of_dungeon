@@ -166,8 +166,6 @@ public:
 private:
     
     std::vector<std::shared_ptr<TiledObject>> _objects;
-    
-private:
 
     bool _needRefresh;
     std::vector<const TiledObject*> _deleteOrders;

@@ -4,11 +4,11 @@
 DungeonTimer::DungeonTimer()
     : _count(0)
     , _waveInterval(0)
-    , _halfSE("rsound/time_half1.wav")
-    , _littleSE("sound/time_little1.wav")
-    , _endSE("sound/game_end.wav")
-    , _clock("graph/ui/ClockDaytime.png")
-    , _hand("graph/ui/ClockHand.png")
+    , _halfSE("resourse/sound/time_half1.wav")
+    , _littleSE("resourse/sound/time_little1.wav")
+    , _endSE("resourse/sound/game_end.wav")
+    , _clock("resourse/graph/ui/ClockDaytime.png")
+    , _hand("resourse/graph/ui/ClockHand.png")
     , _position(754, 248)
 {
     _halfSE.SetVolume(200);

@@ -9,8 +9,6 @@ PanelSceneTransition::PanelSceneTransition()
 {
 }
 
-<<<<<<< HEAD
-=======
 PanelSceneTransition::PanelSceneTransition(PanelContent _panelContent)
     : panel(std::move(_panelContent))
 {
@@ -34,7 +32,6 @@ PanelSceneTransition::PanelSceneTransition(PanelContent _panelContent)
 }
 
 
->>>>>>> f6a2c610bb8f3e143a6ba19480a4d441825312a4
 PanelSceneTransition::~PanelSceneTransition()
 {
 }

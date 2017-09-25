@@ -212,7 +212,6 @@ void EditMap::Init()
     }
 
     std::string file_name = (IsFirstWave() ? "template" : "map" + stage_num);
-
     
     PANEL_MGR->Refresh();
  
@@ -233,8 +232,6 @@ void EditMap::Init()
     panel_cont_temp.clear();
     
     selectedObject.reset();
-<<<<<<< HEAD
-=======
 
     selectPanelCategory = "";
 
@@ -261,7 +258,6 @@ void EditMap::Init()
         LIMIT_BLOCK = 8;
     }
 
->>>>>>> f6a2c610bb8f3e143a6ba19480a4d441825312a4
 }
 
 bool EditMap::IsFirstWave()
@@ -283,7 +279,7 @@ bool EditMap::IsFirstWave()
     return true;
 }
 
-SceneBase* EditMap::PanelFunction()
+SceneBase * EditMap::PanelFunction()
 {
 
     for (auto p : PANEL_MGR->_objects) {

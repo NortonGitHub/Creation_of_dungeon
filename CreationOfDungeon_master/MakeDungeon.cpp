@@ -13,7 +13,6 @@
 #include "cd_666s/TilebaseAI/Monster.h"
 //#include "cd_666s/TilebaseAI/Goal.h"
 //#include "cd_666s/TilebaseAI/StartPoint.h"
-
 #include "cd_666s/TilebaseAI/Trap.h"
 
 //#include "SettingBowgun.h"
@@ -26,9 +25,9 @@ MakeDungeon::MakeDungeon()
 
 MakeDungeon::MakeDungeon(std::string stage_num)
     : _stage_num(stage_num)
-    , _mainsFrame("graph/ui/main_window.png", Vector2D(20, 20))
-    , _background("graph/background/background.png", Vector2D(0, 7600))
-    , _windowBackground("graph/ui/main_window_background1.png", Vector2D(28, 28))
+    , _mainsFrame("resourse/graph/ui/main_window.png", Vector2D(20, 20))
+    , _background("resourse/graph/background/background.png", Vector2D(0, 7600))
+    , _windowBackground("resourse/graph/ui/main_window_background1.png", Vector2D(28, 28))
 {
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
@@ -50,12 +49,12 @@ MakeDungeon::~MakeDungeon()
 
 void MakeDungeon::Update()
 {
+
     //_monsters.Update();
 
     for (auto obj : OBJECT_MGR->_objects) {
         if (obj != nullptr) {
             //if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L)) {
-
             //obj->Update();
             //}
         }
@@ -94,6 +93,8 @@ void MakeDungeon::Init(std::string file_name)
 
     auto fieldSizeH = reader.GetLineSize(filename, 0);
     auto fieldSizeV = reader.GetLineNum(filename);
+
+
 
     FIELD->Init(fieldSizeH, fieldSizeV);
 
@@ -154,12 +155,9 @@ void MakeDungeon::Init(std::string file_name)
             obj->Init();
     }
     _selectingObj = "NONE";
-<<<<<<< HEAD
-=======
 
 
 
->>>>>>> f6a2c610bb8f3e143a6ba19480a4d441825312a4
 }
 
 void MakeDungeon::PickupObject()
@@ -170,7 +168,6 @@ void MakeDungeon::PickupObject()
 void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
 {
     FIELD->SetRawNumber(TiledVector(countX, countY), stoi(typeName));
-
     FIELD->SetFieldType(TiledVector(countX, countY), typeName);
 
 
@@ -350,8 +347,6 @@ void MakeDungeon::LoadTileSize(std::string stageName, std::vector<std::string>& 
         TILE_SIZE = 32;
 }
 
-<<<<<<< HEAD
-=======
 
 
 
@@ -359,4 +354,3 @@ void MakeDungeon::LoadTileSize(std::string stageName, std::vector<std::string>& 
 
 
 
->>>>>>> f6a2c610bb8f3e143a6ba19480a4d441825312a4

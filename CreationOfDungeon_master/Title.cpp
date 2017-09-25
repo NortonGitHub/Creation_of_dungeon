@@ -4,9 +4,9 @@
 
 Title::Title() 
     : class_name("title")
-    , title("resource/title.png")
-    , _bgm("sound/Area1.ogg")
-    , _se("sound/decide.wav")
+    , title("resourse/title.png")
+    , _bgm("resourse/sound/Area1.ogg")
+    , _se("resourse/sound/decide.wav")
 {
     _functions.reserve(20);
     title.SetPosition(Vector2D(0, 0));
@@ -37,9 +37,7 @@ SceneBase * Title::Update(UIManager _ui)
 
     _functions.resize(0);
 
-    std::string _ui_name;
-
-    _ui.Update(_functions,_ui_name);
+    _ui.Update(_functions);
 
     for (auto f : _functions) {
         if (f.find("MOVE") != std::string::npos){

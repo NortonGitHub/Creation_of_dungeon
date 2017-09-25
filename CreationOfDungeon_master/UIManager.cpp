@@ -24,7 +24,7 @@ UIManager::UIManager() {
 }
 
 
-UIManager::UIManager(std::string scene_name) : test("resource/test_666/omote.png")
+UIManager::UIManager(std::string scene_name) : test("resourse/test_666/omote.png")
 {
     /***Sample Code***
     UIFactory* a = new MessageUIFactory();
@@ -44,7 +44,7 @@ UIManager::UIManager(std::string scene_name) : test("resource/test_666/omote.png
 
     test.SetPosition(Vector2D(128, 0));
 
-    test2 = LoadGraph("test_666/omote.png");
+    test2 = LoadGraph("resourse/test_666/omote.png");
 
     Init(scene_name);
 }
@@ -114,7 +114,7 @@ std::function<void()> UIManager::SetUIFunction(std::string func_name)
     return std::function<void()>();
 }
 
-void UIManager::Update(std::vector<std::string> &_functions, std::string &_obj_name) {
+void UIManager::Update(std::vector<std::string> &_functions) {
 
     std::string func_name = "";
 
@@ -123,7 +123,6 @@ void UIManager::Update(std::vector<std::string> &_functions, std::string &_obj_n
             func_name = pro->Update();
             if (func_name != "") {
                 _functions.push_back(func_name);
-                _obj_name = pro->GetUIName();
             }
         }
     }

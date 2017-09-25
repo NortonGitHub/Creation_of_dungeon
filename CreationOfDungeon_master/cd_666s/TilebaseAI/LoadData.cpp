@@ -205,7 +205,7 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
     if (name == "bone")
     {
         auto skill = ShootDamageObject::Create(skillData, *this, true);
-        skill->SetImage(IMAGE_RESOURCE_TABLE->Create("graph/effect/throwing_bone.png"));
+        skill->SetImage(IMAGE_RESOURCE_TABLE->Create("resourse/graph/effect/throwing_bone.png"));
         return skill;
     }
 

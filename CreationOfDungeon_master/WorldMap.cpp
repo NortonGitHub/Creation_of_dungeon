@@ -13,7 +13,7 @@
 
 WorldMap::WorldMap()
     : class_name("world_map")
-    , _bgm("sound/world1.wav", true)
+    , _bgm("resourse/sound/world1.wav", true)
 {
 
     Init();
@@ -236,37 +236,37 @@ void WorldMap::Init() {
     */
 
 
-    AreaGrBuffer[0] = LoadGraph("resource/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[0] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
     /*
-    AreaGrBuffer[1] = LoadGraph("resource/graph/worldMap/Area1Icon.png");
-    AreaGrBuffer[2] = LoadGraph("resource/graph/worldMap/Area1Icon.png");
-    AreaGrBuffer[3] = LoadGraph("resource/graph/worldMap/Area1Icon.png");
-    AreaGrBuffer[4] = LoadGraph("resource/graph/worldMap/Area1Icon.png");
-    AreaGrBuffer[5] = LoadGraph("resource/graph/worldMap/Area1Icon.png");
-    AreaGrBuffer[6] = LoadGraph("resource/graph/worldMap/Area1Icon.png");
-    AreaGrBuffer[7] = LoadGraph("resource/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[1] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[2] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[3] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[4] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[5] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[6] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
+    AreaGrBuffer[7] = LoadGraph("resourse/graph/worldMap/Area1Icon.png");
     */
     AreaGr = &AreaGrBuffer[0];
 
-    charaGr_f[0] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlFront1.png");
-    charaGr_f[1] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlFront2.png");
+    charaGr_f[0] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlFront1.png");
+    charaGr_f[1] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlFront2.png");
     charaGr_f[2] = charaGr_f[0];
-    charaGr_f[3] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlFront3.png");
+    charaGr_f[3] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlFront3.png");
 
-    charaGr_b[0] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlBack1.png");
-    charaGr_b[1] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlBack2.png");
+    charaGr_b[0] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlBack1.png");
+    charaGr_b[1] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlBack2.png");
     charaGr_b[2] = charaGr_b[0];
-    charaGr_b[3] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlBack3.png");
+    charaGr_b[3] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlBack3.png");
 
-    charaGr_l[0] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlLeft1.png");
-    charaGr_l[1] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlLeft2.png");
+    charaGr_l[0] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlLeft1.png");
+    charaGr_l[1] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlLeft2.png");
     charaGr_l[2] = charaGr_l[0];
-    charaGr_l[3] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlLeft3.png");
+    charaGr_l[3] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlLeft3.png");
 
-    charaGr_r[0] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlRight1.png");
-    charaGr_r[1] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlRight2.png");
+    charaGr_r[0] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlRight1.png");
+    charaGr_r[1] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlRight2.png");
     charaGr_r[2] = charaGr_r[0];
-    charaGr_r[3] = LoadGraph("resource/graph/worldMap//DevilGirlMini/DevilGirlRight3.png");
+    charaGr_r[3] = LoadGraph("resourse/graph/worldMap//DevilGirlMini/DevilGirlRight3.png");
 
 
     blend = 0;

@@ -1,3 +1,4 @@
+
 #pragma once
 #include "cd_666s\InputManager\MouseInput.h"
 #include "cd_666s\TilebaseAI\MapTile.h"
@@ -44,7 +45,6 @@ private:
     std::shared_ptr<StartPoint> _start;
 
     //同盟間の情報共有網
-
     ColleagueNotifyer _monsters,_enemys;
 
     //現在選ばれているオブジェクト
@@ -54,5 +54,6 @@ private:
     MessageReciever _messageReciever;
 
     Sprite _mainsFrame, _background, _windowBackground;
+
 };
 

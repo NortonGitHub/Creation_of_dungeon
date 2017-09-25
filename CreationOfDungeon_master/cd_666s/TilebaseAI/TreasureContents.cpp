@@ -5,7 +5,7 @@
 TreasureContents::TreasureContents(int goldValue, std::string imageFileName)
     : _goldValue(goldValue)
 {
-    auto path = "graph/item/";
+    auto path = "resourse/graph/item/";
     _image = IMAGE_RESOURCE_TABLE->Create(path + imageFileName);
 }
 

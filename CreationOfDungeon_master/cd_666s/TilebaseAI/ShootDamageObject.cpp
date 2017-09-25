@@ -14,7 +14,7 @@ ShootDamageObject::ShootDamageObject(double power, int cost, double startRatio, 
     , _speed(speed)
     , _isPhysical(isPhysical)
 {
-    _image = IMAGE_RESOURCE_TABLE->Create("graph/effect/fire_ball.png");
+    _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/effect/fire_ball.png");
 }
 
 
@@ -89,19 +89,19 @@ void ShootDamageObject::Activate()
         switch (direction)
         {
         case TiledVector::Direction::FORWARD:
-            _image = IMAGE_RESOURCE_TABLE->Create("graph/trap/arrow_down.png");
+            _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/trap/arrow_down.png");
             break;
 
         case TiledVector::Direction::BACK:
-            _image = IMAGE_RESOURCE_TABLE->Create("graph/trap/arrow_up.png");
+            _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/trap/arrow_up.png");
             break;
 
         case TiledVector::Direction::LEFT:
-            _image = IMAGE_RESOURCE_TABLE->Create("graph/trap/arrow_left.png");
+            _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/trap/arrow_left.png");
             break;
 
         case TiledVector::Direction::RIGHT:
-            _image = IMAGE_RESOURCE_TABLE->Create("graph/trap/arrow_right.png");
+            _image = IMAGE_RESOURCE_TABLE->Create("resourse/graph/trap/arrow_right.png");
             break;
         }
     }

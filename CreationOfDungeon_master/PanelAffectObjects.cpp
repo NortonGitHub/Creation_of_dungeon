@@ -15,7 +15,6 @@ PanelAffectObjects::PanelAffectObjects(PanelContent _panelContent)
 {
     std::string filename = "resource/graph/ui/" + panel._name + ".png";
 
-
     auto pos = panel._pos;
 
     _position.Set(pos._x, pos._y);
@@ -35,7 +34,6 @@ PanelAffectObjects::~PanelAffectObjects()
 {
 }
 
-
 void PanelAffectObjects::Init(PanelContent _panelContent)
 {
     panel = _panelContent;
@@ -49,9 +47,7 @@ void PanelAffectObjects::Update()
 void PanelAffectObjects::Draw()
 {
     GraphicalObject::Draw();
-
     //DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
-
 }
 
 std::string PanelAffectObjects::GetCategoryName()
@@ -70,10 +66,8 @@ std::string PanelAffectObjects::GetCategoryName()
     }
 }
 
-
 void PanelAffectObjects::SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps)
 {
-
     CSVReader reader;
 
     std::string fileName = "csv/Edit/";

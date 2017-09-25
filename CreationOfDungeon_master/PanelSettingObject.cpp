@@ -69,7 +69,6 @@ void PanelSettingObject::Draw()
 {
     //panel.Draw();
     //DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
-
     GraphicalObject::Draw();
 
     if (isSelected) {
@@ -187,8 +186,6 @@ bool PanelSettingObject::getIsSelected() {
 }
 
 
-<<<<<<< HEAD
-=======
 
 std::string PanelSettingObject::getPanelObjectName() {
 
@@ -200,4 +197,3 @@ std::string PanelSettingObject::getPanelObjectName() {
 
 
 
->>>>>>> f6a2c610bb8f3e143a6ba19480a4d441825312a4
