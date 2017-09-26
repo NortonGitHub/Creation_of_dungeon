@@ -12,8 +12,8 @@ TiledObjectInformation::TiledObjectInformation(const TiledObjectDictionary& icon
     : _position(position)
     , _character(nullptr)
     , _iconDictionary(iconDictionary)
-    , _enemyThumbnail("resourse/graph/enemy_thumbnail.png", position)
-    , _allyThumbnail("resourse/graph/ally_thumbnail.png", position)
+    , _enemyThumbnail("resource/graph/enemy_thumbnail.png", position)
+    , _allyThumbnail("resource/graph/ally_thumbnail.png", position)
 {
     _icon = std::make_unique<Sprite>();
 

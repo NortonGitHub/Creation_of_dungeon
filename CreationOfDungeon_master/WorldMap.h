@@ -28,7 +28,7 @@ private:
         int AreaNum;
 
         int pointNum;   //ポイント番号　ステージとは違い中継地点にも割り振られる番号
-        int stageNum;   //ステージ番号　中継地点の場合は-1
+        std::string stageNum;   //ステージ番号　文字列として管理　bが入っていた場合、ボスマップ　中継地点の場合は-1
 
 
         double x;   //ポイントのX位置　エリア移動のポイントの場合、あたり判定とは違う実際にキャラが動くX位置
@@ -140,7 +140,7 @@ private:
     bool keyFlag;
     bool clickFlag;
 
-    int stageNum;
+    std::string stageNum;
 
     std::string class_name;
 
