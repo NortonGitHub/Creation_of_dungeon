@@ -17,9 +17,10 @@
 #include "Trap.h"
 
 #include <assert.h>
+#include <iostream>
 
 
-Dungeon::Dungeon(std::string stageName)
+Dungeon::Dungeon(std::string stageName, bool is_boss)
     : _permitivePassedNum(2)
     , _stageName(stageName)
     , _goal(nullptr)
@@ -31,6 +32,7 @@ Dungeon::Dungeon(std::string stageName)
     , _infoDrawer(_dictionary)
     , _intruderInformation(_dictionary)
     , _intrudeLastCharacter(false)
+	, _is_boss(is_boss)
 {
 
     _windowBackground.Load("resourse/graph/ui/main_window_background" + _stageName + ".png");
@@ -228,8 +230,8 @@ void Dungeon::Clear()
 
 bool Dungeon::HasClear()
 {
-    //WAVEを耐えきったらクリア
-    if (_timer.HasTimeUp())
+    //WAVEを耐えきったらクリア(通常ステージのみ)
+    if (_timer.HasTimeUp() && !_is_boss)
         return true;
     
     //WAVE中の敵を全滅させたらクリア
@@ -248,10 +250,14 @@ bool Dungeon::HasClear()
 
 bool Dungeon::HasGameOver()
 {
-    auto passedNum = _goal->GetPassedNum();
-    if (_permitivePassedNum < passedNum)
-        return true;
-        
+	if(_is_boss){
+
+	}
+	else {
+		auto passedNum = _goal->GetPassedNum();
+		if (_permitivePassedNum < passedNum)
+			return true;
+	}
     return false;
 }
 
@@ -325,6 +331,7 @@ void Dungeon::Draw()
 
 void Dungeon::LoadMessage(std::string stageName)
 {
+	/*
     int messageNum = 0;
     if (stageName == "1")
         messageNum = 1;
@@ -332,6 +339,19 @@ void Dungeon::LoadMessage(std::string stageName)
         messageNum = 2;
     else if (stageName == "3")
         messageNum = 3;
+	*/
+	int messageNum = 0;
+	try {
+		messageNum = std::stoi(stageName);
+	}
+	catch (const std::invalid_argument& e) {
+		std::cout << e.what() << std::endl;
+		return;
+	}
+	catch (const std::out_of_range& e) {
+		std::cout << e.what() << std::endl;
+		return;
+	}
 
     std::string filePath = "csv/talkData/stage";
     filePath += stageName;

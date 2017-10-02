@@ -23,7 +23,7 @@ class StartPoint;
 class Dungeon
 {
 public:
-    Dungeon(std::string stageName);
+    Dungeon(std::string stageName, bool is_boss);
     ~Dungeon();
     
     //void InitWithLoad(std::string stageName);
@@ -79,6 +79,8 @@ private:
     void UpdateSecretary();
     std::unordered_map<std::string, TalkDatabase> _dungeonMessage;
     bool _intrudeLastCharacter;
+
+	bool _is_boss;
 };
 
 #endif /* Dungeon_h */
