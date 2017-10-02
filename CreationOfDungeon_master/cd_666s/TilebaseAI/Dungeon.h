@@ -23,7 +23,7 @@ class StartPoint;
 class Dungeon
 {
 public:
-    Dungeon(std::string stageName, bool is_boss);
+    Dungeon(std::string stageName);
     ~Dungeon();
     
     //void InitWithLoad(std::string stageName);
@@ -45,7 +45,8 @@ private:
     //勇者を通してもいい数
     int _permitivePassedNum;
     
-    std::string _stageName;
+    std::string _stageName;	//記号を含めたステージ名
+	std::string _stageNum;	//整数のステージ番号のみ
     
     void GenerateObject(std::string typeName, int countX, int countY);
     

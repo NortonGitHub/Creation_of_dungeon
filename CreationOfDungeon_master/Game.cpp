@@ -101,7 +101,7 @@ void Game::Draw()
         break;
 
     case Game::GameState::PAUSE:
-        //GamingDraw();
+        //GamingDraw();_state
         PauseDraw();
         break;
 
@@ -169,7 +169,7 @@ void Game::Init()
         _dungeon = nullptr;
     }
 
-    _dungeon = new Dungeon(_stageNumber_after, isBoss);
+    _dungeon = new Dungeon(_stageNumber);
     _dungeon->Init();
 }
 
