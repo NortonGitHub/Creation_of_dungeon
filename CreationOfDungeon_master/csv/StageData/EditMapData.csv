@@ -1,8 +1,8 @@
-1,1,1,1,1,1,1,1,100,1,1,1
-1,6#FST,1,0#FST,0#FST,6,9#name:sanctuary&cost:200&range:2&hp:100&atk:120&def:120&matk:100&mdef:100&spd:100&time:5,0,9#name:mine&cost:200&range:1&power:100&attack:100&stuck:2,0,0,1
-1,6,6,0,0#FST,6,6,6,9#name:bare_trap&cost:200&range:1&power:100&attack:100&stuck:2,0,0,1
-1,1#FST,6,0,0,2&herb,2&book,6,9#name:curse&cost:200&hp:70&atk:70&def:70&matk:70&mdef:70&spd:70&time:5,6,6,1
-1,9#name:emplacement&cost:200&power:100&attack:100&direction:right,9#name:emplacement&cost:200&power:100&attack:100&direction:up,9#name:emplacement&cost:200&power:100&attack:100&direction:down#FST,2&herb,2&herb,0,0,0,1,1,1
-1,1,6,2&herb,0,0,0,0#FST,0,0,0,1
-1,6,6,2&herb#FST,2&herb,2&herb,0,0,9#name:magic_bomb&cost:200&power:100&attack:100&range:1,0,9#name:emplacement&cost:200&power:100&attack:100&direction:left,1
-1,1,1,1,1,1,1,1,200,1,1,1
+1,1,200,1,1,1,1,1,1,1,1,1
+1,1,0,0,0,0,0,0,0,0,6,1
+1,0,0,0,0,0,0,0,0,0,6,1
+1,6,6,0,6,6,0,0,1,0,6,1
+1,0,0,0,0,6,0,1,0,0,6,1
+1,0,2&herb,0,0,0,0,0,0,0,6,1
+1,0,0,0,0,6,0,0,0,0,6,1
+1,1,1,1,1,1,1,1,1,100,1,1

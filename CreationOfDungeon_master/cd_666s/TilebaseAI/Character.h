@@ -53,6 +53,8 @@ public:
     BattleParameter GetAffectedParameter();
     BattleParameter GetRawParameter() const { return _battleParameter; };
     
+    void SetDirection(TiledVector::Direction d) { _direction = d; }
+
     bool _isBattling;
 
 protected:

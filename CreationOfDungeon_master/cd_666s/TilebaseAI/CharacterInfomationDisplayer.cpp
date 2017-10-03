@@ -6,8 +6,8 @@ CharacterInfomationDisplayer::CharacterInfomationDisplayer(Vector2D& positionRef
     , _characterPos(positionRef)
     , _displayCounter(0)
 {
-    _statusUp.Load("resourse/graph/icon/status_up.png");
-    _statusDown.Load("resourse/graph/icon/status_down.png");
+    _statusUp.Load("resource/graph/icon/status_up.png");
+    _statusDown.Load("resource/graph/icon/status_down.png");
 
     _statusUp.SetPriority(Sprite::Priority::UI);
     _statusDown.SetPriority(Sprite::Priority::UI);

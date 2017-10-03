@@ -16,7 +16,7 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 , _hasAppeared(false)
 , _target(nullptr)
 , _battle(nullptr)
-, _defeatSE("resourse/sound/enemy_fall2.wav")
+, _defeatSE("resource/sound/enemy_fall2.wav")
 , _infoIcon(_position, _effecters)
 , _actCounter(1, true, true)
 {
@@ -27,7 +27,7 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
     double speedRatio = static_cast<double>(100 - _battleParameter._speed + 15) / 100;
     _actCounter.Reset(30 * speedRatio, true, true);
 
-    std::string fileName = "resourse/graph/tiledObject/";
+    std::string fileName = "resource/graph/tiledObject/";
     fileName += _name;  //ÉGÉâÅ[ÇÃå¥àˆ _animatorÅ@
     _animator.AddAnimation("front", std::make_shared<GraphArray>(fileName + "_front.png", 32, 24));
     _animator.AddAnimation("right", std::make_shared<GraphArray>(fileName + "_right.png", 32, 24));
@@ -43,7 +43,7 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
         animation->GetGraphPtr()->SetRenderType(Texture2D::RenderType::UI);
     });
 
-    _healGraph.Load("resourse/graph/effect/heal.png");
+    _healGraph.Load("resource/graph/effect/heal.png");
     _healGraph.SetScale(Vector2D(TILE_SCALE, TILE_SCALE));
     _healGraph.SetDisplayMode(false);
     _healGraph.SetPriority(Sprite::Priority::UI);
