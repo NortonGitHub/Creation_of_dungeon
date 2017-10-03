@@ -25,9 +25,9 @@ MakeDungeon::MakeDungeon()
 
 MakeDungeon::MakeDungeon(std::string stage_num)
     : _stage_num(stage_num)
-    , _mainsFrame("resource/graph/ui/main_window.png", Vector2D(20, 20))
-    , _background("resource/graph/background/background.png", Vector2D(0, 7600))
-    , _windowBackground("resource/graph/ui/main_window_background_cave.png", Vector2D(28, 28))
+    , _mainsFrame("resourse/graph/ui/main_window.png", Vector2D(20, 20))
+    , _background("resourse/graph/background/background.png", Vector2D(0, 7600))
+    , _windowBackground("resourse/graph/ui/main_window_background1.png", Vector2D(28, 28))
 {
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
@@ -108,40 +108,26 @@ void MakeDungeon::Init(std::string file_name)
 
     //FIELD->Init(fieldSizeH, fieldSizeV);
 
-    //ダンジョンの地形の設定
     std::string ft;
 
-    std::vector<std::string> FieldTypeArray;
-    fileName = "csv/StageData/DungeonType.csv";
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, FieldTypeArray, 2);
-
-    int FieldTypeNum = stoi(FieldTypeArray[stoi(_stage_num) * 2 - 1]);
-
-    switch (FieldTypeNum) {
-    case 0:
-        ft = "#CAV";
-        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
-        break;
+    switch (stoi(_stage_num)) {
     case 1:
-        ft = "#FST";
-        _windowBackground.Load("resource/graph/ui/main_window_background_forest.png");
+        ft = "#CAV";
         break;
     case 2:
-        ft = "#STN";
-        _windowBackground.Load("resource/graph/ui/main_window_background_stone.png");
+        ft = "#FST";
+        break;
+    case 3:
+        ft = "#CAV";
         break;
     default:
         ft = "#CAV";
-        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
         break;
     }
-    _windowBackground.SetPosition(Vector2D(28, 28));
-    //ここまで
 
     for (auto data : _stageArray) {
         GenerateObject(data, countX, countY);
 
-        //ftが地形情報なので渡す
         FIELD->SetFieldType(TiledVector(countX, countY), ft);
 
         countX++;

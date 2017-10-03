@@ -57,7 +57,7 @@ UIContent::UIContent(int x, int y, std::string type_name, std::string data_name,
     _func_type = func_type;
 
     //Žb’è
-    std::string load_name = "resource/" + data_name + ".png";
+    std::string load_name = "resourse/" + data_name + ".png";
     _image_resource = IMAGE_RESOURCE_TABLE->Create(load_name);
     //assert((_test_handle != -1) && "‰æ‘œ“Ç‚Ýž‚ÝŽ¸”s");
     _size.Set(_image_resource->GetWidth(), _image_resource->GetHeight());

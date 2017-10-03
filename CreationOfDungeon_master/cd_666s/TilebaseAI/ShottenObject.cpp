@@ -56,12 +56,12 @@ ShottenObject::ShottenObject(int power, int attack, int range, double speed, Til
         && !_isPhysical)
     {
         _graph.SetPriority(Sprite::Priority::UI);
-        _animator.AddAnimation("hit", std::make_shared<GraphArray>("resource/graph/effect/fire.png", 32, 32, 5, 15));
-        _sound.Load("resource/sound/flame.wav");
+        _animator.AddAnimation("hit", std::make_shared<GraphArray>("resourse/graph/effect/fire.png", 32, 32, 5, 15));
+        _sound.Load("resourse/sound/flame.wav");
     }
     else
     {
-        _sound.Load("resource/sound/enemy_fall2.wav");
+        _sound.Load("resourse/sound/enemy_fall2.wav");
     }
 
     _animator.Transform([&](GraphArray* animation)

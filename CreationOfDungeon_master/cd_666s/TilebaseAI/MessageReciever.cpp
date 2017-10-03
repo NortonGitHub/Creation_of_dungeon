@@ -3,18 +3,18 @@
 #include "../Resources/ResourceManager.h"
 
 MessageReciever::MessageReciever()
-    : _face("resource/graph/devilGirlUsual.png", Vector2D(40, 545))
-    , _messageUI("resource/graph/ui/message_window.png", Vector2D(20, 520))
+    : _face("resourse/graph/devilGirlUsual.png", Vector2D(40, 545))
+    , _messageUI("resourse/graph/ui/message_window.png", Vector2D(20, 520))
 
 {
     _face.SetScale(Vector2D(2, 2));
     _messageUI.SetPriority(Sprite::Priority::UI);
 
-    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resource/graph/devilGirlUsual.png"));
-    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resource/graph/devilGirlAngry.png"));
-    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resource/graph/devilGirlSmile.png"));
-    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resource/graph/devilGirlCry.png"));
-    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resource/graph/face_braver.png"));
+    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/devilGirlUsual.png"));
+    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/devilGirlAngry.png"));
+    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/devilGirlSmile.png"));
+    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/devilGirlCry.png"));
+    _faces.push_back(IMAGE_RESOURCE_TABLE->Create("resourse/graph/face_braver.png"));
 }
 
 

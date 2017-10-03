@@ -10,8 +10,8 @@ Sanctuary::Sanctuary(TiledVector pos, int range, int cost, ParameterMultiplier m
     , _range(1)
     , _multiplier(std::move(multiplier))
 {
-    _graph.Load("resource/graph/trap/Sanctuary.png");
-    _sound.Load("resource/sound/curseArea.wav");
+    _graph.Load("resourse/graph/trap/Sanctuary.png");
+    _sound.Load("resourse/sound/curseArea.wav");
 }
 
 

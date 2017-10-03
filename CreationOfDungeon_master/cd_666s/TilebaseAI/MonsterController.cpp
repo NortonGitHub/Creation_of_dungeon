@@ -26,90 +26,19 @@ void MonsterController::Init()
 
 void MonsterController::Update()
 {
-    if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L)) {
-        //return;
-
-        //クリック位置がフィールド内かチェック
-        auto cursorPos = MOUSE->GetCursorPos();
-        auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
-        if (FIELD->IsInside(tiledCursorPos)) {
-            //return;
-
-            if (_monster == nullptr)
-                SelectMonster(cursorPos);
-            else
-                ControlMonster(cursorPos);
-        }
-    }
-
-    if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_R)) {
-
-        //クリック位置がフィールド内かチェック
-        auto cursorPos = MOUSE->GetCursorPos();
-        auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
-        if (!FIELD->IsInside(tiledCursorPos))
-            return;
-
-        //対象がクリックされているかチェック
-        auto targets = FIELD->GetTiledObjects(tiledCursorPos);
-
-        //タイル区切りで何も見つからないなら画像区切りで探す
-        if (targets.size() == 0)
-            targets = std::move(OBJECT_MGR->GetContainedObjects<TiledObject>(cursorPos));
-
-        //本当に何もないところなら終了
-        if (targets.size() == 0)
-        {
-            _monster = nullptr;
-        }
-        else {
-            for (auto target : targets)
-            {
-                //他の仲間がクリックされた
-                if (target->GetType() == TiledObject::Type::MONSTER)
-                {
-                    auto monster = dynamic_cast<Monster*>(target);
-                    
-                    TiledVector::Direction d = monster->GetDirection();
-                    
-                    switch (d)
-                    {
-                    case TiledVector::LEFT:
-                        d = TiledVector::BACK;
-                        break;
-                    case TiledVector::FORWARD:
-                        d = TiledVector::LEFT;
-                        break;
-                    case TiledVector::RIGHT:
-                        d = TiledVector::FORWARD;
-                        break;
-                    case TiledVector::BACK:
-                        d = TiledVector::RIGHT;
-                        break;
-                    default:
-                        break;
-                    }
-
-                    monster->SetDirection(d);
-
-                    if (_monster != nullptr)
-                        _monster->ReleaseMonster();
-
-                    //その魔物を選択状態に
-                    _monster = monster;
-                    _monster->PickMonster();
-
-                    return;
-                }
-            }
-        }
-
-    }
-        
-
-
-
-
+    if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
+        return;
+    
+    //クリック位置がフィールド内かチェック
+    auto cursorPos = MOUSE->GetCursorPos();
+    auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
+    if (!FIELD->IsInside(tiledCursorPos))
+        return;
+    
+    if (_monster == nullptr)
+        SelectMonster(cursorPos);
+    else
+        ControlMonster(cursorPos);
 }
 
 

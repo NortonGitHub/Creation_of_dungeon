@@ -258,30 +258,6 @@ void EditMap::Init()
         LIMIT_BLOCK = 8;
     }
 
-    //ダンジョンの地形情報の設定
-
-    std::vector<std::string> FieldTypeArray;
-    std::string fileName = "csv/StageData/DungeonType.csv";
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, FieldTypeArray, 2);
-
-    int FieldTypeNum = stoi(FieldTypeArray[stoi(stage_num) * 2 - 1]);
-
-    switch (FieldTypeNum) {
-    case 0:
-        ft = "#CAV";
-        break;
-    case 1:
-        ft = "#FST";
-        break;
-    case 2:
-        ft = "#STN";
-        break;
-    default:
-        ft = "#CAV";
-        break;
-    }
-    //ここまで
-
 }
 
 bool EditMap::IsFirstWave()
@@ -504,10 +480,6 @@ void EditMap::PanelSceneTransFunction(std::shared_ptr<PanelBase> panel)
 
     for (auto data : dataArray) {
 
-        if (data.empty()) {
-            break;
-        }
-
         writing_file_monster << data << std::flush;
 
         countX++;
@@ -673,6 +645,22 @@ void EditMap::SetObject() {
 
             addTiledObjectList_Trap.push_back(atemp);
             
+            std::string ft;
+
+            switch (stoi(stage_num)) {
+            case 1:
+                ft = "#CAV";
+                break;
+            case 2:
+                ft = "#FST";
+                break;
+            case 3:
+                ft = "#CAV";
+                break;
+            default:
+                ft = "#CAV";
+                break;
+            }
 
             FIELD->SetFieldType(tiledCursorPos, ft);
 
@@ -692,7 +680,22 @@ void EditMap::SetObject() {
 
             addTiledObjectList_Block.push_back(atemp);
 
-            
+            std::string ft;
+
+            switch (stoi(stage_num)) {
+            case 1:
+                ft = "#CAV";
+                break;
+            case 2:
+                ft = "#FST";
+                break;
+            case 3:
+                ft = "#CAV";
+                break;
+            default:
+                ft = "#CAV";
+                break;
+            }
 
             FIELD->SetFieldType(tiledCursorPos, ft);
 

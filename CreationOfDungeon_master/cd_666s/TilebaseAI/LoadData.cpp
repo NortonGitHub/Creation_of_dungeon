@@ -63,10 +63,6 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
     int count = 0;
     for (auto data : dataArray)
     {
-        if (data.empty()) {
-            break;
-        }
-
         // MEMO : 最後だけはファイル名をそのまま使う
         if (count < parameterNum - 2)
         {
@@ -137,10 +133,6 @@ void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, C
     std::string skill;
     for (auto data : dataArray)
     {
-        if (data.empty()) {
-            break;
-        }
-
         // MEMO : 最後だけはファイル名をそのまま使う
         if (count < parameterNum - 2)
             params[count] = std::stoi(data);
@@ -213,7 +205,7 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
     if (name == "bone")
     {
         auto skill = ShootDamageObject::Create(skillData, *this, true);
-        skill->SetImage(IMAGE_RESOURCE_TABLE->Create("resource/graph/effect/throwing_bone.png"));
+        skill->SetImage(IMAGE_RESOURCE_TABLE->Create("resourse/graph/effect/throwing_bone.png"));
         return skill;
     }
 

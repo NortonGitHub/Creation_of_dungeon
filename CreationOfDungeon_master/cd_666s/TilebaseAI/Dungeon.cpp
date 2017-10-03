@@ -24,16 +24,16 @@ Dungeon::Dungeon(std::string stageName)
     , _stageName(stageName)
     , _goal(nullptr)
     , _start(nullptr)
-    , _mainsFrame("resource/graph/ui/main_window.png", Vector2D(20, 20))
-    , _background("resource/graph/background/background.png", Vector2D(0, 7600))
-    , _windowBackground("resource/graph/ui/main_window_background1.png", Vector2D(28, 28))
-    , _waveInfomartionBoard("resource/graph/ui/enemyinformation.png", Vector2D(754, 248))
+    , _mainsFrame("resourse/graph/ui/main_window.png", Vector2D(20, 20))
+    , _background("resourse/graph/background/background.png", Vector2D(0, 7600))
+    , _windowBackground("resourse/graph/ui/main_window_background1.png", Vector2D(28, 28))
+    , _waveInfomartionBoard("resourse/graph/ui/enemyinformation.png", Vector2D(754, 248))
     , _infoDrawer(_dictionary)
     , _intruderInformation(_dictionary)
     , _intrudeLastCharacter(false)
 {
 
-    _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+    _windowBackground.Load("resourse/graph/ui/main_window_background" + _stageName + ".png");
     _windowBackground.SetPosition(Vector2D(28, 28));
 
     _mainsFrame.SetPriority(Sprite::Priority::UI);
@@ -90,35 +90,22 @@ void Dungeon::Init()
     int countY = 0;
     FIELD->Init(fieldSizeH, fieldSizeV);
 
-    //ダンジョンの地形の設定
     std::string ft;
 
-    std::vector<std::string> FieldTypeArray;
-    fileName = "csv/StageData/DungeonType.csv";
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, FieldTypeArray, 2);
-
-    int FieldTypeNum = stoi(FieldTypeArray[stoi(_stageName) * 2 - 1]);
-
-    switch (FieldTypeNum) {
-    case 0:
-        ft = "#CAV";
-        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
-        break;
+    switch (stoi(_stageName)) {
     case 1:
-        ft = "#FST";
-        _windowBackground.Load("resource/graph/ui/main_window_background_forest.png");
+        ft = "#CAV";
         break;
     case 2:
-        ft = "#STN";
-        _windowBackground.Load("resource/graph/ui/main_window_background_stone.png");
+        ft = "#FST";
+        break;
+    case 3:
+        ft = "#CAV";
         break;
     default:
         ft = "#CAV";
-        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
         break;
     }
-    _windowBackground.SetPosition(Vector2D(28, 28));
-    //ここまで
 
     //オブジェクトを読み込む
     auto& _objs = OBJECT_MGR->_objects;
@@ -155,7 +142,7 @@ void Dungeon::Init()
     //fileName += (_stageName + ".csv");
     fileName = "csv/StageData/EditMap_MonsterData.csv";
     Monster::LoadMonsters(_objs, _monsters, fileName);
-
+    
     FIELD->Setup();
 
     _monsters.Update();

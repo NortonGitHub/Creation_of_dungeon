@@ -15,9 +15,9 @@ Emplacement::Emplacement(TiledVector pos, int cost, int power, int attack, Tiled
     , _attack(attack)
     , _shootDirection(direction)
 {
-    _graph.Load("resource/graph/trap/bow.png");
+    _graph.Load("resourse/graph/trap/bow.png");
 
-    std::string arrowString = "resource/graph/trap/arrow_";
+    std::string arrowString = "resourse/graph/trap/arrow_";
     switch (_shootDirection)
     {
     case TiledVector::Direction::BACK:

@@ -10,7 +10,7 @@ Trap::Trap(TiledVector startPos, int duravity, int level)
 {
     _type = TiledObject::Type::TRAP;
     _position = startPos.GetWorldPos();
-    _activateSound.Load("resource/sound/activateTrap.wav");
+    _activateSound.Load("resourse/sound/activateTrap.wav");
 }
 
 

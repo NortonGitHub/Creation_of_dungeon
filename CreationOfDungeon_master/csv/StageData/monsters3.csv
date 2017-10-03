@@ -1,4 +1,5 @@
 hp, attack, defence, magic_attack, magic_defence, speed, startX, startY, name,skill
-800,28,23,0,40,33,4,6,ghost,null
-1000,35,25,1,10,10,8,7,minotaur,cost:500&param:120&time:10
-700,30,18,0,20,28,10,3,bone,cost:300&power:500&range:6&speed:4
+300,40,20,1,1,30,3,5,bone,null
+400,30,30,1,1,40,7,5,bone,null
+200,60,20,1,1,60,2,7,bone,null
+800,20,20,1,1,20,9,9,bone,null

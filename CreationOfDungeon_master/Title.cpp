@@ -4,9 +4,9 @@
 
 Title::Title() 
     : class_name("title")
-    , title("resource/title.png")
-    , _bgm("resource/sound/Area1.ogg")
-    , _se("resource/sound/decide.wav")
+    , title("resourse/title.png")
+    , _bgm("resourse/sound/Area1.ogg")
+    , _se("resourse/sound/decide.wav")
 {
     _functions.reserve(20);
     title.SetPosition(Vector2D(0, 0));

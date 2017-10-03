@@ -18,13 +18,13 @@ EnemysItem<T>::EnemysItem(std::unique_ptr<T> contents, TiledVector tilePos)
 
     if (typeid(T) == typeid(Equipment))
     {
-        _graph.Load("resource/graph/item/treasure01.png");
-        _openedImage = IMAGE_RESOURCE_TABLE->Create("resource/graph/background/treasure05.png");
+        _graph.Load("resourse/graph/item/treasure01.png");
+        _openedImage = IMAGE_RESOURCE_TABLE->Create("resourse/graph/background/treasure05.png");
     }
     else if (typeid(T) == typeid(ConsumableItem))
     {
-        _graph.Load("resource/graph/item/treasureB01.png");
-        _openedImage = IMAGE_RESOURCE_TABLE->Create("resource/graph/item/treasure05.png");
+        _graph.Load("resourse/graph/item/treasureB01.png");
+        _openedImage = IMAGE_RESOURCE_TABLE->Create("resourse/graph/item/treasure05.png");
     }
 
     _contentsGraph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
@@ -32,7 +32,7 @@ EnemysItem<T>::EnemysItem(std::unique_ptr<T> contents, TiledVector tilePos)
     _contentsGraph.SetPriority(5);
     _contentsGraph.SetDisplayMode(false);
 
-    _openSound.Load("resource/sound/openTreasure.wav");
+    _openSound.Load("resourse/sound/openTreasure.wav");
     _openSound.SetVolume(225);
 }
 

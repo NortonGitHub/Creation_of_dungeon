@@ -105,8 +105,6 @@ private:
     //モンスター
     std::vector<addTileObject_Monster> addTiledObjectList_Monster;
 
-    //ダンジョンの地形情報を保存しておく（洞窟なら#CAV等）
-    std::string ft;
 
 };
 
