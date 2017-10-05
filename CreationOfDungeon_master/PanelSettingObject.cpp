@@ -20,7 +20,7 @@ PanelSettingObject::PanelSettingObject(PanelContent _panelContent)
 
     if (panel._name.find("Lv") == std::string::npos) {
 
-        std::string filename = "resource/graph/ui/SettingObject_Block.png";
+        std::string filename = "resource/graph/ui/ObjectFrame.png";
 
         auto pos = panel._pos;
 
@@ -32,11 +32,15 @@ PanelSettingObject::PanelSettingObject(PanelContent _panelContent)
 
         _graph.SetPriority(Sprite::Priority::UI);
         Vector2D s = _graph.GetSize();
-        _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
+        _graph.SetScale(Vector2D(48 / s._x, 48 / s._y));
 
         //_graph.SetDisplayMode(true);
 
+        _graph.SetDisplayMode(false);
+
         objectName = "";
+
+        graphName = "";
 
         isSelected = false;
 
@@ -71,9 +75,11 @@ void PanelSettingObject::Draw()
     //DrawCircle(panel._pos._x, panel._pos._y, 5, GetColor(255, 0, 0));
     GraphicalObject::Draw();
 
+    /*
     if (isSelected) {
         Debug::DrawRectWithPoint(_graph.GetPosition(), _graph.GetPosition() + _graph.GetScale() * _graph.GetSize(), Color4(1, 0, 0, 1), false);
     }
+    */
 
 }
 
@@ -102,7 +108,7 @@ void PanelSettingObject::DrawDebugPrint()
 }
 
 
-void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName) {
+void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName, std::string graphName) {
 
 
 
@@ -112,19 +118,24 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
 
             objectName = panelName;
 
+            this->graphName = graphName;
+
             this->GenerateText = GenerateText;
 
             std::string filename;
 
             if (CategoryName == "MONSTER") {
-                filename = "resource/graph/tiledObject/" + objectName + ".png";
+                filename = "resource/graph/tiledObject/" + this->graphName + ".png";
             }
             else if (CategoryName == "TRAP") {
-                filename = "resource/graph/trap/" + objectName + ".png";
+                filename = "resource/graph/trap/" + this->graphName + ".png";
             }
             else if (CategoryName == "BLOCK") {
                 //BLOCKってアイテムか？csv見る限りアイテムにしか見えない
-                filename = "resource/graph/item/" + objectName + ".png";
+                filename = "resource/graph/item/" + this->graphName + ".png";
+                if (objectName == "cardboard") {
+                    filename = "resource/graph/block/" + this->graphName + ".png";
+                }
             }
 
 
@@ -139,16 +150,18 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
             _graph.SetPriority(Sprite::Priority::UI);
 
             Vector2D s = _graph.GetSize();
-            _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
+            _graph.SetScale(Vector2D(48 / s._x, 48 / s._y));
 
-            //_graph.SetDisplayMode(true);
+            _graph.SetDisplayMode(true);
 
         }
         else {
 
-            std::string filename = "resource/graph/ui/SettingObject_Block.png";
+            std::string filename = "resource/graph/ui/ObjectFrame.png";
 
             objectName = panelName;
+
+            this->graphName = graphName;
 
             this->GenerateText = GenerateText;
 
@@ -162,9 +175,11 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
 
             _graph.SetPriority(Sprite::Priority::UI);
             Vector2D s = _graph.GetSize();
-            _graph.SetScale(Vector2D(96 / s._x, 96 / s._y));
+            _graph.SetScale(Vector2D(48 / s._x, 48 / s._y));
 
             //_graph.SetDisplayMode(true);
+
+            _graph.SetDisplayMode(false);
 
         }
 
@@ -192,7 +207,6 @@ std::string PanelSettingObject::getPanelObjectName() {
     return objectName;
 
 }
-
 
 
 

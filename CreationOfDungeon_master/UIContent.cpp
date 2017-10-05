@@ -72,5 +72,6 @@ UIContent::~UIContent()
 void UIContent::Draw()
 {
     //Žb’è
-    DrawGraph(_position._x, _position._y, _image_resource->GetHandle(), FALSE);
+    //DrawGraph(_position._x, _position._y, _image_resource->GetHandle(), FALSE);
+    DrawGraph(_position._x, _position._y, _image_resource->GetHandle(), TRUE);
 }

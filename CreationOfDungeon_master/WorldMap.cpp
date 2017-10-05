@@ -308,7 +308,7 @@ void WorldMap::DrawMap() {
 
     DrawGraph(0, 0, *AreaGr, TRUE);
 
-
+    /*
     for (int i = 0; i < nowRoadConnect.size(); i++) {
 
         int road1 = PointSearch(nowRoadConnect[i]->road[0]);
@@ -317,7 +317,7 @@ void WorldMap::DrawMap() {
         DrawLine(nowAreaPointList[road1]->x, nowAreaPointList[road1]->y, nowAreaPointList[road2]->x, nowAreaPointList[road2]->y, GetColor(255, 255, 255), 10);
 
     }
-
+    */
 
     for (int i = 0; i < nowAreaPointList.size(); i++) {
 
@@ -325,16 +325,16 @@ void WorldMap::DrawMap() {
 
             if (nowAreaPointList[i]->isStayPoint == 1) {
                 if (typeid(*nowAreaPointList[i]) == typeid(AreaConnectPoint)) {
-                    DrawCircle(dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonX, dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonY, 15, GetColor(255, 0, 0), TRUE);
+                    //DrawCircle(dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonX, dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonY, 15, GetColor(255, 0, 0), TRUE);
                 }
                 else {
-                    DrawCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR, GetColor(255, 0, 0), TRUE);
-                    DrawCircle(nowAreaPointList[i]->x - 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
-                    DrawCircle(nowAreaPointList[i]->x - 5 - 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
-                    DrawCircle(nowAreaPointList[i]->x - 5 - 4 - 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
-                    DrawCircle(nowAreaPointList[i]->x + 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
-                    DrawCircle(nowAreaPointList[i]->x + 5 + 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
-                    DrawCircle(nowAreaPointList[i]->x + 5 + 4 + 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
+                    //DrawCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR, GetColor(255, 0, 0), TRUE);
+                    //DrawCircle(nowAreaPointList[i]->x - 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
+                    //DrawCircle(nowAreaPointList[i]->x - 5 - 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
+                    //DrawCircle(nowAreaPointList[i]->x - 5 - 4 - 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
+                    //DrawCircle(nowAreaPointList[i]->x + 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
+                    //DrawCircle(nowAreaPointList[i]->x + 5 + 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
+                    //DrawCircle(nowAreaPointList[i]->x + 5 + 4 + 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
                 }
             }
             else {

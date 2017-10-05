@@ -72,6 +72,7 @@ private:
 
     void GenerateObject(std::string typeName, int countX, int countY);
 
+    bool Start_Connect_Goal();
 
 
     std::shared_ptr<PanelSettingObject> selectedObject;
@@ -107,6 +108,13 @@ private:
 
     //ダンジョンの地形情報を保存しておく（洞窟なら#CAV等）
     std::string ft;
+
+
+    
+    Sound _cancelSE;
+
+    Sprite _selectCategoryGr;
+    Sprite _selectObjectGr;
 
 };
 

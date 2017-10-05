@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "Monster.h"
 #include "Obstacle.h"
+#include "WeakObstacle.h"
 #include "River.h"
 #include "EnemysItem.h"
 #include "Goal.h"
@@ -25,13 +26,16 @@ Dungeon::Dungeon(std::string stageName)
     , _goal(nullptr)
     , _start(nullptr)
     , _mainsFrame("resource/graph/ui/main_window.png", Vector2D(20, 20))
-    , _background("resource/graph/background/background.png", Vector2D(0, 7600))
+    , _background("resource/graph/background/background.png", Vector2D(0, 0))
     , _windowBackground("resource/graph/ui/main_window_background1.png", Vector2D(28, 28))
     , _waveInfomartionBoard("resource/graph/ui/enemyinformation.png", Vector2D(754, 248))
     , _infoDrawer(_dictionary)
     , _intruderInformation(_dictionary)
     , _intrudeLastCharacter(false)
 {
+
+    _background.Load("resource/graph/background/background_cave.png");
+    _background.SetPosition(Vector2D(0, 0));
 
     _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
     _windowBackground.SetPosition(Vector2D(28, 28));
@@ -103,21 +107,26 @@ void Dungeon::Init()
     case 0:
         ft = "#CAV";
         _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+        _background.Load("resource/graph/background/background_cave.png");
         break;
     case 1:
         ft = "#FST";
         _windowBackground.Load("resource/graph/ui/main_window_background_forest.png");
+        _background.Load("resource/graph/background/background_forest.jpg");
         break;
     case 2:
         ft = "#STN";
         _windowBackground.Load("resource/graph/ui/main_window_background_stone.png");
+        _background.Load("resource/graph/background/background_stone.jpg");
         break;
     default:
         ft = "#CAV";
         _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+        _background.Load("resource/graph/background/background_cave.jpg");
         break;
     }
     _windowBackground.SetPosition(Vector2D(28, 28));
+    _background.SetPosition(Vector2D(0, 0));
     //ここまで
 
     //オブジェクトを読み込む
@@ -223,6 +232,13 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 
     if (typeName == "0")
         return;
+
+    if (typeName.find("300") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+        return;
+    }
+
 }
 
 

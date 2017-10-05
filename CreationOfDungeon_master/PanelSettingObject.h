@@ -20,7 +20,7 @@ public:
 
     void DrawDebugPrint() override;
 
-    void PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName);
+    void PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName, std::string graphName);
 
     void setIsSelected(bool flag);
     bool getIsSelected();
@@ -39,6 +39,7 @@ private:
     //Lv‚ª‚í‚©‚ç‚È‚¢‚Ì‚Å‚Æ‚è‚ ‚¦‚¸Lv‚É‚µ‚Ä‚¨‚­
     std::string objectName;
 
+    std::string graphName;
     
 
     bool isSelected;

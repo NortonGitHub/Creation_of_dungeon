@@ -19,6 +19,9 @@
 
 #include "Game.h"
 
+#include "cd_666s\TilebaseAI\Enemy.h"
+#include "cd_666s\TilebaseAI\AI\AstarPathFinder.h"
+
 #include <typeinfo>
 #include <sstream>
 
@@ -35,6 +38,18 @@ EditMap::EditMap(std::string _stage_num)
     _functions.reserve(20);
     //panels.reserve(30);
     class_name = "editmap";
+
+
+
+    _selectCategoryGr.Load("resource/graph/ui/SelectTypeFrame.png");
+    _selectCategoryGr.SetPriority(static_cast<int>(Sprite::Priority::UI) + 1);
+
+    _selectCategoryGr.SetDisplayMode(false);
+    
+    _selectObjectGr.Load("resource/graph/ui/SelectObjectFrame.png");
+    _selectObjectGr.SetPriority(static_cast<int>(Sprite::Priority::UI) + 1);
+    
+    _selectObjectGr.SetDisplayMode(false);
 
     Init();
 }
@@ -145,11 +160,31 @@ void EditMap::Draw()
     PANEL_MGR->Refresh();
 
     std::string debugStr = "設置上限\n";
-    debugStr += "モンスター:" + std::to_string(set_count["MONSTER"]) + "/" + std::to_string(LIMIT_MONSTER)+ "\n";
-    debugStr += "トラップ" + std::to_string(set_count["TRAP"]) + "/" + std::to_string(LIMIT_TRAP) + "\n";
-    debugStr += "ブロック" + std::to_string(set_count["BLOCK"]) + "/" + std::to_string(LIMIT_BLOCK) + "\n";
+    debugStr += "モンスター:" + std::to_string(set_count["MONSTER"]) + "/" + std::to_string(LIMIT_MONSTER)+ " ";
+    debugStr += "トラップ:" + std::to_string(set_count["TRAP"]) + "/" + std::to_string(LIMIT_TRAP) + "\n";
+    debugStr += "ブロック:" + std::to_string(set_count["BLOCK"]) + "/" + std::to_string(LIMIT_BLOCK) + "\n";
 
-    Debug::DrawStringDirectly(Vector2D(1010, 70), debugStr,Color4(1,1,1,1));
+    Debug::DrawString(Vector2D(980, 140), debugStr,Color4(0,0,0,0),16);
+
+
+
+    std::string pageStr = "";
+
+    if (selectPanelCategory.find("MONSTER") != std::string::npos) {
+        pageStr += "1/1";
+    }
+    else if (selectPanelCategory.find("TRAP") != std::string::npos) {
+        pageStr += "1/1";
+    }
+    else if (selectPanelCategory.find("BLOCK") != std::string::npos) {
+        pageStr += "1/1";
+    }
+    else {
+        pageStr += "0/0";
+    }
+
+    Debug::DrawString(Vector2D(1055, 270), pageStr, Color4(0, 0, 0, 0), 40);
+
 
 }
 
@@ -282,6 +317,9 @@ void EditMap::Init()
     }
     //ここまで
 
+    _cancelSE.Load("resource/sound/cancelA.wav");
+    _cancelSE.SetVolume(200);
+
 }
 
 bool EditMap::IsFirstWave()
@@ -332,6 +370,13 @@ SceneBase * EditMap::PanelFunction()
                 PanelDisplayerFunction(p);
             }
             else if (str.find("SceneTrans") != NPOS) {
+
+                //ここにスタートからゴールへの経路探索処理を追加する
+                if (!Start_Connect_Goal()) {
+                    _cancelSE.Play();
+                    continue;
+                }
+
                 PanelSceneTransFunction(p);
 
                 if (_dungeon != nullptr)
@@ -408,7 +453,29 @@ void EditMap::PanelAffectObjectsFunction(std::shared_ptr<PanelBase> panel)
         }
     }
 
+    selectedObject.reset();
+
     selectPanelCategory = panel->GetCategoryName();
+
+    if (selectPanelCategory.find("MONSTER") != std::string::npos) {
+        _selectCategoryGr.SetDisplayMode(true);
+        _selectCategoryGr.SetPosition(Vector2D(panel->GetPosition()._x - 1, panel->GetPosition()._y - 1));
+        _selectObjectGr.SetDisplayMode(false);
+    }
+    else if (selectPanelCategory.find("TRAP") != std::string::npos) {
+        _selectCategoryGr.SetDisplayMode(true);
+        _selectCategoryGr.SetPosition(Vector2D(panel->GetPosition()._x - 1, panel->GetPosition()._y - 1));
+        _selectObjectGr.SetDisplayMode(false);
+    }
+    else if (selectPanelCategory.find("BLOCK") != std::string::npos) {
+        _selectCategoryGr.SetDisplayMode(true);
+        _selectCategoryGr.SetPosition(Vector2D(panel->GetPosition()._x - 1, panel->GetPosition()._y - 1));
+        _selectObjectGr.SetDisplayMode(false);
+    }
+    else {
+        _selectCategoryGr.SetDisplayMode(false);
+        _selectObjectGr.SetDisplayMode(false);
+    }
 
 }
 
@@ -418,6 +485,7 @@ void EditMap::PanelDisplayerFunction(std::shared_ptr<PanelBase> panel)
 
 void EditMap::PanelSceneTransFunction(std::shared_ptr<PanelBase> panel)
 {
+
 
     std::string filePass = "csv/StageData/";
     std::string fileName = filePass + "EditMapData.csv";
@@ -550,10 +618,13 @@ void EditMap::PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel)
         if (ps->getIsSelected()) {
             ps->setIsSelected(false);
             selectedObject.reset();
+            _selectObjectGr.SetDisplayMode(false);
         }
         else {
             ps->setIsSelected(true);
             selectedObject = ps;
+            _selectObjectGr.SetDisplayMode(true);
+            _selectObjectGr.SetPosition(Vector2D(ps->GetPosition()._x - 8, ps->GetPosition()._y - 8));
         }
         
     }
@@ -596,7 +667,7 @@ void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>&
     else if(key_name == "SELECT_OBJ"){
         panel = std::make_shared<PanelSettingObject>(temp);
     }else if(key_name == "SHOW"){
-        panel = std::make_shared<PanelDisplayer>();
+        panel = std::make_shared<PanelDisplayer>(temp);
     }
 }
 
@@ -793,6 +864,30 @@ void EditMap::DeleteAddedObject() {
 
 }
 
+//スタートとゴールがつながっているか
+bool EditMap::Start_Connect_Goal() {
+    
+    ColleagueNotifyer notifyer;
+    BattleParameter param(10, 10, 10, 10, 10, 10);
+    Enemy* dummy = new Enemy(_dungeon->getStart()->GetTilePos(), param, *_dungeon->getGoal().get(), notifyer, "blaver");
+
+    std::vector<TiledVector> _pathToTarget;
+
+    AstarPathFinder* _astar = new AstarPathFinder(*dummy, _pathToTarget, true);
+
+    std::vector<TiledVector> _pathRef = _astar->GetPathToTarget(_dungeon->getStart()->GetTilePos(), _dungeon->getGoal()->GetTilePos(), 100);
+
+    OBJECT_MGR->Remove(dummy);
+    OBJECT_MGR->Refresh();
+
+    if (_pathRef.size() == 0) {
+        return false;
+    }
+    else {
+        return true;
+    }
+
+}
 
 
 

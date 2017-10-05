@@ -9,6 +9,7 @@
 #include "cd_666s/TilebaseAI/TileField.h"
 #include "cd_666s/TilebaseAI/River.h"
 #include "cd_666s/TilebaseAI/Obstacle.h"
+#include "cd_666s/TilebaseAI/WeakObstacle.h"
 #include "cd_666s/TilebaseAI/EnemysItem.h"
 #include "cd_666s/TilebaseAI/Monster.h"
 //#include "cd_666s/TilebaseAI/Goal.h"
@@ -29,6 +30,13 @@ MakeDungeon::MakeDungeon(std::string stage_num)
     , _background("resource/graph/background/background.png", Vector2D(0, 7600))
     , _windowBackground("resource/graph/ui/main_window_background_cave.png", Vector2D(28, 28))
 {
+
+    _background.Load("resource/graph/background/background_cave.png");
+    _background.SetPosition(Vector2D(0, 0));
+
+    _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+    _windowBackground.SetPosition(Vector2D(28, 28));
+
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
     _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
@@ -121,21 +129,26 @@ void MakeDungeon::Init(std::string file_name)
     case 0:
         ft = "#CAV";
         _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+        _background.Load("resource/graph/background/background_cave.png");
         break;
     case 1:
         ft = "#FST";
         _windowBackground.Load("resource/graph/ui/main_window_background_forest.png");
+        _background.Load("resource/graph/background/background_forest.jpg");
         break;
     case 2:
         ft = "#STN";
         _windowBackground.Load("resource/graph/ui/main_window_background_stone.png");
+        _background.Load("resource/graph/background/background_stone.jpg");
         break;
     default:
         ft = "#CAV";
         _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+        _background.Load("resource/graph/background/background_cave.jpg");
         break;
     }
     _windowBackground.SetPosition(Vector2D(28, 28));
+    _background.SetPosition(Vector2D(0, 0));
     //ここまで
 
     for (auto data : _stageArray) {
@@ -231,9 +244,20 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
         return;
     }
 
+    if (typeName.find("3") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+        return;
+    }
+
     if (typeName == "0")
         return;
 
+    if (typeName.find("300") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+        return;
+    }
 
 }
 
@@ -330,6 +354,21 @@ TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, in
     if (typeName == "0")
         return nullptr;
 
+    if (typeName.find("300") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }
+        else {
+            to = nullptr;
+        }
+        return to;
+    }
+
     return nullptr;
 
 }
@@ -363,7 +402,17 @@ void MakeDungeon::LoadTileSize(std::string stageName, std::vector<std::string>& 
 
 
 
+std::shared_ptr<Goal> MakeDungeon::getGoal(){
 
+    return _goal;
+
+}
+
+std::shared_ptr<StartPoint> MakeDungeon::getStart(){
+
+    return _start;
+
+}
 
 
 

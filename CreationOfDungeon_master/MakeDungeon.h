@@ -26,7 +26,8 @@ public:
 
     void LoadTileSize(std::string stageName, std::vector<std::string>& rawData);
 
-    
+    std::shared_ptr<Goal> getGoal();
+    std::shared_ptr<StartPoint> getStart();
 
     TiledObject* GenerateAddObject(std::string typeName, int countX, int countY, Vector2D mousePos);
 
