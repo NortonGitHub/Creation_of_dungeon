@@ -10,6 +10,7 @@
 #include "IntruderInfomation.h"
 #include "TiledObjectDictionary.h"
 #include "DungeonTimer.h"
+#include "../../DestroyedCounter.h"
 #include "MessageReciever.h"
 
 #include "../Render/Sprite.h"
@@ -41,6 +42,9 @@ private:
 
     //ƒQ[ƒ€ŠÔ‚ÆŠÔ’Ê’mƒ‚ƒWƒ…[ƒ‹ŒQ
     DungeonTimer _timer;
+
+	//“G‚ğ“|‚µ‚½”‚ÌƒJƒEƒ“ƒg
+	DestroyedCounter _counter;
 
     //—EÒ‚ğ’Ê‚µ‚Ä‚à‚¢‚¢”
     int _permitivePassedNum;
@@ -82,6 +86,8 @@ private:
     bool _intrudeLastCharacter;
 
 	bool _is_boss;
+
+	int _defeatedNum;
 };
 
 #endif /* Dungeon_h */

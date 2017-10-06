@@ -32,6 +32,7 @@ Dungeon::Dungeon(std::string stageName)
 	, _infoDrawer(_dictionary)
 	, _intruderInformation(_dictionary)
 	, _intrudeLastCharacter(false)
+	, _defeatedNum(0)
 {
 	auto b_pos = _stageName.rfind('b');
 
@@ -39,8 +40,6 @@ Dungeon::Dungeon(std::string stageName)
 		_stageNum = _stageName.substr(0, b_pos);
 	else
 		_stageNum = _stageName;
-
-	_stageNum = stageName;
 
 	_windowBackground.Load("resourse/graph/ui/main_window_background" + _stageName + ".png");
 	_windowBackground.SetPosition(Vector2D(28, 28));
@@ -81,6 +80,9 @@ void Dungeon::Init()
 	std::vector<std::string> waveInfoArray;
 	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, waveInfoArray, 1);
 	auto waveInterval = std::stoi(waveInfoArray[0]);
+
+	_counter.InitWithSetup(waveInterval);
+
 	_timer.InitWithSetup(waveInterval);
 	_permitivePassedNum = std::stoi(waveInfoArray[1]);
 
@@ -266,9 +268,9 @@ bool Dungeon::HasGameOver()
 {
 	//ボスステージのゲームオーバー条件 : ボスの体力
 	if (_is_boss) {
-		//MEMO:暫定的に敵をさせていい上限を5としている。
+		//MEMO:暫定的に敵をさせていい上限をpermitedNumとしている。
 		auto passedNum = _goal->GetPassedNum();
-		if (5 < passedNum)
+		if (_permitivePassedNum < passedNum)
 			return true;
 	}
 	//通常ステージのゲームオーバー条件 : 通過させた敵の数
@@ -286,8 +288,12 @@ void Dungeon::Update()
 	//メッセージ更新
 	UpdateSecretary();
 
-	_timer.Update();
-
+	if (_is_boss) {
+		_counter.Update(_defeatedNum);
+	}
+	else {
+		_timer.Update();
+	}
 	//情報網更新
 	_monsters.Update();
 	_enemys.Update();
@@ -300,10 +306,16 @@ void Dungeon::Update()
 		if (obj != nullptr)
 			obj->Update();
 
-		if(obj->GetType() == TiledObject::Type::ENEMY
-			&& !obj->IsEnable())
-		{
+		if (!_is_boss)
+			continue;
 
+		if(obj->GetType() == TiledObject::Type::ENEMY){
+			_defeatedNum = obj->GetDefeatedNum();
+		}
+
+		//敵がゴールに到着したらボスとの戦闘開始
+		if (obj->HasArrived())
+		{
 		}
 	}
 }
@@ -312,7 +324,7 @@ void Dungeon::Update()
 void Dungeon::Draw()
 {
 	//時間になったら初期化
-	if (_timer.HasTimeUp())
+	if (_timer.HasTimeUp() && !_is_boss)
 		return;
 
 	FIELD->Draw();
@@ -338,9 +350,13 @@ void Dungeon::Draw()
 	Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), ColorPalette::WHITE4, false);
 	Debug::DrawString(Vector2D(1010, 64), "洞窟ダンジョン その" + _stageName);
 
-	//残り時間表示
-	_timer.Draw();
-
+	if (_is_boss) {
+		_counter.Draw();
+	}
+	else {
+		//残り時間表示
+		_timer.Draw();
+	}
 	//ノルマ表示
 	std::string passed = "MISS:";
 	Debug::DrawString(_waveInfomartionBoard.GetPosition() + Vector2D(20, 85), passed);
