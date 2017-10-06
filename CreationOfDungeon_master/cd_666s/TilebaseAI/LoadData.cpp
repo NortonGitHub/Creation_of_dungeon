@@ -102,6 +102,7 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
             _enemysNum++;
         }
     }
+
 }
 
 

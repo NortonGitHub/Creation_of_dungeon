@@ -6,6 +6,7 @@
 #include "cd_666s/Resources/AllResourceManager.h"
 #include "Main.h"
 #include "WorldMap.h"
+#include "Title.h"
 
 #include <assert.h>
 #include <iostream>
@@ -82,7 +83,7 @@ SceneBase * Game::Update(UIManager _ui)
 
     if (goTitle)
     {
-        return new WorldMap();
+		return new Title();//WorldMap();
     }
 
     return this;
