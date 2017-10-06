@@ -42,6 +42,12 @@ public:
     //オブジェクトは生成しても判定に用いるかどうかを判断するのに用いる.
     //詳細な条件は派生先によって異なる.
     virtual bool IsEnable() const { return true; }
+
+	//オブジェクトが倒されたことを示すときに使用
+	virtual int GetDefeatedNum() const { return 0; }
+
+	//オブジェクトが目的地にたどり着いたかどうかを返す
+	virtual bool HasArrived() const { return true; }
     
     void SetTile(std::weak_ptr<MapTile> tile) { _tile = tile; }
     void ExitTile() { _tile.reset(); }
