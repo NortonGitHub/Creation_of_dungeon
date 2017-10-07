@@ -229,11 +229,11 @@ std::unique_ptr<CharactersSkill> CharactersSkill::CreateSkill(std::string skillD
     if (skillData == "null")
         return nullptr;
 
-    if (skillData.find("shoot") != std::string::npos)
-        return ShootDamageObject::Create(skillData, chara, true);
-
     if (skillData.find("magic_shoot") != std::string::npos)
         return ShootDamageObject::Create(skillData, chara, false);
+
+    if (skillData.find("shoot") != std::string::npos)
+        return ShootDamageObject::Create(skillData, chara, true);
 
     if (skillData.find("magic_explode") != std::string::npos)
         return MagicAttackAround::Create(skillData, chara);
@@ -262,7 +262,7 @@ std::unique_ptr<ShootDamageObject> ShootDamageObject::Create(std::string data, C
     double startMPRatio = std::stoi(LoadLabeledElemIfFind("mpRatio:", data, 0.0));
     startMPRatio /= 100;
 
-    return std::make_unique<ShootDamageObject>(power, cost, startMPRatio, speed, range, chara, true);
+    return std::make_unique<ShootDamageObject>(power, cost, startMPRatio, speed, range, chara, isPhysical);
 }
 
 
