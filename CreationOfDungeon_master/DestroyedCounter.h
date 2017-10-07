@@ -12,6 +12,8 @@ public:
 	void Update(int count);
 	void Draw();
 
+	void Init();
+
 	void InitWithSetup(int leftEnemy);
 
 	int GetAllEnemy() const { return _all_enemy; }
@@ -27,5 +29,6 @@ private:
 
 	Vector2D _position;
 	Sprite _clock, _hand;
+
 };
 

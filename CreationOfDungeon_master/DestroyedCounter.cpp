@@ -9,14 +9,6 @@ DestroyedCounter::DestroyedCounter()
 	, _hand("resource/graph/ui/ClockHand.png")
 	, _position(60, 230)
 {
-
-	_clock.SetPosition(Vector2D::zero);
-	_clock.SetRenderType(Texture2D::RenderType::UI);
-
-	_hand.SetPosition(Vector2D::zero);
-	_hand.SetRenderType(Texture2D::RenderType::UI);
-	_hand.GetTexturePtr().lock()->SetAnchorType(Texture2D::AnchorType::UPPER_LEFT);
-
 }
 
 DestroyedCounter::~DestroyedCounter()
@@ -31,6 +23,17 @@ void DestroyedCounter::InitWithSetup(int leftEnemy)
 
 	//_hand.Rotate(-10);
 	_hand.Rotate(80);
+}
+
+void DestroyedCounter::Init()
+{
+	_clock.SetPosition(Vector2D::zero);
+	_clock.SetRenderType(Texture2D::RenderType::UI);
+
+	_hand.SetPosition(Vector2D::zero);
+	_hand.SetRenderType(Texture2D::RenderType::UI);
+	_hand.GetTexturePtr().lock()->SetAnchorType(Texture2D::AnchorType::UPPER_LEFT);
+
 }
 
 void DestroyedCounter::Update(int count)
