@@ -41,6 +41,7 @@ private:
     UIManager _uiManager;
 
     std::string stage_num;
+	std::string stage_num_a;
 
     std::shared_ptr<MakeDungeon> _dungeon;
 

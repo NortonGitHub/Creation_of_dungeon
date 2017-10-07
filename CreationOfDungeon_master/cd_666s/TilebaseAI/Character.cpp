@@ -14,6 +14,7 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 , _name(name)
 , _isBattling(false)
 , _hasAppeared(false)
+, _hasArrived(false)
 , _target(nullptr)
 , _battle(nullptr)
 , _defeatSE("resource/sound/enemy_fall2.wav")

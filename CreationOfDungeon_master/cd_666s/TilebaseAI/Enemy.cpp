@@ -209,6 +209,7 @@ void Enemy::ArriveAtGoal(TiledObject* target)
     //TODO : ゴールした状態を追加するなどして
     //ゴールしたらターゲッティングされない条件を用意する
     _hasAppeared = false;
+    _hasArrived = true;
     target->Interact(*this);
     OBJECT_MGR->Remove(this);
 }

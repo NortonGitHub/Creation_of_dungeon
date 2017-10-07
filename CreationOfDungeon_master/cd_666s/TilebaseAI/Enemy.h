@@ -32,6 +32,8 @@ public:
     
     bool IsOverwritable(TiledObject* overwriter) override;
    
+    int GetDefeatedNum() const override { return (_defeatedNum); };
+
     static void LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& point, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName);
 
     static bool HasWipeOuted()

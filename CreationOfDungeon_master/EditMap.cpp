@@ -33,13 +33,13 @@
 
 
 EditMap::EditMap(std::string _stage_num)
-    : stage_num(_stage_num), NPOS(std::string::npos)
+	: stage_num(_stage_num)
+	, NPOS(std::string::npos)
+	, stage_num_a({ _stage_num.front() })
 {
-    _functions.reserve(20);
-    //panels.reserve(30);
-    class_name = "editmap";
-
-
+	_functions.reserve(20);
+	//panels.reserve(30);
+	class_name = "editmap";
 
     _selectCategoryGr.Load("resource/graph/ui/SelectTypeFrame.png");
     _selectCategoryGr.SetPriority(static_cast<int>(Sprite::Priority::UI) + 1);
@@ -282,7 +282,7 @@ void EditMap::Init()
     //set_count[2] = 0;
     /***各オブジェクト設置数カウンタ初期化 ここまで***/
 
-    if (stage_num != "3") {
+    if (stage_num_a != "3") {
         LIMIT_TRAP = 3;
         LIMIT_MONSTER = 3;
         LIMIT_BLOCK = 6;
@@ -387,7 +387,7 @@ SceneBase * EditMap::PanelFunction()
                 INPUT_MGR->Clear();
                 RESOURCE_TABLE->Refresh();
 
-                return new Game(stoi(stage_num));
+                return new Game(stage_num);
             }
             else if (str.find("SettingObject") != NPOS) {
                 PanelSettingObjectFunction(p);

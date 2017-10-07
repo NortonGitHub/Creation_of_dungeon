@@ -18,6 +18,7 @@
 #include "Trap.h"
 
 #include <assert.h>
+#include <iostream>
 
 
 Dungeon::Dungeon(std::string stageName)
@@ -32,7 +33,18 @@ Dungeon::Dungeon(std::string stageName)
     , _infoDrawer(_dictionary)
     , _intruderInformation(_dictionary)
     , _intrudeLastCharacter(false)
+    , _defeatedNum(0)
 {
+
+    auto b_pos = _stageName.rfind('b');
+
+    if (b_pos != std::string::npos) {
+        _stageNum = _stageName.substr(0, b_pos);
+        _counter.Init();
+    }
+    else {
+        _stageNum = _stageName;
+    }
 
     _background.Load("resource/graph/background/background_cave.png");
     _background.SetPosition(Vector2D(0, 0));
@@ -62,6 +74,9 @@ void Dungeon::Init()
     _messageReciever.Init();
     LoadMessage(_stageName);
 
+    //ボスステージかどうかを判別
+    _is_boss = _stageName.rfind('b') != std::string::npos;
+
     //ステージ生成
     std::vector<std::string> dataArray;
     CSVReader reader;
@@ -72,7 +87,10 @@ void Dungeon::Init()
     std::vector<std::string> waveInfoArray;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, waveInfoArray, 1);
     auto waveInterval = std::stoi(waveInfoArray[0]);
+
+    _counter.InitWithSetup(waveInterval);
     _timer.InitWithSetup(waveInterval);
+
     _permitivePassedNum = std::stoi(waveInfoArray[1]);
     
     //タイルの大きさを読み込む
@@ -257,30 +275,41 @@ void Dungeon::Clear()
 
 bool Dungeon::HasClear()
 {
-    //WAVEを耐えきったらクリア
-    if (_timer.HasTimeUp())
+    //WAVEを耐えきったらクリア(通常ステージのみ)
+    if (_timer.HasTimeUp() && !_is_boss)
         return true;
-    
+
     //WAVE中の敵を全滅させたらクリア
     if (Enemy::HasWipeOuted())
         return true;
-    
+
     //最後の敵を倒したらクリア
     if (_start->GetTimeUnitlNext() == StartPoint::NobodyIntruder()
         && _enemys.GetColleagues() == 0
         && !HasGameOver())
         return true;
 
+    auto b = _start->GetTimeUnitlNext();
+    auto a = _enemys.GetColleagues();
     return false;
 }
 
 
 bool Dungeon::HasGameOver()
 {
-    auto passedNum = _goal->GetPassedNum();
-    if (_permitivePassedNum < passedNum)
-        return true;
-        
+    //ボスステージのゲームオーバー条件 : ボスの体力
+    if (_is_boss) {
+        //MEMO:暫定的に敵をさせていい上限をpermitedNumとしている。
+        auto passedNum = _goal->GetPassedNum();
+        if (_permitivePassedNum < passedNum)
+            return true;
+    }
+    //通常ステージのゲームオーバー条件 : 通過させた敵の数
+    else {
+        auto passedNum = _goal->GetPassedNum();
+        if (_permitivePassedNum < passedNum)
+            return true;
+    }
     return false;
 }
 
@@ -290,7 +319,12 @@ void Dungeon::Update()
     //メッセージ更新
     UpdateSecretary();
 
-    _timer.Update();
+    if (_is_boss) {
+        _counter.Update(_defeatedNum);
+    }
+    else {
+        _timer.Update();
+    }
 
     //情報網更新
     _monsters.Update();
@@ -303,14 +337,27 @@ void Dungeon::Update()
     {
         if (obj != nullptr)
             obj->Update();
+
+        if (!_is_boss)
+            continue;
+
+        if (obj->GetType() == TiledObject::Type::ENEMY) {
+            _defeatedNum = obj->GetDefeatedNum();
+        }
+
+        //敵がゴールに到着したらボスとの戦闘開始
+        if (obj->HasArrived())
+        {
+        }
     }
+
 }
 
 
 void Dungeon::Draw()
 {
     //時間になったら初期化
-    if (_timer.HasTimeUp())
+    if (_timer.HasTimeUp() && !_is_boss)
         return;
 
     FIELD->Draw();
@@ -336,8 +383,13 @@ void Dungeon::Draw()
     Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), ColorPalette::WHITE4, false);
     Debug::DrawString(Vector2D(1010, 64), "洞窟ダンジョン その" + _stageName);
 
-    //残り時間表示
-    _timer.Draw();
+    if (_is_boss) {
+        _counter.Draw();
+    }
+    else {
+        //残り時間表示
+        _timer.Draw();
+    }
 
     //ノルマ表示
     std::string passed = "MISS:";
@@ -354,13 +406,27 @@ void Dungeon::Draw()
 
 void Dungeon::LoadMessage(std::string stageName)
 {
+    /*
     int messageNum = 0;
     if (stageName == "1")
-        messageNum = 1;
+    messageNum = 1;
     else if (stageName == "2")
-        messageNum = 2;
+    messageNum = 2;
     else if (stageName == "3")
-        messageNum = 3;
+    messageNum = 3;
+    */
+    int messageNum = 0;
+    try {
+        messageNum = std::stoi(stageName);
+    }
+    catch (const std::invalid_argument& e) {
+        std::cout << e.what() << std::endl;
+        return;
+    }
+    catch (const std::out_of_range& e) {
+        std::cout << e.what() << std::endl;
+        return;
+    }
 
     std::string filePath = "csv/talkData/stage";
     filePath += stageName;
