@@ -389,7 +389,7 @@ bool Game::PauseUpdate()
 
     int fontSize = 32;
     Debug::DrawString(upperPannelPos + frameSize * 0.5 - Vector2D(fontSize * 2.5, fontSize / 2), "ゲームに戻る", ColorPalette::WHITE4, 24);
-    Debug::DrawString(lowerPannelPos + frameSize * 0.5 - Vector2D(fontSize * 3.5, fontSize / 2), "ステージ選択に戻る", ColorPalette::WHITE4, 24);
+    Debug::DrawString(lowerPannelPos + frameSize * 0.5 - Vector2D(fontSize * 3.5, fontSize / 2), "タイトル画面に戻る", ColorPalette::WHITE4, 24);
 
     Debug::DrawRectWithSize(upperPannelPos, frameSize, frameColor, false);
     Debug::DrawRectWithSize(lowerPannelPos, frameSize, frameColor, false);
