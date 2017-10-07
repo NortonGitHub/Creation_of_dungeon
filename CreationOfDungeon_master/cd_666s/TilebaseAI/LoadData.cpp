@@ -63,6 +63,10 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
     int count = 0;
     for (auto data : dataArray)
     {
+        if (data.empty()) {
+            break;
+        }
+
         // MEMO : 最後だけはファイル名をそのまま使う
         if (count < parameterNum - 2)
         {
@@ -133,6 +137,10 @@ void Monster::LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, C
     std::string skill;
     for (auto data : dataArray)
     {
+        if (data.empty()) {
+            break;
+        }
+
         // MEMO : 最後だけはファイル名をそのまま使う
         if (count < parameterNum - 2)
             params[count] = std::stoi(data);
@@ -205,7 +213,9 @@ std::unique_ptr<CharactersSkill> Monster::CreateSkillFromName(std::string name, 
     if (name == "bone")
     {
         auto skill = ShootDamageObject::Create(skillData, *this, true);
-        skill->SetImage(IMAGE_RESOURCE_TABLE->Create("graph/effect/throwing_bone.png"));
+
+        skill->SetImage(IMAGE_RESOURCE_TABLE->Create("resource/graph/effect/throwing_bone.png"));
+
         return skill;
     }
 
@@ -221,11 +231,11 @@ std::unique_ptr<CharactersSkill> CharactersSkill::CreateSkill(std::string skillD
     if (skillData == "null")
         return nullptr;
 
-    if (skillData.find("shoot") != std::string::npos)
-        return ShootDamageObject::Create(skillData, chara, true);
-
     if (skillData.find("magic_shoot") != std::string::npos)
         return ShootDamageObject::Create(skillData, chara, false);
+
+    if (skillData.find("shoot") != std::string::npos)
+        return ShootDamageObject::Create(skillData, chara, true);
 
     if (skillData.find("magic_explode") != std::string::npos)
         return MagicAttackAround::Create(skillData, chara);
@@ -254,7 +264,7 @@ std::unique_ptr<ShootDamageObject> ShootDamageObject::Create(std::string data, C
     double startMPRatio = std::stoi(LoadLabeledElemIfFind("mpRatio:", data, 0.0));
     startMPRatio /= 100;
 
-    return std::make_unique<ShootDamageObject>(power, cost, startMPRatio, speed, range, chara, true);
+    return std::make_unique<ShootDamageObject>(power, cost, startMPRatio, speed, range, chara, isPhysical);
 }
 
 
@@ -442,3 +452,78 @@ std::shared_ptr<Emplacement> Emplacement::Create(std::string data, TiledVector p
 
     return std::make_shared<Emplacement>(pos, cost, power, attack, direction);
 }
+
+
+
+//敵を後から追加で生成する
+std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos,std::string* GenerateText)
+{
+
+    *GenerateText = "";
+
+    std::vector<TiledObject*> monsterObjects;
+
+    std::vector<std::string> dataArray;
+    CSVReader reader;
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
+
+    const int parameterNum = 8;
+    std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
+    int idx = 0;
+    int count = 0;
+    std::string name;
+    std::string skill;
+    for (auto data : dataArray)
+    {
+        // MEMO : 最後だけはファイル名をそのまま使う
+        if (count < parameterNum - 2)
+            params[count] = std::stoi(data);
+        else if (count == parameterNum - 2) {
+            *GenerateText += std::to_string(startPos._x) + "," + std::to_string(startPos._y) + ",";
+            name = data;
+        }
+        else if (count == parameterNum - 1)
+            skill = data;
+
+        count++;
+
+        *GenerateText += data;
+
+        if (count == parameterNum)
+        {
+            BattleParameter param = { params[0], params[1], params[2], params[3], params[4], params[5] };
+            //TiledVector startPos(params[6], params[7]);
+
+            auto monster = std::make_shared<Monster>(startPos, param, nullptr, notifyer, name, skill);
+            objects.push_back(monster);
+
+            auto magicSquare = std::make_shared<MagicSquare>(startPos, *monster);
+            monster->_home = magicSquare.get();
+            objects.push_back(magicSquare);
+
+            monsterObjects.push_back(monster.get());
+            monsterObjects.push_back(magicSquare.get());
+
+            //次のキャラへ
+            count = 0;
+            idx++;
+        }else{
+            *GenerateText += ",";
+        }
+    }
+
+    return monsterObjects;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+

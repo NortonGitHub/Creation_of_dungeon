@@ -35,7 +35,7 @@ public:
 
     //PanelSettingObjectがPanelAffectObjectsによって切り替えられるときのみ呼び出される
     //設計的に問題がありそうだからテストで　ダウンキャストすれば回避できるが危険か
-    virtual void PanelSettingObject_SettingPanel(std::string panelName, std::string CategoryName) {};
+    virtual void PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName, std::string graphName) {};
 
 };
 

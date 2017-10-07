@@ -22,8 +22,8 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     _astar = std::make_unique<AstarChaser>(_target, *this, _pathToTarget, 20, true);
     _ai = _astar.get();
 
-    _appearSE.Load("sound/blockSelect.wav");
-    _hasTreasureIcon.Load("graph/icon/treasure_attached.png");
+    _appearSE.Load("resource/sound/blockSelect.wav");
+    _hasTreasureIcon.Load("resource/graph/icon/treasure_attached.png");
     _hasTreasureIcon.SetScale(Vector2D(2.0, 2.0));
     _hasTreasureIcon.SetDisplayMode(false);
     _hasTreasureIcon.SetPriority(Sprite::Priority::UI);
@@ -209,6 +209,7 @@ void Enemy::ArriveAtGoal(TiledObject* target)
     //TODO : ゴールした状態を追加するなどして
     //ゴールしたらターゲッティングされない条件を用意する
     _hasAppeared = false;
+    _hasArrived = true;
     target->Interact(*this);
     OBJECT_MGR->Remove(this);
 }

@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "Monster.h"
 #include "Obstacle.h"
+#include "WeakObstacle.h"
 #include "River.h"
 #include "EnemysItem.h"
 #include "Goal.h"
@@ -17,6 +18,7 @@
 #include "Trap.h"
 
 #include <assert.h>
+#include <iostream>
 
 
 Dungeon::Dungeon(std::string stageName)
@@ -24,14 +26,32 @@ Dungeon::Dungeon(std::string stageName)
     , _stageName(stageName)
     , _goal(nullptr)
     , _start(nullptr)
-    , _mainsFrame("graph/ui/main_window.png", Vector2D(20, 20))
-    , _background("graph/background/background.png", Vector2D(0, 7600))
-    , _windowBackground("graph/ui/main_window_background1.png", Vector2D(28, 28))
-    , _waveInfomartionBoard("graph/ui/enemyinformation.png", Vector2D(754, 248))
+    , _mainsFrame("resource/graph/ui/main_window.png", Vector2D(20, 20))
+    , _background("resource/graph/background/background.png", Vector2D(0, 0))
+    , _windowBackground("resource/graph/ui/main_window_background1.png", Vector2D(28, 28))
+    , _waveInfomartionBoard("resource/graph/ui/enemyinformation.png", Vector2D(754, 248))
     , _infoDrawer(_dictionary)
     , _intruderInformation(_dictionary)
     , _intrudeLastCharacter(false)
+    , _defeatedNum(0)
 {
+
+    auto b_pos = _stageName.rfind('b');
+
+    if (b_pos != std::string::npos) {
+        _stageNum = _stageName.substr(0, b_pos);
+        _counter.Init();
+    }
+    else {
+        _stageNum = _stageName;
+    }
+
+    _background.Load("resource/graph/background/background_cave.png");
+    _background.SetPosition(Vector2D(0, 0));
+
+    _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+    _windowBackground.SetPosition(Vector2D(28, 28));
+
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
     _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
@@ -54,6 +74,9 @@ void Dungeon::Init()
     _messageReciever.Init();
     LoadMessage(_stageName);
 
+    //ボスステージかどうかを判別
+    _is_boss = _stageName.rfind('b') != std::string::npos;
+
     //ステージ生成
     std::vector<std::string> dataArray;
     CSVReader reader;
@@ -64,7 +87,10 @@ void Dungeon::Init()
     std::vector<std::string> waveInfoArray;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, waveInfoArray, 1);
     auto waveInterval = std::stoi(waveInfoArray[0]);
+
+    _counter.InitWithSetup(waveInterval);
     _timer.InitWithSetup(waveInterval);
+
     _permitivePassedNum = std::stoi(waveInfoArray[1]);
     
     //タイルの大きさを読み込む
@@ -74,8 +100,9 @@ void Dungeon::Init()
     LoadTileSize(_stageName, tileInfoArray);
 
     //フィールドのサイズを読み込む
-    fileName = "csv/StageData/map";
-    fileName += (_stageName + ".csv");
+    //fileName = "csv/StageData/map";
+    //fileName += (_stageName + ".csv");
+    fileName = "csv/StageData/EditMapData.csv";
     auto fieldSizeH = reader.GetLineSize(fileName, 0);
     auto fieldSizeV = reader.GetLineNum(fileName);
     
@@ -85,12 +112,49 @@ void Dungeon::Init()
     int countY = 0;
     FIELD->Init(fieldSizeH, fieldSizeV);
 
+    //ダンジョンの地形の設定
+    std::string ft;
+
+    std::vector<std::string> FieldTypeArray;
+    fileName = "csv/StageData/DungeonType.csv";
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, FieldTypeArray, 2);
+
+    int FieldTypeNum = stoi(FieldTypeArray[stoi(_stageName) * 2 - 1]);
+
+    switch (FieldTypeNum) {
+    case 0:
+        ft = "#CAV";
+        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+        _background.Load("resource/graph/background/background_cave.png");
+        break;
+    case 1:
+        ft = "#FST";
+        _windowBackground.Load("resource/graph/ui/main_window_background_forest.png");
+        _background.Load("resource/graph/background/background_forest.jpg");
+        break;
+    case 2:
+        ft = "#STN";
+        _windowBackground.Load("resource/graph/ui/main_window_background_stone.png");
+        _background.Load("resource/graph/background/background_stone.jpg");
+        break;
+    default:
+        ft = "#CAV";
+        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+        _background.Load("resource/graph/background/background_cave.jpg");
+        break;
+    }
+    _windowBackground.SetPosition(Vector2D(28, 28));
+    _background.SetPosition(Vector2D(0, 0));
+    //ここまで
+
     //オブジェクトを読み込む
     auto& _objs = OBJECT_MGR->_objects;
     for (auto data : dataArray)
     {
         //受け取ったデータを変換表をもとに変換
         GenerateObject(data, countX, countY);
+
+        FIELD->SetFieldType(TiledVector(countX, countY), ft);
         
         //次のマップ番号まで
         countX++;
@@ -114,10 +178,11 @@ void Dungeon::Init()
     fileName += (_stageName + ".csv");
     Enemy::LoadEnemys(_objs, *_start, *_goal, _enemys, fileName);
 
-    fileName = "csv/StageData/monsters";
-    fileName += (_stageName + ".csv");
+    //fileName = "csv/StageData/monsters";
+    //fileName += (_stageName + ".csv");
+    fileName = "csv/StageData/EditMap_MonsterData.csv";
     Monster::LoadMonsters(_objs, _monsters, fileName);
-    
+
     FIELD->Setup();
 
     _monsters.Update();
@@ -185,6 +250,13 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 
     if (typeName == "0")
         return;
+
+    if (typeName.find("300") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+        return;
+    }
+
 }
 
 
@@ -203,30 +275,41 @@ void Dungeon::Clear()
 
 bool Dungeon::HasClear()
 {
-    //WAVEを耐えきったらクリア
-    if (_timer.HasTimeUp())
+    //WAVEを耐えきったらクリア(通常ステージのみ)
+    if (_timer.HasTimeUp() && !_is_boss)
         return true;
-    
+
     //WAVE中の敵を全滅させたらクリア
     if (Enemy::HasWipeOuted())
         return true;
-    
+
     //最後の敵を倒したらクリア
     if (_start->GetTimeUnitlNext() == StartPoint::NobodyIntruder()
         && _enemys.GetColleagues() == 0
         && !HasGameOver())
         return true;
 
+    auto b = _start->GetTimeUnitlNext();
+    auto a = _enemys.GetColleagues();
     return false;
 }
 
 
 bool Dungeon::HasGameOver()
 {
-    auto passedNum = _goal->GetPassedNum();
-    if (_permitivePassedNum < passedNum)
-        return true;
-        
+    //ボスステージのゲームオーバー条件 : ボスの体力
+    if (_is_boss) {
+        //MEMO:暫定的に敵をさせていい上限をpermitedNumとしている。
+        auto passedNum = _goal->GetPassedNum();
+        if (_permitivePassedNum < passedNum)
+            return true;
+    }
+    //通常ステージのゲームオーバー条件 : 通過させた敵の数
+    else {
+        auto passedNum = _goal->GetPassedNum();
+        if (_permitivePassedNum < passedNum)
+            return true;
+    }
     return false;
 }
 
@@ -236,7 +319,12 @@ void Dungeon::Update()
     //メッセージ更新
     UpdateSecretary();
 
-    _timer.Update();
+    if (_is_boss) {
+        _counter.Update(_defeatedNum);
+    }
+    else {
+        _timer.Update();
+    }
 
     //情報網更新
     _monsters.Update();
@@ -249,14 +337,27 @@ void Dungeon::Update()
     {
         if (obj != nullptr)
             obj->Update();
+
+        if (!_is_boss)
+            continue;
+
+        if (obj->GetType() == TiledObject::Type::ENEMY) {
+            _defeatedNum = obj->GetDefeatedNum();
+        }
+
+        //敵がゴールに到着したらボスとの戦闘開始
+        if (obj->HasArrived())
+        {
+        }
     }
+
 }
 
 
 void Dungeon::Draw()
 {
     //時間になったら初期化
-    if (_timer.HasTimeUp())
+    if (_timer.HasTimeUp() && !_is_boss)
         return;
 
     FIELD->Draw();
@@ -282,8 +383,13 @@ void Dungeon::Draw()
     Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), ColorPalette::WHITE4, false);
     Debug::DrawString(Vector2D(1010, 64), "洞窟ダンジョン その" + _stageName);
 
-    //残り時間表示
-    _timer.Draw();
+    if (_is_boss) {
+        _counter.Draw();
+    }
+    else {
+        //残り時間表示
+        _timer.Draw();
+    }
 
     //ノルマ表示
     std::string passed = "MISS:";
@@ -300,13 +406,27 @@ void Dungeon::Draw()
 
 void Dungeon::LoadMessage(std::string stageName)
 {
+    /*
     int messageNum = 0;
     if (stageName == "1")
-        messageNum = 1;
+    messageNum = 1;
     else if (stageName == "2")
-        messageNum = 2;
+    messageNum = 2;
     else if (stageName == "3")
-        messageNum = 3;
+    messageNum = 3;
+    */
+    int messageNum = 0;
+    try {
+        messageNum = std::stoi(stageName);
+    }
+    catch (const std::invalid_argument& e) {
+        std::cout << e.what() << std::endl;
+        return;
+    }
+    catch (const std::out_of_range& e) {
+        std::cout << e.what() << std::endl;
+        return;
+    }
 
     std::string filePath = "csv/talkData/stage";
     filePath += stageName;

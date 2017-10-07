@@ -12,7 +12,7 @@ ButtonUIProduct::ButtonUIProduct(UIContent ui_contents) : ui(ui_contents)
 
     //ui.SetFunction(GetUI(ui.GetDataName()));
 
-    test_handle = LoadGraph("test_666/ura.png");
+    test_handle = LoadGraph("resource/test_666/ura.png");
 }
 
 

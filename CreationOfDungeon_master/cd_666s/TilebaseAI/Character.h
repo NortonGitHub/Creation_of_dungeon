@@ -45,7 +45,9 @@ public:
     void AddParameterEffecter(std::unique_ptr<ParameterEffecter> effecter) { _effecters.push_back(std::move(effecter)); };
 
     bool IsEnable() const override { return _hasAppeared; };
+    int GetDefeatedNum() const override { return 0; }
     bool IsAlive() const { return (0 < _battleParameter._hp); }
+    bool HasArrived() const override { return _hasArrived; }
 
     std::string GetName() const { return _name; }
     TiledVector::Direction GetDirection() const { return _direction; }
@@ -53,6 +55,8 @@ public:
     BattleParameter GetAffectedParameter();
     BattleParameter GetRawParameter() const { return _battleParameter; };
     
+    void SetDirection(TiledVector::Direction d) { _direction = d; }
+
     bool _isBattling;
 
 protected:
@@ -101,6 +105,8 @@ protected:
 
     //Ž©•ª‚ª¢Š«Ï‚Ý‚©‚Ç‚¤‚©
     bool _hasAppeared;
+
+    bool _hasArrived;
 
     Animator _animator;
 

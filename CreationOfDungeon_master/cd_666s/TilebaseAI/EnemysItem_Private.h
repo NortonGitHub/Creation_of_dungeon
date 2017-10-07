@@ -18,13 +18,13 @@ EnemysItem<T>::EnemysItem(std::unique_ptr<T> contents, TiledVector tilePos)
 
     if (typeid(T) == typeid(Equipment))
     {
-        _graph.Load("graph/item/treasure01.png");
-        _openedImage = IMAGE_RESOURCE_TABLE->Create("graph/background/treasure05.png");
+        _graph.Load("resource/graph/item/treasure01.png");
+        _openedImage = IMAGE_RESOURCE_TABLE->Create("resource/graph/item/treasure05.png");
     }
     else if (typeid(T) == typeid(ConsumableItem))
     {
-        _graph.Load("graph/item/treasureB01.png");
-        _openedImage = IMAGE_RESOURCE_TABLE->Create("graph/item/treasure05.png");
+        _graph.Load("resource/graph/item/treasureB01.png");
+        _openedImage = IMAGE_RESOURCE_TABLE->Create("resource/graph/item/treasure05.png");
     }
 
     _contentsGraph.SetScale(Vector2D(TILE_SIZE / 32.0, TILE_SIZE / 32.0));
@@ -32,7 +32,7 @@ EnemysItem<T>::EnemysItem(std::unique_ptr<T> contents, TiledVector tilePos)
     _contentsGraph.SetPriority(5);
     _contentsGraph.SetDisplayMode(false);
 
-    _openSound.Load("sound/openTreasure.wav");
+    _openSound.Load("resource/sound/openTreasure.wav");
     _openSound.SetVolume(225);
 }
 
@@ -48,14 +48,14 @@ static void LoadItem(std::string itemData, int countX, int countY, std::vector<s
     if (itemData.find("&book") != std::string::npos)
     {
         std::string fileName = "book.png";
-        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 0, 10, 10, 0), 100, fileName);
+        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 0, 20, 0, 0), 100, fileName);
         objects.push_back(std::make_shared<EnemysItem<Equipment>>(std::move(contents), TiledVector(countX, countY)));
         return;
     }
     else if (itemData.find("&block") != std::string::npos)
     {
         std::string fileName = "block.png";
-        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 10, 0, 10, 0), 100, fileName);
+        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 20, 0, 0, 0), 100, fileName);
         objects.push_back(std::make_shared<EnemysItem<Equipment>>(std::move(contents), TiledVector(countX, countY)));
         return;
     }
@@ -64,6 +64,20 @@ static void LoadItem(std::string itemData, int countX, int countY, std::vector<s
         std::string fileName = "herb.png";
         auto contents = std::make_unique<ConsumableItem>(100, fileName);
         objects.push_back(std::make_shared<EnemysItem<ConsumableItem>>(std::move(contents), TiledVector(countX, countY)));
+        return;
+    }
+    else if (itemData.find("&blade") != std::string::npos)
+    {
+        std::string fileName = "blade.png";
+        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 20, 0, 0, 0, 0), 100, fileName);
+        objects.push_back(std::make_shared<EnemysItem<Equipment>>(std::move(contents), TiledVector(countX, countY)));
+        return;
+    }
+    else if (itemData.find("&robe") != std::string::npos)
+    {
+        std::string fileName = "robe.png";
+        std::unique_ptr<Equipment> contents = std::make_unique<Equipment>(BattleParameter(0, 0, 0, 0, 20, 0), 100, fileName);
+        objects.push_back(std::make_shared<EnemysItem<Equipment>>(std::move(contents), TiledVector(countX, countY)));
         return;
     }
 }

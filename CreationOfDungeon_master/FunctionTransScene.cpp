@@ -1,6 +1,7 @@
 #include "FunctionTransScene.h"
 #include "Game.h"
 #include "Title.h"
+#include "EditMap.h"
 #include "WorldMap.h"
 #include "GameClear.h"
 #include "GameOver.h"
@@ -12,7 +13,10 @@ FunctionTransScene::~FunctionTransScene()
 SceneBase * FunctionTransScene::GetSceneBase(std::string scene_name)
 {
     if (scene_name.find("game_1") != std::string::npos) {
-        return new Game(1);
+        return new Game("1");
+    }
+    else if (scene_name.find("edit") != std::string::npos) {
+        return new EditMap("4b");
     }
     else if (scene_name.find("world_map") != std::string::npos) {
         return new WorldMap();

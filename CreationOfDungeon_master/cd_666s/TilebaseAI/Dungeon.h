@@ -10,6 +10,7 @@
 #include "IntruderInfomation.h"
 #include "TiledObjectDictionary.h"
 #include "DungeonTimer.h"
+#include "../../DestroyedCounter.h"
 #include "MessageReciever.h"
 
 #include "../Render/Sprite.h"
@@ -42,10 +43,14 @@ private:
     //ゲーム時間と時間通知モジュール群
     DungeonTimer _timer;
 
+    //敵を倒した数のカウント
+    DestroyedCounter _counter;
+
     //勇者を通してもいい数
     int _permitivePassedNum;
     
-    std::string _stageName;
+    std::string _stageName;	//記号を含めたステージ名
+    std::string _stageNum;	//整数のステージ番号のみ
     
     void GenerateObject(std::string typeName, int countX, int countY);
     
@@ -79,6 +84,11 @@ private:
     void UpdateSecretary();
     std::unordered_map<std::string, TalkDatabase> _dungeonMessage;
     bool _intrudeLastCharacter;
+
+    bool _is_boss;
+
+    int _defeatedNum;
+
 };
 
 #endif /* Dungeon_h */

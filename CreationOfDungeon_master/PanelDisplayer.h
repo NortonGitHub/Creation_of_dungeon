@@ -6,6 +6,7 @@ class PanelDisplayer :
     //単純に値を都度受け取り表示するだけ
 public:
     PanelDisplayer();
+    PanelDisplayer(PanelContent _panelContent);
     ~PanelDisplayer();
 
     void Update() override;

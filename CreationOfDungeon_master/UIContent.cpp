@@ -57,7 +57,7 @@ UIContent::UIContent(int x, int y, std::string type_name, std::string data_name,
     _func_type = func_type;
 
     //Žb’è
-    std::string load_name = data_name + ".png";
+    std::string load_name = "resource/" + data_name + ".png";
     _image_resource = IMAGE_RESOURCE_TABLE->Create(load_name);
     //assert((_test_handle != -1) && "‰æ‘œ“Ç‚Ýž‚ÝŽ¸”s");
     _size.Set(_image_resource->GetWidth(), _image_resource->GetHeight());
@@ -72,5 +72,6 @@ UIContent::~UIContent()
 void UIContent::Draw()
 {
     //Žb’è
-    DrawGraph(_position._x, _position._y, _image_resource->GetHandle(), FALSE);
+    //DrawGraph(_position._x, _position._y, _image_resource->GetHandle(), FALSE);
+    DrawGraph(_position._x, _position._y, _image_resource->GetHandle(), TRUE);
 }

@@ -2,7 +2,7 @@
 #include "Title.h"
 #include "EditMap.h"
 
-SceneManager::SceneManager() : now_scene(new EditMap("1"))
+SceneManager::SceneManager() : now_scene(new Title()), test(Graph("resource/test_666/omote.png"))
 {
     auto class_name = now_scene->GetClassNameData();
     now_scene->Init(class_name);

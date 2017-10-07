@@ -5,6 +5,8 @@ class PanelSceneTransition :
 {
 public:
     PanelSceneTransition();
+    PanelSceneTransition(PanelContent _panelContent);
+    
     ~PanelSceneTransition();
 
     void Update() override;

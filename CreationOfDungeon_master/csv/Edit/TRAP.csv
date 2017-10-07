@@ -1,3 +1,4 @@
-bareTrap,
-mine,
-sanctuary,
+bareTrap,bareTrap_Simple,9#name:bare_trap&cost:200&range:1&power:100&attack:100&stuck:2
+mine,mine_Simple,9#name:mine&cost:200&range:1&power:100&attack:100&stuck:2
+sanctuary,sanctuary,9#name:sanctuary&cost:200&range:2&hp:100&atk:120&def:120&matk:100&mdef:100&spd:100&time:5
+cursearea,CurseArea,9#name:curse&cost:200&range:2&hp:100&atk:70&def:70&matk:100&mdef:100&spd:100&time:5

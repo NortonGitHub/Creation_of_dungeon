@@ -44,7 +44,7 @@ UIManager::UIManager(std::string scene_name) : test("resource/test_666/omote.png
 
     test.SetPosition(Vector2D(128, 0));
 
-    test2 = LoadGraph("test_666/omote.png");
+    test2 = LoadGraph("resource/test_666/omote.png");
 
     Init(scene_name);
 }

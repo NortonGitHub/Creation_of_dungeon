@@ -5,8 +5,8 @@
 Title::Title() 
     : class_name("title")
     , title("resource/title.png")
-    , _bgm("sound/Area1.ogg")
-    , _se("sound/decide.wav")
+    , _bgm("resource/sound/Area1.ogg")
+    , _se("resource/sound/decide.wav")
 {
     _functions.reserve(20);
     title.SetPosition(Vector2D(0, 0));
@@ -42,10 +42,15 @@ SceneBase * Title::Update(UIManager _ui)
     _ui.Update(_functions,_ui_name);
 
     for (auto f : _functions) {
-        if (f.find("MOVE") != std::string::npos){
+        if (f.find("_B") != std::string::npos) {
+            _se.Play();
+            return FunctionTransScene::GetSceneBase("edit");
+        }
+        else if (f.find("MOVE") != std::string::npos) {
             _se.Play();
             return FunctionTransScene::GetSceneBase("world_map");
-        } else if(f.find("QUIT") != std::string::npos){
+        }
+        else if (f.find("QUIT") != std::string::npos) {
             _se.Play();
             return nullptr;
         }

@@ -16,13 +16,13 @@ MineBomb::MineBomb(TiledVector trapPos, int cost, int range, int power, int atta
 {
     if (_isMine)
     {
-        _graph.Load("graph/trap/mine.png");
-        _explodeSounde.Load("sound/flame.wav");
+        _graph.Load("resource/graph/trap/mine.png");
+        _explodeSounde.Load("resource/sound/flame.wav");
     }
     else
     {
-        _graph.Load("graph/trap/bareTrap.png");
-        _explodeSounde.Load("sound/enemy_fall2.wav");
+        _graph.Load("resource/graph/trap/bareTrap.png");
+        _explodeSounde.Load("resource/sound/enemy_fall2.wav");
     }
 
     _graph.SetPriority(200);

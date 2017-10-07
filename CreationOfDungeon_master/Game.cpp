@@ -6,8 +6,12 @@
 #include "cd_666s/Resources/AllResourceManager.h"
 #include "Main.h"
 #include "WorldMap.h"
+#include "Title.h"
 
-Game::Game(int stageNumber)
+#include <assert.h>
+#include <iostream>
+
+Game::Game(std::string stageNumber)
     :_stageNumber(stageNumber)
     , _fadeoutCount(0)
     , _fadeinInterval(100)
@@ -15,7 +19,8 @@ Game::Game(int stageNumber)
     , _fadeoutInterval(255)
     , _fadingout(true)
     , _state(GameState::READY)
-    , _bgm("sound/Stage_N_Noon.ogg")
+    , isBoss(false)
+    , _bgm("resource/sound/Stage_N_Noon.ogg")
 {
     KEYBOARD->AddEvent(KeyInput::KeyType::KEY_LSHIHT
         , ButtonTypeInputEvent::State::Down
@@ -78,7 +83,7 @@ SceneBase * Game::Update(UIManager _ui)
 
     if (goTitle)
     {
-        return new WorldMap();
+        return new Title();//WorldMap();
     }
 
     return this;
@@ -97,7 +102,7 @@ void Game::Draw()
         break;
 
     case Game::GameState::PAUSE:
-        //GamingDraw();
+        //GamingDraw();_state
         PauseDraw();
         break;
 
@@ -121,7 +126,27 @@ void Game::Draw()
 
 void Game::Init()
 {
-    switch (_stageNumber)
+
+    int _stage_num = 0;
+    std::string _stageNumber_after = { _stageNumber.front() };
+
+    if (_stageNumber.rfind("b") != std::string::npos) {
+        isBoss = true;
+    }
+
+    try {
+        _stage_num = std::stoi(_stageNumber);
+    }
+    catch (const std::invalid_argument& e) {
+        std::cout << e.what() << std::endl;
+        return;
+    }
+    catch (const std::out_of_range& e) {
+        std::cout << e.what() << std::endl;
+        return;
+    }
+
+    switch (_stage_num)
     {
     case 1:
         TILE_SIZE = 48;
@@ -146,7 +171,7 @@ void Game::Init()
         _dungeon = nullptr;
     }
 
-    _dungeon = new Dungeon(std::to_string(_stageNumber));
+    _dungeon = new Dungeon(_stageNumber);
     _dungeon->Init();
 }
 
@@ -364,7 +389,7 @@ bool Game::PauseUpdate()
 
     int fontSize = 32;
     Debug::DrawString(upperPannelPos + frameSize * 0.5 - Vector2D(fontSize * 2.5, fontSize / 2), "ゲームに戻る", ColorPalette::WHITE4, 24);
-    Debug::DrawString(lowerPannelPos + frameSize * 0.5 - Vector2D(fontSize * 3.5, fontSize / 2), "ステージ選択に戻る", ColorPalette::WHITE4, 24);
+    Debug::DrawString(lowerPannelPos + frameSize * 0.5 - Vector2D(fontSize * 3.5, fontSize / 2), "タイトル画面に戻る", ColorPalette::WHITE4, 24);
 
     Debug::DrawRectWithSize(upperPannelPos, frameSize, frameColor, false);
     Debug::DrawRectWithSize(lowerPannelPos, frameSize, frameColor, false);
