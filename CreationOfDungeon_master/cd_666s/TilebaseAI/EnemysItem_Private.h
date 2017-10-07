@@ -23,7 +23,7 @@ EnemysItem<T>::EnemysItem(std::unique_ptr<T> contents, TiledVector tilePos)
     }
     else if (typeid(T) == typeid(ConsumableItem))
     {
-        _graph.Load("resource/graph/item/treasureB01.png");
+        _graph.Load("resource/graph/item/treasureB01.png" );
         _openedImage = IMAGE_RESOURCE_TABLE->Create("resource/graph/item/treasure05.png");
     }
 
