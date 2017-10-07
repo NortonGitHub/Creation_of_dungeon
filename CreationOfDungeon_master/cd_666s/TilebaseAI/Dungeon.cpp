@@ -36,11 +36,14 @@ Dungeon::Dungeon(std::string stageName)
 {
 	auto b_pos = _stageName.rfind('b');
 
-	if (b_pos != std::string::npos)
+	if (b_pos != std::string::npos) {
 		_stageNum = _stageName.substr(0, b_pos);
-	else
+		_counter.Init();
+	}
+	else {
 		_stageNum = _stageName;
-
+	}
+	
 	_windowBackground.Load("resource/graph/ui/main_window_background" + _stageName + ".png");
 	_windowBackground.SetPosition(Vector2D(28, 28));
 
@@ -76,14 +79,14 @@ void Dungeon::Init()
 
 	//ウェーブの情報を読み込む
 	std::string fileName = "csv/StageData/wave";
-	fileName += (_stageNum + ".csv");
+	fileName += (_stageName + ".csv");
 	std::vector<std::string> waveInfoArray;
 	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, waveInfoArray, 1);
 	auto waveInterval = std::stoi(waveInfoArray[0]);
 
 	_counter.InitWithSetup(waveInterval);
-
 	_timer.InitWithSetup(waveInterval);
+
 	_permitivePassedNum = std::stoi(waveInfoArray[1]);
 
 	//タイルの大きさを読み込む
