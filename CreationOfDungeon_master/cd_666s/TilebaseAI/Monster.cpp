@@ -28,7 +28,7 @@ Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *targe
     _skill = CreateSkillFromName(monsterName, skillData);
     _ai = _astar.get();
 
-    _appearSE.Load("resourse/sound/flame.wav");
+    _appearSE.Load("resource/sound/flame.wav");
     _appearSE.SetVolume(200);
 }
 

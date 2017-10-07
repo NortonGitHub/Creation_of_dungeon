@@ -20,7 +20,7 @@ Game::Game(std::string stageNumber)
     , _fadingout(true)
     , _state(GameState::READY)
 	, isBoss(false)
-    , _bgm("resourse/sound/Stage_N_Noon.ogg")
+    , _bgm("resource/sound/Stage_N_Noon.ogg")
 {
     KEYBOARD->AddEvent(KeyInput::KeyType::KEY_LSHIHT
         , ButtonTypeInputEvent::State::Down

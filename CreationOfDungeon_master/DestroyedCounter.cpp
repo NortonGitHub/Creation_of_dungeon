@@ -5,8 +5,8 @@
 DestroyedCounter::DestroyedCounter()
 	: _count(0)
 	, _all_enemy(0)
-	, _clock("resourse/graph/ui/ClockDaytime.png")
-	, _hand("resourse/graph/ui/ClockHand.png")
+	, _clock("resource/graph/ui/ClockDaytime.png")
+	, _hand("resource/graph/ui/ClockHand.png")
 	, _position(60, 230)
 {
 

@@ -25,10 +25,10 @@ Dungeon::Dungeon(std::string stageName)
 	, _stageName(stageName)
 	, _goal(nullptr)
 	, _start(nullptr)
-	, _mainsFrame("resourse/graph/ui/main_window.png", Vector2D(20, 20))
-	, _background("resourse/graph/background/background.png", Vector2D(0, 7600))
-	, _windowBackground("resourse/graph/ui/main_window_background1.png", Vector2D(28, 28))
-	, _waveInfomartionBoard("resourse/graph/ui/enemyinformation.png", Vector2D(754, 248))
+	, _mainsFrame("resource/graph/ui/main_window.png", Vector2D(20, 20))
+	, _background("resource/graph/background/background.png", Vector2D(0, 7600))
+	, _windowBackground("resource/graph/ui/main_window_background1.png", Vector2D(28, 28))
+	, _waveInfomartionBoard("resource/graph/ui/enemyinformation.png", Vector2D(754, 248))
 	, _infoDrawer(_dictionary)
 	, _intruderInformation(_dictionary)
 	, _intrudeLastCharacter(false)
@@ -41,7 +41,7 @@ Dungeon::Dungeon(std::string stageName)
 	else
 		_stageNum = _stageName;
 
-	_windowBackground.Load("resourse/graph/ui/main_window_background" + _stageName + ".png");
+	_windowBackground.Load("resource/graph/ui/main_window_background" + _stageName + ".png");
 	_windowBackground.SetPosition(Vector2D(28, 28));
 
 	_mainsFrame.SetPriority(Sprite::Priority::UI);
