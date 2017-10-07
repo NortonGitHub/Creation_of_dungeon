@@ -4,10 +4,10 @@
 
 DestroyedCounter::DestroyedCounter()
 	: _count(0)
-	, _all_enemy (0)
+	, _all_enemy(0)
 	, _clock("resourse/graph/ui/ClockDaytime.png")
 	, _hand("resourse/graph/ui/ClockHand.png")
-	, _position(754, 248)
+	, _position(60, 230)
 {
 
 	_clock.SetPosition(Vector2D::zero);
@@ -47,11 +47,18 @@ void DestroyedCounter::Draw()
 	timerStr += "/";
 	timerStr += std::to_string(_all_enemy / 60);
 	Debug::DrawString(_position + Vector2D(40, 40), timerStr);*/
-/*
-	auto offset = 80;
-	auto timeRatio = static_cast<double>(_count - _all_enemy) / static_cast<double>(_all_enemy);
-	_hand.Rotate(timeRatio * (90 - offset));
-	*/
+	/*
+		auto offset = 80;
+		auto timeRatio = static_cast<double>(_count - _all_enemy) / static_cast<double>(_all_enemy);
+		_hand.Rotate(timeRatio * (90 - offset));
+		*/
+
+	std::string leftStr = "ì|ÇµÇΩêî:";
+	Debug::DrawString(_position, leftStr);
+	leftStr = std::to_string(_count) + ":" + std::to_string(_all_enemy);
+	Debug::DrawString(_position + Vector2D(10, 20), leftStr, ColorPalette::BLACK4, 20);
+
+
 	auto offset = 10;
 	auto timeRatio = static_cast<double>(_count - _all_enemy) / static_cast<double>(_all_enemy);
 	_hand.Rotate(timeRatio * (90 - offset));
