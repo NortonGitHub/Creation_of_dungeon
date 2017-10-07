@@ -369,8 +369,6 @@ void Game::GamingUpdate()
 void Game::GamingDraw()
 {
     _dungeon->Draw();
-	if (isBoss)
-		DrawString(200, 0, "これはボスステージです", GetColor(255, 0, 0));
 }
 
 bool Game::PauseUpdate()

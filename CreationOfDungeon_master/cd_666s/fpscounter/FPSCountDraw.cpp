@@ -14,6 +14,6 @@ FPSDrawer::~FPSDrawer()
 
 void FPSDrawer::Draw()
 {
-    Debug::DrawString(Vector2D::zero, "FPS : " + std::to_string(_fpsCounter.GetFPS()));
-    Debug::DrawString(Vector2D(0, 700), std::to_string(_fpsCounter.GetDeltaTime()));
+ //   Debug::DrawString(Vector2D::zero, "FPS : " + std::to_string(_fpsCounter.GetFPS()));
+ //   Debug::DrawString(Vector2D(0, 700), std::to_string(_fpsCounter.GetDeltaTime()));
 }
