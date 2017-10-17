@@ -46,16 +46,34 @@ void MagicSquare::Update()
         if (tiledCursorPos != GetTilePos())
             return;
         
+        BattleParameter _monsterParam = _monster.GetRawParameter();
+
         //生きていたら
-        if (_monster.IsAlive() && _monster.IsEnable())
+        if (_monster.IsAlive() && _monster.IsEnable() && GetTilePos() != _monster.GetTilePos() && _monsterParam._maxHP != _monsterParam._hp)
         {
             //送還
             WarpHomeMonster();
             return;
         }
         //召喚
+        //ProduceMonster();
+        
+    }
+
+    if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
+    {
+        auto tiledCursorPos = TiledVector::ConvertToTiledPos(MOUSE->GetCursorPos());
+        if (!FIELD->IsInside(tiledCursorPos))
+            return;
+
+        //自分の位置がクリックされていなければ終了
+        if (tiledCursorPos != GetTilePos())
+            return;
+
+        //召喚
         ProduceMonster();
     }
+
 }
 
 

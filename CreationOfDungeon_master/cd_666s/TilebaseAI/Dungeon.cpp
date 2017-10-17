@@ -289,8 +289,15 @@ bool Dungeon::HasClear()
         && !HasGameOver())
         return true;
 
+    if (_is_boss && _counter.GetAllEnemy() <= _counter.GetCount()) {
+        return true;
+    }
+
+    /*
     auto b = _start->GetTimeUnitlNext();
     auto a = _enemys.GetColleagues();
+    */
+
     return false;
 }
 

@@ -207,7 +207,7 @@ void EditMap::Init()
     auto b = panelTypes.begin();
     */
 
-    DebugOutputFile();
+    //DebugOutputFile();
 
     //ここにPANEL_MGR追加処理を
     int elem_count = 0;
@@ -283,7 +283,12 @@ void EditMap::Init()
     //set_count[2] = 0;
     /***各オブジェクト設置数カウンタ初期化 ここまで***/
 
-    if (stage_num_a != "3") {
+    if (stage_num.find("b") != std::string::npos) {
+        LIMIT_TRAP = 4;
+        LIMIT_MONSTER = 4;
+        LIMIT_BLOCK = 6;
+    }
+    else if (stage_num_a != "3") {
         LIMIT_TRAP = 3;
         LIMIT_MONSTER = 3;
         LIMIT_BLOCK = 6;

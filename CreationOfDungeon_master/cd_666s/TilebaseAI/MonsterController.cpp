@@ -8,7 +8,7 @@
 #include "../InputManager/InputManager.h"
 
 MonsterController::MonsterController()
-: _monster(nullptr)
+    : _monster(nullptr)
 {
 }
 
@@ -57,57 +57,42 @@ void MonsterController::Update()
         if (targets.size() == 0)
             targets = std::move(OBJECT_MGR->GetContainedObjects<TiledObject>(cursorPos));
 
-        //本当に何もないところなら終了
-        if (targets.size() == 0)
+        //自分がクリックされたら
+        if (tiledCursorPos == _monster->GetTilePos())
         {
-            _monster = nullptr;
-        }
-        else {
-            for (auto target : targets)
+            if (_monster->IsEnable())
             {
-                //他の仲間がクリックされた
-                if (target->GetType() == TiledObject::Type::MONSTER)
+                
+                TiledVector::Direction d = _monster->GetDirection();
+
+                switch (d)
                 {
-                    auto monster = dynamic_cast<Monster*>(target);
-                    
-                    TiledVector::Direction d = monster->GetDirection();
-                    
-                    switch (d)
-                    {
-                    case TiledVector::LEFT:
-                        d = TiledVector::BACK;
-                        break;
-                    case TiledVector::FORWARD:
-                        d = TiledVector::LEFT;
-                        break;
-                    case TiledVector::RIGHT:
-                        d = TiledVector::FORWARD;
-                        break;
-                    case TiledVector::BACK:
-                        d = TiledVector::RIGHT;
-                        break;
-                    default:
-                        break;
-                    }
-
-                    monster->SetDirection(d);
-
-                    if (_monster != nullptr)
-                        _monster->ReleaseMonster();
-
-                    //その魔物を選択状態に
-                    _monster = monster;
-                    _monster->PickMonster();
-
-                    return;
+                case TiledVector::LEFT:
+                    d = TiledVector::BACK;
+                    break;
+                case TiledVector::FORWARD:
+                    d = TiledVector::LEFT;
+                    break;
+                case TiledVector::RIGHT:
+                    d = TiledVector::FORWARD;
+                    break;
+                case TiledVector::BACK:
+                    d = TiledVector::RIGHT;
+                    break;
+                default:
+                    break;
                 }
+
+                _monster->SetDirection(d);
+
+                return;
             }
         }
 
+        //自分以外を右クリックしたら選択解除
+        _monster = nullptr;
+
     }
-        
-
-
 
 
 }
@@ -117,13 +102,13 @@ void MonsterController::Draw()
 {
     if (_monster == nullptr)
         return;
-    
+
     if (!_monster->IsEnable())
         return;
-    
+
     auto worldTilePos = _monster->GetTilePos().GetWorldPos();
     Debug::DrawRectWithSize(worldTilePos, Vector2D(TILE_SIZE, TILE_SIZE),
-                                Color4(0.0, 1.0, 0.0, 0.15), true);
+        Color4(0.0, 1.0, 0.0, 0.15), true);
 
     _monster->DrawTargetMarker();
 }
@@ -133,10 +118,10 @@ void MonsterController::SetControlingMonster(Monster* monster)
 {
     if (monster == _monster)
         return;
-        
+
     if (_monster != nullptr)
         _monster->ReleaseMonster();
-    
+
     //その魔物を選択状態に
     _monster = monster;
     _monster->PickMonster();
@@ -147,18 +132,18 @@ void MonsterController::SetControlingMonster(Monster* monster)
 void MonsterController::SelectMonster(const Vector2D cursorPos)
 {
     auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
-    
+
     //対象がクリックされているかチェック
     auto target = FIELD->GetTiledObject<Monster>(tiledCursorPos);
-    
+
     //タイル区切りで何も見つからないなら画像区切りで探す
     if (target == nullptr)
         target = std::move(OBJECT_MGR->GetContainedObject<Monster>(cursorPos));
-    
+
     //本当に何もないところなら終了
     if (target == nullptr)
         return;
-    
+
     SetControlingMonster(target);
 }
 
@@ -166,14 +151,14 @@ void MonsterController::SelectMonster(const Vector2D cursorPos)
 void MonsterController::ControlMonster(const Vector2D cursorPos)
 {
     auto tiledCursorPos = TiledVector::ConvertToTiledPos(cursorPos);
-    
+
     //対象がクリックされているかチェック
     auto targets = FIELD->GetTiledObjects(tiledCursorPos);
 
     //タイル区切りで何も見つからないなら画像区切りで探す
     if (targets.size() == 0)
         targets = std::move(OBJECT_MGR->GetContainedObjects<TiledObject>(cursorPos));
-    
+
     //本当に何もないところなら終了
     if (targets.size() == 0)
     {
@@ -187,7 +172,7 @@ void MonsterController::ControlMonster(const Vector2D cursorPos)
         if (_monster->IsEnable())
         {
             //選択を解除
-            _monster = nullptr;
+            //_monster = nullptr;
             return;
         }
     }
