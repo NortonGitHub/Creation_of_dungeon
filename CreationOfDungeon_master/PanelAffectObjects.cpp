@@ -80,7 +80,7 @@ void PanelAffectObjects::SetSettingObject(std::vector<std::shared_ptr<PanelBase>
     fileName += GetCategoryName() + ".csv";
     std::vector<std::string> _array;
 
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, _array);
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, _array, 1);
 
     for (int i = 0; i < _tps.size(); i++) {
 

@@ -58,40 +58,42 @@ void MonsterController::Update()
             targets = std::move(OBJECT_MGR->GetContainedObjects<TiledObject>(cursorPos));
 
         //自分がクリックされたら
-        if (tiledCursorPos == _monster->GetTilePos())
-        {
-            if (_monster->IsEnable())
+        if (_monster != nullptr) {
+            if (tiledCursorPos == _monster->GetTilePos())
             {
-                
-                TiledVector::Direction d = _monster->GetDirection();
-
-                switch (d)
+                if (_monster->IsEnable())
                 {
-                case TiledVector::LEFT:
-                    d = TiledVector::BACK;
-                    break;
-                case TiledVector::FORWARD:
-                    d = TiledVector::LEFT;
-                    break;
-                case TiledVector::RIGHT:
-                    d = TiledVector::FORWARD;
-                    break;
-                case TiledVector::BACK:
-                    d = TiledVector::RIGHT;
-                    break;
-                default:
-                    break;
+
+                    TiledVector::Direction d = _monster->GetDirection();
+
+                    switch (d)
+                    {
+                    case TiledVector::LEFT:
+                        d = TiledVector::BACK;
+                        break;
+                    case TiledVector::FORWARD:
+                        d = TiledVector::LEFT;
+                        break;
+                    case TiledVector::RIGHT:
+                        d = TiledVector::FORWARD;
+                        break;
+                    case TiledVector::BACK:
+                        d = TiledVector::RIGHT;
+                        break;
+                    default:
+                        break;
+                    }
+
+                    _monster->SetDirection(d);
+
+                    return;
                 }
-
-                _monster->SetDirection(d);
-
-                return;
             }
+
+            //自分以外を右クリックしたら選択解除
+            _monster = nullptr;
+
         }
-
-        //自分以外を右クリックしたら選択解除
-        _monster = nullptr;
-
     }
 
 

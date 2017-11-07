@@ -132,11 +132,7 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
                 filename = "resource/graph/trap/" + this->graphName + ".png";
             }
             else if (CategoryName == "BLOCK") {
-                //BLOCKってアイテムか？csv見る限りアイテムにしか見えない
-                filename = "resource/graph/item/" + this->graphName + ".png";
-                if (objectName == "cardboard") {
-                    filename = "resource/graph/block/" + this->graphName + ".png";
-                }
+                filename = "resource/graph/" + this->graphName + ".png";
             }
 
 

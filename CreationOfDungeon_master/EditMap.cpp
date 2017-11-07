@@ -710,7 +710,7 @@ void EditMap::SetObject() {
 
         if (selectPanelCategory == "MONSTER" && set_count[selectPanelCategory] < LIMIT_MONSTER) {
 
-            std::string fileName = "csv/Edit/MONSTER_DATA/"+selectedObject->getPanelObjectName() + "/Lv1.csv";
+            std::string fileName = "csv/Edit/"+selectedObject->GenerateText + "/Lv1.csv";
 
             std::string GenerateText = "";
 
