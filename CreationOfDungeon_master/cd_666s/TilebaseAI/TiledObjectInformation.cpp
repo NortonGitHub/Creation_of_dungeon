@@ -13,7 +13,7 @@ TiledObjectInformation::TiledObjectInformation(const TiledObjectDictionary& icon
     , _character(nullptr)
     , _iconDictionary(iconDictionary)
     , _enemyThumbnail("resource/graph/ui/StatusWindow.png", position)
-    , _allyThumbnail("resource/graph/ui/StatusWindow.png", position)
+    , _allyThumbnail("resource/graph/ui/StatusWindowBlue.png", position)
 {
     _icon = std::make_unique<Sprite>();
 
