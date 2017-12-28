@@ -206,12 +206,17 @@ void Enemy::ObtainItem(TiledObject* target)
 
 void Enemy::ArriveAtGoal(TiledObject* target)
 {
-    //TODO : ゴールした状態を追加するなどして
-    //ゴールしたらターゲッティングされない条件を用意する
     _hasAppeared = false;
     _hasArrived = true;
+
+	_target = nullptr;
+	
     target->Interact(*this);
     OBJECT_MGR->Remove(this);
+	_notifyer.NotifyRemoveTarget(*this);
+
+	_tempParam = Character::GetRawParameter();
+
 }
 
 

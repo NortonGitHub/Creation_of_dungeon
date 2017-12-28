@@ -49,6 +49,8 @@ public:
     //オブジェクトが目的地にたどり着いたかどうかを返す
     virtual bool HasArrived() const { return true; }
 
+	virtual BattleParameter GetRawParameter() const { return{ 0,0,0,0,0,0 }; }
+
     void SetTile(std::weak_ptr<MapTile> tile) { _tile = tile; }
     void ExitTile() { _tile.reset(); }
     
