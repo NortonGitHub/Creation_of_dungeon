@@ -24,7 +24,8 @@ public:
 		std::string ObjectName;				  //オブジェクト名
 		std::string ResourceName;             
 		std::string GenerateText;
-
+		int level;
+		int LevelUpCost;
 	};
 
 	struct EditOblect_Monster {   //店の売り物の情報
@@ -32,10 +33,13 @@ public:
 		std::string ObjectName;				  //オブジェクト名
 		std::string ResourceName;
 		std::string GenerateInformationPath;
-
+		int level;
+		int LevelUpCost;
 	};
 
 	std::vector<std::string> getEditOblectList(std::string CategoryName);
+
+	void ResetLevel();
 
 private:
 

@@ -6,6 +6,7 @@
 #include "PanelContent.h"
 #include "PanelSettingObject.h"
 #include "EditObject.h"
+#include "ObjectTextPanel.h"
 
 class EditMap :
     public SceneBase
@@ -47,6 +48,8 @@ private:
     std::shared_ptr<MakeDungeon> _dungeon;
 
     std::vector<std::string> _functions;
+
+	std::shared_ptr<ObjectTextPanel> objectTextPanel;
 
     //std::vector<std::shared_ptr<PanelBase>> panels;  //UI
 

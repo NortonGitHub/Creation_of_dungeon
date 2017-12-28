@@ -113,6 +113,7 @@ void ShopAssortment::BuyItem(std::shared_ptr<ShopPanel> shopPanel) { //à¯êîÇÕsho
 		for (int i = 0; i < shopItemTrapList.size(); i++) {
 			if (shopItemTrapList[i]->ObjectName == objectName) {
 				shopItemTrapList[i]->isHaveing = true;
+				shopItemTrapList[i]->level = 1;
 			}
 		}
 	}
@@ -120,6 +121,7 @@ void ShopAssortment::BuyItem(std::shared_ptr<ShopPanel> shopPanel) { //à¯êîÇÕsho
 		for (int i = 0; i < shopItemMonsterList.size(); i++) {
 			if (shopItemMonsterList[i]->ObjectName == objectName) {
 				shopItemMonsterList[i]->isHaveing = true;
+				shopItemMonsterList[i]->level = 1;
 			}
 		}
 	}
@@ -184,6 +186,43 @@ bool ShopAssortment::getCanSetObject(std::string objectName, ShopPanel::PanelCat
 
 }
 
+int ShopAssortment::getMonsterLevel(std::string objectName) {
 
+	for (int i = 0; i < shopItemMonsterList.size(); i++) {
+		if (shopItemMonsterList[i]->ObjectName == objectName) {
+			return shopItemMonsterList[i]->level;
+		}
+	}
+
+	return -1;
+
+}
+
+
+int ShopAssortment::getTrapLevel(std::string objectName) {
+
+	for (int i = 0; i < shopItemMonsterList.size(); i++) {
+		if (shopItemTrapList[i]->ObjectName == objectName) {
+			return shopItemTrapList[i]->level;
+		}
+	}
+
+	return -1;
+
+}
+
+void ShopAssortment::EvolMonster(std::shared_ptr<PanelSettingObject> PanelObject) {
+
+	MoneyManager::getInstance()->decreaseMoney(PanelObject->GetLevelUpCost());
+
+	std::string objectName = PanelObject->getPanelObjectName();
+
+	for (int i = 0; i < shopItemMonsterList.size(); i++) {
+		if (shopItemMonsterList[i]->ObjectName == objectName) {
+			shopItemMonsterList[i]->level++;
+		}
+	}
+
+}
 
 

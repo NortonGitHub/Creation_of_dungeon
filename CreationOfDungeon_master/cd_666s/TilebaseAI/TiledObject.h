@@ -2,6 +2,7 @@
 #include "GraphicalObject.h"
 #include "TiledVector.h"
 #include "../Utility/PoolingSystem.h"
+#include "BattleParameter.h"
 
 class MapTile;
 class Character;

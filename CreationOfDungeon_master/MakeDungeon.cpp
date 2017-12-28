@@ -85,6 +85,8 @@ void MakeDungeon::Init(std::string file_name)
 
     _messageReciever.Init();
 
+	_messageReciever.DrawFalse();
+
     //ƒ^ƒCƒ‹‚Ì‘å‚«‚³‚ğ“Ç‚İ‚Ş
     std::string fileName = "csv/StageData/tilesize.csv";
     std::vector<std::string> tileInfoArray;
@@ -393,11 +395,18 @@ TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, in
 
 }
 
-std::vector<TiledObject*> MakeDungeon::GenerateMonster(std::string fileName, TiledVector startPos, std::string* GenerateText) {
+std::vector<TiledObject*> MakeDungeon::GenerateMonster(std::string fileName, TiledVector startPos, std::string* GenerateText, int level) {
+
+	std::vector<TiledObject*> temp;
+	temp.clear();
+	
+	if (level <= 0) {
+		return temp;
+	}
 
     auto& _objs = OBJECT_MGR->_objects;
 
-    std::vector<TiledObject*> temp = Monster::GenerateMonster(_objs, _monsters, fileName, startPos, GenerateText);
+	temp = Monster::GenerateMonster(_objs, _monsters, fileName, startPos, GenerateText, level);
 
     _monsters.Update();
 

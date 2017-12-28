@@ -1,0 +1,4 @@
+Lv, hp, attack, defence, magic_attack, magic_defence, speed, name,skill
+1,200,60,20,1,1,60,minotaur,null
+2,400,70,30,1,1,60,minotaur,null
+3,600,80,40,1,1,60,minotaur,null

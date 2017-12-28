@@ -16,6 +16,7 @@ Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarg
     : Character(startPos, params, notifyer, enemyName, TiledObject::Type::ENEMY)
     , _baseTarget(baseTarget)
     , _damageTimer(30, false, false)
+	, _tempParam({ 0,0,0,0,0,0 })
 {
     _target = &baseTarget;
     

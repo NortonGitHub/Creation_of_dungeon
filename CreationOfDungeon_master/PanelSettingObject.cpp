@@ -4,6 +4,7 @@
 #include "cd_666s/Utility/CSVReader.h"
 
 #include "cd_666s/DebugDraw.h"
+#include "MoneyManager.h"
 
 PanelSettingObject::PanelSettingObject()
 {
@@ -43,6 +44,8 @@ PanelSettingObject::PanelSettingObject(PanelContent _panelContent)
         graphName = "";
 
         isSelected = false;
+
+		level = -1;
 
     }
     else {
@@ -109,7 +112,7 @@ void PanelSettingObject::DrawDebugPrint()
 }
 
 
-void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName, std::string graphName) {
+void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName, std::string graphName, int level, int LevelUpCost) {
 
 
 
@@ -123,25 +126,34 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
 
             this->GenerateText = GenerateText;
 
-            std::string filename;
-
             if (CategoryName == "MONSTER") {
-                filename = "resource/graph/tiledObject/" + this->graphName + ".png";
+				PanelGraphPath = "resource/graph/tiledObject/" + this->graphName + ".png";
+				panelCategory = ShopPanel::PanelCategory::MONSTER;
             }
             else if (CategoryName == "TRAP") {
-                filename = "resource/graph/trap/" + this->graphName + ".png";
+				PanelGraphPath = "resource/graph/trap/" + this->graphName + ".png";
+				panelCategory = ShopPanel::PanelCategory::TRAP;
             }
             else if (CategoryName == "BLOCK") {
-                filename = "resource/graph/" + this->graphName + ".png";
+				PanelGraphPath = "resource/graph/" + this->graphName + ".png";
+				panelCategory = ShopPanel::PanelCategory::BLOCK;
             }
 
+			this->level = level;
+			this->LevelUpCost = LevelUpCost;
 
+			if (!(this->LevelUpCost < 0)) {
+				canLevelUp = true;
+			}
+			else {
+				canLevelUp = false;
+			}
 
             auto pos = panel._pos;
 
             _position.Set(pos._x, pos._y);
 
-            _graph.Load(filename);
+            _graph.Load(PanelGraphPath);
 
             _graph.SetPosition(_position);
             _graph.SetPriority(Sprite::Priority::UI);
@@ -154,7 +166,7 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
         }
         else {
 
-            std::string filename = "resource/graph/ui/ObjectFrame.png";
+            PanelGraphPath = "resource/graph/ui/ObjectFrame.png";
 
             objectName = panelName;
 
@@ -166,7 +178,7 @@ void PanelSettingObject::PanelSettingObject_SettingPanel(std::string panelName, 
 
             _position.Set(pos._x, pos._y);
 
-            _graph.Load(filename);
+            _graph.Load(PanelGraphPath);
 
             _graph.SetPosition(_position);
 
@@ -202,3 +214,26 @@ std::string PanelSettingObject::getPanelObjectName() {
     return objectName;
 
 }
+
+int PanelSettingObject::getLevel() {
+	return level;
+}
+
+ShopPanel::PanelCategory PanelSettingObject::GetPanelCategory() {
+	return panelCategory;
+}
+
+
+bool PanelSettingObject::GetCanLevelUp() {
+	return canLevelUp;
+}
+
+int PanelSettingObject::GetLevelUpCost() {
+	return LevelUpCost;
+}
+
+std::string PanelSettingObject::GetPanelGraphPath() {
+	return PanelGraphPath;
+}
+
+

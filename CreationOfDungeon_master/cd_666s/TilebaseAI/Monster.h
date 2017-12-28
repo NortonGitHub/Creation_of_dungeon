@@ -24,7 +24,7 @@ public:
     
     static void LoadMonsters(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName);
 
-    static std::vector<TiledObject*> GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos, std::string* GenerateText);
+    static std::vector<TiledObject*> GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos, std::string* GenerateText, int level);
     
     void DrawTargetMarker();
     

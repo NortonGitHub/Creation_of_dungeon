@@ -498,7 +498,7 @@ std::shared_ptr<Emplacement> Emplacement::Create(std::string data, TiledVector p
 
 
 //敵を後から追加で生成する
-std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos,std::string* GenerateText)
+std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos,std::string* GenerateText, int level)
 {
 
     *GenerateText = "";
@@ -509,7 +509,12 @@ std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<T
     CSVReader reader;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
 
-    const int parameterNum = 8;
+    const int parameterNum = 9;
+
+	if (level > 1) {
+		dataArray.erase(dataArray.begin(), dataArray.begin() + ((parameterNum * (level - 1))));
+	}
+
     std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
     int idx = 0;
     int count = 0;
@@ -517,6 +522,12 @@ std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<T
     std::string skill;
     for (auto data : dataArray)
     {
+
+		if (count == 0) {
+			count++;
+			continue;
+		}
+
         // MEMO : 最後だけはファイル名をそのまま使う
         if (count < parameterNum - 2)
             params[count] = std::stoi(data);
@@ -549,6 +560,7 @@ std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<T
             //次のキャラへ
             count = 0;
             idx++;
+			break;
         }else{
             *GenerateText += ",";
         }

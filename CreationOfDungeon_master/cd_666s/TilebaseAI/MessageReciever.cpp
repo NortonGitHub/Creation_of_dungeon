@@ -55,3 +55,9 @@ void MessageReciever::Draw()
     //•¶Žš‘—‚è•`‰æ
     _processer.Draw(Vector2D(200, 550));
 }
+
+
+void MessageReciever::DrawFalse() {
+	_face.SetDisplayMode(false);
+	_messageUI.SetDisplayMode(false);
+}

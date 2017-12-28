@@ -18,7 +18,6 @@
 
 #include "../../BossBattle.h"
 
-
 class Goal;
 class StartPoint;
 

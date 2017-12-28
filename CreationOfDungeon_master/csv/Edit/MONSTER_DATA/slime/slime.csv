@@ -1,0 +1,4 @@
+Lv, hp, attack, defence, magic_attack, magic_defence, speed, name,skill
+1,800,32,23,0,20,25,slime,null
+2,1000,42,33,0,30,25,slime,null
+3,1200,52,43,0,40,25,slime,null

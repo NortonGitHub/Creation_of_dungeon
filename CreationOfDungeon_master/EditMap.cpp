@@ -29,6 +29,9 @@
 
 #include <assert.h>
 
+#include "ShopAssortment.h"
+#include "MoneyManager.h"
+
 #define STR(var) #var
 
 
@@ -143,6 +146,31 @@ SceneBase * EditMap::Update(UIManager _ui)
 
     SetObject();
 
+
+	if (objectTextPanel->EvolCheck()) {
+		std::shared_ptr<PanelSettingObject> temp = selectedObject;
+		ShopAssortment::getInstance()->EvolMonster(selectedObject);
+		editObject.ResetLevel();
+		for (auto p : PANEL_MGR->_objects) {
+
+			if (p == nullptr)
+				continue;
+
+			auto str = std::string(typeid(*p).name());
+
+			//クリックされたパネルの名前が"AffectObjects"だった場合
+			if (str.find("AffectObjects") != NPOS) {
+				if (selectPanelCategory == p->GetCategoryName()) {
+					PanelAffectObjectsFunction(p);
+				}
+			}
+
+		}
+		selectedObject = temp;
+		objectTextPanel->SetMessage(selectedObject);
+	}
+
+
     DeleteAddedObject();
 
     return scene;
@@ -185,6 +213,12 @@ void EditMap::Draw()
 
     Debug::DrawString(Vector2D(1055, 270), pageStr, Color4(0, 0, 0, 0), 40);
 
+	objectTextPanel->Draw();
+
+
+	clsDx();
+
+	printfDx("所持金：%d",MoneyManager::getInstance()->getMoney());
 
 }
 
@@ -334,6 +368,9 @@ void EditMap::Init()
 
     _cancelSE.Load("resource/sound/cancelA.wav");
     _cancelSE.SetVolume(200);
+
+	objectTextPanel = std::make_shared<ObjectTextPanel>(class_name);
+
 }
 
 bool EditMap::IsFirstWave()
@@ -491,6 +528,8 @@ void EditMap::PanelAffectObjectsFunction(std::shared_ptr<PanelBase> panel)
         _selectObjectGr.SetDisplayMode(false);
     }
 
+	objectTextPanel->ResetMessage();
+
 }
 
 void EditMap::PanelDisplayerFunction(std::shared_ptr<PanelBase> panel)
@@ -639,6 +678,9 @@ void EditMap::PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel)
             selectedObject = ps;
             _selectObjectGr.SetDisplayMode(true);
             _selectObjectGr.SetPosition(Vector2D(ps->GetPosition()._x - 8, ps->GetPosition()._y - 8));
+
+			objectTextPanel->SetMessage(selectedObject);
+
         }
         
     }
@@ -719,11 +761,11 @@ void EditMap::SetObject() {
 
         if (selectPanelCategory == "MONSTER" && set_count[selectPanelCategory] < LIMIT_MONSTER) {
 
-            std::string fileName = "csv/Edit/"+selectedObject->GenerateText + "/Lv1.csv";
+			std::string fileName = "csv/Edit/MONSTER_DATA/" + selectedObject->getPanelObjectName() + "/" + selectedObject->getPanelObjectName() + ".csv";
 
             std::string GenerateText = "";
 
-            std::vector<TiledObject*> temp = _dungeon->GenerateMonster(fileName, tiledCursorPos, &GenerateText);
+            std::vector<TiledObject*> temp = _dungeon->GenerateMonster(fileName, tiledCursorPos, &GenerateText, selectedObject->getLevel());
 
             addTileObject_Monster temp_m;
 

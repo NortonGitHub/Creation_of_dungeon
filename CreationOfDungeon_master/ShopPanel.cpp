@@ -12,7 +12,10 @@ ShopPanel::ShopPanel()
 ShopPanel::ShopPanel(std::string filePath, std::string ObjectName, Vector2D pos, int price, std::string shopPanelCategoryName) {
     //‰æ‘œ‚ª“Ç‚Ýž‚ß‚Ä‚¢‚È‚¢
     //ƒV[ƒ“‚ª”jŠü‚³‚ê‚é‘O‚ÉƒŒƒ“ƒ_[‚É“o˜^‚³‚ê‚Ä‚¢‚é‚½‚ßAƒV[ƒ“‚Ì”jŠü‚Æ“¯Žž‚É”jŠü‚³‚ê‚Ä‚¢‚é‚Á‚Û‚¢
-    this->shopPanelImage.Load("resource/graph/" + filePath + ".png");
+
+	shopPanelImagePath = "resource/graph/" + filePath + ".png";
+
+    this->shopPanelImage.Load(shopPanelImagePath);
 
     this->shopPanelName = ObjectName;
 
@@ -119,4 +122,11 @@ bool ShopPanel::ClickCheck() {
 	return true;
 
 }
+
+std::string ShopPanel::GetShopPanelImagePath() {
+
+	return shopPanelImagePath;
+
+}
+
 

@@ -39,6 +39,9 @@ EditObject::EditObject()
 		editOblect->ResourceName = EditObjectArray[j + 1];
 		editOblect->GenerateText = EditObjectArray[j + 2];
 
+		editOblect->level = ShopAssortment::getInstance()->getTrapLevel(editOblect->ObjectName);
+		editOblect->LevelUpCost = -1;
+
 		editOblectTrapList.push_back(editOblect);
 	}
 
@@ -54,6 +57,23 @@ EditObject::EditObject()
 		editOblect->ObjectName = EditObjectArray[j];
 		editOblect->ResourceName = EditObjectArray[j + 1];
 		editOblect->GenerateInformationPath = EditObjectArray[j + 2];
+
+		editOblect->level = ShopAssortment::getInstance()->getMonsterLevel(editOblect->ObjectName);
+
+		editOblect->LevelUpCost = -1;
+
+		std::string fileNameTemp = "csv/Edit/MONSTER_DATA/" + editOblect->ObjectName + "/LevelUpCost.csv";
+		std::vector<std::string> EditObjectArrayTemp;
+
+		reader.Read(RESOURCE_TABLE->GetFolderPath() + fileNameTemp, EditObjectArrayTemp, 1);
+
+		for (int i = 0; i < EditObjectArrayTemp.size(); i += 2) {
+			if (EditObjectArrayTemp[i] == "Lv" + std::to_string(editOblect->level) + "-" + std::to_string(editOblect->level + 1)) {
+				editOblect->LevelUpCost = std::stoi(EditObjectArrayTemp[i + 1]);
+			}
+		}
+
+		
 
 		editOblectMonsterList.push_back(editOblect);
 	}
@@ -104,6 +124,8 @@ std::vector<std::string> EditObject::getEditOblectList(std::string CategoryName)
 			result.push_back(editOblectMonsterList[i]->ObjectName);
 			result.push_back(editOblectMonsterList[i]->ResourceName);
 			result.push_back(editOblectMonsterList[i]->GenerateInformationPath);
+			result.push_back(std::to_string(editOblectMonsterList[i]->level));
+			result.push_back(std::to_string(editOblectMonsterList[i]->LevelUpCost));
 		}
 		return result;
 	}
@@ -112,6 +134,8 @@ std::vector<std::string> EditObject::getEditOblectList(std::string CategoryName)
 			result.push_back(editOblectTrapList[i]->ObjectName);
 			result.push_back(editOblectTrapList[i]->ResourceName);
 			result.push_back(editOblectTrapList[i]->GenerateText);
+			result.push_back(std::to_string(editOblectTrapList[i]->level));
+			result.push_back(std::to_string(editOblectTrapList[i]->LevelUpCost));
 		}
 		return result;
 	}
@@ -120,11 +144,43 @@ std::vector<std::string> EditObject::getEditOblectList(std::string CategoryName)
 			result.push_back(editOblectBlockList[i]->ObjectName);
 			result.push_back(editOblectBlockList[i]->ResourceName);
 			result.push_back(editOblectBlockList[i]->GenerateText);
+			result.push_back(std::to_string(-1));
+			result.push_back(std::to_string(-1));
 		}
 		return result;
 	}
 
 	return result;
+
+}
+
+
+void EditObject::ResetLevel() {
+
+	CSVReader reader;
+
+	for (int j = 0; j < editOblectTrapList.size(); j += 3) {
+		editOblectTrapList[j]->level = ShopAssortment::getInstance()->getTrapLevel(editOblectTrapList[j]->ObjectName);
+		editOblectTrapList[j]->LevelUpCost = -1;
+	}
+
+	for (int j = 0; j < editOblectMonsterList.size(); j += 3) {
+		
+		editOblectMonsterList[j]->level = ShopAssortment::getInstance()->getMonsterLevel(editOblectMonsterList[j]->ObjectName);
+
+		editOblectMonsterList[j]->LevelUpCost = -1;
+
+		std::string fileNameTemp = "csv/Edit/MONSTER_DATA/" + editOblectMonsterList[j]->ObjectName + "/LevelUpCost.csv";
+		std::vector<std::string> EditObjectArrayTemp;
+
+		reader.Read(RESOURCE_TABLE->GetFolderPath() + fileNameTemp, EditObjectArrayTemp, 1);
+
+		for (int i = 0; i < EditObjectArrayTemp.size(); i += 2) {
+			if (EditObjectArrayTemp[i] == "Lv" + std::to_string(editOblectMonsterList[j]->level) + "-" + std::to_string(editOblectMonsterList[j]->level + 1)) {
+				editOblectMonsterList[j]->LevelUpCost = std::stoi(EditObjectArrayTemp[i + 1]);
+			}
+		}
+	}
 
 }
 

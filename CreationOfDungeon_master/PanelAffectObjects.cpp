@@ -78,28 +78,39 @@ void PanelAffectObjects::SetSettingObject(std::vector<std::shared_ptr<PanelBase>
 
 	_array = editObject.getEditOblectList(GetCategoryName());
 
+	int DataNum = 0;
+
+	if (GetCategoryName() == "MONSTER") {
+		DataNum = 5;
+	}
+	else if (GetCategoryName() == "TRAP") {
+		DataNum = 5;
+	}
+	else if (GetCategoryName() == "BLOCK") {
+		DataNum = 5;
+	}
+	else {
+		return;
+	}
+
+
     for (int i = 0; i < _tps.size(); i++) {
 
         if (!_array.empty()) {
-            if (_array.size() >= 3) {
-                _tps[i]->PanelSettingObject_SettingPanel(_array[0], _array[2], GetCategoryName(),_array[1]);
+            if (_array.size() >= 4) {
+				_tps[i]->PanelSettingObject_SettingPanel(_array[0], _array[2], GetCategoryName(), _array[1], std::stoi(_array[3]), std::stoi(_array[4]));
                 //_tps[i] = PanelSettingObject(_array[i]);
-                _array.erase(_array.begin());
-                _array.erase(_array.begin());
-                _array.erase(_array.begin());
+				_array.erase(_array.begin(), _array.begin() + DataNum);
             }
             else {
-                _array.erase(_array.begin());
-                if (!_array.empty()) {
-                    _array.erase(_array.begin());
-                }
-                _tps[i]->PanelSettingObject_SettingPanel("", "", GetCategoryName(), "");
+				_array.clear();
+                _tps[i]->PanelSettingObject_SettingPanel("", "", GetCategoryName(), "", -1, -1);
                 //_tps[i] = std::make_shared<PanelSettingObject>(nullptr);
             }
             
         }
         else {
-            _tps[i]->PanelSettingObject_SettingPanel("", "", GetCategoryName(), "");
+            _tps[i]->PanelSettingObject_SettingPanel("", "", GetCategoryName(), "", -1, -1);
             //_tps[i] = std::make_shared<PanelSettingObject>(nullptr);
         }
     }

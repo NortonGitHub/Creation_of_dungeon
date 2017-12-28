@@ -14,6 +14,8 @@ public:
     void Update();
     void Draw();
 
+	void DrawFalse();	//メッセージウインドウを描画しない
+
     MessageManager _processer;
 
 private:

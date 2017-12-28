@@ -21,6 +21,7 @@ public:
 	Vector2D GetPotision();
 	PanelCategory GetShopPanelCategoryName();
 	bool GetCanBuy();
+	std::string GetShopPanelImagePath();
 
 	bool ClickCheck();
 
@@ -33,6 +34,8 @@ public:
 private:
     
     Sprite shopPanelImage;
+
+	std::string shopPanelImagePath;
 
     std::string shopPanelName;
 

@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include "ShopPanel.h"
+#include "PanelSettingObject.h"
 #pragma once
 
 
@@ -55,7 +56,11 @@ public:
 	bool getCanBuy(std::string objectName, ShopPanel::PanelCategory pc);
 	bool getCanSetObject(std::string objectName, ShopPanel::PanelCategory pc);
 
+	int getMonsterLevel(std::string objectName);
+	int getTrapLevel(std::string objectName);
+
     void BuyItem(std::shared_ptr<ShopPanel> shopPanel);
+	void EvolMonster(std::shared_ptr<PanelSettingObject> PanelObject);
 
 };
 
