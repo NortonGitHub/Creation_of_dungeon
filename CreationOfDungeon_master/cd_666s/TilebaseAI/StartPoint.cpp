@@ -11,6 +11,7 @@ StartPoint::StartPoint(TiledVector tilePos, MessageReciever& reciever)
 , _frameFromStart(0)
 , _currentIndex(0)
 , _reciever(reciever)
+, _isGetFirstTime(false)
 {
     _type = TiledObject::Type::START;
 
@@ -76,7 +77,6 @@ void StartPoint::Update()
         {
             _appearData[i].first.lock()->Appear();
             _currentIndex++;
-
             //_reciever.Recieve(_intrudeMessage);
         }
     }
@@ -109,6 +109,20 @@ int StartPoint::GetTimeUnitlNext() const
         return NobodyIntruder();
 
     return _appearData[_currentIndex].second - _frameFromStart;
+}
+
+int StartPoint::GetTimeUnitNextFrom() const
+{
+	if (_appearData.size() <= _currentIndex)
+		return NobodyIntruder();
+
+	int beforeApperTime = 0;
+
+	if(_currentIndex > 0){
+		beforeApperTime = _appearData[_currentIndex - 1].second;
+	}
+
+	return _appearData[_currentIndex].second - beforeApperTime;
 }
 
 
