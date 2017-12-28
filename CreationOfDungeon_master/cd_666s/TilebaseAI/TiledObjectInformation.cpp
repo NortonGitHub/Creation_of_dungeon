@@ -59,7 +59,6 @@ void TiledObjectInformation::Draw()
 
         _enemyThumbnail.SetDisplayMode(isEnemy);
         _allyThumbnail.SetDisplayMode(!isEnemy);
-
         _icon->SetResource(_iconDictionary.GetImageFromName(_character->GetName()));
         Init();
 
@@ -84,6 +83,9 @@ void Character::DrawParameter(Vector2D anchorPos)
 	DrawAffectedParameter("MATK : ", param._magicAttack, rawParam._magicAttack, anchorPos + Vector2D(106, 197));
 	DrawAffectedParameter("MDEF : ", param._magicDefence, rawParam._magicDefence, anchorPos + Vector2D(106, 231));
 	//DrawAffectedParameter("SPD : ", param._speed, rawParam._speed, anchorPos + Vector2D(240, 190));
+
+	
+	Debug::DrawString(anchorPos + Vector2D(129, 75), GetName(), ColorPalette::BLACK4, 32);
 
     size_t enableCount = 0;
     for (size_t i = 0; i < _effecters.size(); ++i)
