@@ -34,7 +34,7 @@ private:
 
     //¢Š«‰Â”\‚É‚È‚Á‚½‚Æ‚«‚Ì‰æ‘œ
     GraphArray _animation;
-    Sprite _currentGraph;
+    Sprite* _currentGraph;
 };
 
 

@@ -30,5 +30,6 @@
 560,590,Displayer_Magic,SHOW,0
 200,650,Displayer_AttackDef,SHOW,0
 380,650,Displayer_MagicDef,SHOW,0
+760,610,SettingObject_Lv,SELECT_OBJ,0
 1010,70,Displayer_Money,SHOW,0
 1010,150,Displayer_pay,SHOW,0

@@ -1,8 +1,7 @@
 #pointNum,#stageNum,#x,#y,#hitType,#isStayPoint,#pointConectÅc,
 1,1,836,538,0,1,2
-2,2,560,418,0,1,1,3,201
+2,2,560,418,0,1,1,3
 3,3,601,182,0,1,2
-201,shop1,300,450,0,1,2
 #3,3,601,182,0,1,2,101
 end
 #pointNum,#moveArea,#buttonX,#buttonY,#moveX,#moveY,#firstMovePoint,#firstX,#firstY,#pointConectÅc,

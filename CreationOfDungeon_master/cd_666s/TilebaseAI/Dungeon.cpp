@@ -16,7 +16,6 @@
 #include "TiledObjectMnager.h"
 #include "StartPoint.h"
 #include "Trap.h"
-#include "Bridge.h"
 
 #include <assert.h>
 #include <iostream>
@@ -205,18 +204,6 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 
     auto& _objs = OBJECT_MGR->_objects;
 
-	if (typeName.find("300") != std::string::npos)
-	{
-		_objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
-		return;
-	}
-
-	if (typeName.find("301") != std::string::npos)
-	{
-		_objs.push_back(std::make_shared<Bridge>(typeName, TiledVector(countX, countY)));
-		return;
-	}
-
     if (typeName.find("9#") != std::string::npos)
     {
         Trap::CreateTrap(typeName, countX, countY, _objs);
@@ -251,7 +238,7 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 
     if (typeName.find("6") != std::string::npos)
     {
-        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY), typeName));
+        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
         return;
     }
 
@@ -264,7 +251,11 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
     if (typeName == "0")
         return;
 
-    
+    if (typeName.find("300") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+        return;
+    }
 
 }
 

@@ -1,4 +1,0 @@
-Lv, hp, attack, defence, magic_attack, magic_defence, speed, skill & cost
-1,1300,20,25,50,50,15,heal#cost:200&mpRatio:80&range:6&power:0.5
-2,1400,15,20,50,35,18,heal_around#cost:400&mpRatio:70&range:6&power:0.5
-3,1600,20,25,60,35,20,heal#cost:300&mpRatio:80&range:3&power:0.5

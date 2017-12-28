@@ -12,7 +12,6 @@
 #include "cd_666s/TilebaseAI/WeakObstacle.h"
 #include "cd_666s/TilebaseAI/EnemysItem.h"
 #include "cd_666s/TilebaseAI/Monster.h"
-#include "cd_666s/TilebaseAI/Bridge.h"
 //#include "cd_666s/TilebaseAI/Goal.h"
 //#include "cd_666s/TilebaseAI/StartPoint.h"
 
@@ -198,19 +197,6 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
 
     auto& _objs = OBJECT_MGR->_objects;
 
-	if (typeName.find("300") != std::string::npos)
-	{
-		_objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
-		return;
-	}
-
-	if (typeName.find("301") != std::string::npos)
-	{
-		_objs.push_back(std::make_shared<Bridge>(typeName, TiledVector(countX, countY)));
-		return;
-	}
-
-
     if (typeName.find("9#") != std::string::npos)
     {
         Trap::CreateTrap(typeName, countX, countY, _objs);
@@ -245,7 +231,7 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
 
     if (typeName.find("6") != std::string::npos)
     {
-		_objs.push_back(std::make_shared<River>(TiledVector(countX, countY), typeName));
+        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
         return;
     }
 
@@ -255,12 +241,20 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
         return;
     }
 
+    if (typeName.find("3") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<Obstacle>(TiledVector(countX, countY)));
+        return;
+    }
+
     if (typeName == "0")
         return;
 
-    
-
-	
+    if (typeName.find("300") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+        return;
+    }
 
 }
 
@@ -273,36 +267,6 @@ TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, in
 
 
     auto& _objs = OBJECT_MGR->_objects;
-
-	if (typeName.find("300") != std::string::npos)
-	{
-		_objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
-		//一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
-		std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
-		TiledObject* to;
-		if (!toTemp.empty()) {
-			to = toTemp[0];
-		}
-		else {
-			to = nullptr;
-		}
-		return to;
-	}
-
-	if (typeName.find("301") != std::string::npos)
-	{
-		_objs.push_back(std::make_shared<Bridge>(typeName, TiledVector(countX, countY)));
-		//一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
-		std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
-		TiledObject* to;
-		if (!toTemp.empty()) {
-			to = toTemp[0];
-		}
-		else {
-			to = nullptr;
-		}
-		return to;
-	}
 
     if (typeName.find("9#") != std::string::npos)
     {
@@ -356,7 +320,7 @@ TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, in
     */
     if (typeName.find("6") != std::string::npos)
     {
-		_objs.push_back(std::make_shared<River>(TiledVector(countX, countY), typeName));
+        _objs.push_back(std::make_shared<River>(TiledVector(countX, countY)));
         //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
         std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
         TiledObject* to;
@@ -387,7 +351,20 @@ TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, in
     if (typeName == "0")
         return nullptr;
 
-    
+    if (typeName.find("300") != std::string::npos)
+    {
+        _objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+        //一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
+        std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
+        TiledObject* to;
+        if (!toTemp.empty()) {
+            to = toTemp[0];
+        }
+        else {
+            to = nullptr;
+        }
+        return to;
+    }
 
     return nullptr;
 

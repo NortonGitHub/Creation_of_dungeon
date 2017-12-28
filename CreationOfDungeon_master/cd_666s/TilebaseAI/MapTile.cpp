@@ -31,7 +31,7 @@ void MapTile::Init()
 {
     //¶‚Æ‰E‚ªì‚È‚ç
     std::string fileName = GetMapChipGraphDirectory(_type);
-	/*
+
     if ((FIELD->GetRawNumber(_tilePos + TiledVector(-1, 0)) == 6)
         && (FIELD->GetRawNumber(_tilePos + TiledVector(1, 0)) == 6)
         && (FIELD->GetRawNumber(_tilePos + TiledVector(0, 1)) == 0)
@@ -50,9 +50,6 @@ void MapTile::Init()
     {
         fileName += "ground";
     }
-	*/
-
-	fileName += "ground";
 
     fileName += ".png";
 

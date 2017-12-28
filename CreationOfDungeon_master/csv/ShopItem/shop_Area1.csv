@@ -1,7 +1,0 @@
-ObjectName,ResourceName(resource/graphの下からのパスを書く。.pngは無し),Price,CategoryName(MONSTERかTRAPかBLOCKのみ、間違いに注意)
-cardboard,block/cardboard,1000,BLOCK
-pot,block/pot,500,BLOCK
-wooden_box,block/wooden_box,200,BLOCK
-bareTrap,trap/bareTrap_Simple,388,TRAP
-ghost,tiledObject/ghost,567,MONSTER
-cardboard,block/cardboard,583384,BLOCK
