@@ -283,21 +283,30 @@ void EditMap::Init()
     //set_count[2] = 0;
     /***各オブジェクト設置数カウンタ初期化 ここまで***/
 
-    if (stage_num.find("b") != std::string::npos) {
-        LIMIT_TRAP = 4;
-        LIMIT_MONSTER = 4;
-        LIMIT_BLOCK = 6;
+	std::vector<std::string> limit_str;
+	filename = "csv/StageData/EditLimit.csv";
+	reader.Read(RESOURCE_TABLE->GetFolderPath() + filename, limit_str, 1);
+
+    if (TILE_SIZE == 48) {
+		LIMIT_MONSTER = std::stoi(limit_str[4 * 0 + 1]);
+        LIMIT_TRAP = std::stoi(limit_str[4 * 0 + 2]);
+        LIMIT_BLOCK = std::stoi(limit_str[4 * 0 + 3]);
     }
-    else if (stage_num_a != "3") {
-        LIMIT_TRAP = 3;
-        LIMIT_MONSTER = 3;
-        LIMIT_BLOCK = 6;
+    else if (TILE_SIZE == 40) {
+		LIMIT_MONSTER = std::stoi(limit_str[4 * 1 + 1]);
+		LIMIT_TRAP = std::stoi(limit_str[4 * 1 + 2]);
+		LIMIT_BLOCK = std::stoi(limit_str[4 * 1 + 3]);
     }
-    else {
-        LIMIT_TRAP = 4;
-        LIMIT_MONSTER = 4;
-        LIMIT_BLOCK = 8;
+    else if(TILE_SIZE == 32){
+		LIMIT_MONSTER = std::stoi(limit_str[4 * 2 + 1]);
+		LIMIT_TRAP = std::stoi(limit_str[4 * 2 + 2]);
+		LIMIT_BLOCK = std::stoi(limit_str[4 * 2 + 3]);
     }
+	else {
+		LIMIT_MONSTER = std::stoi(limit_str[4 * 0 + 1]);
+		LIMIT_TRAP = std::stoi(limit_str[4 * 0 + 2]);
+		LIMIT_BLOCK = std::stoi(limit_str[4 * 0 + 3]);
+	}
 
     //ダンジョンの地形情報の設定
 
@@ -421,7 +430,7 @@ void EditMap::PanelAffectObjectsFunction(std::shared_ptr<PanelBase> panel)
         }
     }
 
-    panel->SetSettingObject(temp_p);
+	panel->SetSettingObject(temp_p, editObject);
     int j = 0;
 
     auto& obj = PANEL_MGR->_objects;

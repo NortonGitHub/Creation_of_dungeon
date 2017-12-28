@@ -7,6 +7,7 @@
 #include "Graph.h"
 
 #include "cd_666s\TilebaseAI\GraphicalObject.h"
+#include "EditObject.h"
 
 class PanelBase : public GraphicalObject
 {
@@ -22,7 +23,7 @@ public:
     virtual std::string GetCategoryName();
 
     virtual void SetSettingObject(std::vector<PanelBase>& _tps);
-    virtual void SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps) {};
+    virtual void SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps, EditObject editObject) {};
 
     virtual bool IsClicked();
 

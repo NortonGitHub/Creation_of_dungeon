@@ -1,5 +1,6 @@
 #pragma once
 #include "PanelBase.h"
+#include "EditObject.h"
 
 class PanelAffectObjects :
     public PanelBase
@@ -17,7 +18,7 @@ public:
 
     std::string GetCategoryName();
 
-    void SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps);
+    void SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps, EditObject editObject);
 
     void DrawDebugPrint() override;
 

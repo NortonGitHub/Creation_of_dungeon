@@ -1,4 +1,5 @@
 hp, attack, defence, magic_attack, magic_defence, speed, interval(sec), name, skill & cost
+‚Ü‚½‚Ítemplate,name,interval(sec),Lv 
 1100,30,15,0,20,15,10,blaver,null
 1300,35,18,0,18,18,25,fighter,null
 1200,30,20,0,20,20,40,blaver,param_rise#cost:1000&mpRatio:100&hp:100&atk:150&def:100&matk:100&mdef:100&spd:2000&time:5
