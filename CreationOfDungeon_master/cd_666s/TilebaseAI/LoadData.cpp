@@ -106,23 +106,23 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
 				count++;
 				continue;
 			}
+			//冒険者にテンプレートここまで
 		}
-		//冒険者にテンプレートここまで
-
-        // MEMO : 最後だけはファイル名をそのまま使う
-        if (count < parameterNum - 2)
-        {
-            params[count] = std::stoi(data);
-        }
-        else if (count == parameterNum - 2)
-        {
-            name = data;
-        }
-        else
-        {
-            skillData = data;
-        }
-
+		else {
+			// MEMO : 最後だけはファイル名をそのまま使う
+			if (count < parameterNum - 2)
+			{
+				params[count] = std::stoi(data);
+			}
+			else if (count == parameterNum - 2)
+			{
+				name = data;
+			}
+			else
+			{
+				skillData = data;
+			}
+		}
         count++;
 
         if (count == parameterNum)

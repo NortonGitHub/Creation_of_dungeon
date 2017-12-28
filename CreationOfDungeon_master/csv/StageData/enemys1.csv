@@ -1,6 +1,6 @@
 hp, attack, defence, magic_attack, magic_defence, speed, interval(sec), name, skill & cost
 ‚Ü‚½‚Ítemplate,name,interval(sec),Lv 
-template,blaver,10,1
+template,thief,10,2
 1300,35,18,0,18,18,25,fighter,null
 template,blaver,40,2
 1600,33,20,80,30,20,50,magician,magic_shoot#power:1000&cost:400&mpRatio:80&speed:3.0&range:6
