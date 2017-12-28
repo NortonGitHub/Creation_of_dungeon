@@ -10,6 +10,7 @@ class TiledObjectManager : public Singleton<TiledObjectManager>
 {
     friend class Dungeon;
     friend class MakeDungeon;
+	friend class BossBattle;
 public:
     TiledObjectManager();
     ~TiledObjectManager();

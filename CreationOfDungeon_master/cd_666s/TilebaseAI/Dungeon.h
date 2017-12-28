@@ -16,6 +16,7 @@
 #include "../Render/Sprite.h"
 #include "../Sound/Sound.h"
 
+#include "../../BossBattle.h"
 
 
 class Goal;
@@ -75,6 +76,9 @@ private:
 
     //メッセージウィンドウ
     MessageReciever _messageReciever;
+
+	//ボスバトル進行用のモジュール
+	BossBattle _bossBattle;
 
     // MEMO : debug用
     Sprite _mainsFrame, _background, _windowBackground, _waveInfomartionBoard;

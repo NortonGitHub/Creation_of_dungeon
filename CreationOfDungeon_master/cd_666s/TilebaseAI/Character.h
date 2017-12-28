@@ -53,10 +53,10 @@ public:
     TiledVector::Direction GetDirection() const { return _direction; }
 
     BattleParameter GetAffectedParameter();
-    BattleParameter GetRawParameter() const { return _battleParameter; };
+    BattleParameter GetRawParameter() const override { return _battleParameter; };
     
     void SetDirection(TiledVector::Direction d) { _direction = d; }
-
+	
     bool _isBattling;
 
 protected:

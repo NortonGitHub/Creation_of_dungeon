@@ -8,6 +8,7 @@
 #include "TileField.h"
 #include "Enemy.h"
 #include "Monster.h"
+#include "../../IntrudedEnemy.h"
 #include "Obstacle.h"
 #include "WeakObstacle.h"
 #include "River.h"
@@ -145,6 +146,11 @@ void Dungeon::Init()
     }
     _windowBackground.SetPosition(Vector2D(28, 28));
     _background.SetPosition(Vector2D(0, 0));
+
+	//ボス情報の読み込み
+	if (_is_boss) {
+//		_bossBattle.Init(_stageNum);
+	}
     //ここまで
 
     //オブジェクトを読み込む
@@ -188,7 +194,7 @@ void Dungeon::Init()
     _monsters.Update();
     _enemys.Update();
     OBJECT_MGR->Refresh();
-    
+
     for (auto obj : _objs)
     {
         if (obj.get() != nullptr)
@@ -310,6 +316,8 @@ bool Dungeon::HasGameOver()
         auto passedNum = _goal->GetPassedNum();
         if (_permitivePassedNum < passedNum)
             return true;
+		
+		//return _bossBattle.WasBossKilled();
     }
     //通常ステージのゲームオーバー条件 : 通過させた敵の数
     else {
@@ -323,41 +331,46 @@ bool Dungeon::HasGameOver()
 
 void Dungeon::Update()
 {
-    //メッセージ更新
-    UpdateSecretary();
+	//メッセージ更新
+	UpdateSecretary();
 
-    if (_is_boss) {
-        _counter.Update(_defeatedNum);
-    }
-    else {
-        _timer.Update();
-    }
+	if (_is_boss) {
+		_counter.Update(_defeatedNum);
+	}
+	else {
+		_timer.Update();
+	}
 
-    //情報網更新
-    _monsters.Update();
-    _enemys.Update();
-    
-    //捜査情報更新
-    _controller.Update();
+	//情報網更新
+	_monsters.Update();
+	_enemys.Update();
 
-    for (auto obj : OBJECT_MGR->_objects)
-    {
-        if (obj != nullptr)
-            obj->Update();
+	//捜査情報更新
+	_controller.Update();
 
-        if (!_is_boss)
-            continue;
+	for (auto& obj : OBJECT_MGR->_objects)
+	{
+		if (obj != nullptr) {
+			obj->Update();
 
-        if (obj->GetType() == TiledObject::Type::ENEMY) {
-            _defeatedNum = obj->GetDefeatedNum();
-        }
+			if (!_is_boss)
+				continue;
 
-        //敵がゴールに到着したらボスとの戦闘開始
-        if (obj->HasArrived())
-        {
-        }
-    }
+			if (obj->GetType() == TiledObject::Type::ENEMY) {
+				_defeatedNum = obj->GetDefeatedNum();
+			}
 
+			//敵がゴールに到着したらボスとの戦闘開始
+			if (obj->HasArrived())
+			{
+			//	_bossBattle.SetBattleObject(OBJECT_MGR->_objects, obj);
+			}
+		}
+	}
+
+	if (_is_boss) {
+	//	_bossBattle.Update();
+	}
 }
 
 

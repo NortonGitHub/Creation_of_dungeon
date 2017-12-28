@@ -65,7 +65,6 @@ public:
         }
     };
 
-
     void StuckOn(int interval)  { _damageTimer.Reset(interval, true, false); };
 
 private:
@@ -110,6 +109,8 @@ private:
     std::vector<SearchPriorityNode> _searchRuleList;
     TiledObject* SearhTargetByRuleList();
     void BuildSearchingRuleList();
+
+	BattleParameter _tempParam;	//ボス戦闘への値渡しに利用
 
     template <typename T>
     void SearchTarget(std::vector<TiledObject*>& targets, const TiledVector& tilePos, const SearchPriorityNode::SearchingRange& rangeType) {};
