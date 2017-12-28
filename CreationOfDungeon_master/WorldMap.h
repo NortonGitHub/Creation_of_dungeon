@@ -163,7 +163,8 @@ public:
 
     void Init();    //初期化
 
-    bool myPointSet(int PointNum);  //自分のポイントを設定する　マップ移動はしない　失敗（移動するポイントが別のマップ等）したらfalse、成功でtrueを返す
+    bool myPointSet_PointNum(int PointNum);  //自分のポイントを設定する　マップ移動はしない　失敗（移動するポイントが別のマップ等）したらfalse、成功でtrueを返す
+    bool myPointSet_StageNum(std::string StageNum);  //自分のポイントを設定する(ステージ番号)　マップ移動はしない　失敗（移動するポイントが別のマップ等）したらfalse、成功でtrueを返す
     int PointSearch(int pointNum);  //ポイント番号からそのポイント番号の一致するポイント情報のnowMapPointListの配列番号を返す　ポイントの場合失敗する
 
     void setNowAreaPointList();

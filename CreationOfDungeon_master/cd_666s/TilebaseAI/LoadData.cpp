@@ -52,7 +52,7 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
 
     std::vector<std::string> dataArray;
     CSVReader reader;
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 2);
 
     const int parameterNum = 9;
     std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
@@ -61,11 +61,53 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
 
     int idx = 0;
     int count = 0;
+
+	bool isTemplate = false;
+
     for (auto data : dataArray)
     {
         if (data.empty()) {
             break;
         }
+
+		//冒険者にテンプレートを追加
+		if (count == 0) {
+			if (data == "template") {
+				isTemplate = true;
+				count++;
+				continue;
+			}
+		}
+
+		if (isTemplate) {
+			if (count == 1) {
+				name = data;
+			}
+			else if (count == 2) {
+				params[6] = std::stoi(data);
+			}
+			else if (count == 3) {
+				const int paramNum = 8;
+				std::string TemplateFilename = "csv/StageData/EnemyData/" + name + ".csv";
+				std::vector<std::string> TemplateDataArray;
+				reader.Read(RESOURCE_TABLE->GetFolderPath() + TemplateFilename, TemplateDataArray, 1);
+
+				for (int i = 1; i < paramNum - 1; i++) {
+					params[i - 1] = std::stoi(TemplateDataArray[(paramNum * (std::stoi(data) - 1)) + i]);
+				}
+				
+				skillData = TemplateDataArray[(paramNum * (std::stoi(data) - 1)) + paramNum - 1];
+
+				count = parameterNum - 1;
+				isTemplate = false;
+			}
+
+			if (count != parameterNum - 1) {
+				count++;
+				continue;
+			}
+		}
+		//冒険者にテンプレートここまで
 
         // MEMO : 最後だけはファイル名をそのまま使う
         if (count < parameterNum - 2)

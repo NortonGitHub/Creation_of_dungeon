@@ -71,16 +71,12 @@ std::string PanelAffectObjects::GetCategoryName()
 }
 
 
-void PanelAffectObjects::SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps)
+void PanelAffectObjects::SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps, EditObject editObject)
 {
 
-    CSVReader reader;
-
-    std::string fileName = "csv/Edit/";
-    fileName += GetCategoryName() + ".csv";
     std::vector<std::string> _array;
 
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, _array, 1);
+	_array = editObject.getEditOblectList(GetCategoryName());
 
     for (int i = 0; i < _tps.size(); i++) {
 

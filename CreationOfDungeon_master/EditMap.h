@@ -5,6 +5,7 @@
 #include "PanelBase.h"
 #include "PanelContent.h"
 #include "PanelSettingObject.h"
+#include "EditObject.h"
 
 class EditMap :
     public SceneBase
@@ -116,6 +117,8 @@ private:
 
     Sprite _selectCategoryGr;
     Sprite _selectObjectGr;
+
+	EditObject editObject;
 
 };
 
