@@ -28,9 +28,9 @@ namespace ColorPalette
     static const Color4 BLUE4 = Color4(0, 0, 1, 1);
     static const Color4 WHITE4 = Color4(1, 1, 1, 1);
     static const Color4 BLACK4 = Color4(0, 0, 0, 1);
-	static const Color4 LIGHTBLUE4 = Color4(39.21, 74.51, 1, 1);
-	static const Color4 ORANGE4 = Color4(1, 47.06, 23.53, 1);
-	static const Color4 PURPLE4 = Color4(47.06, 31.37, 1, 1);
+	static const Color4 LIGHTBLUE4 = Color4(0.39, 0.75, 1, 1);
+	static const Color4 ORANGE4 = Color4(1, 0.47, 0.24, 1);
+	static const Color4 PURPLE4 = Color4(0.47, 0.31, 1, 1);
 };
 
 #endif /* Color_h */
