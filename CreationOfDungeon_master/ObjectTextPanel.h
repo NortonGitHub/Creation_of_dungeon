@@ -34,11 +34,19 @@ private:
 	int messageTextArrayNum;
 
 	Sprite _buyButton;
+
+	bool existBuy;	//購入ボタンは存在するか
 	bool canBuy;	//購入可能か（お金が足りているかも含む）
-	bool canLevelUp;
+
+	bool existLevelUp;	//レベルアップ先は存在するか
+	bool canLevelUp;	//レベルアップ可能か（お金が足りているかも含む）
 
 	int Level;
 	int LevelUpCost;
+
+
+	Sound _cancelSE;
+	
 
 public:
 

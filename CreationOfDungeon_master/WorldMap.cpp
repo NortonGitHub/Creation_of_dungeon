@@ -10,6 +10,7 @@
 #include "EditMap.h"
 #include "ShopScene.h"
 #include <regex>
+#include "cd_666s\Utility\CSVReader.h"
 
 
 WorldMap::WorldMap()
@@ -137,6 +138,10 @@ SceneBase * WorldMap::Update()
         else {
             movePoint();
         }
+
+		if (ClickCheck(_shopIcon.GetPosition(), _shopIcon.GetTexturePtr().lock()->GetBaseSize())) {
+			return new ShopScene("shop1");
+		}
 
     }
     else {
@@ -310,6 +315,16 @@ void WorldMap::Init() {
     movePointList.clear();
 
     AreaGr = &AreaGrBuffer[nowMyAreaNum - 1];
+
+	CSVReader reader;
+
+	std::string fileName = "csv/WorldMap/ShopPosition.csv";
+	std::vector<std::string> Array;
+	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, Array, 1);
+
+	_shopIcon.Load("resource/graph/worldMap/IconShop.png");
+	_shopIcon.SetPosition(Vector2D(std::stoi(Array[0]), std::stoi(Array[1])));
+	_shopIcon.SetPriority(Sprite::Priority::UI);
 
 }
 
@@ -980,6 +995,26 @@ void WorldMap::setAreaNum(int areaNum) {
 }
 
 
+bool WorldMap::ClickCheck(Vector2D pos, Vector2D size) {
+
+	if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
+		return false;
+
+	//クリック位置を取得
+	auto cursorPos = MOUSE->GetCursorPos();
+
+	if (cursorPos._x < pos._x)
+		return false;
+	if (cursorPos._y < pos._y)
+		return false;
+	if (pos._x + size._x < cursorPos._x)
+		return false;
+	if (pos._y + size._y < cursorPos._y)
+		return false;
+
+	return true;
+
+}
 
 
 

@@ -26,6 +26,7 @@ public:
 
     int getMoney();
 	void resetMoney();
+	void InitMoney();
 
     void decreaseMoney(int num);
 

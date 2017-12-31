@@ -1,8 +1,8 @@
 #include "ConsumableItem.h"
 
 
-ConsumableItem::ConsumableItem(int goldValue, std::string imageFileName)
-    : TreasureContents(goldValue, imageFileName)
+ConsumableItem::ConsumableItem(std::string ItemName, int goldValue, std::string imageFileName)
+    : TreasureContents(ItemName, goldValue, imageFileName)
 {
 }
 

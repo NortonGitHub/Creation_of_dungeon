@@ -35,9 +35,15 @@ public:
 
     bool HasClear();
     bool HasGameOver();
+
+	int GetDefeatedNum() { return _defeatedNum; };
+
+
+	void SetFieldType();
     
 private:
     
+    void DrawEnemyTimer();	//MEMO: これを別のクラスに移動させる
     void LoadTileSize(std::string stageName, std::vector<std::string>& rawData);
 
     //ゲーム時間と時間通知モジュール群
@@ -80,8 +86,11 @@ private:
 	BossBattle _bossBattle;
 
     // MEMO : debug用
-    Sprite _mainsFrame, _background, _windowBackground, _waveInfomartionBoard;
-
+    Sprite _mainsFrame, _background, _windowBackground, _waveInfomartionTimer;
+	Sprite _hart, _hartFrame;
+	//std::vector<Sprite> _hart;
+	std::vector<Sprite> _hartN;
+	
     // MEMO : 突貫工事用
     void LoadMessage(std::string stageName);
     void UpdateSecretary();
@@ -91,6 +100,8 @@ private:
     bool _is_boss;
 
     int _defeatedNum;
+
+	std::string fieldTypeStr;
 
 };
 

@@ -8,7 +8,7 @@ class Equipment : public TreasureContents
 {
 public:
 
-    Equipment(BattleParameter bonusParam, int goldValue, std::string imageFileName);
+    Equipment(std::string ItemName, BattleParameter bonusParam, int goldValue, std::string imageFileName);
     ~Equipment();
 
     BattleParameter GetBonusParam() const { return _bonusParameter; }

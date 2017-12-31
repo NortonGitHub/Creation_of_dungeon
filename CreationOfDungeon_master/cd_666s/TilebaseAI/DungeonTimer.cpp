@@ -86,11 +86,11 @@ void DungeonTimer::Draw()
 {
 	//残り時間デバッグ表示
 	std::string timerStr = "Time:";
-	Debug::DrawString(_position + Vector2D(20, 20), timerStr);
+	//Debug::DrawString(_position + Vector2D(20, 20), timerStr);
 	timerStr = std::to_string((_waveInterval - _count) / 60);
 	timerStr += "/";
 	timerStr += std::to_string(_waveInterval / 60);
-	Debug::DrawString(_position + Vector2D(40, 40), timerStr);
+	//Debug::DrawString(_position + Vector2D(40, 40), timerStr);
 
 	auto offset = 10;
 	auto timeRatio = static_cast<double>(_count - _waveInterval) / static_cast<double>(_waveInterval);

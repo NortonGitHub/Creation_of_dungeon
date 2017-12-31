@@ -33,6 +33,15 @@ MakeDungeon::MakeDungeon(std::string stage_num)
     , _windowBackground("resource/graph/ui/main_window_background_cave.png", Vector2D(28, 28))
 {
 
+	auto b_pos = _stage_num.rfind('b');
+
+	if (b_pos != std::string::npos) {
+		_stage_num_a = _stage_num.substr(0, b_pos);
+	}
+	else {
+		_stage_num_a = _stage_num;
+	}
+
     _background.Load("resource/graph/background/background_cave.png");
     _background.SetPosition(Vector2D(0, 0));
 
@@ -118,46 +127,13 @@ void MakeDungeon::Init(std::string file_name)
 
     //FIELD->Init(fieldSizeH, fieldSizeV);
 
-    //ダンジョンの地形の設定
-    std::string ft;
-
-    std::vector<std::string> FieldTypeArray;
-    fileName = "csv/StageData/DungeonType.csv";
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, FieldTypeArray, 2);
-
-    int FieldTypeNum = stoi(FieldTypeArray[stoi(_stage_num) * 2 - 1]);
-
-    switch (FieldTypeNum) {
-    case 0:
-        ft = "#CAV";
-        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
-        _background.Load("resource/graph/background/background_cave.png");
-        break;
-    case 1:
-        ft = "#FST";
-        _windowBackground.Load("resource/graph/ui/main_window_background_forest.png");
-        _background.Load("resource/graph/background/background_forest.jpg");
-        break;
-    case 2:
-        ft = "#STN";
-        _windowBackground.Load("resource/graph/ui/main_window_background_stone.png");
-        _background.Load("resource/graph/background/background_stone.jpg");
-        break;
-    default:
-        ft = "#CAV";
-        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
-        _background.Load("resource/graph/background/background_cave.jpg");
-        break;
-    }
-    _windowBackground.SetPosition(Vector2D(28, 28));
-    _background.SetPosition(Vector2D(0, 0));
-    //ここまで
+	SetFieldType();
 
     for (auto data : _stageArray) {
         GenerateObject(data, countX, countY);
 
         //ftが地形情報なので渡す
-        FIELD->SetFieldType(TiledVector(countX, countY), ft);
+        FIELD->SetFieldType(TiledVector(countX, countY), fieldTypeStr);
 
         countX++;
 
@@ -202,7 +178,7 @@ void MakeDungeon::GenerateObject(std::string typeName, int countX, int countY)
 
 	if (typeName.find("300") != std::string::npos)
 	{
-		_objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+		_objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY), typeName));
 		return;
 	}
 
@@ -278,7 +254,7 @@ TiledObject* MakeDungeon::GenerateAddObject(std::string typeName, int countX, in
 
 	if (typeName.find("300") != std::string::npos)
 	{
-		_objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+		_objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY), typeName));
 		//一つのマスに複数のオブジェクトはないのでこれで生成したオブジェクトのポインタをとれるはず
 		std::vector<TiledObject*> toTemp = FIELD->GetTiledObjects(TiledVector(countX, countY));
 		TiledObject* to;
@@ -440,5 +416,55 @@ std::shared_ptr<StartPoint> MakeDungeon::getStart(){
 
     return _start;
 
+}
+
+
+void MakeDungeon::SetFieldType() {
+
+	//ダンジョンの地形の設定
+
+	CSVReader reader;
+
+	std::vector<std::string> FieldTypeArray;
+	std::string fileName = "csv/StageData/DungeonType.csv";
+	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, FieldTypeArray, 2);
+
+	int FieldTypeNum = stoi(FieldTypeArray[stoi(_stage_num_a) * 2 - 1]);
+
+	switch (FieldTypeNum) {
+	case 0:
+		fieldTypeStr = "#CAV";
+		_windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+		_background.Load("resource/graph/background/background_cave.png");
+		break;
+	case 1:
+		fieldTypeStr = "#FST";
+		_windowBackground.Load("resource/graph/ui/main_window_background_forest.png");
+		_background.Load("resource/graph/background/background_forest.jpg");
+		break;
+	case 2:
+		fieldTypeStr = "#STN";
+		_windowBackground.Load("resource/graph/ui/main_window_background_stone.png");
+		_background.Load("resource/graph/background/background_stone.jpg");
+		break;
+	case 3:
+		fieldTypeStr = "#TIM";
+		_windowBackground.Load("resource/graph/ui/main_window_background_wood.png");
+		_background.Load("resource/graph/background/background_wood.png");
+		break;
+	default:
+		fieldTypeStr = "#CAV";
+		_windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+		_background.Load("resource/graph/background/background_cave.png");
+		break;
+	}
+	_windowBackground.SetPosition(Vector2D(28, 28));
+	_background.SetPosition(Vector2D(0, 0));
+
+}
+
+
+std::string MakeDungeon::GetFieldType() {
+	return fieldTypeStr;
 }
 

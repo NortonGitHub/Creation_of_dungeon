@@ -31,10 +31,12 @@ Dungeon::Dungeon(std::string stageName)
     , _mainsFrame("resource/graph/ui/main_window.png", Vector2D(20, 20))
     , _background("resource/graph/background/background.png", Vector2D(0, 0))
     , _windowBackground("resource/graph/ui/main_window_background1.png", Vector2D(28, 28))
-    , _waveInfomartionBoard("resource/graph/ui/enemyinformation.png", Vector2D(754, 248))
-    , _infoDrawer(_dictionary)
-    , _intruderInformation(_dictionary)
-    , _intrudeLastCharacter(false)
+    , _waveInfomartionTimer("resource/graph/ui/enemytimer.png", Vector2D(754, 248))
+    , _hartFrame("resource/graph/ui/LifeFrame.png", Vector2D(734, 248 - 200))
+	, _hart("resource/graph/ui/HartFull.png", Vector2D(734 + 7, 78 + 28))
+	, _infoDrawer(_dictionary)
+	, _intruderInformation(_dictionary)
+	, _intrudeLastCharacter(false)
     , _defeatedNum(0)
 {
 
@@ -47,6 +49,16 @@ Dungeon::Dungeon(std::string stageName)
     else {
         _stageNum = _stageName;
     }
+    
+    
+    
+    
+    _hart.SetPriority(Sprite::Priority::UI);
+	_hart.SetDisplayMode(false);
+	_hart.SetScale(Vector2D(5.0, 5.0));
+
+	_hartFrame.SetPriority(Sprite::Priority::UI);
+	_hartFrame.SetDisplayMode(true);
 
     _background.Load("resource/graph/background/background_cave.png");
     _background.SetPosition(Vector2D(0, 0));
@@ -57,7 +69,8 @@ Dungeon::Dungeon(std::string stageName)
     _mainsFrame.SetPriority(Sprite::Priority::UI);
     _background.SetPriority(Sprite::Priority::BACKGROUND);
     _windowBackground.SetPriority(static_cast<int>(Sprite::Priority::BACKGROUND) + 1);
-    _waveInfomartionBoard.SetPriority(Sprite::Priority::UI);
+	_waveInfomartionTimer.SetPriority(Sprite::Priority::UI);
+
 }
 
 
@@ -114,66 +127,34 @@ void Dungeon::Init()
     int countY = 0;
     FIELD->Init(fieldSizeH, fieldSizeV);
 
-    //ダンジョンの地形の設定
-    std::string ft;
-
-    std::vector<std::string> FieldTypeArray;
-    fileName = "csv/StageData/DungeonType.csv";
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, FieldTypeArray, 2);
-
-    int FieldTypeNum = stoi(FieldTypeArray[stoi(_stageName) * 2 - 1]);
-
-    switch (FieldTypeNum) {
-    case 0:
-        ft = "#CAV";
-        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
-        _background.Load("resource/graph/background/background_cave.png");
-        break;
-    case 1:
-        ft = "#FST";
-        _windowBackground.Load("resource/graph/ui/main_window_background_forest.png");
-        _background.Load("resource/graph/background/background_forest.jpg");
-        break;
-    case 2:
-        ft = "#STN";
-        _windowBackground.Load("resource/graph/ui/main_window_background_stone.png");
-        _background.Load("resource/graph/background/background_stone.jpg");
-        break;
-    default:
-        ft = "#CAV";
-        _windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
-        _background.Load("resource/graph/background/background_cave.jpg");
-        break;
-    }
-    _windowBackground.SetPosition(Vector2D(28, 28));
-    _background.SetPosition(Vector2D(0, 0));
+	SetFieldType();
 
 	//ボス情報の読み込み
 	if (_is_boss) {
-//		_bossBattle.Init(_stageNum);
+		//		_bossBattle.Init(_stageNum);
 	}
     //ここまで
 
     //オブジェクトを読み込む
-    auto& _objs = OBJECT_MGR->_objects;
-    for (auto data : dataArray)
-    {
-        //受け取ったデータを変換表をもとに変換
-        GenerateObject(data, countX, countY);
+	auto& _objs = OBJECT_MGR->_objects;
+	for (auto data : dataArray)
+	{
+		//受け取ったデータを変換表をもとに変換
+		GenerateObject(data, countX, countY);
 
-        FIELD->SetFieldType(TiledVector(countX, countY), ft);
-        
-        //次のマップ番号まで
-        countX++;
-        if (countX == fieldSizeH)
-        {
-            countX = 0;
-            countY++;
-            
-            if (countY == fieldSizeV)
-                break;
-        }
-    }
+		FIELD->SetFieldType(TiledVector(countX, countY), fieldTypeStr);
+
+		//次のマップ番号まで
+		countX++;
+		if (countX == fieldSizeH)
+		{
+			countX = 0;
+			countY++;
+
+			if (countY == fieldSizeV)
+				break;
+		}
+	}
     
     assert( (_goal != nullptr) && (_start != nullptr) && "Cannot Read Start and Goal");
     
@@ -213,7 +194,7 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 
 	if (typeName.find("300") != std::string::npos)
 	{
-		_objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY)));
+		_objs.push_back(std::make_shared<WeakObstacle>(TiledVector(countX, countY), typeName));
 		return;
 	}
 
@@ -420,16 +401,24 @@ void Dungeon::Draw()
         _timer.Draw();
     }
 
-    //ノルマ表示
-    std::string passed = "MISS:";
-    Debug::DrawString(_waveInfomartionBoard.GetPosition() + Vector2D(20, 85), passed);
-    passed = std::to_string(_goal->GetPassedNum());
-    passed += "/";
-    passed += std::to_string(_permitivePassedNum);
-    Debug::DrawString(_waveInfomartionBoard.GetPosition() + Vector2D(50, 105), passed);
+    DrawEnemyTimer();
+}
 
-    //侵入者情報表示
-    _intruderInformation.Draw();
+void Dungeon::DrawEnemyTimer() {
+
+	//ノルマ表示
+	//std::string passed = "×";
+	//Debug::DrawString(_waveInfomartionTimer.GetPosition() + Vector2D(30, 170), passed);
+	std::string passed = std::to_string(_permitivePassedNum - _goal->GetPassedNum());
+	auto color = (_permitivePassedNum - _goal->GetPassedNum() <= 0) ? ColorPalette::RED4 : ColorPalette::BLACK4;
+	Debug::DrawString(_hartFrame.GetPosition() + Vector2D(64, 58), passed, color, 48);
+	/*
+	passed += "/";
+	passed += std::to_string(_permitivePassedNum);
+	Debug::DrawString(_waveInfomartionTimer.GetPosition() + Vector2D(60, 190), passed);
+	*/
+	//侵入者情報表示
+	_intruderInformation.Draw();
 }
 
 
@@ -478,48 +467,100 @@ void Dungeon::LoadMessage(std::string stageName)
 
 void Dungeon::UpdateSecretary()
 {
-    auto timeRatio = _timer.GetTimeRatio();
+	auto timeRatio = _timer.GetTimeRatio();
 
-    if (timeRatio == 0)
-    {
-        _messageReciever.Recieve(_dungeonMessage.at("start"));
-        return;
-    }
+	if (timeRatio == 0)
+	{
+		_messageReciever.Recieve(_dungeonMessage.at("start"));
+		return;
+	}
 
-    if (timeRatio == 0.5)
-    {
-        _messageReciever.Recieve(_dungeonMessage.at("middle"));
-        return;
-    }
+	if (timeRatio == 0.5)
+	{
+		_messageReciever.Recieve(_dungeonMessage.at("middle"));
+		return;
+	}
 
-    if (_intrudeLastCharacter)
-        return;
+	if (_intrudeLastCharacter)
+		return;
 
-    if (_stageName == "1")
-    {
-        if ( (_timer.GetCount() / 60) == 40)
-        {
-            _messageReciever.Recieve(_dungeonMessage.at("last"));
-            _intrudeLastCharacter = true;
-            return;
-        }
-    }
-    else if (_stageName == "2")
-    {
-        if ((_timer.GetCount() / 60) == 50)
-        {
-            _messageReciever.Recieve(_dungeonMessage.at("last"));
-            _intrudeLastCharacter = true;
-            return;
-        }
-    }
-    else
-    {
-        if (_start->GetTimeUnitlNext() == -1)
-        {
-            _messageReciever.Recieve(_dungeonMessage.at("last"));
-            _messageReciever.Recieve(_dungeonMessage.at("blaver"));
-            _intrudeLastCharacter = true;
-        }
-    }
+	if (_stageName == "1")
+	{
+		if ((_timer.GetCount() / 60) == 40)
+		{
+			_messageReciever.Recieve(_dungeonMessage.at("last"));
+			_intrudeLastCharacter = true;
+			return;
+		}
+	}
+	else if (_stageName == "2")
+	{
+		if ((_timer.GetCount() / 60) == 50)
+		{
+			_messageReciever.Recieve(_dungeonMessage.at("last"));
+			_intrudeLastCharacter = true;
+			return;
+		}
+	}
+	else
+	{
+		if (_start->GetTimeUnitlNext() == -1)
+		{
+			_messageReciever.Recieve(_dungeonMessage.at("last"));
+			_messageReciever.Recieve(_dungeonMessage.at("blaver"));
+			_intrudeLastCharacter = true;
+		}
+	}
 }
+
+
+void Dungeon::SetFieldType() {
+
+	//ダンジョンの地形の設定
+	
+	CSVReader reader;
+
+	std::vector<std::string> FieldTypeArray;
+	std::string fileName = "csv/StageData/DungeonType.csv";
+	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, FieldTypeArray, 2);
+
+	int FieldTypeNum = stoi(FieldTypeArray[stoi(_stageNum) * 2 - 1]);
+
+	switch (FieldTypeNum) {
+	case 0:
+		fieldTypeStr = "#CAV";
+		_windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+		_background.Load("resource/graph/background/background_cave.png");
+		break;
+	case 1:
+		fieldTypeStr = "#FST";
+		_windowBackground.Load("resource/graph/ui/main_window_background_forest.png");
+		_background.Load("resource/graph/background/background_forest.jpg");
+		break;
+	case 2:
+		fieldTypeStr = "#STN";
+		_windowBackground.Load("resource/graph/ui/main_window_background_stone.png");
+		_background.Load("resource/graph/background/background_stone.jpg");
+		break;
+	case 3:
+		fieldTypeStr = "#TIM";
+		_windowBackground.Load("resource/graph/ui/main_window_background_wood.png");
+		_background.Load("resource/graph/background/background_wood.png");
+		break;
+	default:
+		fieldTypeStr = "#CAV";
+		_windowBackground.Load("resource/graph/ui/main_window_background_cave.png");
+		_background.Load("resource/graph/background/background_cave.png");
+		break;
+	}
+	_windowBackground.SetPosition(Vector2D(28, 28));
+	_background.SetPosition(Vector2D(0, 0));
+
+}
+
+
+
+
+
+
+

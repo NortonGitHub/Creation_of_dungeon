@@ -49,6 +49,7 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
 {
     _defeatedNum = 0;
     _enemysNum = 0;
+	_robTresureItem.clear();
 
     std::vector<std::string> dataArray;
     CSVReader reader;
@@ -63,6 +64,8 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
     int count = 0;
 
 	bool isTemplate = false;
+
+	int Level = -1;
 
     for (auto data : dataArray)
     {
@@ -99,6 +102,7 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
 				skillData = TemplateDataArray[(paramNum * (std::stoi(data) - 1)) + paramNum - 1];
 
 				count = parameterNum - 1;
+				Level = std::stoi(data);
 				isTemplate = false;
 			}
 
@@ -132,6 +136,7 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
             BattleParameter param = { params[0], params[1], params[2], params[3], params[4], params[5]};
 
             auto enemy = std::make_shared<Enemy>(start.GetTilePos(), param, goal, notifyer, name);
+			enemy->SetLevel(Level);
 
             //ƒXƒLƒ‹¶¬
             std::unique_ptr<CharactersSkill> skill(CharactersSkill::CreateSkill(skillData, *enemy));
@@ -144,6 +149,7 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
             //Ÿ‚ÌƒLƒƒƒ‰‚Ö
             count = 0;
             idx++;
+			Level = -1;
 
             _enemysNum++;
         }

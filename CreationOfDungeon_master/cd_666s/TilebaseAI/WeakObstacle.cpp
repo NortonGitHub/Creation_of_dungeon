@@ -4,10 +4,13 @@
 #include "../Resources//ResourceManager.h"
 #include "../DebugDraw.h"
 
-WeakObstacle::WeakObstacle(TiledVector tilePos)
+WeakObstacle::WeakObstacle(TiledVector tilePos, std::string typeName)
     : TiledObject(tilePos)
 {
     _type = TiledObject::Type::BLOCK;
+
+	GraphType = typeName;
+
 }
 
 
@@ -21,7 +24,21 @@ void WeakObstacle::Init()
     auto tilePos = GetTilePos();
     auto fieldType = GetTile().lock()->GetFieldType();
 
-    _graph.Load("resource/graph/block/cardboard.png");
+	std::string filename = "resource/graph/block/cardboard.png";
+
+	if (GraphType.find("pot") != std::string::npos) {
+		filename = "resource/graph/block/pot.png";
+	}
+
+	if (GraphType.find("wooden_box") != std::string::npos) {
+		filename = "resource/graph/block/wooden_box.png";
+	}
+
+	if (GraphType.find("Stone_statue") != std::string::npos) {
+		filename = "resource/graph/block/Stone_statue.png";
+	}
+
+    _graph.Load(filename);
     _graph.SetPosition(tilePos.GetWorldPos());
     TiledObject::Init();
 }

@@ -40,6 +40,16 @@ EditMap::EditMap(std::string _stage_num)
 	, NPOS(std::string::npos)
 	, stage_num_a({ _stage_num.front() })
 {
+
+	auto b_pos = stage_num.rfind('b');
+
+	if (b_pos != std::string::npos) {
+		stage_num_a = stage_num.substr(0, b_pos);
+	}
+	else {
+		stage_num_a = stage_num;
+	}
+
 	_functions.reserve(20);
 	//panels.reserve(30);
 	class_name = "editmap";
@@ -167,6 +177,7 @@ SceneBase * EditMap::Update(UIManager _ui)
 
 		}
 		selectedObject = temp;
+		_selectCategoryGr.SetDisplayMode(true);
 		objectTextPanel->SetMessage(selectedObject);
 	}
 
@@ -215,11 +226,11 @@ void EditMap::Draw()
 
 	objectTextPanel->Draw();
 
-
+	/*
 	clsDx();
 
 	printfDx("所持金：%d",MoneyManager::getInstance()->getMoney());
-
+	*/
 }
 
 void EditMap::Init()
@@ -341,30 +352,6 @@ void EditMap::Init()
 		LIMIT_TRAP = std::stoi(limit_str[4 * 0 + 2]);
 		LIMIT_BLOCK = std::stoi(limit_str[4 * 0 + 3]);
 	}
-
-    //ダンジョンの地形情報の設定
-
-    std::vector<std::string> FieldTypeArray;
-    std::string fileName = "csv/StageData/DungeonType.csv";
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, FieldTypeArray, 2);
-
-    int FieldTypeNum = stoi(FieldTypeArray[stoi(stage_num) * 2 - 1]);
-
-    switch (FieldTypeNum) {
-    case 0:
-        ft = "#CAV";
-        break;
-    case 1:
-        ft = "#FST";
-        break;
-    case 2:
-        ft = "#STN";
-        break;
-    default:
-        ft = "#CAV";
-        break;
-    }
-    //ここまで
 
     _cancelSE.Load("resource/sound/cancelA.wav");
     _cancelSE.SetVolume(200);
@@ -672,6 +659,7 @@ void EditMap::PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel)
             ps->setIsSelected(false);
             selectedObject.reset();
             _selectObjectGr.SetDisplayMode(false);
+			objectTextPanel->ResetMessage();
         }
         else {
             ps->setIsSelected(true);
@@ -801,7 +789,7 @@ void EditMap::SetObject() {
             addTiledObjectList_Trap.push_back(atemp);
             
 
-            FIELD->SetFieldType(tiledCursorPos, ft);
+            FIELD->SetFieldType(tiledCursorPos, _dungeon->GetFieldType());
 
             FIELD->Setup();
             OBJECT_MGR->Refresh();
@@ -821,7 +809,7 @@ void EditMap::SetObject() {
 
             
 
-            FIELD->SetFieldType(tiledCursorPos, ft);
+            FIELD->SetFieldType(tiledCursorPos, _dungeon->GetFieldType());
 
             FIELD->Setup();
             OBJECT_MGR->Refresh();

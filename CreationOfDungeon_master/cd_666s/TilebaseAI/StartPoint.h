@@ -32,6 +32,8 @@ public:
     //“G‚ª‚à‚¤‚¢‚È‚¢‚±‚Æ‚ğ•\‚·”’l
     static constexpr int NobodyIntruder() { return -1; }
 
+	int GetTimeUnitNextFrom() const;
+
 private:
     
     std::vector<AppearData> _appearData;
@@ -41,6 +43,8 @@ private:
 
     MessageReciever& _reciever;
     TalkDatabase _intrudeMessage;
+
+	bool _isGetFirstTime;
 };
 
 #endif /* StartPoint_h */

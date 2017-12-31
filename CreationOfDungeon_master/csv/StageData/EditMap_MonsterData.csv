@@ -1,3 +1,1 @@
 hp, attack, defence, magic_attack, magic_defence, speed, startX, startY, name, skill
-800,32,23,0,20,25,5,5,slime,null
-600,30,15,0,18,28,9,5,bone,cost:300&power:500&range:6&speed:4

@@ -1,2 +1,5 @@
 ObjectName,ResourceName(resource/graph‚Ì‰º‚©‚ç‚ÌƒpƒX‚ğ‘‚­B.png‚Í–³‚µ),GenerateText
 cardboard,block/cardboard,300
+pot,block/pot,300&pot
+wooden_box,block/wooden_box,300&wooden_box
+Stone_statue,block/Stone_statue,300&Stone_statue

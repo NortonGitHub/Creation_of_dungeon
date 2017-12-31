@@ -59,6 +59,9 @@ public:
 	
     bool _isBattling;
 
+	int GetLevel();
+	void SetLevel(int lv);
+
 protected:
 
     void UpdateAttitude();
@@ -130,5 +133,8 @@ private:
     //回復エフェクト用
     Sprite _healGraph;
     GraphArray _healAnimation;
+
+	int Level;
+
 };
 

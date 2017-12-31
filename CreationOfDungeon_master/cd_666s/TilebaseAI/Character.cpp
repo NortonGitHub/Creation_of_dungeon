@@ -62,6 +62,9 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 
     _position = startPos.GetWorldPos();
     _beforeTilePos = GetTilePos();
+
+	Level = -1;
+
 }
 
 
@@ -333,3 +336,15 @@ void Character::Appear()
     _hasAppeared = true;
     _appearSE.Play();
 }
+
+
+int Character::GetLevel() {
+	return Level;
+}
+
+void Character::SetLevel(int lv) {
+	Level = lv;
+}
+
+
+

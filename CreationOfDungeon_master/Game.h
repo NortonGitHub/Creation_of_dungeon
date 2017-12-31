@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 #include "cd_666s/Sound/Sound.h"
 #include "cd_666s/TilebaseAI/Dungeon.h"
+#include "GameResult.h"
 
 class Game : public SceneBase
 {
@@ -75,6 +76,10 @@ private:
     std::string _stageNumber;
 
     bool isBoss;
+
+	GameResult gameResult;
+
+	Sprite _black;
 
 };
 

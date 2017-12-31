@@ -159,12 +159,12 @@ void EditObject::ResetLevel() {
 
 	CSVReader reader;
 
-	for (int j = 0; j < editOblectTrapList.size(); j += 3) {
+	for (int j = 0; j < editOblectTrapList.size(); j += 1) {
 		editOblectTrapList[j]->level = ShopAssortment::getInstance()->getTrapLevel(editOblectTrapList[j]->ObjectName);
 		editOblectTrapList[j]->LevelUpCost = -1;
 	}
 
-	for (int j = 0; j < editOblectMonsterList.size(); j += 3) {
+	for (int j = 0; j < editOblectMonsterList.size(); j += 1) {
 		
 		editOblectMonsterList[j]->level = ShopAssortment::getInstance()->getMonsterLevel(editOblectMonsterList[j]->ObjectName);
 

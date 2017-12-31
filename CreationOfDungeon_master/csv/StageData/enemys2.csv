@@ -1,8 +1,6 @@
 hp, attack, defence, magic_attack, magic_defence, speed, interval(sec), name, skill & cost
 ‚Ü‚½‚Ítemplate,name,interval(sec),Lv 
-1400,30,20,0,20,18,10,blaver,null
-1300,25,17,80,40,20,20,magician,magic_shoot#power:800&cost:400&mpRation50&speed:3.0&range:6
-1400,30,18,0,20,22,30,fighter,param_rise#cost:800&mpRatio:50&hp:100&atk:150&def:150&matk:100&mdef:100&spd:100&time:5
-1300,20,25,50,50,15,35,healer,heal#cost:200&mpRatio:80&range:6&power:0.5
-1500,32,20,80,25,18,55,fighter,magic_shoot#power:800&cost:500&mpRatio:80&speed:3.0&range:6
-1800,28,28,80,40,20,75,magician,magic_explode#power:800&cost:700&mpRatio:100&range:2
+template,magician,10,1
+template,fighter,25,1
+template,blaver,35,1
+1300,18,20,65,35,14,50,magician,magic_explode#power:600&cost:700&mpRatio:90&range:2

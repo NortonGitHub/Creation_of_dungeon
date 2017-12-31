@@ -1,4 +1,5 @@
-最初に所持しているエディットで置けるオブジェクト。ObjectNameとカテゴリ(MONSTER、TRAP、BLOCK)（ObjectNameだけでもよかったが、csvReaderの使用上、一行が二つ以上ないとバグる）
+最初に所持しているエディットで置けるオブジェクト。ObjectNameとカテゴリ(MONSTER、TRAP、BLOCK)（ObjectNameだけでもよかったが、csvReaderの使用上、一行が二つ以上ないとバグる）,
 slime,MONSTER
 bone,MONSTER
 bareTrap,TRAP
+wooden_box,BLOCK

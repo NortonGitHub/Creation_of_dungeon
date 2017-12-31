@@ -6,7 +6,7 @@
 class ConsumableItem : public TreasureContents
 {
 public:
-    ConsumableItem(int goldValue, std::string imageFileName);
+    ConsumableItem(std::string ItemName,int goldValue, std::string imageFileName);
     ~ConsumableItem();
 
 private:

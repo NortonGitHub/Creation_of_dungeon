@@ -12,8 +12,8 @@ TiledObjectInformation::TiledObjectInformation(const TiledObjectDictionary& icon
     : _position(position)
     , _character(nullptr)
     , _iconDictionary(iconDictionary)
-    , _enemyThumbnail("resource/graph/enemy_thumbnail.png", position)
-    , _allyThumbnail("resource/graph/ally_thumbnail.png", position)
+    , _enemyThumbnail("resource/graph/ui/StatusWindow.png", position)
+    , _allyThumbnail("resource/graph/ui/StatusWindowBlue.png", position)
 {
     _icon = std::make_unique<Sprite>();
 
@@ -40,7 +40,7 @@ void TiledObjectInformation::Init()
     _icon->SetDisplayMode(true);
     _icon->SetPriority(1090);
     _icon->SetScale({ 2, 2 });
-    _icon->SetPosition(_position + Vector2D(140, 32));
+    _icon->SetPosition(_position + Vector2D(30, 30));
 }
 
 
@@ -59,7 +59,6 @@ void TiledObjectInformation::Draw()
 
         _enemyThumbnail.SetDisplayMode(isEnemy);
         _allyThumbnail.SetDisplayMode(!isEnemy);
-
         _icon->SetResource(_iconDictionary.GetImageFromName(_character->GetName()));
         Init();
 
@@ -79,11 +78,22 @@ void Character::DrawParameter(Vector2D anchorPos)
     const BattleParameter& param = GetAffectedParameter();
 	const BattleParameter& rawParam = GetRawParameter();
 
-	DrawAffectedParameter("ATK : ", param._attack, rawParam._attack, anchorPos + Vector2D(40, 190));
-	DrawAffectedParameter("DEF : ", param._defence, rawParam._defence, anchorPos + Vector2D(140, 190));
-	DrawAffectedParameter("MATK : ", param._magicAttack, rawParam._magicAttack, anchorPos + Vector2D(40, 215));
-	DrawAffectedParameter("MDEF : ", param._magicDefence, rawParam._magicDefence, anchorPos + Vector2D(140, 215));
-	DrawAffectedParameter("SPD : ", param._speed, rawParam._speed, anchorPos + Vector2D(240, 190));
+	DrawAffectedParameter("ATK : ", param._attack, rawParam._attack, anchorPos + Vector2D(106, 135));	//barsize 157,14
+	DrawAffectedParameter("DEF : ", param._defence, rawParam._defence, anchorPos + Vector2D(106, 166));
+	DrawAffectedParameter("MATK : ", param._magicAttack, rawParam._magicAttack, anchorPos + Vector2D(106, 197));
+	DrawAffectedParameter("MDEF : ", param._magicDefence, rawParam._magicDefence, anchorPos + Vector2D(106, 231));
+	//DrawAffectedParameter("SPD : ", param._speed, rawParam._speed, anchorPos + Vector2D(240, 190));
+
+	std::string LevelText = "";
+
+	if (GetLevel() < 0) {
+		LevelText = "";
+	}
+	else {
+		LevelText = " Lv" + std::to_string(GetLevel());
+	}
+
+	Debug::DrawString(anchorPos + Vector2D(129, 75), GetName() + LevelText, ColorPalette::BLACK4, 32);
 
     size_t enableCount = 0;
     for (size_t i = 0; i < _effecters.size(); ++i)
@@ -101,24 +111,18 @@ void Character::DrawParameter(Vector2D anchorPos)
 void Monster::DrawParameter(Vector2D anchorPos)
 {
     const BattleParameter param = GetAffectedParameter();
-    auto color = ColorPalette::BLUE4;
+    auto hpcolor = ColorPalette::RED4;
+	auto mpcolor = ColorPalette::GREEN4;
 
-    Vector2D hpOffset(110, 130);
-    Debug::DrawString(anchorPos + hpOffset, "HP");
-    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(param._maxHP) * 96, 12), color, true);
-    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+    Vector2D hpOffset(123, 16);
+    Debug::DrawRectWithSize(anchorPos + hpOffset, Vector2D(param._hp / double(param._maxHP) * 200, 30), hpcolor, true);
 
-    Vector2D mpOffset(110, 160);
-    Debug::DrawString(anchorPos + mpOffset, "MP");
-    if (_skill != nullptr)
-    {
-        Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(_skill->_mp / double(_skill->_mpCost) * 96, 12), color, true);
-        Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
-    }
-    else
-    {
-        Debug::DrawString(anchorPos + mpOffset + Vector2D(24, 0), "スキルなし");
-    }
+    Vector2D mpOffset(15, 253);
+	if (_skill != nullptr)
+	{
+		auto height = -(_skill->_mp / double(_skill->_mpCost) * 130);
+		Debug::DrawRectWithSize(anchorPos + mpOffset, Vector2D(30, height), mpcolor, true);
+	}
 
     //基本情報描画
     Character::DrawParameter(anchorPos);
@@ -128,56 +132,51 @@ void Monster::DrawParameter(Vector2D anchorPos)
 void Enemy::DrawParameter(Vector2D anchorPos)
 {
     const BattleParameter param = GetAffectedParameter();
-    auto color = ColorPalette::RED4;
+	auto hpcolor = ColorPalette::RED4;
+	auto mpcolor = ColorPalette::GREEN4;
 
-    Vector2D hpOffset(60, 130);
-    Debug::DrawString(anchorPos + hpOffset, "HP");
-    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(param._hp / double(param._maxHP) * 96, 12), color, true);
-    Debug::DrawRectWithSize(anchorPos + hpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+	Vector2D hpOffset(123, 16);
+	Debug::DrawRectWithSize(anchorPos + hpOffset, Vector2D(param._hp / double(param._maxHP) * 200, 30), hpcolor, true);
 
-    Vector2D mpOffset(60, 160);
-    Debug::DrawString(anchorPos + mpOffset, "MP");
+	Vector2D mpOffset(15, 253);
+    //Debug::DrawString(anchorPos + mpOffset, "MP");
     if (_skill != nullptr)
     {
-        Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(_skill->_mp / double(_skill->_mpCost) * 96, 12), color, true);
-        Debug::DrawRectWithSize(anchorPos + mpOffset + Vector2D(24, 0), Vector2D(96, 12), ColorPalette::BLACK4, false);
+		auto height = -(_skill->_mp / double(_skill->_mpCost) * 130);
+        Debug::DrawRectWithSize(anchorPos + mpOffset, Vector2D(30, height), mpcolor, true);
     }
-    else
-    {
-        Debug::DrawString(anchorPos + mpOffset + Vector2D(24, 0), "スキルなし");
-    }
+
     //基本情報描画
     Character::DrawParameter(anchorPos);
 
     //所持武器表示
-    Debug::DrawString(anchorPos + Vector2D(230, 128), "ITEM");
+    //Debug::DrawString(anchorPos + Vector2D(230, 128), "ITEM");
 
     if (_equipmentsGraph.HasLoaded())
         _equipmentsGraph.SetPosition(anchorPos + Vector2D(200, 148));
-    else
-        Debug::DrawRectWithSize(anchorPos + Vector2D(200, 148), {32.0, 32.0}, ColorPalette::BLACK4, false);
 
     for (size_t i=0; i<_consumableItems.size(); ++i)
     {
+		Vector2D pos = Vector2D(284, 126 + i * 32 + 8 * i);
         if (_consumableItemGraphs[i].HasLoaded())
-            _consumableItemGraphs[i].SetPosition(anchorPos + Vector2D(234 + i * 32 + 2 * i, 148));
-        else
-            Debug::DrawRectWithSize(anchorPos + Vector2D(234 + i * 32 + 2 * i, 148), { 32.0, 32.0 }, ColorPalette::BLACK4, false);
+            _consumableItemGraphs[i].SetPosition(anchorPos + pos);
     }
 }
 
 
 void DrawAffectedParameter(std::string paramName, int affectedParam, int rawParam, Vector2D anchorPos)
 {
-	paramName += std::to_string(affectedParam);
+	const Vector2D max_bar_size(157, 14);
+	auto ratio = max_bar_size._x / 100;
+	auto bar_size = max_bar_size;
+	bar_size._x = affectedParam * ratio;
 
-	if (affectedParam == rawParam)
+	Color4 color = ColorPalette::LIGHTBLUE4;
+
+	if (affectedParam != rawParam)
 	{
-		Debug::DrawString(anchorPos, paramName);
-		return;
+		//値が初期値から変わっていたら色付きで出力
+		color = (affectedParam < rawParam) ? ColorPalette::PURPLE4 : ColorPalette::ORANGE4;
 	}
-
-	//値が初期値から変わっていたら色付きで出力
-	auto color = (affectedParam < rawParam) ? ColorPalette::BLUE4 : ColorPalette::RED4;
-	Debug::DrawString(anchorPos, paramName, color);
+	Debug::DrawRectWithSize(anchorPos, bar_size, color, true);
 }

@@ -11,6 +11,7 @@
 
 int Enemy::_defeatedNum = 0;
 int Enemy::_enemysNum = 0;
+std::vector<RobTresureItem> Enemy::_robTresureItem;
 
 Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName)
     : Character(startPos, params, notifyer, enemyName, TiledObject::Type::ENEMY)
@@ -300,6 +301,24 @@ void Enemy::OnDie()
     //各パラメータをリセット
     _target = nullptr;
     _defeatedNum++;
+
+	RobTresureItem temp;
+	if (_equipItem != nullptr) {
+		temp.goldValue = _equipItem->GetGoldValue();
+		temp.ItemGraphPath = _equipItem->GetfilePath();
+		temp.ItemName = _equipItem->GetItemName();
+		_robTresureItem.push_back(temp);
+	}
+
+	for (int i = 0; i < _consumableItems.size(); i++) {
+		if (_consumableItems[i] != nullptr) {
+			temp.goldValue = _consumableItems[i]->GetGoldValue();
+			temp.ItemGraphPath = _consumableItems[i]->GetfilePath();
+			temp.ItemName = _consumableItems[i]->GetItemName();
+			_robTresureItem.push_back(temp);
+		}
+	}
+
 
     //フィールドから除外
     OBJECT_MGR->Remove(this);

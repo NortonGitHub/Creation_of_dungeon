@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 #include "cd_666s/Sound/Sound.h"
 #include <vector>
+#include "cd_666s/Render/Sprite.h"
 
 
 
@@ -148,6 +149,8 @@ private:
 
     bool debugFlag;
 
+	Sprite _shopIcon;
+
 public:
     WorldMap();
     ~WorldMap();
@@ -190,6 +193,8 @@ public:
     void setMovePath(int pointNum, std::vector<SearchPointConnect*>* spc);
 
     void setAreaNum(int areaNum);
+
+	bool ClickCheck(Vector2D pos, Vector2D size);
 
 };
 

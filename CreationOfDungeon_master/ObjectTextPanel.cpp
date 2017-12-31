@@ -42,6 +42,9 @@ ObjectTextPanel::~ObjectTextPanel()
 
 void ObjectTextPanel::Init() {
 
+	_cancelSE.Load("resource/sound/cancelA.wav");
+	_cancelSE.SetVolume(200);
+
 	if (panelType == ObjectTextPanel::PanelType::Shop) {
 		Init_Shop();
 	}
@@ -73,7 +76,9 @@ void ObjectTextPanel::Init_Shop() {
 	messageTextArrayNum = -1;
 
 	canBuy = false;
+	existBuy = false;
 	canLevelUp = false;
+	existLevelUp = false;
 }
 
 void ObjectTextPanel::Init_Edit() {
@@ -99,7 +104,9 @@ void ObjectTextPanel::Init_Edit() {
 	messageTextArrayNum = -1;
 
 	canBuy = false;
+	existBuy = false;
 	canLevelUp = false;
+	existLevelUp = false;
 
 	Level = -1;
 	LevelUpCost = -1;
@@ -235,14 +242,22 @@ void ObjectTextPanel::ReadMessageText() {
 
 void ObjectTextPanel::SetMessage(std::shared_ptr<ShopPanel> selectShopPanel) {
 
+	canBuy = false;
+	existBuy = false;
+
 	messageTextCategory = selectShopPanel->GetShopPanelCategoryName();
-	canBuy = selectShopPanel->GetCanBuy();
+	existBuy = selectShopPanel->GetCanBuy();
 
 	_ObjectImage.Load(selectShopPanel->GetShopPanelImagePath());
 	_ObjectImage.SetScale(Vector2D((128 - 12) / _ObjectImage.GetSize()._x, (128 - 12) / _ObjectImage.GetSize()._y));
 	_ObjectImage.SetDisplayMode(true);
 
-	if (canBuy && MoneyManager::getInstance()->getMoney() >= selectShopPanel->GetPrice()) {
+	if (existBuy && MoneyManager::getInstance()->getMoney() >= selectShopPanel->GetPrice()) {
+		canBuy = true;
+		_buyButton.SetDisplayMode(true);
+	}
+	else if(existBuy){
+		canBuy = false;
 		_buyButton.SetDisplayMode(true);
 	}
 	else {
@@ -263,8 +278,11 @@ void ObjectTextPanel::SetMessage(std::shared_ptr<ShopPanel> selectShopPanel) {
 
 void ObjectTextPanel::SetMessage(std::shared_ptr<PanelSettingObject> selectPanel) {
 
+	canLevelUp = false;
+	existLevelUp = false;
+
 	messageTextCategory = selectPanel->GetPanelCategory();
-	canLevelUp = selectPanel->GetCanLevelUp();
+	existLevelUp = selectPanel->GetCanLevelUp();
 
 	_ObjectImage.Load(selectPanel->GetPanelGraphPath());
 	_ObjectImage.SetScale(Vector2D((128 - 12) / _ObjectImage.GetSize()._x, (128 - 12) / _ObjectImage.GetSize()._y));
@@ -273,7 +291,12 @@ void ObjectTextPanel::SetMessage(std::shared_ptr<PanelSettingObject> selectPanel
 	Level = selectPanel->getLevel();
 	LevelUpCost = selectPanel->GetLevelUpCost();
 
-	if (canLevelUp && MoneyManager::getInstance()->getMoney() >= selectPanel->GetLevelUpCost()) {
+	if (existLevelUp && MoneyManager::getInstance()->getMoney() >= selectPanel->GetLevelUpCost()) {
+		canLevelUp = true;
+		_buyButton.SetDisplayMode(true);
+	}
+	else if(existLevelUp){
+		canLevelUp = false;
 		_buyButton.SetDisplayMode(true);
 	}
 	else {
@@ -299,7 +322,9 @@ void ObjectTextPanel::ResetMessage() {
 	messageTextArrayNum = -1;
 
 	canBuy = false;
+	existBuy = false;
 	canLevelUp = false;
+	existLevelUp = false;
 	_ObjectImage.SetDisplayMode(false);
 	_buyButton.SetDisplayMode(false);
 
@@ -311,7 +336,7 @@ void ObjectTextPanel::ResetMessage() {
 
 bool ObjectTextPanel::BuyCheck() {
 
-	if (!canBuy)
+	if (!existBuy)
 		return false;
 
 	if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
@@ -331,6 +356,11 @@ bool ObjectTextPanel::BuyCheck() {
 		return false;
 	if (pos._y + size._y < cursorPos._y)
 		return false;
+
+	if (!canBuy) {
+		_cancelSE.Play();
+		return false;
+	}
 
 	return true;
 
@@ -338,7 +368,7 @@ bool ObjectTextPanel::BuyCheck() {
 
 bool ObjectTextPanel::EvolCheck() {
 
-	if (!canLevelUp)
+	if (!existLevelUp)
 		return false;
 
 	if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
@@ -358,6 +388,11 @@ bool ObjectTextPanel::EvolCheck() {
 		return false;
 	if (pos._y + size._y < cursorPos._y)
 		return false;
+
+	if (!canLevelUp) {
+		_cancelSE.Play();
+		return false;
+	}
 
 	return true;
 

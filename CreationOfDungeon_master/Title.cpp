@@ -51,7 +51,7 @@ SceneBase * Title::Update(UIManager _ui)
         else if (f.find("MOVE") != std::string::npos) {
             _se.Play();
 			ShopAssortment::getInstance()->setShopItemList();
-			MoneyManager::getInstance()->resetMoney();
+			MoneyManager::getInstance()->InitMoney();
             return FunctionTransScene::GetSceneBase("world_map");
         }
         else if (f.find("QUIT") != std::string::npos) {

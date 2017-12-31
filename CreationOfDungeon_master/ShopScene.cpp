@@ -117,10 +117,11 @@ SceneBase* ShopScene::Update() {
 		objectTextPanel->SetMessage(selectShopPanel);
 	}
 
-
+	/*
 	if (MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_R)) {
 		MoneyManager::getInstance()->increaseMoney(1000);
 	}
+	*/
 
     return this;
 

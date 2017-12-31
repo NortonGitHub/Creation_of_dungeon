@@ -1,4 +1,4 @@
 tilesize,MonsterLimit,TrapLimit,BlockLimit
-large,4,4,8
-midium,6,6,10
-small,8,8,10
+large,2,2,4
+midium,3,3,5
+small,4,4,6
