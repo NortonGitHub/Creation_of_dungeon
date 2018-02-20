@@ -1,6 +1,22 @@
 #include "BattleParameter.h"
 #include <algorithm>
 
+BattleParameter::BattleParameter()
+{
+}
+
+BattleParameter::BattleParameter(int hp, int attack, int defence, int magicAttack, int magicDefence, int speed, int lv)
+	: _hp(hp)
+	, _maxHP(hp)
+	, _attack(attack)
+	, _defence(defence)
+	, _magicAttack(magicAttack)
+	, _magicDefence(magicDefence)
+	, _speed(speed)
+	, _level(lv)
+{
+}
+
 BattleParameter::BattleParameter(int hp, int attack, int defence, int magicAttack, int magicDefence, int speed)
     : _hp(hp)
     , _maxHP(hp)
@@ -9,6 +25,7 @@ BattleParameter::BattleParameter(int hp, int attack, int defence, int magicAttac
     , _magicAttack(magicAttack)
     , _magicDefence(magicDefence)
     , _speed(speed)
+	, _level(1)
 {
 }
 
