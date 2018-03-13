@@ -1,5 +1,5 @@
-ObjectName,ResourceName(resource/graphの下からのパスを書く。.pngは無し),GenerateText
-cardboard,block/cardboard,300
-pot,block/pot,300&pot
-wooden_box,block/wooden_box,300&wooden_box
-Stone_statue,block/Stone_statue,300&Stone_statue
+ObjectName,ResourceName(resource/graphの下からのパスを書く。.pngは無し),Cost,IncreaseCost,GenerateText
+cardboard,block/cardboard,500,20%,300
+pot,block/pot,1000,20%,300&pot
+wooden_box,block/wooden_box,1500,20%,300&wooden_box
+Stone_statue,block/Stone_statue,3000,20%,300&Stone_statue

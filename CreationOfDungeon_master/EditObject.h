@@ -15,6 +15,8 @@ public:
 
 		std::string ObjectName;				  //オブジェクト名
 		std::string ResourceName;
+		int Cost;							//設置にかかるお金
+		int IncreaseCost;							//複数設置時に設置コストが上がる割合
 		std::string GenerateText;
 
 	};
@@ -22,7 +24,9 @@ public:
 	struct EditOblect_Trap {   //店の売り物の情報
 
 		std::string ObjectName;				  //オブジェクト名
-		std::string ResourceName;             
+		std::string ResourceName;
+		int Cost;							//設置にかかるお金
+		int IncreaseCost;							//複数設置時に設置コストが上がる割合
 		std::string GenerateText;
 		int level;
 		int LevelUpCost;
@@ -32,6 +36,8 @@ public:
 
 		std::string ObjectName;				  //オブジェクト名
 		std::string ResourceName;
+		int Cost;							//設置にかかるお金
+		int IncreaseCost;							//複数設置時に設置コストが上がる割合
 		std::string GenerateInformationPath;
 		int level;
 		int LevelUpCost;
@@ -40,6 +46,11 @@ public:
 	std::vector<std::string> getEditOblectList(std::string CategoryName);
 
 	void ResetLevel();
+
+	int GetCost(std::string CategoryName, std::string objectName);
+	int GetIncreaseCost(std::string CategoryName, std::string objectName);
+
+	int GetEditObjectNum(std::string CategoryName);
 
 private:
 

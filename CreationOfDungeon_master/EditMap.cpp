@@ -6,6 +6,7 @@
 #include "PanelDisplayer.h"
 #include "PanelSceneTransition.h"
 #include "PanelSettingObject.h"
+#include "PanelPageChangeObject.h"
 
 #include "cd_666s/Utility/CSVReader.h"
 #include "cd_666s/Resources/AllResourceManager.h"
@@ -178,7 +179,7 @@ SceneBase * EditMap::Update(UIManager _ui)
 		}
 		selectedObject = temp;
 		_selectCategoryGr.SetDisplayMode(true);
-		objectTextPanel->SetMessage(selectedObject);
+		objectTextPanel->SetMessage(selectedObject, CheckCost(selectPanelCategory, selectedObject->getPanelObjectName()));
 	}
 
 
@@ -186,6 +187,7 @@ SceneBase * EditMap::Update(UIManager _ui)
 
     return scene;
 }
+
 
 void EditMap::Draw()
 {
@@ -198,10 +200,17 @@ void EditMap::Draw()
 
     PANEL_MGR->Refresh();
 
+	/*
     std::string debugStr = "設置上限\n";
     debugStr += "モンスター:" + std::to_string(set_count["MONSTER"]) + "/" + std::to_string(LIMIT_MONSTER)+ " ";
     debugStr += "トラップ:" + std::to_string(set_count["TRAP"]) + "/" + std::to_string(LIMIT_TRAP) + "\n";
     debugStr += "ブロック:" + std::to_string(set_count["BLOCK"]) + "/" + std::to_string(LIMIT_BLOCK) + "\n";
+	*/
+
+	payOffCost = CheckPayOff();
+
+	std::string debugStr = "所持金：" + std::to_string(MoneyManager::getInstance()->getMoney()) + "M\n";
+	debugStr += "清算予定：" + std::to_string(payOffCost) + "M\n";
 
     Debug::DrawString(Vector2D(980, 140), debugStr,Color4(0,0,0,0),16);
 
@@ -210,16 +219,16 @@ void EditMap::Draw()
     std::string pageStr = "";
 
     if (selectPanelCategory.find("MONSTER") != std::string::npos) {
-        pageStr += "1/1";
+        pageStr += std::to_string(pageNum) + "/" + std::to_string(pageMaxNum);
     }
     else if (selectPanelCategory.find("TRAP") != std::string::npos) {
-        pageStr += "1/1";
+        pageStr += std::to_string(pageNum) + "/" + std::to_string(pageMaxNum);
     }
     else if (selectPanelCategory.find("BLOCK") != std::string::npos) {
-        pageStr += "1/1";
+        pageStr += std::to_string(pageNum) + "/" + std::to_string(pageMaxNum);
     }
     else {
-        pageStr += "0/0";
+        pageStr += std::to_string(pageNum) + "/" + std::to_string(pageMaxNum);
     }
 
     Debug::DrawString(Vector2D(1055, 270), pageStr, Color4(0, 0, 0, 0), 40);
@@ -320,9 +329,9 @@ void EditMap::Init()
     addTiledObjectList_Block.clear();
 
     /***各オブジェクト設置数カウンタ初期化***/
-    set_count.insert({ "BLOCK", 0 });
-    set_count.insert({ "MONSTER", 0 });
-    set_count.insert({ "TRAP", 0 });
+    //set_count.insert({ "BLOCK", 0 });
+    //set_count.insert({ "MONSTER", 0 });
+    //set_count.insert({ "TRAP", 0 });
     //set_count[0] = 0;
     //set_count[1] = 0;
     //set_count[2] = 0;
@@ -358,6 +367,9 @@ void EditMap::Init()
 
 	objectTextPanel = std::make_shared<ObjectTextPanel>(class_name);
 
+	payOffCost = 0;
+	pageNum = 0;
+	pageMaxNum = 0;
 }
 
 bool EditMap::IsFirstWave()
@@ -430,9 +442,13 @@ SceneBase* EditMap::PanelFunction()
             else if (str.find("SettingObject") != NPOS) {
                 PanelSettingObjectFunction(p);
             }
+			else if (str.find("PanelPageChangeObject") != NPOS) {
+				PanelPageChangeObjectFunction(p);
+			}
 
             p->Update();
         }
+
     }
 
     return this;
@@ -454,7 +470,9 @@ void EditMap::PanelAffectObjectsFunction(std::shared_ptr<PanelBase> panel)
         }
     }
 
-	panel->SetSettingObject(temp_p, editObject);
+
+	std::shared_ptr<PanelAffectObjects> ps = dynamic_pointer_cast<PanelAffectObjects>(panel);
+	ps->SetSettingObject(temp_p, editObject);
     int j = 0;
 
     auto& obj = PANEL_MGR->_objects;
@@ -516,6 +534,16 @@ void EditMap::PanelAffectObjectsFunction(std::shared_ptr<PanelBase> panel)
     }
 
 	objectTextPanel->ResetMessage();
+
+	if (editObject.GetEditObjectNum(selectPanelCategory) == 0) {
+		pageNum = 0;
+		pageMaxNum = 0;
+	}
+	else {
+		pageNum = 1;
+		pageMaxNum = (editObject.GetEditObjectNum(selectPanelCategory) - 1) / 9 + 1;
+	}
+	
 
 }
 
@@ -667,7 +695,7 @@ void EditMap::PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel)
             _selectObjectGr.SetDisplayMode(true);
             _selectObjectGr.SetPosition(Vector2D(ps->GetPosition()._x - 8, ps->GetPosition()._y - 8));
 
-			objectTextPanel->SetMessage(selectedObject);
+			objectTextPanel->SetMessage(selectedObject, CheckCost(selectPanelCategory, selectedObject->getPanelObjectName()));
 
         }
         
@@ -701,6 +729,106 @@ void EditMap::PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel)
 
 }
 
+
+void EditMap::PanelPageChangeObjectFunction(std::shared_ptr<PanelBase> panel) {
+	
+	
+
+
+	std::vector<std::shared_ptr<PanelBase>> temp_p;
+
+	/*値を変化させる他パネルを検索する*/
+	for (auto& ps : PANEL_MGR->_objects) {
+
+		if (ps == nullptr)
+			continue;
+
+		auto aff_str = std::string(typeid(*ps).name());
+		if (aff_str.find("SettingObject") != NPOS) {
+			temp_p.push_back(ps);
+		}
+	}
+
+
+	std::shared_ptr<PanelPageChangeObject> ps = dynamic_pointer_cast<PanelPageChangeObject>(panel);
+
+	if (ps->IsPageUP()) {
+		pageNum++;
+	}
+	else {
+		pageNum--;
+	}
+
+	if (pageNum < 1) {
+		pageNum = 1;
+	}
+	else if (pageNum > pageMaxNum) {
+		pageNum = pageMaxNum;
+	}
+
+	ps->SetSettingObject(temp_p, editObject, selectPanelCategory, pageNum);
+	int j = 0;
+
+	auto& obj = PANEL_MGR->_objects;
+
+	for (int i = 0; i < obj.size(); i++) {
+
+		if (obj[i] == nullptr)
+			continue;
+
+		auto aff_str = std::string(typeid(*obj[i]).name());
+		if (aff_str.find("SettingObject") != NPOS) {
+			obj[i] = temp_p[j];
+			j++;
+		}
+	}
+
+
+	/*値を変化させる他パネルを検索する*/
+	//SettingObjectは未選択に
+	for (auto& p : PANEL_MGR->_objects) {
+
+		if (p == nullptr)
+			continue;
+
+		auto aff_str = std::string(typeid(*p).name());
+		if (aff_str.find("SettingObject") != NPOS) {
+
+			std::shared_ptr<PanelSettingObject> psTemp = dynamic_pointer_cast<PanelSettingObject>(p);
+
+			if (psTemp) {
+				psTemp->setIsSelected(false);
+			}
+
+		}
+	}
+
+	selectedObject.reset();
+
+	if (selectPanelCategory.find("MONSTER") != std::string::npos) {
+		_selectObjectGr.SetDisplayMode(false);
+	}
+	else if (selectPanelCategory.find("TRAP") != std::string::npos) {
+		_selectObjectGr.SetDisplayMode(false);
+	}
+	else if (selectPanelCategory.find("BLOCK") != std::string::npos) {
+		_selectObjectGr.SetDisplayMode(false);
+	}
+	else {
+		_selectCategoryGr.SetDisplayMode(false);
+		_selectObjectGr.SetDisplayMode(false);
+	}
+
+	objectTextPanel->ResetMessage();
+
+}
+
+
+
+
+
+
+
 void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>& panel, PanelContent& temp)
 {
     if(key_name == "CHANGE_LIST"){
@@ -712,7 +840,10 @@ void EditMap::SetPanelInstance(std::string key_name, std::shared_ptr<PanelBase>&
         panel = std::make_shared<PanelSettingObject>(temp);
     }else if(key_name == "SHOW"){
         panel = std::make_shared<PanelDisplayer>(temp);
-    }
+	}
+	else if (key_name == "PAGE_CHANGE") {
+		panel = std::make_shared<PanelPageChangeObject>(temp);
+	}
 }
 
 void EditMap::DebugOutputFile()
@@ -747,7 +878,7 @@ void EditMap::SetObject() {
 
     if (isSetting) {
 
-        if (selectPanelCategory == "MONSTER" && set_count[selectPanelCategory] < LIMIT_MONSTER) {
+        if (selectPanelCategory == "MONSTER" /*&& set_count[selectPanelCategory] < LIMIT_MONSTER*/) {
 
 			std::string fileName = "csv/Edit/MONSTER_DATA/" + selectedObject->getPanelObjectName() + "/" + selectedObject->getPanelObjectName() + ".csv";
 
@@ -769,52 +900,66 @@ void EditMap::SetObject() {
                 }
             }
 
+			temp_m.ObjectName = selectedObject->getPanelObjectName();
             temp_m.GenerateText = GenerateText;
+
+			temp_m.Cost = CheckCost(selectPanelCategory, selectedObject->getPanelObjectName());
 
             addTiledObjectList_Monster.push_back(temp_m);
 
+			objectTextPanel->SetMessage(selectedObject, CheckCost(selectPanelCategory, selectedObject->getPanelObjectName()));
+
             FIELD->Setup();
             OBJECT_MGR->Refresh();
 
-            set_count[selectPanelCategory]++;
+            //set_count[selectPanelCategory]++;
         }
-        else if (selectPanelCategory == "TRAP" && set_count[selectPanelCategory] < LIMIT_TRAP) {
+        else if (selectPanelCategory == "TRAP" /*&& set_count[selectPanelCategory] < LIMIT_TRAP*/) {
             TiledObject* temp = _dungeon->GenerateAddObject(selectedObject->GenerateText, tiledCursorPos._x, tiledCursorPos._y, cursorPos);
             temp->Init();
 
             addTileObject atemp;
             atemp.tiledObject = temp;
+
+			atemp.ObjectName = selectedObject->getPanelObjectName();
             atemp.GenerateText = selectedObject->GenerateText;
+
+			atemp.Cost = CheckCost(selectPanelCategory, selectedObject->getPanelObjectName());
 
             addTiledObjectList_Trap.push_back(atemp);
             
+			objectTextPanel->SetMessage(selectedObject, CheckCost(selectPanelCategory, selectedObject->getPanelObjectName()));
 
             FIELD->SetFieldType(tiledCursorPos, _dungeon->GetFieldType());
 
             FIELD->Setup();
             OBJECT_MGR->Refresh();
 
-            set_count[selectPanelCategory]++;
+            //set_count[selectPanelCategory]++;
 
         }
-        else if (selectPanelCategory == "BLOCK" && set_count[selectPanelCategory] < LIMIT_BLOCK) {
+        else if (selectPanelCategory == "BLOCK" /*&& set_count[selectPanelCategory] < LIMIT_BLOCK*/) {
             TiledObject* temp = _dungeon->GenerateAddObject(selectedObject->GenerateText, tiledCursorPos._x, tiledCursorPos._y, cursorPos);
             temp->Init();
 
             addTileObject atemp;
             atemp.tiledObject = temp;
+
+			atemp.ObjectName = selectedObject->getPanelObjectName();
             atemp.GenerateText = selectedObject->GenerateText;
+
+			atemp.Cost = CheckCost(selectPanelCategory, selectedObject->getPanelObjectName());
 
             addTiledObjectList_Block.push_back(atemp);
 
-            
+			objectTextPanel->SetMessage(selectedObject, CheckCost(selectPanelCategory, selectedObject->getPanelObjectName()));
 
             FIELD->SetFieldType(tiledCursorPos, _dungeon->GetFieldType());
 
             FIELD->Setup();
             OBJECT_MGR->Refresh();
 
-            set_count[selectPanelCategory]++;
+            //set_count[selectPanelCategory]++;
 
         }
 
@@ -855,16 +1000,19 @@ void EditMap::DeleteAddedObject() {
 
         if (addTiledObjectList_Trap[i].tiledObject->GetTilePos() == tiledCursorPos) {
 
+			std::string om = addTiledObjectList_Trap[i].ObjectName;
+
             FIELD->SetRawNumber(addTiledObjectList_Trap[i].tiledObject->GetTilePos(), 0);
             OBJECT_MGR->Remove(addTiledObjectList_Trap[i].tiledObject);
             addTiledObjectList_Trap.erase(addTiledObjectList_Trap.begin() + i);
             OBJECT_MGR->Refresh();
 
             /****オブジェクト設置数の減算処理ここから****/
-            set_count["TRAP"]--;
+            //set_count["TRAP"]--;
             /****オブジェクト設置数の減算処理ここまで****/
 
-            
+			ResetCost("TRAP", om);
+			objectTextPanel->SetMessage(selectedObject, CheckCost(selectPanelCategory, selectedObject->getPanelObjectName()));
         }
 
     }
@@ -873,6 +1021,8 @@ void EditMap::DeleteAddedObject() {
 
         if (addTiledObjectList_Block[i].tiledObject->GetTilePos() == tiledCursorPos) {
 
+			std::string om = addTiledObjectList_Block[i].ObjectName;
+
             FIELD->SetRawNumber(addTiledObjectList_Block[i].tiledObject->GetTilePos(), 0);
             OBJECT_MGR->Remove(addTiledObjectList_Block[i].tiledObject);
             addTiledObjectList_Block.erase(addTiledObjectList_Block.begin() + i);
@@ -880,8 +1030,11 @@ void EditMap::DeleteAddedObject() {
 
 
             /****オブジェクト設置数の減算処理ここから****/
-            set_count["BLOCK"]--;
+            //set_count["BLOCK"]--;
             /****オブジェクト設置数の減算処理ここまで****/
+
+			ResetCost("BLOCK", om);
+			objectTextPanel->SetMessage(selectedObject, CheckCost(selectPanelCategory, selectedObject->getPanelObjectName()));
         }
 
     }
@@ -890,6 +1043,8 @@ void EditMap::DeleteAddedObject() {
 
         if (addTiledObjectList_Monster[i].MagicSquareObject->GetTilePos() == tiledCursorPos) {
 
+			std::string om = addTiledObjectList_Monster[i].ObjectName;
+
             OBJECT_MGR->Remove(addTiledObjectList_Monster[i].MonsterObject);
             OBJECT_MGR->Remove(addTiledObjectList_Monster[i].MagicSquareObject);
             addTiledObjectList_Monster.erase(addTiledObjectList_Monster.begin() + i);
@@ -897,8 +1052,11 @@ void EditMap::DeleteAddedObject() {
 
 
             /****オブジェクト設置数の減算処理ここから****/
-            set_count["MONSTER"]--;
+            //set_count["MONSTER"]--;
             /****オブジェクト設置数の減算処理ここまで****/
+
+			ResetCost("MONSTER", om);
+			objectTextPanel->SetMessage(selectedObject, CheckCost(selectPanelCategory, selectedObject->getPanelObjectName()));
         }
 
     }
@@ -930,6 +1088,206 @@ bool EditMap::Start_Connect_Goal() {
     else {
         return true;
     }
+
+}
+
+
+int EditMap::CheckCost(std::string selectPanelCategory, std::string ObjectName) {
+
+	int Cost = editObject.GetCost(selectPanelCategory, ObjectName);
+
+	int IncreaseCost = editObject.GetIncreaseCost(selectPanelCategory, ObjectName);
+
+	int ObjectNum = CheckObjectNum(selectPanelCategory, ObjectName);
+
+
+	for (int i = 0; i < ObjectNum; i++) {
+		Cost = Cost * (1.0 + ((double)IncreaseCost) / 100.0);
+	}
+
+	int first = Cost % 10;
+
+	if (first >= 5) {
+		Cost = Cost / 10;
+		Cost += 1;
+		Cost = Cost * 10;
+	}
+	else {
+		Cost = Cost / 10;
+		Cost = Cost * 10;
+	}
+
+	return Cost;
+
+
+}
+
+int EditMap::CheckObjectNum(std::string selectPanelCategory, std::string ObjectName) {
+
+	if (selectPanelCategory == "MONSTER") {
+
+		int num = 0;
+
+		for (EditMap::addTileObject_Monster temp : addTiledObjectList_Monster) {
+			if (temp.ObjectName == ObjectName) {
+				num++;
+			}
+		}
+
+		return num;
+
+	}
+	else if (selectPanelCategory == "TRAP") {
+		
+		int num = 0;
+
+		for (EditMap::addTileObject temp : addTiledObjectList_Trap) {
+			if (temp.ObjectName == ObjectName) {
+				num++;
+			}
+		}
+
+		return num;
+
+
+	}
+	else if (selectPanelCategory == "BLOCK") {
+
+		int num = 0;
+
+		for (EditMap::addTileObject temp : addTiledObjectList_Block) {
+			if (temp.ObjectName == ObjectName) {
+				num++;
+			}
+		}
+
+		return num;
+		
+
+
+
+	}
+
+
+}
+
+
+
+int EditMap::CheckPayOff() {
+
+	int result = 0;
+
+	for (EditMap::addTileObject_Monster temp : addTiledObjectList_Monster) {
+		result += temp.Cost;
+	}
+
+	for (EditMap::addTileObject temp : addTiledObjectList_Trap) {
+		result += temp.Cost;
+	}
+
+	for (EditMap::addTileObject temp : addTiledObjectList_Block) {
+		result += temp.Cost;
+	}
+
+	return result;
+
+}
+
+
+void EditMap::ResetCost(std::string selectCategory, std::string ObjectName) {
+
+	if (selectCategory == "MONSTER") {
+
+		int num = 0;
+
+		for (int i = 0; i < addTiledObjectList_Monster.size();i++) {
+			if (addTiledObjectList_Monster[i].ObjectName == ObjectName) {
+				int Cost = editObject.GetCost(selectCategory, ObjectName);
+
+				int IncreaseCost = editObject.GetIncreaseCost(selectCategory, ObjectName);
+
+				for (int i = 0; i < num; i++) {
+					Cost = Cost * (1.0 + ((double)IncreaseCost) / 100.0);
+				}
+
+				int first = Cost % 10;
+
+				if (first >= 5) {
+					Cost = Cost / 10;
+					Cost += 1;
+					Cost = Cost * 10;
+				}
+				else {
+					Cost = Cost / 10;
+					Cost = Cost * 10;
+				}
+				addTiledObjectList_Monster[i].Cost = Cost;
+				num++;
+			}
+		}
+
+	}
+	else if (selectCategory == "TRAP") {
+
+		int num = 0;
+
+		for (int i = 0; i < addTiledObjectList_Trap.size(); i++) {
+			if (addTiledObjectList_Trap[i].ObjectName == ObjectName) {
+				int Cost = editObject.GetCost(selectCategory, ObjectName);
+
+				int IncreaseCost = editObject.GetIncreaseCost(selectCategory, ObjectName);
+
+				for (int i = 0; i < num; i++) {
+					Cost = Cost * (1.0 + ((double)IncreaseCost) / 100.0);
+				}
+
+				int first = Cost % 10;
+
+				if (first >= 5) {
+					Cost = Cost / 10;
+					Cost += 1;
+					Cost = Cost * 10;
+				}
+				else {
+					Cost = Cost / 10;
+					Cost = Cost * 10;
+				}
+				addTiledObjectList_Trap[i].Cost = Cost;
+				num++;
+			}
+		}
+	}
+	else if (selectCategory == "BLOCK") {
+
+		int num = 0;
+
+		for (int i = 0; i < addTiledObjectList_Block.size(); i++ ) {
+			if (addTiledObjectList_Block[i].ObjectName == ObjectName) {
+				int Cost = editObject.GetCost(selectCategory, ObjectName);
+
+				int IncreaseCost = editObject.GetIncreaseCost(selectCategory, ObjectName);
+
+				for (int i = 0; i < num; i++) {
+					Cost = Cost * (1.0 + ((double)IncreaseCost) / 100.0);
+				}
+
+				int first = Cost % 10;
+
+				if (first >= 5) {
+					Cost = Cost / 10;
+					Cost += 1;
+					Cost = Cost * 10;
+				}
+				else {
+					Cost = Cost / 10;
+					Cost = Cost * 10;
+				}
+				addTiledObjectList_Block[i].Cost = Cost;
+				num++;
+			}
+		}
+
+	}
 
 }
 

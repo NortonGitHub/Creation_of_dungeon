@@ -44,6 +44,7 @@ private:
 	int Level;
 	int LevelUpCost;
 
+	int putCost;
 
 	Sound _cancelSE;
 	
@@ -64,7 +65,7 @@ public:
 
 	void ReadMessageText();
 	void SetMessage(std::shared_ptr<ShopPanel> selectShopPanel);
-	void SetMessage(std::shared_ptr<PanelSettingObject> selectPanel);
+	void SetMessage(std::shared_ptr<PanelSettingObject> selectPanel, int cost);
 	
 	void ResetMessage();
 

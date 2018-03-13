@@ -18,7 +18,9 @@ void ShopAssortment::setShopItemList() {
 
 	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, ShopItemArray, 1);
 
-	for (int j = 0; j < ShopItemArray.size(); j += 3) {
+	int DataNum = 5;
+
+	for (int j = 0; j < ShopItemArray.size(); j += DataNum) {
 		std::shared_ptr<ShopItem_Block> shopItem = make_shared<ShopItem_Block>();
 
 		shopItem->ObjectName = ShopItemArray[j];
@@ -33,7 +35,7 @@ void ShopAssortment::setShopItemList() {
 
 	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, ShopItemArray, 1);
 
-	for (int j = 0; j < ShopItemArray.size(); j += 3) {
+	for (int j = 0; j < ShopItemArray.size(); j += DataNum) {
 		std::shared_ptr<ShopItem_Trap> shopItem = make_shared<ShopItem_Trap>();
 
 		shopItem->ObjectName = ShopItemArray[j];
@@ -49,7 +51,7 @@ void ShopAssortment::setShopItemList() {
 
 	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, ShopItemArray, 1);
 
-	for (int j = 0; j < ShopItemArray.size(); j += 3) {
+	for (int j = 0; j < ShopItemArray.size(); j += DataNum) {
 		std::shared_ptr<ShopItem_Monster> shopItem = make_shared<ShopItem_Monster>();
 
 		shopItem->ObjectName = ShopItemArray[j];
@@ -201,7 +203,7 @@ int ShopAssortment::getMonsterLevel(std::string objectName) {
 
 int ShopAssortment::getTrapLevel(std::string objectName) {
 
-	for (int i = 0; i < shopItemMonsterList.size(); i++) {
+	for (int i = 0; i < shopItemTrapList.size(); i++) {
 		if (shopItemTrapList[i]->ObjectName == objectName) {
 			return shopItemTrapList[i]->level;
 		}

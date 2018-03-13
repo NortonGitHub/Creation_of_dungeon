@@ -96,21 +96,24 @@ void PanelAffectObjects::SetSettingObject(std::vector<std::shared_ptr<PanelBase>
 
     for (int i = 0; i < _tps.size(); i++) {
 
+		std::shared_ptr<PanelSettingObject> _ps = dynamic_pointer_cast<PanelSettingObject>(_tps[i]);
+
         if (!_array.empty()) {
-            if (_array.size() >= 4) {
-				_tps[i]->PanelSettingObject_SettingPanel(_array[0], _array[2], GetCategoryName(), _array[1], std::stoi(_array[3]), std::stoi(_array[4]));
+            if (_array.size() >= DataNum) {
+				
+				_ps->PanelSettingObject_SettingPanel(_array[0], _array[2], GetCategoryName(), _array[1], std::stoi(_array[3]), std::stoi(_array[4]));
                 //_tps[i] = PanelSettingObject(_array[i]);
 				_array.erase(_array.begin(), _array.begin() + DataNum);
             }
             else {
 				_array.clear();
-                _tps[i]->PanelSettingObject_SettingPanel("", "", GetCategoryName(), "", -1, -1);
+				_ps->PanelSettingObject_SettingPanel("", "", GetCategoryName(), "", -1, -1);
                 //_tps[i] = std::make_shared<PanelSettingObject>(nullptr);
             }
             
         }
         else {
-            _tps[i]->PanelSettingObject_SettingPanel("", "", GetCategoryName(), "", -1, -1);
+			_ps->PanelSettingObject_SettingPanel("", "", GetCategoryName(), "", -1, -1);
             //_tps[i] = std::make_shared<PanelSettingObject>(nullptr);
         }
     }

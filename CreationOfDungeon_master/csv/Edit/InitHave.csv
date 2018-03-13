@@ -2,4 +2,5 @@
 slime,MONSTER
 bone,MONSTER
 bareTrap,TRAP
+emplacement,TRAP
 wooden_box,BLOCK

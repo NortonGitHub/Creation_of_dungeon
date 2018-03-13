@@ -16,12 +16,16 @@ EditObject::EditObject()
 
 	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, EditObjectArray, 1);
 
-	for (int j = 0; j < EditObjectArray.size(); j += 3) {
+	int DataNum = 5;
+
+	for (int j = 0; j < EditObjectArray.size(); j += DataNum) {
 		std::shared_ptr<EditOblect_Block> editOblect = make_shared<EditOblect_Block>();
 
 		editOblect->ObjectName = EditObjectArray[j];
 		editOblect->ResourceName = EditObjectArray[j + 1];
-		editOblect->GenerateText = EditObjectArray[j + 2];
+		editOblect->Cost = std::stoi(EditObjectArray[j + 2]);
+		editOblect->IncreaseCost = std::stoi(EditObjectArray[j + 3]);
+		editOblect->GenerateText = EditObjectArray[j + 4];
 
 		editOblectBlockList.push_back(editOblect);
 	}
@@ -32,12 +36,14 @@ EditObject::EditObject()
 
 	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, EditObjectArray, 1);
 
-	for (int j = 0; j < EditObjectArray.size(); j += 3) {
+	for (int j = 0; j < EditObjectArray.size(); j += DataNum) {
 		std::shared_ptr<EditOblect_Trap> editOblect = make_shared<EditOblect_Trap>();
 
 		editOblect->ObjectName = EditObjectArray[j];
 		editOblect->ResourceName = EditObjectArray[j + 1];
-		editOblect->GenerateText = EditObjectArray[j + 2];
+		editOblect->Cost = std::stoi(EditObjectArray[j + 2]);
+		editOblect->IncreaseCost = std::stoi(EditObjectArray[j + 3]);
+		editOblect->GenerateText = EditObjectArray[j + 4];
 
 		editOblect->level = ShopAssortment::getInstance()->getTrapLevel(editOblect->ObjectName);
 		editOblect->LevelUpCost = -1;
@@ -51,12 +57,14 @@ EditObject::EditObject()
 
 	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, EditObjectArray, 1);
 
-	for (int j = 0; j < EditObjectArray.size(); j += 3) {
+	for (int j = 0; j < EditObjectArray.size(); j += DataNum) {
 		std::shared_ptr<EditOblect_Monster> editOblect = make_shared<EditOblect_Monster>();
 
 		editOblect->ObjectName = EditObjectArray[j];
 		editOblect->ResourceName = EditObjectArray[j + 1];
-		editOblect->GenerateInformationPath = EditObjectArray[j + 2];
+		editOblect->Cost = std::stoi(EditObjectArray[j + 2]);
+		editOblect->IncreaseCost = std::stoi(EditObjectArray[j + 3]);
+		editOblect->GenerateInformationPath = EditObjectArray[j + 4];
 
 		editOblect->level = ShopAssortment::getInstance()->getMonsterLevel(editOblect->ObjectName);
 
@@ -183,6 +191,83 @@ void EditObject::ResetLevel() {
 	}
 
 }
+
+int EditObject::GetCost(std::string CategoryName, std::string objectName) {
+
+	
+	if (CategoryName.find("MONSTER") != std::string::npos) {
+		for (int i = 0; i < editOblectMonsterList.size(); i++) {
+			if (editOblectMonsterList[i]->ObjectName == objectName) {
+				return editOblectMonsterList[i]->Cost;
+			}
+		}
+	}
+	else if (CategoryName.find("TRAP") != std::string::npos) {
+		for (int i = 0; i < editOblectTrapList.size(); i++) {
+			if (editOblectTrapList[i]->ObjectName == objectName) {
+				return editOblectTrapList[i]->Cost;
+			}
+		}
+	}
+	else if (CategoryName.find("BLOCK") != std::string::npos) {
+		for (int i = 0; i < editOblectBlockList.size(); i++) {
+			if (editOblectBlockList[i]->ObjectName == objectName) {
+				return editOblectBlockList[i]->Cost;
+			}
+		}
+	}
+
+	return -1;
+
+}
+
+int EditObject::GetIncreaseCost(std::string CategoryName, std::string objectName) {
+
+
+	if (CategoryName.find("MONSTER") != std::string::npos) {
+		for (int i = 0; i < editOblectMonsterList.size(); i++) {
+			if (editOblectMonsterList[i]->ObjectName == objectName) {
+				return editOblectMonsterList[i]->IncreaseCost;
+			}
+		}
+	}
+	else if (CategoryName.find("TRAP") != std::string::npos) {
+		for (int i = 0; i < editOblectTrapList.size(); i++) {
+			if (editOblectTrapList[i]->ObjectName == objectName) {
+				return editOblectTrapList[i]->IncreaseCost;
+			}
+		}
+	}
+	else if (CategoryName.find("BLOCK") != std::string::npos) {
+		for (int i = 0; i < editOblectBlockList.size(); i++) {
+			if (editOblectBlockList[i]->ObjectName == objectName) {
+				return editOblectBlockList[i]->IncreaseCost;
+			}
+		}
+	}
+
+	return -1;
+
+}
+
+
+int EditObject::GetEditObjectNum(std::string CategoryName) {
+
+	if (CategoryName.find("MONSTER") != std::string::npos) {
+		return editOblectMonsterList.size();
+	}
+	else if (CategoryName.find("TRAP") != std::string::npos) {
+		return editOblectTrapList.size();
+	}
+	else if (CategoryName.find("BLOCK") != std::string::npos) {
+		return editOblectBlockList.size();
+	}
+
+	return -1;
+
+}
+
+
 
 
 

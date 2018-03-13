@@ -110,6 +110,7 @@ void ObjectTextPanel::Init_Edit() {
 
 	Level = -1;
 	LevelUpCost = -1;
+	putCost = -1;
 
 }
 
@@ -157,6 +158,11 @@ void ObjectTextPanel::Draw() {
 		if (!(LevelUpCost < 0)) {
 			Debug::DrawString(_messageWindow.GetPosition() + Vector2D(570, 40), "LvUPに必要な額 ： " + std::to_string(LevelUpCost) + "M", Color4(0, 0, 0, 1), 18);
 		}
+
+		if (!(putCost < 0)) {
+			Debug::DrawString(_messageWindow.GetPosition() + Vector2D(370, 20), "設置費用 ： " + std::to_string(putCost) + "M", Color4(0, 0, 0, 1), 18);
+		}
+
 	}
 
 }
@@ -276,7 +282,9 @@ void ObjectTextPanel::SetMessage(std::shared_ptr<ShopPanel> selectShopPanel) {
 
 }
 
-void ObjectTextPanel::SetMessage(std::shared_ptr<PanelSettingObject> selectPanel) {
+void ObjectTextPanel::SetMessage(std::shared_ptr<PanelSettingObject> selectPanel, int cost) {
+
+	putCost = cost;
 
 	canLevelUp = false;
 	existLevelUp = false;
@@ -330,7 +338,7 @@ void ObjectTextPanel::ResetMessage() {
 
 	Level = -1;
 	LevelUpCost = -1;
-
+	putCost = -1;
 }
 
 
