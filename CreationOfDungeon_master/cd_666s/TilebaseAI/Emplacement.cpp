@@ -15,7 +15,7 @@ Emplacement::Emplacement(TiledVector pos, int cost, int power, int attack, Tiled
     , _attack(attack)
     , _shootDirection(direction)
 {
-    _graph.Load("resource/graph/trap/bow.png");
+    //_graph.Load("resource/graph/trap/bow.png");
 
     std::string arrowString = "resource/graph/trap/arrow_";
     switch (_shootDirection)
@@ -40,28 +40,34 @@ Emplacement::Emplacement(TiledVector pos, int cost, int power, int attack, Tiled
     }
     _bulletImage = IMAGE_RESOURCE_TABLE->Create(arrowString);
 
+	/*
     _directedGraph.Set(&_graph, 32, 32, 4, 1);
     _directedGraph._isPlaying = false;
+	*/
+	_graph.Load("resource/graph/trap/bow.png");
 
     switch (_shootDirection)
     {
     case TiledVector::Direction::LEFT:
-        _directedGraph.SetIndex(0);
+		_graph.Load("resource/graph/trap/bow_left.png");
         break;
 
     case TiledVector::Direction::RIGHT:
-        _directedGraph.SetIndex(2);
+		_graph.Load("resource/graph/trap/bow_right.png");
         break;
 
     case TiledVector::Direction::FORWARD:
-        _directedGraph.SetIndex(3);
+		_graph.Load("resource/graph/trap/bow_down.png");
         break;
 
 
     case TiledVector::Direction::BACK:
-        _directedGraph.SetIndex(1);
+		_graph.Load("resource/graph/trap/bow_up.png");
         break;
     }
+
+	_graph.SetPosition(pos.GetWorldPos());
+
 }
 
 
@@ -115,13 +121,13 @@ bool Emplacement::IsActivatable() const
     if (!MOUSE->DoubleClicked())
         return false;
 
-    return (Trap::Contained(_directedGraph, MOUSE->GetCursorPos()));
+    return (Contain(MOUSE->GetCursorPos()));
 }
 
 
 bool Emplacement::Contain(Vector2D pos) const
 {
-    auto size = _directedGraph.GetSingleSize();
+    auto size = _graph.GetTexturePtr().lock()->GetBaseSize();
 
     if (pos._x < _position._x)
         return false;

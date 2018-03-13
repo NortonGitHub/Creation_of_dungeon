@@ -28,7 +28,7 @@ private:
     TiledVector::Direction _shootDirection;
 
     //UŒ‚•ûŒü‚É‘Î‰‚µ‚½‰æ‘œ
-    GraphArray _directedGraph;
+    //GraphArray _directedGraph;
 
     //‘Å‚¿o‚·‚à‚Ì‚Ì‰æ‘œ
     std::shared_ptr<ImageResource> _bulletImage;

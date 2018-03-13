@@ -5,6 +5,8 @@
 #include "PanelBase.h"
 #include "PanelContent.h"
 #include "PanelSettingObject.h"
+#include "EditObject.h"
+#include "ObjectTextPanel.h"
 
 class EditMap :
     public SceneBase
@@ -47,6 +49,8 @@ private:
 
     std::vector<std::string> _functions;
 
+	std::shared_ptr<ObjectTextPanel> objectTextPanel;
+
     //std::vector<std::shared_ptr<PanelBase>> panels;  //UI
 
     bool IsFirstWave();
@@ -57,10 +61,13 @@ private:
     void PanelSceneTransFunction(std::shared_ptr<PanelBase> panel);
     void PanelSettingObjectFunction(std::shared_ptr<PanelBase> panel);
 
+	void PanelPageChangeObjectFunction(std::shared_ptr<PanelBase> panel);
+
     void SetPanelInstance(std::string key_name, ::shared_ptr<PanelBase>& panel, PanelContent& temp);
 
     void DebugOutputFile();
 
+	void ResetCost(std::string selectCategory, std::string ObjectName);
 
 
 
@@ -75,6 +82,9 @@ private:
 
     bool Start_Connect_Goal();
 
+	int CheckCost(std::string selectPanelCategory, std::string ObjectName);
+	int CheckObjectNum(std::string selectPanelCategory, std::string ObjectName);
+	int CheckPayOff();
 
     std::shared_ptr<PanelSettingObject> selectedObject;
 
@@ -84,15 +94,19 @@ private:
 
     struct addTileObject {
 
+		std::string ObjectName;
         TiledObject* tiledObject;
+		int Cost;
         std::string GenerateText;
 
     };
 
     struct addTileObject_Monster {
 
+		std::string ObjectName;
         TiledObject* MonsterObject;
         TiledObject* MagicSquareObject;
+		int Cost;
         std::string GenerateText;
 
     };
@@ -107,15 +121,18 @@ private:
     //モンスター
     std::vector<addTileObject_Monster> addTiledObjectList_Monster;
 
-    //ダンジョンの地形情報を保存しておく（洞窟なら#CAV等）
-    std::string ft;
-
-
+	int payOffCost;
     
     Sound _cancelSE;
 
     Sprite _selectCategoryGr;
     Sprite _selectObjectGr;
+
+	EditObject editObject;
+
+	//ページ関係
+	int pageNum;
+	int pageMaxNum;
 
 };
 

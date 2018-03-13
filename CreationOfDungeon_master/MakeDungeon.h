@@ -30,12 +30,15 @@ public:
 
     TiledObject* GenerateAddObject(std::string typeName, int countX, int countY, Vector2D mousePos);
 
-    std::vector<TiledObject*> GenerateMonster(std::string fileName, TiledVector startPos, std::string* GenerateText);
+    std::vector<TiledObject*> GenerateMonster(std::string fileName, TiledVector startPos, std::string* GenerateText, int level);
+
+	void SetFieldType();
+	std::string GetFieldType();
 
 private:
 
     std::string _stage_num;
-
+	std::string _stage_num_a;	//整数のみ
     
     void GenerateObject(std::string typeName, int countX, int countY);
 
@@ -55,5 +58,9 @@ private:
     MessageReciever _messageReciever;
 
     Sprite _mainsFrame, _background, _windowBackground;
+
+	//ダンジョンの地形情報を保存しておく（洞窟なら#CAV等）
+	std::string fieldTypeStr;
+
 };
 

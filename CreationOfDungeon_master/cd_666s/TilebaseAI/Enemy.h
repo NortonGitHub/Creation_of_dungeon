@@ -11,12 +11,15 @@
 #include <string>
 
 #include "ConsumableItem.h"
+#include "../../RobTresureItem.h"
 
 class AstarChaser;
 class ColleagueNotifyer;
 class StartPoint;
 class Goal;
 class ConsumableItem;
+
+class RobTresureItem;
 
 class Enemy : public Character
 {
@@ -33,6 +36,8 @@ public:
     bool IsOverwritable(TiledObject* overwriter) override;
    
     int GetDefeatedNum() const override { return (_defeatedNum); };
+
+	static int GetDefeatedNum_Static() { return (_defeatedNum); };
 
     static void LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, StartPoint& point, Goal& goal, ColleagueNotifyer& notifyer, std::string fileName);
 
@@ -66,6 +71,8 @@ public:
     };
 
     void StuckOn(int interval)  { _damageTimer.Reset(interval, true, false); };
+
+	static std::vector<RobTresureItem> GetRobTresureItem() { return _robTresureItem; };
 
 private:
 
@@ -102,6 +109,8 @@ private:
     
     static int _defeatedNum;
     static int _enemysNum;
+
+	static std::vector<RobTresureItem> _robTresureItem;
 
     Sprite _equipmentsGraph, _hasTreasureIcon;
     std::vector<Sprite> _consumableItemGraphs;

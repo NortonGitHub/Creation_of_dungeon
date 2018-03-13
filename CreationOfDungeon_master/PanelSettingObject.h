@@ -1,5 +1,6 @@
 #pragma once
 #include "PanelBase.h"
+#include "ShopPanel.h"
 class PanelSettingObject :
     public PanelBase
 {
@@ -20,13 +21,20 @@ public:
 
     void DrawDebugPrint() override;
 
-    void PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName, std::string graphName);
+    void PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName, std::string graphName, int level, int LevelUpCost);
 
     void setIsSelected(bool flag);
     bool getIsSelected();
 
-    std::string getPanelObjectName();
+	bool GetCanLevelUp();
+	int GetLevelUpCost();
 
+    std::string getPanelObjectName();
+	ShopPanel::PanelCategory GetPanelCategory();
+
+	std::string GetPanelGraphPath();
+
+	int getLevel();
 
 
     //生成する際のテキスト
@@ -41,8 +49,16 @@ private:
 
     std::string graphName;
     
+	int level;
+
+	int LevelUpCost;
+	bool canLevelUp;	//レベルアップできるか（お金が足りているかは含まない）
 
     bool isSelected;
+
+	ShopPanel::PanelCategory panelCategory;
+
+	std::string PanelGraphPath;
 
 };
 

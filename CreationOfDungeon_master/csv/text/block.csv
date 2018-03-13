@@ -1,0 +1,5 @@
+ObjectName,ResourceName(resource/graphの下からのパスを書く。.pngは無し),DisplayName,ItemText
+cardboard,block/cardboard,段ボール,どこから見ても段ボール　\nおいて障害物にするのも良いが、被ってかくれるのも乙らしい
+pot,block/pot,ツボ,ツボです　\n割ってもお金は出てきません
+wooden_box,block/wooden_box,木箱,木箱です　\nやはり安心感がちがいますね
+Stone_statue,block/Stone_statue,石像,石像です、しもべちゃんの石像です　\nとても高価ですが段ボールと性能は何ら変わりません

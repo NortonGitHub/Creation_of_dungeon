@@ -1,4 +1,9 @@
-bareTrap,bareTrap_Simple,9#name:bare_trap&cost:200&range:1&power:100&attack:100&stuck:2
-mine,mine_Simple,9#name:mine&cost:200&range:1&power:100&attack:100&stuck:2
-sanctuary,sanctuary,9#name:sanctuary&cost:200&range:2&hp:100&atk:120&def:120&matk:100&mdef:100&spd:100&time:5
-cursearea,CurseArea,9#name:curse&cost:200&range:2&hp:100&atk:70&def:70&matk:100&mdef:100&spd:100&time:5
+ObjectName,ResourceName,Cost,IncreaseCost,GenerateText
+bareTrap,bareTrap_Simple,500,20%,9#name:bare_trap&cost:200&range:1&power:100&attack:100&stuck:2
+mine,mine_Simple,1000,20%,9#name:mine&cost:200&range:1&power:100&attack:100&stuck:2
+sanctuary,sanctuary,1500,20%,9#name:sanctuary&cost:200&range:2&hp:100&atk:120&def:120&matk:100&mdef:100&spd:100&time:5
+cursearea,CurseArea,3000,20%,9#name:curse&cost:200&range:2&hp:100&atk:70&def:70&matk:100&mdef:100&spd:100&time:5
+emplacement,bow_down,300,20%,9#name:emplacement&cost:200&power:50&attack:50&direction:down
+emplacement,bow_right,300,20%,9#name:emplacement&cost:200&power:50&attack:50&direction:right
+emplacement,bow_up,300,20%,9#name:emplacement&cost:200&power:50&attack:50&direction:up
+emplacement,bow_left,300,20%,9#name:emplacement&cost:200&power:50&attack:50&direction:left

@@ -84,8 +84,17 @@ void Character::DrawParameter(Vector2D anchorPos)
 	DrawAffectedParameter("MDEF : ", param._magicDefence, rawParam._magicDefence, anchorPos + Vector2D(106, 231));
 	//DrawAffectedParameter("SPD : ", param._speed, rawParam._speed, anchorPos + Vector2D(240, 190));
 
-	
-	Debug::DrawString(anchorPos + Vector2D(129, 75), GetName(), ColorPalette::BLACK4, 32);
+	std::string LevelText = "";
+
+	if (GetLevel() < 0) {
+		LevelText = "";
+	}
+	else {
+		LevelText = " Lv" + std::to_string(GetLevel());
+	}
+
+	Debug::DrawString(anchorPos + Vector2D(129, 75), GetName() + LevelText, ColorPalette::BLACK4, 32);
+
 
     size_t enableCount = 0;
     for (size_t i = 0; i < _effecters.size(); ++i)
@@ -129,8 +138,8 @@ void Enemy::DrawParameter(Vector2D anchorPos)
 
 	Vector2D hpOffset(123, 16);
 	Debug::DrawRectWithSize(anchorPos + hpOffset, Vector2D(param._hp / double(param._maxHP) * 200, 30), hpcolor, true);
+	Vector2D mpOffset(15, 253);
 
-	Vector2D mpOffset(15, 123);
     //Debug::DrawString(anchorPos + mpOffset, "MP");
     if (_skill != nullptr)
     {

@@ -1,0 +1,4 @@
+Lv, hp, attack, defence, magic_attack, magic_defence, speed, name,skill
+1,500,32,15,0,18,20,bone,cost:500&power:300&range:6&speed:3
+2,800,38,20,0,20,23,bone,cost:450&power:400&range:7&speed:4
+3,1300,45,25,0,25,25,bone,cost:400&power:500&range:8&speed:5

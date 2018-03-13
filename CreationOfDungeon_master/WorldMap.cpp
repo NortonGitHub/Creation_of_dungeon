@@ -8,8 +8,10 @@
 #include "Game.h"
 #include "Title.h"
 #include "EditMap.h"
+#include "ShopScene.h"
+#include <regex>
+#include "cd_666s\Utility\CSVReader.h"
 
-//　03/15にて　書き直すのが間に合いそうにないので、最低限の機能のみで動くようにします　従来のものはコメントアウトで
 
 WorldMap::WorldMap()
     : class_name("world_map")
@@ -20,6 +22,7 @@ WorldMap::WorldMap()
     _bgm.Play();
 
 }
+
 
 
 WorldMap::~WorldMap()
@@ -110,9 +113,17 @@ SceneBase * WorldMap::Update()
                     if (hit >= 1) {
 
                         if (nowMyPointNum == nowAreaPointList[i]->pointNum) {
-                            stageNum = nowAreaPointList[i]->stageNum;
-                            //return new Game(stageNum);
-                            return new EditMap(stageNum);
+                            if (nowAreaPointList[i]->stageNum.find("shop") != std::string::npos) {
+                                //std::regex regex("shop");
+                                //std::string shopNum = std::regex_replace(nowAreaPointList[i]->stageNum, regex, "");
+                                stageNum = nowAreaPointList[i]->stageNum;
+                                return new ShopScene(stageNum);
+                            }
+                            else {
+                                stageNum = nowAreaPointList[i]->stageNum;
+                                //return new Game(stageNum);
+                                return new EditMap(stageNum);
+                            }
                         }
                         else {
                             searchPath(nowAreaPointList[i]->pointNum);
@@ -127,6 +138,10 @@ SceneBase * WorldMap::Update()
         else {
             movePoint();
         }
+
+		if (ClickCheck(_shopIcon.GetPosition(), _shopIcon.GetTexturePtr().lock()->GetBaseSize())) {
+			return new ShopScene("shop1");
+		}
 
     }
     else {
@@ -301,6 +316,16 @@ void WorldMap::Init() {
 
     AreaGr = &AreaGrBuffer[nowMyAreaNum - 1];
 
+	CSVReader reader;
+
+	std::string fileName = "csv/WorldMap/ShopPosition.csv";
+	std::vector<std::string> Array;
+	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, Array, 1);
+
+	_shopIcon.Load("resource/graph/worldMap/IconShop.png");
+	_shopIcon.SetPosition(Vector2D(std::stoi(Array[0]), std::stoi(Array[1])));
+	_shopIcon.SetPriority(Sprite::Priority::UI);
+
 }
 
 
@@ -308,7 +333,7 @@ void WorldMap::DrawMap() {
 
     DrawGraph(0, 0, *AreaGr, TRUE);
 
-    /*
+    
     for (int i = 0; i < nowRoadConnect.size(); i++) {
 
         int road1 = PointSearch(nowRoadConnect[i]->road[0]);
@@ -317,7 +342,7 @@ void WorldMap::DrawMap() {
         DrawLine(nowAreaPointList[road1]->x, nowAreaPointList[road1]->y, nowAreaPointList[road2]->x, nowAreaPointList[road2]->y, GetColor(255, 255, 255), 10);
 
     }
-    */
+
 
     for (int i = 0; i < nowAreaPointList.size(); i++) {
 
@@ -325,16 +350,16 @@ void WorldMap::DrawMap() {
 
             if (nowAreaPointList[i]->isStayPoint == 1) {
                 if (typeid(*nowAreaPointList[i]) == typeid(AreaConnectPoint)) {
-                    //DrawCircle(dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonX, dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonY, 15, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonX, dynamic_cast<AreaConnectPoint*>(nowAreaPointList[i])->buttonY, 15, GetColor(255, 0, 0), TRUE);
                 }
                 else {
-                    //DrawCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR, GetColor(255, 0, 0), TRUE);
-                    //DrawCircle(nowAreaPointList[i]->x - 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
-                    //DrawCircle(nowAreaPointList[i]->x - 5 - 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
-                    //DrawCircle(nowAreaPointList[i]->x - 5 - 4 - 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
-                    //DrawCircle(nowAreaPointList[i]->x + 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
-                    //DrawCircle(nowAreaPointList[i]->x + 5 + 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
-                    //DrawCircle(nowAreaPointList[i]->x + 5 + 4 + 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x, nowAreaPointList[i]->y, pointR, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x - 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x - 5 - 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x - 5 - 4 - 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x + 5, nowAreaPointList[i]->y, pointR - 1, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x + 5 + 4, nowAreaPointList[i]->y, pointR - 2, GetColor(255, 0, 0), TRUE);
+                    DrawCircle(nowAreaPointList[i]->x + 5 + 4 + 3, nowAreaPointList[i]->y, pointR - 3, GetColor(255, 0, 0), TRUE);
                 }
             }
             else {
@@ -376,30 +401,48 @@ void WorldMap::DrawMap() {
 }
 
 
-bool WorldMap::myPointSet(int PointNum) {
+bool WorldMap::myPointSet_PointNum(int PointNum) {
 
-    //std::vector<Point>::iterator itr;
+    std::vector<Point>::iterator itr;
 
-    /*
-    for (auto itr = nowMapPointList.begin(); itr != nowMapPointList.end(); itr++) {
+    
+    for (auto itr = nowAreaPointList.begin(); itr != nowAreaPointList.end(); itr++) {
 
-        if (itr->pointNum == PointNum) {
-            nowMyPointNum = itr->pointNum;
-            nowMyStageNum = itr->stageNum;
-            myX = itr->x;
-            myY = itr->y;
+        if ((*itr)->pointNum == PointNum) {
+            nowMyPointNum = (*itr)->pointNum;
+            myX = (*itr)->x;
+            myY = (*itr)->y;
             return true;
         }
 
     }
 
-    */
+    return false;
 
+
+}
+
+bool WorldMap::myPointSet_StageNum(std::string StageNum) {
+
+    std::vector<Point>::iterator itr;
+
+
+    for (auto itr = nowAreaPointList.begin(); itr != nowAreaPointList.end(); itr++) {
+
+        if ((*itr)->stageNum == StageNum) {
+            nowMyPointNum = (*itr)->pointNum;
+            myX = (*itr)->x;
+            myY = (*itr)->y;
+            return true;
+        }
+
+    }
 
     return false;
 
 
 }
+
 
 int WorldMap::PointSearch(int pointNum) {
 
@@ -952,6 +995,26 @@ void WorldMap::setAreaNum(int areaNum) {
 }
 
 
+bool WorldMap::ClickCheck(Vector2D pos, Vector2D size) {
+
+	if (!MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L))
+		return false;
+
+	//クリック位置を取得
+	auto cursorPos = MOUSE->GetCursorPos();
+
+	if (cursorPos._x < pos._x)
+		return false;
+	if (cursorPos._y < pos._y)
+		return false;
+	if (pos._x + size._x < cursorPos._x)
+		return false;
+	if (pos._y + size._y < cursorPos._y)
+		return false;
+
+	return true;
+
+}
 
 
 

@@ -7,6 +7,7 @@ enum class FieldType
     Cave = 0,
     Forest,
     Stone,
+	Timber,
 
     None
 };
@@ -28,6 +29,10 @@ static std::string GetMapChipGraphDirectory(FieldType type)
         directory += "stone/";
         break;
 
+	case FieldType::Timber:
+		directory += "wood/";
+		break;
+
     }
 
     return directory;
@@ -43,6 +48,9 @@ static FieldType GetFieldTypeFromData(std::string data)
 
     if (data.find("#STN") != std::string::npos)
         return FieldType::Stone;
+
+	if (data.find("#TIM") != std::string::npos)
+		return FieldType::Timber;
 
     return FieldType::None;
 }

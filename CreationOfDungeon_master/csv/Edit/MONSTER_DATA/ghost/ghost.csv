@@ -1,0 +1,4 @@
+Lv, hp, attack, defence, magic_attack, magic_defence, speed, name,skill
+1,600,28,18,60,25,22,ghost,null
+2,1000,33,25,70,35,25,ghost,null
+3,1500,38,30,80,50,30,ghost,null

@@ -1,2 +1,5 @@
-cardboard,cardboard,300
-
+ObjectName,ResourceName(resource/graph‚Ì‰º‚©‚ç‚ÌƒpƒX‚ğ‘‚­B.png‚Í–³‚µ),Cost,IncreaseCost,GenerateText
+cardboard,block/cardboard,500,20%,300
+pot,block/pot,1000,20%,300&pot
+wooden_box,block/wooden_box,1500,20%,300&wooden_box
+Stone_statue,block/Stone_statue,3000,20%,300&Stone_statue

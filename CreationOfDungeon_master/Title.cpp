@@ -1,6 +1,8 @@
 #include "Title.h"
 #include "FunctionTransScene.h"
 #include "cd_666s/Resources/ResourceManager.h"
+#include "ShopAssortment.h"
+#include "MoneyManager.h"
 
 Title::Title() 
     : class_name("title")
@@ -48,6 +50,8 @@ SceneBase * Title::Update(UIManager _ui)
         }
         else if (f.find("MOVE") != std::string::npos) {
             _se.Play();
+			ShopAssortment::getInstance()->setShopItemList();
+			MoneyManager::getInstance()->InitMoney();
             return FunctionTransScene::GetSceneBase("world_map");
         }
         else if (f.find("QUIT") != std::string::npos) {

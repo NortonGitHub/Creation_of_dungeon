@@ -3,6 +3,7 @@
 #include "TiledVector.h"
 #include "BattleParameter.h"
 #include "../Utility/PoolingSystem.h"
+#include "BattleParameter.h"
 
 class MapTile;
 class Character;

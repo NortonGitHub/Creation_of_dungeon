@@ -7,6 +7,7 @@
 #include "Main.h"
 #include "WorldMap.h"
 #include "Title.h"
+#include "MoneyManager.h"
 
 #include <assert.h>
 #include <iostream>
@@ -83,7 +84,9 @@ SceneBase * Game::Update(UIManager _ui)
 
     if (goTitle)
     {
-        return new Title();//WorldMap();
+		MoneyManager::getInstance()->increaseMoney(gameResult.GetMoney());
+        //return new Title();//WorldMap();
+		return new WorldMap();
     }
 
     return this;
@@ -173,6 +176,14 @@ void Game::Init()
 
     _dungeon = new Dungeon(_stageNumber);
     _dungeon->Init();
+
+	_black.Load("resource/graph/ui/result/result_Black.png");
+	_black.SetRenderType(Texture2D::RenderType::UI);
+	_black.SetPriority(static_cast<int>(Sprite::Priority::UI) + 2000);
+	_black.SetPosition(Vector2D(0, 0));
+	_black.SetDisplayMode(false);
+	
+
 }
 
 
@@ -224,8 +235,15 @@ bool Game::StageClearUpdate() {
         return false;
     }
 
-    if (_fadeoutCount == _fadingInterval)
-        _fadingout = MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L);
+	if (_fadeoutCount == _fadingInterval) {
+		gameResult.Update();
+		//_fadingout = MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L);
+		if (gameResult.GetIsStop()) {
+			_fadingout = MOUSE->ButtonDown(MouseInput::MouseButtonCode::MOUSE_L);
+		}
+	}
+
+	
 
     if (!_fadingout)
         return false;
@@ -233,6 +251,7 @@ bool Game::StageClearUpdate() {
     _fadeoutCount++;
     if (_fadeoutCount == _fadeoutInterval)
     {
+		
         //TODO : game^3が終わったらコメントアウトを外す
         //Clear();
         //Init();
@@ -256,14 +275,19 @@ void Game::StageClearDraw() {
     }
 
     auto color = Color4(0, 0, 0, 1.0 * blend / 255);
-    Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
+	_black.SetDisplayMode(true);
+	_black.SetBaseColor(color);
+	if (_fadingout) {
+		Debug::DrawRectWithSize(Vector2D(0, 0), Vector2D(WINDOW_WIDTH, WINDOW_HEIGHT), color, true);
+	}
 
     if (_fadeoutCount >= 150
         && _fadeoutCount <= _fadingInterval) {
-        Debug::DrawString(Vector2D(200, 200), "ステージクリア", ColorPalette::WHITE4);
+        //Debug::DrawString(Vector2D(200, 200), "ステージクリア", ColorPalette::WHITE4);
     }
     if (_fadeoutCount == _fadingInterval) {
-        Debug::DrawString(Vector2D(200, 400), "左クリックで戻る", ColorPalette::WHITE4);
+		gameResult.Draw();
+        //Debug::DrawString(Vector2D(200, 400), "左クリックで戻る", ColorPalette::WHITE4);
     }
 }
 
@@ -343,6 +367,8 @@ void Game::GamingUpdate()
         //{
         //    _stageNumber++;
             _state = GameState::WAVE_CLEAR;
+			gameResult.Init(_stageNumber);
+			gameResult.Calculation();
             return;
         //}
         //else

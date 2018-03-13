@@ -3,8 +3,12 @@
 
 class River : public Obstacle
 {
+private:
+	std::string typeText;
+
 public:
     River(TiledVector tilePos);
+	River(TiledVector tilePos, std::string typeText);
     ~River();
 
     void Init() override;

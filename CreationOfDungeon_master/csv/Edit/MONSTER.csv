@@ -1,4 +1,5 @@
-bone,bone,MONSTER_DATA/bone
-ghost,ghost,MONSTER_DATA/ghost
-minotaur,minotaur,MONSTER_DATA/minotaur
-slime,slime,MONSTER_DATA/slime
+ObjectName,ResourceName,Cost,IncreaseCost,GenerateInformationPath
+bone,bone,1000,10%,MONSTER_DATA/bone
+ghost,ghost,1000,20%,MONSTER_DATA/ghost
+minotaur,minotaur,1500,20%,MONSTER_DATA/minotaur
+slime,slime,1000,20%,MONSTER_DATA/slime

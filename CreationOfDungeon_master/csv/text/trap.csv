@@ -1,0 +1,5 @@
+ObjectName,ResourceName(resource/graphの下からのパスを書く。.pngは無し),DisplayName,ItemText
+bareTrap,bareTrap_Simple,トラばさみ,相手を挟んでダメージを与えます　\nついでに相手を少しの間拘束します
+mine,mine_Simple,ばくはスイッチ,相手に大ダメージを与えます　\nその代わり拘束時間はありません
+sanctuary,sanctuary,バフのわな,没となった罠です　\n供養してください
+cursearea,CurseArea,デバフのわな,踏んだ冒険者のステータスを一定時間下げます

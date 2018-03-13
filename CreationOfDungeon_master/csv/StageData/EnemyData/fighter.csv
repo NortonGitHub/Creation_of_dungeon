@@ -1,0 +1,4 @@
+Lv, hp, attack, defence, magic_attack, magic_defence, speed, skill & cost
+1,1300,28,15,60,22,20,null
+2,1400,38,18,60,25,25,param_rise#cost:800&mpRatio:50&hp:100&atk:150&def:150&matk:100&mdef:100&spd:100&time:5
+3,1800,43,20,60,28,30,param_rise#cost:800&mpRatio:50&hp:100&atk:150&def:150&matk:100&mdef:100&spd:100&time:5

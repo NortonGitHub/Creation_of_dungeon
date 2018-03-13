@@ -4,7 +4,8 @@
 #include "cd_666s/Utility/CSVReader.h"
 
 
-BossBattle::BossBattle()
+BossBattle::BossBattle() :
+	_boss({ 0,0,0,0,0,0 })
 {
 	_sequenceTimer = 0;
 	now_situation = BattleSequence::None;

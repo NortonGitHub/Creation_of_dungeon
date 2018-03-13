@@ -5,7 +5,7 @@
 class WeakObstacle : public TiledObject
 {
 public:
-    WeakObstacle(TiledVector tilePos);
+    WeakObstacle(TiledVector tilePos, std::string typeName);
     virtual ~WeakObstacle();
 
     bool IsOverwritable(TiledObject* overwriter) override;
@@ -16,5 +16,8 @@ public:
 
 private:
     std::string GetNameFromAroundInfo(TiledVector tilePos);
+
+	std::string GraphType;
+
 };
 

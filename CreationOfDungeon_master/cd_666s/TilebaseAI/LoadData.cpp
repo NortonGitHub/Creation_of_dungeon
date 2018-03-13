@@ -49,10 +49,11 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
 {
     _defeatedNum = 0;
     _enemysNum = 0;
+	_robTresureItem.clear();
 
     std::vector<std::string> dataArray;
     CSVReader reader;
-    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
+    reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 2);
 
     const int parameterNum = 9;
     std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
@@ -61,26 +62,71 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
 
     int idx = 0;
     int count = 0;
+
+	bool isTemplate = false;
+
+	int Level = -1;
+
     for (auto data : dataArray)
     {
         if (data.empty()) {
             break;
         }
 
-        // MEMO : 最後だけはファイル名をそのまま使う
-        if (count < parameterNum - 2)
-        {
-            params[count] = std::stoi(data);
-        }
-        else if (count == parameterNum - 2)
-        {
-            name = data;
-        }
-        else
-        {
-            skillData = data;
-        }
+		//冒険者にテンプレートを追加
+		if (count == 0) {
+			if (data == "template") {
+				isTemplate = true;
+				count++;
+				continue;
+			}
+		}
 
+		if (isTemplate) {
+			if (count == 1) {
+				name = data;
+			}
+			else if (count == 2) {
+				params[6] = std::stoi(data);
+			}
+			else if (count == 3) {
+				const int paramNum = 8;
+				std::string TemplateFilename = "csv/StageData/EnemyData/" + name + ".csv";
+				std::vector<std::string> TemplateDataArray;
+				reader.Read(RESOURCE_TABLE->GetFolderPath() + TemplateFilename, TemplateDataArray, 1);
+
+				for (int i = 1; i < paramNum - 1; i++) {
+					params[i - 1] = std::stoi(TemplateDataArray[(paramNum * (std::stoi(data) - 1)) + i]);
+				}
+				
+				skillData = TemplateDataArray[(paramNum * (std::stoi(data) - 1)) + paramNum - 1];
+
+				count = parameterNum - 1;
+				Level = std::stoi(data);
+				isTemplate = false;
+			}
+
+			if (count != parameterNum - 1) {
+				count++;
+				continue;
+			}
+			//冒険者にテンプレートここまで
+		}
+		else {
+			// MEMO : 最後だけはファイル名をそのまま使う
+			if (count < parameterNum - 2)
+			{
+				params[count] = std::stoi(data);
+			}
+			else if (count == parameterNum - 2)
+			{
+				name = data;
+			}
+			else
+			{
+				skillData = data;
+			}
+		}
         count++;
 
         if (count == parameterNum)
@@ -90,6 +136,7 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
             BattleParameter param = { params[0], params[1], params[2], params[3], params[4], params[5]};
 
             auto enemy = std::make_shared<Enemy>(start.GetTilePos(), param, goal, notifyer, name);
+			enemy->SetLevel(Level);
 
             //スキル生成
             std::unique_ptr<CharactersSkill> skill(CharactersSkill::CreateSkill(skillData, *enemy));
@@ -102,6 +149,7 @@ void Enemy::LoadEnemys(std::vector<std::shared_ptr<TiledObject>>& objects, Start
             //次のキャラへ
             count = 0;
             idx++;
+			Level = -1;
 
             _enemysNum++;
         }
@@ -456,7 +504,7 @@ std::shared_ptr<Emplacement> Emplacement::Create(std::string data, TiledVector p
 
 
 //敵を後から追加で生成する
-std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos,std::string* GenerateText)
+std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer& notifyer, std::string fileName, TiledVector startPos,std::string* GenerateText, int level)
 {
 
     *GenerateText = "";
@@ -467,7 +515,12 @@ std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<T
     CSVReader reader;
     reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, dataArray, 1);
 
-    const int parameterNum = 8;
+    const int parameterNum = 9;
+
+	if (level > 1) {
+		dataArray.erase(dataArray.begin(), dataArray.begin() + ((parameterNum * (level - 1))));
+	}
+
     std::array<int, parameterNum> params = { 0, 0, 0, 0, 0, 0, 0 };
     int idx = 0;
     int count = 0;
@@ -475,6 +528,12 @@ std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<T
     std::string skill;
     for (auto data : dataArray)
     {
+
+		if (count == 0) {
+			count++;
+			continue;
+		}
+
         // MEMO : 最後だけはファイル名をそのまま使う
         if (count < parameterNum - 2)
             params[count] = std::stoi(data);
@@ -507,6 +566,7 @@ std::vector<TiledObject*> Monster::GenerateMonster(std::vector<std::shared_ptr<T
             //次のキャラへ
             count = 0;
             idx++;
+			break;
         }else{
             *GenerateText += ",";
         }

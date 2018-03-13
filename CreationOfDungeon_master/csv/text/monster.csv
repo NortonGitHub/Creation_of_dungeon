@@ -1,0 +1,5 @@
+ObjectName,ResourceName(resource/graphの下からのパスを書く。.pngは無し),DisplayName,ItemText
+bone,bone,スケルトン,骨を投げて遠距離攻撃をすることの出来るスキルを持っています　\nしかし、もろいです
+ghost,ghost,ゴースト,スキルは今回のverではありません　\n魔防と素早さが高いです
+minotaur,minotaur,ビースト,一定時間自身の攻撃力を上げることの出来るスキルを持っています　\n防御力とHPは高いですが、素早さはとても低いです
+slime,slime,スライム,スキルは今回のverではありません　\n平均的な能力を持っています

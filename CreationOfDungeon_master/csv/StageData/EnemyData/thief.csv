@@ -1,0 +1,4 @@
+Lv, hp, attack, defence, magic_attack, magic_defence, speed, skill & cost
+1,1300,35,18,0,18,18,null
+2,1400,30,18,0,20,22,shoot#power:800&cost:400&mpRatio:50&speed:3.0&range:6
+3,1500,32,20,80,25,18,shoot#power:1000&cost:400&mpRatio:50&speed:3.0&range:8

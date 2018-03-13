@@ -18,7 +18,6 @@
 
 #include "../../BossBattle.h"
 
-
 class Goal;
 class StartPoint;
 
@@ -36,10 +35,15 @@ public:
 
     bool HasClear();
     bool HasGameOver();
+
+	int GetDefeatedNum() { return _defeatedNum; };
+
+
+	void SetFieldType();
     
 private:
     
-	void DrawEnemyTimer();	//MEMO: これを別のクラスに移動させる
+    void DrawEnemyTimer();	//MEMO: これを別のクラスに移動させる
 
     void LoadTileSize(std::string stageName, std::vector<std::string>& rawData);
 
@@ -87,7 +91,7 @@ private:
 	Sprite _hart, _hartFrame;
 	//std::vector<Sprite> _hart;
 	std::vector<Sprite> _hartN;
-
+ 
     // MEMO : 突貫工事用
     void LoadMessage(std::string stageName);
     void UpdateSecretary();
@@ -97,6 +101,8 @@ private:
     bool _is_boss;
 
     int _defeatedNum;
+
+	std::string fieldTypeStr;
 
 };
 

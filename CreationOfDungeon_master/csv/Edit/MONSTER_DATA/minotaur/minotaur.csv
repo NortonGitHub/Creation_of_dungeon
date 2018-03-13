@@ -1,0 +1,4 @@
+Lv, hp, attack, defence, magic_attack, magic_defence, speed, name,skill
+1,1000,30,25,0,10,10,minotaur,cost:800&param:110&time:10
+2,1500,35,35,0,15,15,minotaur,cost:750&param:120&time:12
+3,2000,40,40,0,20,20,minotaur,cost:700&param:130&time:15

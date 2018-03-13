@@ -19,7 +19,6 @@ public:
 
 private:
 
-
     const TiledObjectDictionary& _iconDictionary;
 
     Sprite _enemyThumbnail, _allyThumbnail;

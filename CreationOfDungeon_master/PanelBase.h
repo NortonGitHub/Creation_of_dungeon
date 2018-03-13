@@ -7,6 +7,7 @@
 #include "Graph.h"
 
 #include "cd_666s\TilebaseAI\GraphicalObject.h"
+#include "EditObject.h"
 
 class PanelBase : public GraphicalObject
 {
@@ -22,7 +23,7 @@ public:
     virtual std::string GetCategoryName();
 
     virtual void SetSettingObject(std::vector<PanelBase>& _tps);
-    virtual void SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps) {};
+    virtual void SetSettingObject(std::vector<std::shared_ptr<PanelBase>> _tps, EditObject editObject) {};
 
     virtual bool IsClicked();
 
@@ -32,10 +33,6 @@ public:
 
     std::shared_ptr<PanelContent> _pobj;
    // virtual void SetPanel
-
-    //PanelSettingObjectがPanelAffectObjectsによって切り替えられるときのみ呼び出される
-    //設計的に問題がありそうだからテストで　ダウンキャストすれば回避できるが危険か
-    virtual void PanelSettingObject_SettingPanel(std::string panelName, std::string GenerateText, std::string CategoryName, std::string graphName) {};
 
 };
 

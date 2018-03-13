@@ -1,7 +1,5 @@
 #x,#y,#width,#height,#ui_type_name,#ui_name,#ui_function_type,#div_num_x,#div_num_y
-
-100,500,#100,#80,button,start,MOVE,1,1,
-
-500,500,#100,#80,button,start_b,MOVE_B,1,1,
-
-900,500,#100,#80,button,quit,QUIT,1,1,
+,,,,,,,,
+200,500,#100,#80,button,start,MOVE,1,1
+,,,,,,,,
+700,500,#100,#80,button,quit,QUIT,1,1
