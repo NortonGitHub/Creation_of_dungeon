@@ -7,7 +7,7 @@
 class Game : public SceneBase
 {
 public:
-    Game(std::string stageNumber);
+	Game(std::string areaNum, std::string stageNumber);
     ~Game();
 
     SceneBase* Update(UIManager _ui);
@@ -74,6 +74,7 @@ private:
     // TODO : ‚ ‚Æ‚Åpointer‚É‚¹‚¸‚Æ‚àÏ‚Ş‚æ‚¤‚É‚·‚é
     Dungeon* _dungeon;
     std::string _stageNumber;
+	std::string _areaNumber;
 
     bool isBoss;
 

@@ -24,7 +24,7 @@ class StartPoint;
 class Dungeon
 {
 public:
-    Dungeon(std::string stageName);
+	Dungeon(std::string areaNum, std::string stageName);
     ~Dungeon();
     
     //void InitWithLoad(std::string stageName);
@@ -58,11 +58,14 @@ private:
     
     std::string _stageName;	//記号を含めたステージ名
     std::string _stageNum;	//整数のステージ番号のみ
+	std::string _areaNum;
     
     void GenerateObject(std::string typeName, int countX, int countY);
+
+	bool GetIsBossStage(const std::vector<std::string>& _bossList);
     
     //同盟間の情報共有網
-    ColleagueNotifyer _enemys, _monsters;
+    ColleagueNotifyer _enemys, _monsters, _boss;
     
     //開始点と終了地点はグローバルなレベルでインスタンス生成しておく
     std::shared_ptr<Goal> _goal;

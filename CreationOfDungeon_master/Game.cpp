@@ -12,8 +12,9 @@
 #include <assert.h>
 #include <iostream>
 
-Game::Game(std::string stageNumber)
+Game::Game(std::string areaNum, std::string stageNumber)
     :_stageNumber(stageNumber)
+	, _areaNumber(areaNum)
     , _fadeoutCount(0)
     , _fadeinInterval(100)
     , _fadingInterval(200)

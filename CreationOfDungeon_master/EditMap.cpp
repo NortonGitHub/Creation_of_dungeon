@@ -36,19 +36,20 @@
 #define STR(var) #var
 
 
-EditMap::EditMap(std::string _stage_num)
+EditMap::EditMap(std::string _area_num, std::string _stage_num)
 	: stage_num(_stage_num)
+	, area_num(_area_num)
 	, NPOS(std::string::npos)
-	, stage_num_a({ _stage_num.front() })
+	, stage_num_temp({ _stage_num.front() })
 {
 
 	auto b_pos = stage_num.rfind('b');
 
 	if (b_pos != std::string::npos) {
-		stage_num_a = stage_num.substr(0, b_pos);
+		stage_num_temp = stage_num.substr(0, b_pos);
 	}
 	else {
-		stage_num_a = stage_num;
+		stage_num_temp = stage_num;
 	}
 
 	_functions.reserve(20);
@@ -437,7 +438,7 @@ SceneBase* EditMap::PanelFunction()
                 INPUT_MGR->Clear();
                 RESOURCE_TABLE->Refresh();
 
-                return new Game(stage_num);
+                return new Game(area_num, stage_num);
             }
             else if (str.find("SettingObject") != NPOS) {
                 PanelSettingObjectFunction(p);

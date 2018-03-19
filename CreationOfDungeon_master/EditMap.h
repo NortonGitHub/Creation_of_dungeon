@@ -12,7 +12,7 @@ class EditMap :
     public SceneBase
 {
 public:
-    EditMap(std::string _stage_num);
+    EditMap(std::string _area_num ,string _stage_num);
     ~EditMap();
 
     SceneBase* Update(UIManager _ui);
@@ -43,7 +43,9 @@ private:
     UIManager _uiManager;
 
     std::string stage_num;
-	std::string stage_num_a;
+	std::string stage_num_temp;
+
+	std::string area_num;
 
     std::shared_ptr<MakeDungeon> _dungeon;
 

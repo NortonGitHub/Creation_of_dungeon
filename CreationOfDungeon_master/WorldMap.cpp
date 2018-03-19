@@ -122,7 +122,7 @@ SceneBase * WorldMap::Update()
                             else {
                                 stageNum = nowAreaPointList[i]->stageNum;
                                 //return new Game(stageNum);
-                                return new EditMap(stageNum);
+                                return new EditMap(std::to_string(nowMyAreaNum), stageNum);
                             }
                         }
                         else {
