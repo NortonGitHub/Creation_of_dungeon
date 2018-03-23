@@ -12,8 +12,9 @@
 #include <assert.h>
 #include <iostream>
 
-Game::Game(std::string stageNumber)
+Game::Game(std::string areaNum, std::string stageNumber)
     :_stageNumber(stageNumber)
+	, _areaNumber(areaNum)
     , _fadeoutCount(0)
     , _fadeinInterval(100)
     , _fadingInterval(200)
@@ -174,7 +175,7 @@ void Game::Init()
         _dungeon = nullptr;
     }
 
-    _dungeon = new Dungeon(_stageNumber);
+    _dungeon = new Dungeon(_areaNumber, _stageNumber);
     _dungeon->Init();
 
 	_black.Load("resource/graph/ui/result/result_Black.png");

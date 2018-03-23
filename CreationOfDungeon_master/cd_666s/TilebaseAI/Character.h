@@ -21,7 +21,7 @@ class Character : public TiledObject
     
 public:
 
-    Character(TiledVector startPos, BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type);
+	Character(TiledVector startPos, BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type, bool isBoss);
     virtual ~Character();
 
     //意思決定→行動の順序に基づいた操作
@@ -34,7 +34,7 @@ public:
 
     virtual bool IsOverwritable(TiledObject* overwriter) override { return false; }    
     virtual bool Contain(Vector2D pos) const override;
-
+	
     
     //バトルの入退場時のイベント
     void OnOccuredBattle(BattlingTile* battle);
@@ -49,11 +49,11 @@ public:
     bool IsAlive() const { return (0 < _battleParameter._hp); }
     bool HasArrived() const override { return _hasArrived; }
 
-    std::string GetName() const { return _name; }
+    std::string GetName() const override { return _name; }
     TiledVector::Direction GetDirection() const { return _direction; }
 
     BattleParameter GetAffectedParameter();
-    BattleParameter GetRawParameter() const override { return _battleParameter; };
+    BattleParameter GetRawParameter() const override { return _battleParameter; }
     
     void SetDirection(TiledVector::Direction d) { _direction = d; }
 	

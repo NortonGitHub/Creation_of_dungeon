@@ -24,10 +24,10 @@ MessageManager::MessageManager() {
         std::string str = "";
 
         if (i == 0) {
-            str = "data\\talkData\\nomal.csv";
+            str = "talkData\\nomal.csv";
         }
         else if (i == 1) {
-            str = "data\\talkData\\dynamic.csv";
+            str = "talkData\\dynamic.csv";
         }
 
 

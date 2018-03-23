@@ -1,58 +1,65 @@
 #pragma once
-#include "cd_666s/TilebaseAI/GraphicalObject.h"
-#include "mw_animation/Animator.h"
+#include "cd_666s/TilebaseAI/Character.h"
+#include "cd_666s/DebugDraw.h"
 
-class Character;
-
-class BossBattleObject :
-	public GraphicalObject
+class BossBattleObject : public Character
 {
 public:
-	BossBattleObject();
-	BossBattleObject(Vector2D pos, std::string name);
+	BossBattleObject(Vector2D startPos, BattleParameter param, ColleagueNotifyer & notifyer, std::string name, bool _isBoss);
 	~BossBattleObject();
 
-	enum class Type
+	enum class ObjectType
 	{
 		DEFAULT,
 		BOSS,
-		ENEMY,
-		FACE
+		ENEMY
+	};
+
+	enum class Action
+	{
+		READY,
+		ATTACK,
+		END
 	};
 
 	//ループ処理の前に1度だけ呼ばれる処理
-	virtual void Init();
+	void Init();
 
-	virtual void Update() override;
-	virtual void Draw() override;
+	void Update() override;
+	void Draw() override;
 
-	//能動動作できるオブジェクトから呼び出される関数
-	virtual void Interact(Character& character);
+	void Clear();
 
-	//アイテム取得での消失や召喚されたかどうかなど、
-	//オブジェクトは生成しても判定に用いるかどうかを判断するのに用いる.
-	//詳細な条件は派生先によって異なる.
-	virtual bool IsEnable() const { return true; }
+	void Think() override {};
+	void Act() override {};
+	bool IsOverwritable(TiledObject* overwriter) override { return false; }
+
+	//アニメーションの開始/停止
+	void SwitchAnime(bool _isAnimate);
+
+	void OutBossRoom();
 
 	//オブジェクトが倒されたことを示すときに使用
 	virtual int GetDefeatedNum() const { return 0; }
 
-	//オブジェクトが目的地にたどり着いたかどうかを返す
-	virtual bool HasArrived() const { return true; }
+	//ボス部屋に居る状態を変更する
+	void SetInRoom(bool _inRoom) { _isInRoom =  _inRoom; }
 
-	Type GetType() const { return _type; }
+	ObjectType GetObjectType() const { return _objType; }
+
+	BattleParameter _param;
 
 protected:
 
-	std::string _name;
-	Type _type;
+	ObjectType _objType;
+	Action _action;		//行動の内容
 
 	//自分がボス部屋の中にいるか
 	bool _isInRoom;
 
-	Animator _animator;
-
+	
 private:
 	Vector2D _position;
+	double move_sum;
 };
 

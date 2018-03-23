@@ -24,7 +24,7 @@ class StartPoint;
 class Dungeon
 {
 public:
-    Dungeon(std::string stageName);
+	Dungeon(std::string areaNum, std::string stageName);
     ~Dungeon();
     
     //void InitWithLoad(std::string stageName);
@@ -44,6 +44,7 @@ public:
 private:
     
     void DrawEnemyTimer();	//MEMO: これを別のクラスに移動させる
+
     void LoadTileSize(std::string stageName, std::vector<std::string>& rawData);
 
     //ゲーム時間と時間通知モジュール群
@@ -57,11 +58,14 @@ private:
     
     std::string _stageName;	//記号を含めたステージ名
     std::string _stageNum;	//整数のステージ番号のみ
+	std::string _areaNum;
     
     void GenerateObject(std::string typeName, int countX, int countY);
+
+	bool GetIsBossStage(const std::vector<std::string>& _bossList);
     
     //同盟間の情報共有網
-    ColleagueNotifyer _enemys, _monsters;
+    ColleagueNotifyer _enemys, _monsters, _boss, _intruders;
     
     //開始点と終了地点はグローバルなレベルでインスタンス生成しておく
     std::shared_ptr<Goal> _goal;
@@ -88,9 +92,10 @@ private:
     // MEMO : debug用
     Sprite _mainsFrame, _background, _windowBackground, _waveInfomartionTimer;
 	Sprite _hart, _hartFrame;
+	
 	//std::vector<Sprite> _hart;
 	std::vector<Sprite> _hartN;
-	
+ 
     // MEMO : 突貫工事用
     void LoadMessage(std::string stageName);
     void UpdateSecretary();
