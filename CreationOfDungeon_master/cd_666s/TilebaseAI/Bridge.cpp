@@ -8,7 +8,7 @@
 Bridge::Bridge(std::string typeName, TiledVector tilePos)
 	: TiledObject(tilePos)
 {
-	_type = TiledObject::Type::BLOCK;
+	_type = TiledObject::Type::DEFAULT;
 	this->typeName = typeName;
 }
 
@@ -45,6 +45,7 @@ void Bridge::Draw()
 
 bool Bridge::IsOverwritable(TiledObject* overwriter)
 {
+
 	return true;
 }
 

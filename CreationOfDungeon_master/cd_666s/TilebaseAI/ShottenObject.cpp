@@ -68,7 +68,11 @@ ShottenObject::ShottenObject(int power, int attack, int range, double speed, Til
     _animator.Transform([&](GraphArray* animation)
     {
         animation->GetGraphPtr()->SetScale(Vector2D(TILE_SCALE, TILE_SCALE));
-    });
+    
+	});
+
+	_type = TiledObject::Type::ATTACK;
+
 }
 
 
@@ -160,7 +164,7 @@ void ShottenObject::CheckHit()
             break;
         }
 
-        if (obj->GetType() == Type::BLOCK)
+        if (!obj->IsOverwritable(this))
         {
             _hasHit = true;
             hitObstacle = true;

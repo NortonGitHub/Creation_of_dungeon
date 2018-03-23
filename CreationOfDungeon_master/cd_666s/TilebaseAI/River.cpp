@@ -12,7 +12,7 @@ River::River(TiledVector tilePos)
 River::River(TiledVector tilePos, std::string typeText)
 	: Obstacle(tilePos) 
 {
-
+	_type = TiledObject::Type::DEFAULT;
 	this->typeText = typeText;
 
 }
@@ -113,3 +113,15 @@ void River::Init()
     _graph.SetPosition(tilePos.GetWorldPos());
     TiledObject::Init();
 }
+
+
+bool River::IsOverwritable(TiledObject* overwriter) {
+
+	if (overwriter->GetType() == TiledObject::Type::ATTACK) {
+		return true;
+	}
+
+	return false;
+
+}
+

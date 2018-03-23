@@ -140,3 +140,11 @@ bool Emplacement::Contain(Vector2D pos) const
 
     return true;
 }
+
+bool Emplacement::IsOverwritable(TiledObject * overwriter)
+{
+	return false;
+}
+
+
+

@@ -40,6 +40,8 @@ public:
     //生成する際のテキスト
     std::string GenerateText;
 
+	void SetActive(bool flag);
+
 private:
     PanelContent panel;
 

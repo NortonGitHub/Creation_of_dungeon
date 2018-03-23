@@ -427,6 +427,13 @@ SceneBase* EditMap::PanelFunction()
                     continue;
                 }
 
+				if (payOffCost > MoneyManager::getInstance()->getMoney()) {
+					_cancelSE.Play();
+					continue;
+				}
+
+				MoneyManager::getInstance()->decreaseMoney(payOffCost);
+
                 PanelSceneTransFunction(p);
 
                 if (_dungeon != nullptr)

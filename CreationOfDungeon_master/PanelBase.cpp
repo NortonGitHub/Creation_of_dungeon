@@ -59,3 +59,8 @@ bool PanelBase::GetIsClicked(PanelContent& panel)
     */
     return Contain(cursorPos); //panel.Contain(cursorPos);
 }
+
+void PanelBase::SetActive(bool flag)
+{
+	_graph.SetDisplayMode(flag);
+}

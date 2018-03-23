@@ -219,6 +219,16 @@ int PanelSettingObject::getLevel() {
 	return level;
 }
 
+void PanelSettingObject::SetActive(bool flag)
+{
+	if (objectName.empty()) {
+		_graph.SetDisplayMode(false);
+	}
+	else {
+		_graph.SetDisplayMode(flag);
+	}
+}
+
 ShopPanel::PanelCategory PanelSettingObject::GetPanelCategory() {
 	return panelCategory;
 }

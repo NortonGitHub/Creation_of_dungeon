@@ -24,7 +24,8 @@ public:
         GOAL,
         MAGIC_SQUARE,
         BATTLE, 
-        TRAP
+        TRAP,
+		ATTACK
     };
     
     //ループ処理の前に1度だけ呼ばれる処理

@@ -99,6 +99,10 @@ bool StartPoint::IsOverwritable(TiledObject* overwriter)
     if (overwriter->GetType() == Type::MONSTER)
         return false;
 
+	if (overwriter->GetType() == Type::ATTACK) {
+		return false;
+	}
+
     return true;
 }
 

@@ -12,5 +12,7 @@ public:
     ~River();
 
     void Init() override;
+
+	bool IsOverwritable(TiledObject* overwriter) override;
 };
 

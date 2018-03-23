@@ -3,7 +3,8 @@
 #include "cd_666s/Sound/Sound.h"
 #include <vector>
 #include "cd_666s/Render/Sprite.h"
-
+#include "mw_animation/Animator.h"
+#include "WorldMap_Menu.h"
 
 
 
@@ -41,9 +42,12 @@ private:
         int isStayPoint;   //止まれるポイントかどうか   0で止まれない 1で止まれる
 
         int isPoint;        //ポイントが有効かどうか（クリア等でそのポイントが出来るようになっているか）0で無効　1で有効
+		int isClear;		//そのポイントがクリア済みか
 
         std::vector<PointConnect*> pointConect;
 
+		std::shared_ptr<Sprite> _stageIcon;
+		std::shared_ptr<Sprite> _stagePoint;
 
     };
 
@@ -109,7 +113,8 @@ private:
 
     double myX; //現在のX座標
     double myY; //現在のY座標
-    double mySpeed; //自分の移動スピード
+    double mySpeed; //自分の移動スピード（可変）
+	double mySpeedFrameNum; //自分の移動スピード（割合。何フレームで移動を終えるか）
 
     double myVx;    //x方向の速度
     double myVy;    //y方向の速度
@@ -118,7 +123,7 @@ private:
     const double pointR = 9;   //ポイントの描写する円の半径　デバック用　多分消える
 
 
-    std::vector<Point*> nowAreaPointList;   //現在のエリアのポイントのリスト
+    std::vector<std::shared_ptr<Point>> nowAreaPointList;   //現在のエリアのポイントのリスト
     std::vector<RoadConnect*> nowRoadConnect;   //現在のエリアの道の繋がりの情報
 
     std::vector<int> movePointList;
@@ -126,13 +131,7 @@ private:
     int AreaGrBuffer[8];
     int* AreaGr;
 
-    int charaGr_f[4];
-    int charaGr_b[4];
-    int charaGr_l[4];
-    int charaGr_r[4];
-
-    int charaAnimeCnt;
-    int charaAnimeFrameTime;
+	Animator _animator;
 
     int blend;
     int blendFlag;
@@ -150,6 +149,10 @@ private:
     bool debugFlag;
 
 	Sprite _shopIcon;
+
+	Sprite _MenuButton;
+
+	std::shared_ptr<WorldMap_Menu> worldMap_Menu;
 
 public:
     WorldMap();
@@ -175,14 +178,14 @@ public:
 
     void setPointCost();
 
-    Point* getPoint(int pointNum);
+	std::weak_ptr<WorldMap::Point> getPoint(int pointNum);
 
     void DrawMap();
 
     int ClickCheckBox(int x, int y, int rx, int ry);    //クリックしたときの判定（四角形）
     int ClickCheckCircle(int x, int y, int r);    //クリックしたときの判定（円形）
 
-    bool checkMoveReach(Point* point);
+    bool checkMoveReach(std::weak_ptr<WorldMap::Point> point);
 
     void movePoint();
 
@@ -195,6 +198,11 @@ public:
     void setAreaNum(int areaNum);
 
 	bool ClickCheck(Vector2D pos, Vector2D size);
+
+	std::string GetFieldType(std::string stageNum);
+
+
+	bool CheckLineOfPoint(Vector2D P, Vector2D A, Vector2D B);
 
 };
 

@@ -34,5 +34,7 @@ public:
     std::shared_ptr<PanelContent> _pobj;
    // virtual void SetPanel
 
+	virtual void SetActive(bool flag);
+
 };
 

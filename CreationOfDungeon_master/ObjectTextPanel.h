@@ -12,7 +12,8 @@ private:
 
 	enum PanelType {
 		Shop = 0,
-		Edit = 1
+		Edit = 1,
+		WorldMap = 2
 	};
 
 	PanelType panelType;
@@ -65,6 +66,7 @@ public:
 
 	void ReadMessageText();
 	void SetMessage(std::shared_ptr<ShopPanel> selectShopPanel);
+	void SetMessage(std::shared_ptr<PanelSettingObject> selectPanel);
 	void SetMessage(std::shared_ptr<PanelSettingObject> selectPanel, int cost);
 	
 	void ResetMessage();
@@ -72,6 +74,8 @@ public:
 	bool BuyCheck();
 
 	bool EvolCheck();
+
+	void SetActive(bool flag);
 
 };
 

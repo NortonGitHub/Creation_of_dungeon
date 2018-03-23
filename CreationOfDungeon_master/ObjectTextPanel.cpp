@@ -21,7 +21,11 @@ ObjectTextPanel::ObjectTextPanel(std::string className) {
 		panelType = ObjectTextPanel::PanelType::Shop;
 
 	}
-	else {
+	else if (className == "worldmap") {
+
+		panelType = ObjectTextPanel::PanelType::WorldMap;
+
+	}else{
 
 		panelType = ObjectTextPanel::PanelType::Edit;
 
@@ -48,7 +52,7 @@ void ObjectTextPanel::Init() {
 	if (panelType == ObjectTextPanel::PanelType::Shop) {
 		Init_Shop();
 	}
-	else if (panelType == ObjectTextPanel::PanelType::Edit) {
+	else if (panelType == ObjectTextPanel::PanelType::Edit || panelType == ObjectTextPanel::PanelType::WorldMap) {
 		Init_Edit();
 	}
 
@@ -150,7 +154,7 @@ void ObjectTextPanel::Draw() {
 
 	}
 
-	if (panelType == ObjectTextPanel::PanelType::Edit) {
+	if (panelType == ObjectTextPanel::PanelType::Edit || panelType == ObjectTextPanel::PanelType::WorldMap) {
 		if (!(Level < 0)) {
 			Debug::DrawString(_messageWindow.GetPosition() + Vector2D(570, 20), "Lv " + std::to_string(Level), Color4(0, 0, 0, 1), 18);
 		}
@@ -282,6 +286,47 @@ void ObjectTextPanel::SetMessage(std::shared_ptr<ShopPanel> selectShopPanel) {
 
 }
 
+void ObjectTextPanel::SetMessage(std::shared_ptr<PanelSettingObject> selectPanel) {
+
+	canLevelUp = false;
+	existLevelUp = false;
+
+	messageTextCategory = selectPanel->GetPanelCategory();
+	existLevelUp = selectPanel->GetCanLevelUp();
+
+	_ObjectImage.Load(selectPanel->GetPanelGraphPath());
+	_ObjectImage.SetScale(Vector2D((128 - 12) / _ObjectImage.GetSize()._x, (128 - 12) / _ObjectImage.GetSize()._y));
+	_ObjectImage.SetDisplayMode(true);
+
+	Level = selectPanel->getLevel();
+	LevelUpCost = selectPanel->GetLevelUpCost();
+
+	if (existLevelUp && MoneyManager::getInstance()->getMoney() >= selectPanel->GetLevelUpCost()) {
+		canLevelUp = true;
+		_buyButton.SetDisplayMode(true);
+	}
+	else if (existLevelUp) {
+		canLevelUp = false;
+		_buyButton.SetDisplayMode(true);
+	}
+	else {
+		canLevelUp = false;
+		_buyButton.SetDisplayMode(false);
+	}
+
+	for (int i = 0; i < messageText[messageTextCategory].size(); i++) {
+		if (messageText[messageTextCategory][i]->ObjectName == selectPanel->getPanelObjectName()) {
+			messageTextArrayNum = i;
+			return;
+		}
+		messageTextArrayNum = -1;
+	}
+	messageTextArrayNum = -1;
+
+
+
+}
+
 void ObjectTextPanel::SetMessage(std::shared_ptr<PanelSettingObject> selectPanel, int cost) {
 
 	putCost = cost;
@@ -403,6 +448,16 @@ bool ObjectTextPanel::EvolCheck() {
 	}
 
 	return true;
+
+}
+
+void ObjectTextPanel::SetActive(bool flag)
+{
+
+	_messageWindow.SetDisplayMode(flag);
+	_ObjectImage.SetDisplayMode(flag);
+
+	ResetMessage();
 
 }
 

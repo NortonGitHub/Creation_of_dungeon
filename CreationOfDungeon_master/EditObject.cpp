@@ -263,7 +263,7 @@ int EditObject::GetEditObjectNum(std::string CategoryName) {
 		return editOblectBlockList.size();
 	}
 
-	return -1;
+	return 0;
 
 }
 

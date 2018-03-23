@@ -14,6 +14,8 @@ public:
     bool IsActivatable() const override;
     bool Contain(Vector2D pos) const override;
 
+	bool IsOverwritable(TiledObject* overwriter) override;
+
     static std::shared_ptr<Emplacement> Create(std::string data, TiledVector pos);
 
 private:
