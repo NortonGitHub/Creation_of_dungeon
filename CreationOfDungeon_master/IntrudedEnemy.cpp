@@ -6,7 +6,7 @@
 
 
 IntrudedEnemy::IntrudedEnemy(BattleParameter params, ColleagueNotifyer & notifyer, std::string enemyName)
-	: Character({ 0,0 }, params, notifyer, enemyName, TiledObject::Type::ENEMY)
+	: Character({ 0,0 }, params, notifyer, enemyName, TiledObject::Type::ENEMY, false)
 {
 }
 

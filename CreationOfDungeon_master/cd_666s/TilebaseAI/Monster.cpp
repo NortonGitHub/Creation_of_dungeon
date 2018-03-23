@@ -8,7 +8,7 @@
 #include "../InputManager/InputManager.h"
 
 Monster::Monster(TiledVector startPos, BattleParameter param, TiledObject *target, ColleagueNotifyer& notifyer, std::string monsterName, std::string skillData)
-: Character(startPos, param, notifyer, monsterName, TiledObject::Type::MONSTER)
+: Character(startPos, param, notifyer, monsterName, TiledObject::Type::MONSTER, false)
 , _hasChoosed(false)
 , _countAfterUsingSkill(30)
 {

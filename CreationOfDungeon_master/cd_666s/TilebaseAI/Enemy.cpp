@@ -14,7 +14,7 @@ int Enemy::_enemysNum = 0;
 std::vector<RobTresureItem> Enemy::_robTresureItem;
 
 Enemy::Enemy(TiledVector startPos, BattleParameter params, TiledObject &baseTarget, ColleagueNotifyer& notifyer, std::string enemyName)
-    : Character(startPos, params, notifyer, enemyName, TiledObject::Type::ENEMY)
+    : Character(startPos, params, notifyer, enemyName, TiledObject::Type::ENEMY,false)
     , _baseTarget(baseTarget)
     , _damageTimer(30, false, false)
 	, _tempParam({ 0,0,0,0,0,0 })
