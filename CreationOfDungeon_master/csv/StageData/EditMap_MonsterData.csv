@@ -1,4 +1,1 @@
 hp, attack, defence, magic_attack, magic_defence, speed, startX, startY, name, skill
-500,32,15,0,18,20,7,1,bone,cost:500&power:300&range:6&speed:3
-500,32,15,0,18,20,6,2,bone,cost:500&power:300&range:6&speed:3
-500,32,15,0,18,20,6,5,bone,cost:500&power:300&range:6&speed:3
