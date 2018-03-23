@@ -335,7 +335,7 @@ void Dungeon::Update()
 	//メッセージ更新
 	UpdateSecretary();
 
-#if 0
+#if 1
 	if (_is_boss) {
 		_counter.Update(_defeatedNum);
 	}
@@ -344,7 +344,7 @@ void Dungeon::Update()
 	}
 #endif
 
-	_timer.Update();
+	//_timer.Update();
 
 	//情報網更新
 	_monsters.Update();
@@ -424,7 +424,7 @@ void Dungeon::Draw()
 	Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), ColorPalette::WHITE4, false);
 	Debug::DrawString(Vector2D(1010, 64), "洞窟ダンジョン その" + _stageName);
 
-#if 0
+#if 1
 	if (_is_boss) {
 		_counter.Draw();
 	}
@@ -434,7 +434,7 @@ void Dungeon::Draw()
 	}
 #endif
 
-	_timer.Draw();
+	//_timer.Draw();
 
 	DrawEnemyTimer();
 }
