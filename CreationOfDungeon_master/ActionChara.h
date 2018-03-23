@@ -6,7 +6,7 @@ class GraphArray;
 class ActionChara : public BossBattleObject
 {
 public:
-	ActionChara();
+	ActionChara(Vector2D startPos, BattleParameter param, ColleagueNotifyer & notifyer, std::string name, bool _isBoss);
 	~ActionChara();
 
 	void Update() override;

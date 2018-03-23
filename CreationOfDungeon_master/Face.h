@@ -6,7 +6,7 @@ class GraphArray;
 class Face : public BossBattleObject
 {
 public:
-	Face();
+	Face(Vector2D startPos, BattleParameter param, ColleagueNotifyer & notifyer, std::string name, bool _isBoss);
 	~Face();
 
 	void Update() override;

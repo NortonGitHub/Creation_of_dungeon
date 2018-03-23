@@ -6,7 +6,7 @@
 #include "../DebugDraw.h"
 
 
-Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type,bool isBoss = false)
+Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type,bool isBoss)
 : TiledObject(startPos)
 , _direction(TiledVector::Direction::FORWARD)
 , _battleParameter(param)

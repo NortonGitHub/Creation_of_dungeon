@@ -21,7 +21,7 @@ class Character : public TiledObject
     
 public:
 
-	Character(TiledVector startPos, BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type, bool isBoss);
+	Character(TiledVector startPos, BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type, bool isBoss = false);
     virtual ~Character();
 
     //ˆÓvŒˆ’è¨s“®‚Ì‡˜‚ÉŠî‚Ã‚¢‚½‘€ì

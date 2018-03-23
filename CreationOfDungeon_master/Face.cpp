@@ -1,6 +1,7 @@
 #include "Face.h"
 
-Face::Face()
+Face::Face(Vector2D startPos, BattleParameter param, ColleagueNotifyer & notifyer, std::string name, bool _isBoss)
+	: BossBattleObject(startPos, param, notifyer, name, _isBoss)
 {
 }
 
