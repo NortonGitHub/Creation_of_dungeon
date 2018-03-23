@@ -51,9 +51,6 @@ Dungeon::Dungeon(std::string areaNum, std::string stageName)
 		_stageNum = _stageName;
 	}
 
-
-
-
 	_hart.SetPriority(Sprite::Priority::UI);
 	_hart.SetDisplayMode(false);
 	_hart.SetScale(Vector2D(5.0, 5.0));
@@ -61,8 +58,6 @@ Dungeon::Dungeon(std::string areaNum, std::string stageName)
 	_hartFrame.SetPriority(Sprite::Priority::UI);
 	_hartFrame.SetDisplayMode(true);
 
-	_hartFrame.SetPriority(Sprite::Priority::UI);
-	_hartFrame.SetDisplayMode(true);
 
 	_mainsFrame.SetPriority(Sprite::Priority::UI);
 	_background.SetPriority(Sprite::Priority::BACKGROUND);
@@ -86,18 +81,18 @@ void Dungeon::Init()
 	_messageReciever.Init();
 	LoadMessage(_stageName);
 
-	//ボスステージかどうかを判別
-	_is_boss = _stageName.rfind('b') != std::string::npos;
-
 	//ステージ生成
 	std::vector<std::string> dataArray;
 	CSVReader reader;
 
 	//ボスステージかどうかを判別する
-	std::string fileName = "csv/boss/list";
+	std::string fileName = "csv/boss/list.csv";
 	std::vector<std::string> bossStageListArray;
 	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, bossStageListArray, 1);
 	_is_boss = GetIsBossStage(bossStageListArray);
+
+	//ハートフレームの表示フラグの再設定
+	_hartFrame.SetDisplayMode(!_is_boss);
 
 	//ウェーブの情報を読み込む
 	fileName = "csv/StageData/wave";
@@ -161,7 +156,7 @@ void Dungeon::Init()
 	fileName = "csv/StageData/enemys";
 	fileName += (_stageName + ".csv");
 	Enemy::LoadEnemys(_objs, *_start, *_goal, _enemys, fileName);
-
+	
 	//fileName = "csv/StageData/monsters";
 	//fileName += (_stageName + ".csv");
 	fileName = "csv/StageData/EditMap_MonsterData.csv";
@@ -179,6 +174,7 @@ void Dungeon::Init()
 	_enemys.Update();
 	if (_is_boss) {
 		_boss.Update();
+		_intruders.Update();
 	}
 	OBJECT_MGR->Refresh();
 
@@ -261,10 +257,9 @@ void Dungeon::GenerateObject(std::string typeName, int countX, int countY)
 
 bool Dungeon::GetIsBossStage(const std::vector<std::string>& _bossList)
 {
-	for (int i = 0; i < _bossList.size(); i++) {
-		if ((i + 2) % 2 == 0 && _bossList[i] == _stageName) {
-			
-	//		if(_bossList[i + 1] )
+	for (int i = 0; i < _bossList.size(); i+=2){
+		if (_bossList[i] == _areaNum && _bossList[i + 1] == _stageName) {
+			return true;
 		}
 	}
 	return false;
@@ -318,11 +313,12 @@ bool Dungeon::HasGameOver()
 	//ボスステージのゲームオーバー条件 : ボスの体力
 	if (_is_boss) {
 		//MEMO:暫定的に敵をさせていい上限をpermitedNumとしている。
+		/*
 		auto passedNum = _goal->GetPassedNum();
 		if (_permitivePassedNum < passedNum)
 			return true;
-
-		//return _bossBattle.WasBossKilled();
+		*/
+		return _bossBattle.WasBossKilled();
 	}
 	//通常ステージのゲームオーバー条件 : 通過させた敵の数
 	else {
@@ -339,12 +335,16 @@ void Dungeon::Update()
 	//メッセージ更新
 	UpdateSecretary();
 
+#if 0
 	if (_is_boss) {
 		_counter.Update(_defeatedNum);
 	}
 	else {
 		_timer.Update();
 	}
+#endif
+
+	_timer.Update();
 
 	//情報網更新
 	_monsters.Update();
@@ -352,19 +352,21 @@ void Dungeon::Update()
 
 	if (_is_boss) {
 		_boss.Update();
+		_intruders.Update();
 	}
 
 	//捜査情報更新
 	_controller.Update();
+	auto& _objs = OBJECT_MGR->_objects;
 
-	for (auto& obj : OBJECT_MGR->_objects)
+	for (auto& obj : _objs)
 	{
 		if (obj != nullptr) {
 			obj->Update();
 
 			if (!_is_boss)
 				continue;
-
+			
 			if (obj->GetType() == TiledObject::Type::ENEMY) {
 				_defeatedNum = obj->GetDefeatedNum();
 			}
@@ -372,13 +374,20 @@ void Dungeon::Update()
 			//敵がゴールに到着したらボスとの戦闘開始
 			if (obj->HasArrived())
 			{
-				_bossBattle.SetBattleObject(obj, _boss);
+				_bossBattle.SetBattleObject(obj, _intruders);
+				OBJECT_MGR->Add(_bossBattle.GetIntruderObject());
 			}
 		}
 	}
 
 
 	if (_is_boss) {
+		/*
+		if(_bossBattle.GetIntruderObject() != nullptr){
+		}
+		else
+		}*/
+
 		_bossBattle.Update();
 	}
 }
@@ -387,7 +396,7 @@ void Dungeon::Update()
 void Dungeon::Draw()
 {
 	//時間になったら初期化
-	if (_timer.HasTimeUp() && !_is_boss)
+	if (_timer.HasTimeUp()/* && !_is_boss*/)
 		return;
 
 	FIELD->Draw();
@@ -405,14 +414,17 @@ void Dungeon::Draw()
 
 
 	//メッセージウィンドウ更新
-	_messageReciever.Update();
-	_messageReciever.Draw();
+	if (_bossBattle.GetIntruderObject() == nullptr) {
+		_messageReciever.Update();
+		_messageReciever.Draw();
+	}
 
 	//ステージ名表示
 	Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), Color4(0.5, 0.65, 0.85, 1.0), true);
 	Debug::DrawRectWithSize(Vector2D(970, 40), Vector2D(250, 60), ColorPalette::WHITE4, false);
 	Debug::DrawString(Vector2D(1010, 64), "洞窟ダンジョン その" + _stageName);
 
+#if 0
 	if (_is_boss) {
 		_counter.Draw();
 	}
@@ -420,11 +432,19 @@ void Dungeon::Draw()
 		//残り時間表示
 		_timer.Draw();
 	}
+#endif
+
+	_timer.Draw();
 
 	DrawEnemyTimer();
 }
 
 void Dungeon::DrawEnemyTimer() {
+	//侵入者情報表示
+	_intruderInformation.Draw();
+
+	if (_is_boss)
+		return;
 
 	//ノルマ表示
 	//std::string passed = "×";
@@ -437,8 +457,6 @@ void Dungeon::DrawEnemyTimer() {
 	passed += std::to_string(_permitivePassedNum);
 	Debug::DrawString(_waveInfomartionTimer.GetPosition() + Vector2D(60, 190), passed);
 	*/
-	//侵入者情報表示
-	_intruderInformation.Draw();
 }
 
 

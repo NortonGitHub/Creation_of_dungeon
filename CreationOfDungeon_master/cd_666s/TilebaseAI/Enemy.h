@@ -45,7 +45,7 @@ public:
     {
         if (_defeatedNum == 0 || _enemysNum == 0)
             return false;
-
+		
         return (_enemysNum <= _defeatedNum);
     }
 
@@ -73,6 +73,8 @@ public:
     void StuckOn(int interval)  { _damageTimer.Reset(interval, true, false); };
 
 	static std::vector<RobTresureItem> GetRobTresureItem() { return _robTresureItem; };
+
+	std::string GetName() const override { return Character::GetName(); };
 
 private:
 

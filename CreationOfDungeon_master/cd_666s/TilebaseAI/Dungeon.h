@@ -65,7 +65,7 @@ private:
 	bool GetIsBossStage(const std::vector<std::string>& _bossList);
     
     //同盟間の情報共有網
-    ColleagueNotifyer _enemys, _monsters, _boss;
+    ColleagueNotifyer _enemys, _monsters, _boss, _intruders;
     
     //開始点と終了地点はグローバルなレベルでインスタンス生成しておく
     std::shared_ptr<Goal> _goal;
@@ -92,6 +92,7 @@ private:
     // MEMO : debug用
     Sprite _mainsFrame, _background, _windowBackground, _waveInfomartionTimer;
 	Sprite _hart, _hartFrame;
+	
 	//std::vector<Sprite> _hart;
 	std::vector<Sprite> _hartN;
  

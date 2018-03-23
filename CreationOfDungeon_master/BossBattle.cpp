@@ -3,12 +3,17 @@
 #include "cd_666s/Resources/AllResourceManager.h"
 #include "cd_666s/Utility/CSVReader.h"
 
+#include "BossBattleObject.h"
+#include "cd_666s\TilebaseAI\ColleagueNotifyer.h"
+#include <array>
 
-BossBattle::BossBattle() :
-	_boss({ 0,0,0,0,0,0 })
+BossBattle::BossBattle()
+	: _battleTime(100)
+	, _readyTime(100)
+	, _diedTime(100)
 {
 	_sequenceTimer = 0;
-	now_situation = BattleSequence::None;
+	now_situation = BattleSequence::Ready;
 	_wasBossKilled = false;
 }
 
@@ -17,30 +22,48 @@ BossBattle::~BossBattle()
 {
 }
 
-void BossBattle::Init(std::string stageNum)
+void BossBattle::Init(std::string stageNum, std::vector<std::shared_ptr<TiledObject>>& objects, ColleagueNotifyer &notifyer)
 {
-	std::string fileName = "csv/StageData/boss";
+	std::string fileName = "csv/boss/boss";
 	fileName += stageNum + ".csv";
 
 	std::vector<std::string> bossArray;
 	CSVReader reader;
-	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, bossArray);
-	_boss._hp = std::stoi(bossArray[0]);
+	reader.Read(RESOURCE_TABLE->GetFolderPath() + fileName, bossArray, 1);
 
+	std::array<int, 6> param_i;
+
+	for (size_t i = 0; i < param_i.size();i++) {
+		param_i[i] = std::stoi(bossArray[i]);
+	}
+
+	BattleParameter param = { param_i[0], param_i[1], param_i[2], param_i[3], param_i[4], param_i[5] };
+	auto _pos = Vector2D(std::stod(bossArray[6]), std::stod(bossArray[7]));
+	std::string name = bossArray[8];
+	name += stageNum;
+
+	_boss = std::move(std::make_shared<BossBattleObject>(_pos, param, notifyer, name, true));
+
+	objects.push_back(_boss);
 }
 
 void BossBattle::Update()
 {
-	if(_intruders.empty()){
+	if(_intruders.size() < 1){
+		_boss->SetInRoom(false);
+		_boss->SwitchAnime(false);
 		return ;
 	}
-
+	
+	_boss->SetInRoom(true);
+	_intruders.front()->SetInRoom(true);
+	
 	switch (now_situation)
 	{
 	case BattleSequence::None:
 		break;
-	case BattleSequence::Starting:
-		Starting();
+	case BattleSequence::Ready:
+		Ready();
 		break;
 	case BattleSequence::EnemyAttack:
 		EnemyAttack();
@@ -56,35 +79,37 @@ void BossBattle::Update()
 	}
 }
 
-void BossBattle::SetBattleObject(std::vector<std::shared_ptr<TiledObject>>& objects, std::shared_ptr<TiledObject> intruder)
+void BossBattle::SetBattleObject(std::shared_ptr<TiledObject>& intruder, ColleagueNotifyer& notifyer)
 {
 	auto param = intruder->GetRawParameter();
+	std::string name = intruder->GetName();
+	auto _pos = Vector2D(600, 600); 
 
-	auto _lead = !(_intruders.empty());
+	auto _intruder = std::make_shared<BossBattleObject>(_pos, param, notifyer, name, false);
 
-	_intruders.push({ _lead, param });
-
-	OBJECT_MGR->Add(intruder);
+	_intruder->SetInRoom(true);
+	_intruders.push_back(_intruder);
 }
 
-bool BossBattle::HasKilled(BattleParameter atk, BattleParameter& dff)
+bool BossBattle::HasKilled(BattleParameter& atk, BattleParameter& dff)
 {
-	auto dmg = atk._attack;
+	int dmg = atk._attack;
 	dff._hp -= dmg;
 
-	if (0 <= dff._hp) {
+	if (dff._hp <= 0) {
 		return true;
 	}
 	return false;
 }
 
-void BossBattle::GenerateObject(std::string typeName)
+void BossBattle::GenerateObject(std::string typame)
 {
 }
 
-void BossBattle::Starting()
+void BossBattle::Ready()
 {
-	if(_sequenceTimer >= 2500){
+	_boss->SwitchAnime(false);
+	if(_sequenceTimer >= _readyTime){
 		_sequenceTimer = 0;
 		now_situation = BattleSequence::EnemyAttack;
 	}
@@ -95,14 +120,21 @@ void BossBattle::Starting()
 void BossBattle::EnemyAttack()
 {
 	auto enemy = _intruders.front();
-	if (_sequenceTimer >= 2500) {
-		_intruders.pop();	//UŒ‚‚ðI‚¦‚½“G‚Í”z—ñ‚©‚çœ‹Ž
-		_sequenceTimer = 0;
-		now_situation = BattleSequence::None;
-	}
+	_boss->SwitchAnime(true);
 
-	if (HasKilled(enemy._param, _boss)) {
-		now_situation = BattleSequence::BossDied;
+	if (_sequenceTimer >= _battleTime) {
+		auto& e = enemy->GetRawParameter();
+		auto& b = _boss->_param;
+		
+ 		if (HasKilled(e, b)) {
+			now_situation = BattleSequence::BossDied;
+			_boss->SwitchAnime(false);
+			return;
+		}
+		_sequenceTimer = 0;
+		
+		now_situation = BattleSequence::BossAttack;
+
 		return;
 	}
 	++_sequenceTimer;
@@ -110,10 +142,12 @@ void BossBattle::EnemyAttack()
 
 void BossBattle::BossAttack()
 {
-	if (_sequenceTimer >= 2500) {
-		_intruders.pop();
+	_boss->SwitchAnime(false);
+	if (_sequenceTimer >= _battleTime) {
 		_sequenceTimer = 0;
-		now_situation = BattleSequence::None;
+		now_situation = BattleSequence::Ready;
+		_intruders.front()->OutBossRoom();
+		_intruders.pop_front();	//UŒ‚‚ðI‚¦‚½“G‚Í”z—ñ‚©‚çœ‹Ž
 	}
 
 	++_sequenceTimer;
@@ -121,7 +155,9 @@ void BossBattle::BossAttack()
 
 void BossBattle::BossDied()
 {
-	if (_sequenceTimer >= 2500) {
+	if (_sequenceTimer >= _diedTime) {
+		_wasBossKilled = true;
+		_boss->Clear();
 		return;
 	}
 

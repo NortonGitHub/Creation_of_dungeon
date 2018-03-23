@@ -5,7 +5,8 @@
 #include "BattlingTile.h"
 #include "../DebugDraw.h"
 
-Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type)
+
+Character::Character(TiledVector startPos, const BattleParameter param, ColleagueNotifyer& notifyer, std::string name, TiledObject::Type type,bool isBoss = false)
 : TiledObject(startPos)
 , _direction(TiledVector::Direction::FORWARD)
 , _battleParameter(param)
@@ -21,19 +22,28 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 , _infoIcon(_position, _effecters)
 , _actCounter(1, true, true)
 {
-    _type = type;
-    _notifyer.AddColleague(*this);
-    
+	_type = type;
+
+	int _graphSize = 32;
+	int _endTime = 24;
+
+	if(isBoss){	//ボスかどうか
+		_graphSize = 64;
+		_endTime = 12;
+	}
+	
+	_notifyer.AddColleague(*this);
+	
     _battleParameter._speed = fmin(100, fmax(_battleParameter._speed, 0));
     double speedRatio = static_cast<double>(100 - _battleParameter._speed + 15) / 100;
     _actCounter.Reset(30 * speedRatio, true, true);
 
     std::string fileName = "resource/graph/tiledObject/";
     fileName += _name;  //エラーの原因 _animator　
-    _animator.AddAnimation("front", std::make_shared<GraphArray>(fileName + "_front.png", 32, 24));
-    _animator.AddAnimation("right", std::make_shared<GraphArray>(fileName + "_right.png", 32, 24));
-    _animator.AddAnimation("left", std::make_shared<GraphArray>(fileName + "_left.png", 32, 24));
-    _animator.AddAnimation("back", std::make_shared<GraphArray>(fileName + "_back.png", 32, 24));
+    _animator.AddAnimation("front", std::make_shared<GraphArray>(fileName + "_front.png", _graphSize, _endTime));
+    _animator.AddAnimation("right", std::make_shared<GraphArray>(fileName + "_right.png", _graphSize, _endTime));
+    _animator.AddAnimation("left", std::make_shared<GraphArray>(fileName + "_left.png", _graphSize, _endTime));
+    _animator.AddAnimation("back", std::make_shared<GraphArray>(fileName + "_back.png", _graphSize, _endTime));
 
     auto currentGraph = _animator.GetCurrentGraph();
     currentGraph->SetDisplayMode(false);
@@ -70,7 +80,7 @@ Character::Character(TiledVector startPos, const BattleParameter param, Colleagu
 
 Character::~Character()
 {
-    _notifyer.RemoveColleague(*this);
+	_notifyer.RemoveColleague(*this);
 }
 
 

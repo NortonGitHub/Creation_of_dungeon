@@ -25,7 +25,8 @@ public:
         GOAL,
         MAGIC_SQUARE,
         BATTLE, 
-        TRAP
+        TRAP,
+		BOSS_SCENE
     };
     
     //ループ処理の前に1度だけ呼ばれる処理
@@ -49,9 +50,11 @@ public:
     virtual int GetDefeatedNum() const { return 0; }
 
     //オブジェクトが目的地にたどり着いたかどうかを返す
-    virtual bool HasArrived() const { return true; }
+    virtual bool HasArrived() const { return false; }
 
 	virtual BattleParameter GetRawParameter() const { return BattleParameter(); }
+
+	virtual std::string GetName() const { return ""; }
 
     void SetTile(std::weak_ptr<MapTile> tile) { _tile = tile; }
     void ExitTile() { _tile.reset(); }
